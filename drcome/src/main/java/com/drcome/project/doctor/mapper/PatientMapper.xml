@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drcome.project.doctor.mapper.PatientMapper">
+
+
+
+	<select id="selectPatientInfo" resultType="com.drcome.project.doctor.service.PatientVO">
+		select user_name
+		,gender
+		,birthday
+		,symptom
+		from usertable u join reservation r
+		on(u.user_id = r.user_id)
+		where r.reserve_no=1
+
+	</select>
+
+
+
+</mapper>

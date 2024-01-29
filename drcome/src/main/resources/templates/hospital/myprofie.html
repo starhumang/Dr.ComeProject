@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Insert title here</title>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<p>hospital Admin Profile</p>
+			
+			<table class="table table-secondary">
+				<thead>
+					<tr>
+						<th>병원아이디</th>
+						<th>병원이름</th>
+						<th>주소</th>
+						<th>전화번호</th>
+						<th>병원사진</th>
+						<th>주진료과목</th>
+						<th>대표자이름</th>
+						<th>대표자번호</th>
+						<th>사업자등록번호</th>
+						<th>영업상태</th>
+						<th>휴무일</th>
+						<th>오픈시간</th>
+						<th>마감시간</th>
+						<th>가입일자</th>
+					</tr>
+				</thead>
+				<tbody>
+				<th:block th:each="hos : ${hospitalList}">
+					<tr>
+						<td th:text="${hos.hospitalId}"></td>
+						<td th:text="${hos.hospitalName}"></td>
+						<td th:text="${hos.address}"></td>
+						<td th:text="${hos.phone}"></td>
+						<td><img th:src="@{${hos.hospitalImg}}" alt="" /></td>
+						<td th:text="${hos.mainSubject}"></td>
+						<td th:text="${hos.directorName}"></td>
+						<td th:text="${hos.directorPhone}"></td>
+						<td th:text="${hos.directorLicense}"></td>
+						<td th:text="${hos.hospitalStatus}"></td>
+						<td th:text="${hos.holiday}"></td>
+						<td th:text="${hos.opentime}"></td>
+						<td th:text="${hos.closetime}"></td>
+						<td th:text="${hos.joindate}"></td>
+					</tr>
+				</th:block>
+				</tbody>
+			</table>
+		</div>
+	</body>
+</html>

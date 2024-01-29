@@ -19,5 +19,10 @@ public class UserMemberServiceImpl implements UserMemberService{
 	public List<UserMemberVO> selectMemberList(UserMemberVO vo) {
 		return mapper.selectMemberList(vo);
 	}
+	
+	@Override
+	public int insertUserMember(UserMemberVO vo) {
+		return mapper.insertUserMember(vo);
+	}
 
 }

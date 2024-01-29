@@ -7,14 +7,20 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+import lombok.RequiredArgsConstructor;
+
+@RequiredArgsConstructor
 @Configuration
 @EnableWebSecurity
 public class WebSecurityConfig {
 	
+	private final UserService userService;
+	private final LoginHandler loginHandler;
+	
 	@Bean
-	public BCryptPasswordEncoder bCryptPasswordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,8 +30,9 @@ public class WebSecurityConfig {
 //				.anyRequest().authenticated()
 			)
 			.formLogin((form) -> form
-				.permitAll()
-			)
+					.loginPage("/member/userlogin")
+					.successHandler(loginHandler)
+					.permitAll())
 			.logout((logout) -> logout.permitAll());
 
 		return http.build();

@@ -9,4 +9,18 @@
 		resultType="com.drcome.project.common.service.UserMemberVO">
 		SELECT * FROM usertable
 	</select>
+	
+	  <insert id="insertUserMember" parameterType="com.drcome.project.common.service.UserMemberVO">
+        <![CDATA[
+        INSERT INTO usertable (user_id, user_pw, user_name, phone, birthday, gender)
+        VALUES
+        (#{userId}, #{userPw}, #{userName}, #{phone}, #{birthday}, #{gender})
+        ]]>
+    </insert>
+    
+    <select id="selectUser" parameterType="com.drcome.project.common.service.UserMemberVO" resultType="com.drcome.project.common.service.UserMemberVO">
+		SELECT user_id, user_pw, user_name, phone, birthday, gender, joindate, 'ROLE_'||grade as grade
+		FROM usertable
+		<if test="userId != null and userId != ''">WHERE user_id=#{userId}</if>
+	</select>
 </mapper>

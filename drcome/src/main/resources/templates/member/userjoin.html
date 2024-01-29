@@ -1,30 +1,243 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}"
+>
 	<head>
 		<meta charset="UTF-8" />
 		<title>회원가입</title>
+
+		<script type="text/javascript">
+			function checkId() {
+				alert('꺄앆');
+			}
+		</script>
 	</head>
+
 	<body>
-		<h2>회원가입</h2>
+		<div class="container" layout:fragment="content">
+			<div class="form-body">
+				<div class="row">
+					<div class="form-holder">
+						<div class="form-content">
+							<div class="form-items">
+								<h3>회원가입</h3>
+								<p>빈칸을 작성해 주세요</p>
+								<form
+									method="post"
+									action="join.do"
+									id="myForm"
+									class="requires-validation"
+									enctype="multipart/form-data"
+								>
+									<div class="col-md-12">
+										아이디<input
+											class="form-control"
+											type="text"
+											name="id"
+											id="id"
+											placeholder="아이디를 입력하세요"
+											required
+											style="width: 540px; background-color: 808080"
+										/><br />
+										<input
+											type="button"
+											id="userid"
+											class="btn btn-warning"
+											value="아이디 중복확인"
+											onclick="checkId()"
+										/>
 
-		<form action="/register" method="post">
-			<label for="username">사용자명:</label>
-			<input type="text" id="username" name="username" required />
-			<br />
+										<!-- <button type="button id="join-id"></button> -->
+										<div class="valid-feedback" style="display: none">
+											사용가능한 아이디 입니다!
+										</div>
+										<div class="invalid-feedback" style="display: none">
+											이미 존재하는 아이디 입니다 ㅠㅠ
+										</div>
+									</div>
+									<br />
+									<div class="col-md-12">
+										비밀번호<input
+											class="form-control"
+											type="password"
+											name="pw"
+											id="pw"
+											placeholder="비밀번호를 입력하세요"
+											required
+											style="width: 540px; background-color: 808080"
+										/>
 
-			<label for="email">이메일:</label>
-			<input type="email" id="email" name="email" required />
-			<br />
+										<div class="valid-feedback" style="display: none">
+											사용가능한 비밀번호 입니다
+										</div>
+										<div class="invalid-feedback" style="display: none">
+											비밀번호를 다시 확인하세요
+										</div>
+									</div>
+									<br />
+									<div class="col-md-12">
+										비밀번호 재확인<input
+											class="form-control"
+											type="password"
+											name="rePw"
+											id="rePw"
+											placeholder="비밀번호를 재입력하세요"
+											required
+											onKeyup="checkPw()"
+											style="width: 540px; background-color: 808080"
+										/>
 
-			<label for="password">비밀번호:</label>
-			<input type="password" id="password" name="password" required />
-			<br />
+										<div class="valid-feedback" style="display: none">비밀번호가 일치합니다</div>
+										<div class="invalid-feedback" style="display: none">
+											비밀번호가 일치하지 않습니다
+										</div>
+									</div>
+									<br />
+									<div class="col-md-12">
+										이름<input
+											class="form-control"
+											type="text"
+											name="name"
+											id="name"
+											placeholder="이름을 입력하세요"
+											required
+											style="width: 540px; background-color: 808080"
+										/>
 
-			<label for="confirmPassword">비밀번호 확인:</label>
-			<input type="password" id="confirmPassword" name="confirmPassword" required />
-			<br />
+										<div class="valid-feedback" style="display: none">Username field is valid!</div>
+										<div class="invalid-feedback" style="display: none">
+											Username field cannot be blank!
+										</div>
+									</div>
 
-			<button type="submit">가입하기</button>
-		</form>
+									<br />
+									<div class="col-md-12">
+										생년월일<input
+											class="form-control"
+											type="text"
+											name="birthDay"
+											id="birthDay"
+											placeholder="생년월일 입력하세요(YYYY-MM-dd)"
+											required
+											maxlength="10"
+											style="width: 540px; background-color: 808080"
+										/>
+
+										<div class="valid-feedback" style="display: none">확인</div>
+										<div class="invalid-feedback" style="display: none">
+											년도를 4자리로 입력하세요
+										</div>
+									</div>
+									<br />
+									<div class="col-md-12">
+										전화번호<input
+											class="form-control"
+											type="tel"
+											name="phone"
+											id="phone"
+											placeholder="전화번호를 입력하세요(-(하이픈) 자동입력 됩니다)"
+											required
+											maxlength="13"
+											style="width: 540px; background-color: 808080"
+											onKeyup="addHypen(this);"
+										/>
+
+										<div class="valid-feedback" style="display: none">바르게 입력 가능합니다</div>
+										<div class="invalid-feedback" style="display: none">
+											하이픈 포함 13자로 입력해주세요
+										</div>
+									</div>
+									<br />
+
+									<div class="col-md-12">
+										주소<input
+											type="text"
+											id="sample4_postcode"
+											class="d_form mini line addressCheck"
+											placeholder="우편번호"
+											readonly
+										/>
+										<input
+											type="button"
+											id="addressButton"
+											class="d_form mini"
+											onclick="sample4_execDaumPostcode()"
+											value="우편번호 찾기"
+											readonly
+										/><br /><input
+											type="text"
+											id="sample4_roadAddress"
+											class="form-control"
+											placeholder="도로명주소"
+											readonly
+										/><br />
+										<input
+											type="text"
+											id="sample4_jibunAddress"
+											name="address"
+											class="form-control"
+											placeholder="지번주소"
+											readonly
+										/><br />
+										<span id="guide" style="color: #999; display: none"></span>
+										<input
+											type="text"
+											id="sample4_detailAddress"
+											class="form-control"
+											placeholder="상세주소"
+										/>
+										<input type="hidden" id="gunGu" name="gunGu" />
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										<label
+											>성별<br />
+											남성<input
+												class="form-control"
+												type="radio"
+												name="gender"
+												value="남성" />여성
+											<input class="form-control" type="radio" name="gender" value="여성"
+										/></label>
+
+										<div class="invalid-feedback" style="display: none">성별을 체크해 주세요</div>
+									</div>
+
+									<br />
+									<br /><br />
+									<div class="form-check">
+										<label class="form-check-label">
+											<input
+												class="form-check-input"
+												type="checkbox"
+												id="invalidCheck"
+												required
+												value="[필수] 동의하세요"
+											/>
+											[필수]동의하세요
+										</label>
+										<div class="invalid-feedback" style="display: none">동의하세요 확인!!!</div>
+									</div>
+
+									<br />
+									<br />
+									<input
+										type="submit"
+										id="join"
+										value="회원가입"
+										class="btn btn-danger"
+										onclick="return check()"
+									/>
+									<input type="reset" class="btn btn-danger" value="초기화" />
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</body>
 </html>

@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import com.drcome.project.common.mapper.UserMemberMapper;
 
 @Controller
-public class UserLoginController {
+public class UserMemberController {
 	
 	@Autowired
 	UserMemberMapper dao;
@@ -25,7 +25,7 @@ public class UserLoginController {
 	
 	@GetMapping("/userlist")
 	public String userList(Model model) {
-		model.addAttribute("users", dao.selctMemberList(null));
+		model.addAttribute("users", dao.selectMemberList(null));
 		return "member/userlist";
 	}
 

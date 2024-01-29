@@ -5,7 +5,7 @@
 
 <mapper
 	namespace="com.drcome.project.common.mapper.UserMemberMapper">
-	<select id="selctMemberList"
+	<select id="selectMemberList"
 		resultType="com.drcome.project.common.service.UserMemberVO">
 		SELECT * FROM usertable
 	</select>

@@ -6,6 +6,6 @@ import com.drcome.project.common.service.UserMemberVO;
 
 public interface UserMemberMapper {
 
-	List<UserMemberVO> selctMemberList(UserMemberVO vo);
+	List<UserMemberVO> selectMemberList(UserMemberVO vo);
 	
 }

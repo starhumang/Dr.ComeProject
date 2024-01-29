@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface UserMemberService {
 	
-	List<UserMemberVO> selctMemberList(UserMemberVO vo);
+	List<UserMemberVO> selectMemberList(UserMemberVO vo);
 
 }

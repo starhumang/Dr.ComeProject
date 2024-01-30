@@ -7,12 +7,19 @@ import lombok.Data;
 @Data
 public class PatientVO {
 	
-	private String reserveNo;
+	//기본정보
+	private int reserveNo;
 	private String userName;
 	private String gender;
 	private Date birthday;
 	private String symptom;
 	
+	//진료이력
+	private int clinicNo;
+	private String clinicSymptom;
+	private String specificity;
+	private String perscriptionYn;
+	private Date clinicDate;
 
 
 }

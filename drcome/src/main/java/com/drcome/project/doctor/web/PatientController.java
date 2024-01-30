@@ -1,5 +1,7 @@
 package com.drcome.project.doctor.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,9 +19,14 @@ public class PatientController {
 	//비대면진료페이지
 	@GetMapping("UntactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
+		//기본정보
 		PatientVO findVO = patientService.getPatientInfo(vo);
 		model.addAttribute("pInfo" , findVO);
-		System.out.println(findVO);
+		
+		//진료기록리스트
+		List <PatientVO> clinicList = patientService.getClinicList();
+		model.addAttribute("clist" , clinicList);
+		
 		return "doctor/UntactClinic";
 		
 		

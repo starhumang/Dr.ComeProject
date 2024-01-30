@@ -66,14 +66,13 @@ textarea {
 		<h2 style="text-align: center; margin-top: 20px; margin-bottom: 20px">
 			비대면 진료중</h2>
 
-		<div class="container">
-			<div class="item">
-				<p>영상1</p>
-			</div>
+		<div id="chatLogs"></div>
 
-			<div class="item">
-				<p>영상2</p>
-			</div>
+		<div class="container">
+
+			<video id="localVideo" autoplay muted></video>
+			<video id="remoteVideo" autoplay></video>
+
 
 			<div style="text-align: center">
 				<table>
@@ -95,18 +94,18 @@ textarea {
 
 		<div id="container2" style="margin: 10%">
 			<div>
-				<p>환자내원이력</p>
+				<p>환자진료이력</p>
 				<table>
 					<tr>
-						<th>내원일자</th>
+						<th>진료일자</th>
 						<th>증상</th>
 						<th>기타특이사항</th>
 						<th>처방전</th>
 					</tr>
-					<tr>
-						<td>2012-01-11</td>
-						<td>기침감기래요</td>
-						<td>많이아프대요</td>
+					<tr th:each="c: ${clist}">
+						<td th:text="${#dates.format(c.clinicDate, 'yyyy-MM-dd')}"></td>
+						<td th:text="${c.clinicSymptom}"></td>
+						<td th:text="${c.specificity}"></td>
 						<td><button type="button">처방전보기</button></td>
 					</tr>
 				</table>
@@ -149,21 +148,12 @@ textarea {
 		</div>
 
 
-		<script th:src="@{http://localhost:3000/socket.io/socket.io.js}"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+		<script
+			src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+		<script src="/js/socket.js"></script>
 
-		<script th:inline="javascript">
-			document.addEventListener('DOMContentLoaded', function() {
-				const socket = io("http://localhost:3000");
-			});
-			
-			  socket.on('message', function(message) {
-		            console.log('서버로부터 메시지 수신:', message);
-		        });
-			  
-			  
-		</script>
-		
-		
 	</section>
 
 

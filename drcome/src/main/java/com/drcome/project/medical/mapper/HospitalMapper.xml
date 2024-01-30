@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.drcome.project.medical.mapper.HospitalMapper">
+	<!-- 병원-의사 조회 -->
+	<select id="selectDoctorList" resultType="DoctorVO">
+		SELECT d.doctor_no as doctor_no
+		        , d.subject as subject
+		        , d.doctor_name as doctor_name
+		        , d.holiday as holiday
+		        , d.doctor_license as doctor_license
+		        , dt.day as day
+		        , dt.time as time
+		        , dt.register_date as register_date
+		FROM doctor d JOIN doctor_time dt ON d.doctor_no = dt.doctor_no
+		GROUP BY d.doctor_no, d.subject, d.doctor_name, d.holiday, d.doctor_license, dt.day, dt.time, dt.register_date
+		ORDER BY d.doctor_no, dt.day
+	</select>
+
+</mapper>

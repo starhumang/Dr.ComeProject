@@ -6,5 +6,4 @@ import com.drcome.project.medical.domain.Hospital;
 
 public interface HospitalRepository extends CrudRepository<Hospital, String>{
 
-
 }

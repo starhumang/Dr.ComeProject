@@ -36,19 +36,24 @@
 			class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion"
 			id="accordionSidebar">
 			<!-- Sidebar - Brand -->
-			<a
+			<!-- 로고...
+			 <a
 				class="sidebar-brand d-flex align-items-center justify-content-center"
-				href="index.html">
+				href="index.html" style="padding: 50px 0;">
 				<div class="sidebar-brand-icon">
-					<img src="/image/Drlogo_white.png" alt="logo" width="48px">
+					<img src="/images/Drlogo_white.png" alt="logo" width="48px">
 				</div>
 				<div class="sidebar-brand-text">
-					<img src="/image/ome_white.png" alt="logo" width="100px">
+					<img src="/images/ome_white.png" alt="logo" width="100px">
 				</div> 
-				<!-- <div class="sidebar-brand-icon rotate-n-15"> --> <!-- <i class="fas fa-laugh-wink"></i> -->
-				<!-- </div> --> <!--<div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div> -->
 			</a>
-
+			-->
+			<div class="sidebar-brand align-items-center justify-content-center">
+				<th:block th:each="hos : ${hospitalSel}">
+					<img th:src="@{/img/} + ${hos.hospitalImg}" alt="image"
+						width="200px" />
+				</th:block>
+			</div>
 			<!-- Divider -->
 			<hr class="sidebar-divider my-0" />
 

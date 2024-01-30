@@ -12,7 +12,7 @@
 	             HOSPITAL_IMG,
 	             ADDRESS,
 	             CLOSETIME 
-			FROM  HOSPITAL
+			FROM HOSPITAL
     	</select>
     	
     	<!-- 약국리스트 --> 

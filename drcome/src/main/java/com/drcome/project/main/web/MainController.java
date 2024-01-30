@@ -21,7 +21,8 @@ public class MainController {
 	public String getHosList(Model model) {
 		List<HospitalVO> list = mainService.getHosList();
 		model.addAttribute("hosList", list);
-		return "/";
+		System.out.println(list);
+		return "user/home";
 	}
 	
 	//약국목록

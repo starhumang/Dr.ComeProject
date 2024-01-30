@@ -11,25 +11,30 @@ import org.springframework.security.core.userdetails.UserDetails;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class UserDetailVO implements UserDetails {
+public class UserDetailVO extends UserMemberVO implements UserDetails {
 	
-	final UserMemberVO userMemVO;
+	public UserDetailVO(UserMemberVO userMemVO) {
+        super(userMemVO.getUserId(), userMemVO.getUserPw(), userMemVO.getUserName(),
+              userMemVO.getPhone(), userMemVO.getBirthday(), userMemVO.getGender(),
+              userMemVO.getIdentification(), userMemVO.getJoinDate(), userMemVO.getGrade(),
+              userMemVO.getUserStatus());
+    }
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> list = new ArrayList<>();
-		list.add(new SimpleGrantedAuthority(userMemVO.getGrade()));
+		list.add(new SimpleGrantedAuthority(super.getGrade()));
 		return list;
 	}
 
 	@Override
 	public String getPassword() {
-		return userMemVO.getUserPw();
+		return super.getUserPw();
 	}
 
 	@Override
 	public String getUsername() {
-		return userMemVO.getUserName();
+		return super.getUserName();
 	}
 
 	@Override

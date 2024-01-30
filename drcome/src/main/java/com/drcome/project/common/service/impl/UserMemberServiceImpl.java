@@ -29,11 +29,10 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		System.out.println(username);
 	    UserMemberVO vo = mapper.selectUser(username);
-	    if(vo == null) {
-	        throw new UsernameNotFoundException("해당 사용자를 찾을 수 없습니다: " + username);
-	    }
+	    if (vo == null) {
+			throw new UsernameNotFoundException("no user");
+		}
 	    return new UserDetailVO(vo);
 	}
 

@@ -19,7 +19,7 @@
 	rel="stylesheet" />
 
 <!-- Custom styles for this template-->
-<link href="/css/sb-admin-2.min.css" rel="stylesheet" />
+<link href="/css/sb-admin-2.min2.css" rel="stylesheet" />
 
 <style>
 .content {
@@ -39,25 +39,27 @@
 			<a
 				class="sidebar-brand d-flex align-items-center justify-content-center"
 				href="/home" style="padding: 50px 0">
-				<div class="sidebar-brand-icon">
-					<img src="/images/Drlogo_white.png" alt="logo" width="48px">
-				</div>
-				<div class="sidebar-brand-text">
-					<img src="/images/ome_white.png" alt="logo" width="100px">
-				</div> <!-- <div class="sidebar-brand-icon rotate-n-15">
-						<i class="fas fa-laugh-wink"></i>
+				<!-- 약국 이미지 -->
+				<th:block>
+					<div class="sidebar-brand-icon">
+						<img src="/images/Drlogo_white.png" alt="logo" width="48px">
 					</div>
-					<div class="sidebar-brand-text mx-3">SB Admin <sup>2</sup></div> -->
+					<div class="sidebar-brand-text">
+						<img src="/images/ome_white.png" alt="logo" width="100px">
+					</div>
+				</th:block>
 			</a>
-
+			
+			 
 			<!-- Divider -->
-			<hr class="sidebar-divider my-0" />
+			<!-- <hr class="sidebar-divider my-0" /> -->
 
 			<!-- Nav Item - Dashboard -->
-			<li class="nav-item active"><a class="nav-link"
+			<!-- <li class="nav-item active"><a class="nav-link"
 				href="/admin"> <i class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span></a>
-			</li>
-
+			</li> -->
+			
+			
 			<!-- Divider -->
 			<hr class="sidebar-divider" />
 
@@ -66,37 +68,21 @@
 
 			<!-- Nav Item - Pages Collapse Menu -->
 			<li class="nav-item"><a class="nav-link" href="/admin/user"> <i
-					class="fas fa-fw fa-user"></i> <span>일반 사용자</span>
+					class="fas fa-fw fa-capsules"></i> <span>처방 현황</span>
 					
 			</a> <!-- Nav Item - Utilities Collapse Menu -->
 			<li class="nav-item"><a class="nav-link collapsed" href="#"
 				data-toggle="collapse" data-target="#collapseUtilities"
 				aria-expanded="true" aria-controls="collapseUtilities"> <i
-					class="fas fa-fw fa-hospital-user"></i> <span>병원 사용자</span>
-			</a>
-				<div id="collapseUtilities" class="collapse"
-					aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-					<div class="bg-white py-2 collapse-inner rounded">
-						<h6 class="collapse-header">Hospital:</h6>
-						<a class="collapse-item" href="/admin/hospital">병원 사용자</a> <a
-							class="collapse-item" href="/admin/hospital/grant">병원 승인 업무</a>
-					</div>
-				</div></li>
+					class="fas fa-fw fa-hospital-user"></i> <span>약국 프로필</span>
+			</a></li>
 
 			<!-- Nav Item - Utilities Collapse Menu -->
 			<li class="nav-item"><a class="nav-link collapsed" href="#"
 				data-toggle="collapse" data-target="#collapseTwo"
 				aria-expanded="true" aria-controls="collapseTwo"> <i
-					class="fas fa-fw fa-capsules"></i> <span>약국 사용자</span>
-			</a>
-				<div id="collapseTwo" class="collapse"
-					aria-labelledby="headingUtilities" data-parent="#accordionSidebar">
-					<div class="bg-white py-2 collapse-inner rounded">
-						<h6 class="collapse-header">Pharmacy:</h6>
-						<a class="collapse-item" href="/admin/pharmacy">약국 사용자</a> <a
-							class="collapse-item" href="/admin/pharmacy/grant">약국 승인 업무</a>
-					</div>
-				</div></li>
+					class="fas fa-fw fa-capsules"></i> <span>성분 검색</span>
+			</a></li>
 
 			<!-- Divider -->
 			<hr class="sidebar-divider d-none d-md-block" />

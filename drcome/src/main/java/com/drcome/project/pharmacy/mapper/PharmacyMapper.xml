@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drcome.project.pharmacy.mapper.PharmacyMapper">
+	<!-- 약국 상세 조회 -->
+	<select id="selectPharmacyInfo" resultType="PharmacyVO">
+		SELECT pharmacy_id
+		       , pharmacy_name
+		       , address
+		       , pharmacy_phone
+		       , pharmacy_fax
+		       , pharmacy_img
+		       , ceo_name
+		       , ceo_phone
+		       , ceo_license
+		       , pharmacy_status
+		       , holiday
+		       , opentime
+		       , closetime
+		       , joindate
+		FROM PHARMACY
+		WHERE pharmacy_id = 'pharmacy1'
+	</select>
+	<!-- 약국별 처방 현황 조회 -->
+	<select id="selectPrescriptionList" resultType="PharmacySelectVO">
+		
+	</select>
+</mapper>

@@ -23,6 +23,7 @@ public class Usertable {
 	private String gender;
 	private String identification;
 	private String userStatus;
+	private String grade;
 	private Date joindate;
 	
 }

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/adminLayout}">
+
+<head>
+<meta charset="UTF-8">
+<title>UserList</title>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="card shadow mb-4">
+				<div class="card-header py-3" style="margin-top: 20px;">
+					<h4 class="m-0 font-weight-bold">
+						<i class="fas fa-fw fa-hospital-user"></i> 병원 승인 업무
+					</h4>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<th:block th:each="hospital : ${grantlist}"
+							th:if="${hospital.hospitalStatus == 'b1'}">
+							<table class="table table-bordered" id="dataTable" width="100%"
+								cellspacing="0">
+								<thead>
+									<tr>
+										<th>병원아이디</th>
+										<th>병원명</th>
+										<th>주소</th>
+										<th>전화번호</th>
+										<th>병원이미지</th>
+										<th>진료과목</th>
+										<th>대표자명</th>
+										<th>대표자번호</th>
+										<th>영업상태</th>
+										<th>가입날짜</th>
+										<th>승인</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td th:text="${hospital.hospitalId}"></td>
+										<td th:text="${hospital.hospitalName}"></td>
+										<td th:text="${hospital.address}"></td>
+										<td th:text="${hospital.phone}"></td>
+										<!-- <td th:text="${hospital.hospitalImg}"></td> -->
+										<td><img th:src="@{/img/}+${hospital.hospitalImg}"
+											alt="image" width="50px" /></td>
+										<td th:text="${hospital.mainSubject}"></td>
+										<td th:text="${hospital.directorName}"></td>
+										<td th:text="${hospital.directorPhone}"></td>
+										<td th:if="${hospital.hospitalStatus == 'b1'}">승인대기</td>
+										<td th:if="${hospital.hospitalStatus == 'b2'}">영업중</td>
+										<td
+											th:text="${#dates.format(hospital.joindate, 'yyyy-MM-dd')}"></td>
+										<td><button class="btn btn-warning"
+												th:onclick="hospitalupdate([[${hospital.hospitalId}]])">승인</button></td>
+									</tr>
+								</tbody>
+							</table>
+						</th:block>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+<script>
+	function hospitalupdate(hid) {
+		$.ajax("/admin/hospital/grant/"+hid, {
+	          type: "post"
+	        }).done((result) => {
+	            console.log("Insert", result);
+	            alert("병원 승인 처리되었습니다!!!!!");
+	            location.reload();
+	          })
+	          .fail((err) => console.log(err));
+		
+	}
+</script>

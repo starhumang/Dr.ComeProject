@@ -1,12 +1,12 @@
-package com.drcome.project.admin;
+package com.drcome.project.pharmacy;
 
 import java.util.Date;
 
 import lombok.Data;
 
 @Data
-public class pharmacyVO {
-	
+public class PharmacyVO {
+
 	String pharmacyId;
 	String pharmacyPw;
 	String pharmacyName;

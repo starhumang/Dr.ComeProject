@@ -174,7 +174,7 @@
 								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5>
 								<small th:text="${hos.phone}"></small> <br /> 
 								<small th:text="${hos.address}" style="color: red; font-weight: bold;" id="address"></small>
-								<p th:text="${hos.closetime}" style="visibility:hidden;" id="closeTime">
+								<p th:text="${hos.closetime}"  id="closeTime">
 							</div>
 						</div>
 					</th:block>
@@ -252,9 +252,21 @@
 	        //영업시간 끝나면 스타일 바꾸는 함수
 	        function changeStyle(){
 	        	let closeTime = document.getElementById("closeTime").innerText
-	        	console.log()
+	        	//영업종료시간
+	        	let closeHour = closeTime.substr(0,2);
+	        	let closeMinute = closeTime.substr(3,2);
+	        	//현재시간
+	        	let today = new Date();
+	        	let curHour = today.getHours();
+	        	let curMinute = today.getMinutes();
+	        	if(closeHour <= curHour && closeMinute < curMinute ){
+	        		console.log('냐냐냐')
+	        		let closeStyle = document.getElementById("ho");
+	        		closeStyle.style.backgroundColor = 'rgb(0, 0, 0, 0.6)';
+	        	}
+	        	
 	        }
-
+			this.changeStyle();
 		</script>
 		<!-- Team End -->
 

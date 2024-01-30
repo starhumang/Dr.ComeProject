@@ -16,8 +16,8 @@ import org.springframework.stereotype.Service;
 import com.drcome.project.common.service.UserMemberService;
 import com.drcome.project.common.service.UserMemberVO;
 
-@Service
-public class LoginHandler implements AuthenticationSuccessHandler {
+//@Service
+public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 
 	@Autowired
 	UserMemberService userMemService;
@@ -31,7 +31,7 @@ public class LoginHandler implements AuthenticationSuccessHandler {
 		HttpSession session = request.getSession();
 		session.setAttribute("userId", userMemVO.getUserId()); // 아이디
 		session.setAttribute("userGrade", userMemVO.getGrade()); // 권한
-		session.setAttribute("userName", userMemVO.getUsername()); // 이름
+		session.setAttribute("userName", userMemVO.getUserName()); // 이름
 
 		// location할 페이지 설정
 		String page = null;
@@ -47,7 +47,7 @@ public class LoginHandler implements AuthenticationSuccessHandler {
 			PrintWriter out = response.getWriter();
 
 			out.println("<script language='javascript'>");
-			out.println("alert('" + userMemVO.getUsername() + "님 안녕하세요 :D '); location.href='" + page + "';");
+			out.println("alert('" + userMemVO.getUserName() + "님 안녕하세요 :D '); location.href='" + page + "';");
 			out.println("</script>");
 
 			out.flush();

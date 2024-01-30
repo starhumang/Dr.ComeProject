@@ -11,12 +11,12 @@
 		<div layout:fragment="content">
 			<div class="registered-customers" style="margin: 0px auto; width: 300px">
 				<h3 class="blog-section-title border-left mb-30" id="pageTtl">사용자 로그인</h3>
-				<form th:action="@{/login}" method="post">
+				<form th:action="@{/userlogin}" method="post">
 					<div class="login-account p-30 box-shadow">
 						<p>아이디</p>
-						<input type="text" name="userName" />
+						<input type="text" name="username" />
 						<p>비밀번호</p>
-						<input type="password" name="userPw" />
+						<input type="password" name="password" />
 						<div class="row">
 							<div class="col-sm-8">
 								<p>

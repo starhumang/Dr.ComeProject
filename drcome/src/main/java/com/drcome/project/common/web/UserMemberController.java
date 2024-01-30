@@ -34,6 +34,11 @@ public class UserMemberController {
 		return "/user/home";
 	}
 	
+	@GetMapping(value = { "/admin/", "/admin/home"})
+	public String adminHome() {
+		return "/admin/home";
+	}
+	
 	@GetMapping("/userlogin")
 	public String userLogin() {
 		return "/member/userlogin";
@@ -57,7 +62,7 @@ public class UserMemberController {
 			if (cnt > 0) {
 				PrintWriter out = resp.getWriter();
 				out.println("<script language='javascript'>");
-				out.println("alert('[회원가입성공] " + mVO.getUsername() + "님 환영합니다'); location.href='/';");
+				out.println("alert('[회원가입성공] " + mVO.getUserName() + "님 환영합니다'); location.href='/';");
 				out.println("</script>");
 				out.flush();
 			} else {
@@ -67,16 +72,8 @@ public class UserMemberController {
 				out.println("</script>");
 				out.flush();
 			}
-
 		} catch (IOException e) {
 			e.printStackTrace(); // 예외 처리 추가
 		}
 	}
-
-	@GetMapping("/userlist")
-	public String userList(Model model) {
-		model.addAttribute("users", dao.selectMemberList(null));
-		return "/member/userlist";
-	}
-
 }

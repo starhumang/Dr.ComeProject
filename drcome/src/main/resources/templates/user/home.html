@@ -70,88 +70,6 @@
 						onclick="switchLocation()">현재위치변경</button>
 				</div>
 
-				<!--1. 내 현재 좌표(위치)찾기(geolocation) -->
-				<script th:inline="javascript">
-					//방법 = navigator.geolocation.getCurrentPosition(success, error, [options])
-					function getLocation() {
-						if (navigator.geolocation) {
-							navigator.geolocation.getCurrentPosition(
-								function(position) {
-									//위도(y):latitude 경도(x):longitude
-									curLat = position.coords.latitude
-									curLon = position.coords.longitude
-									//로컬스토리지에 담았음
-									window.localStorage.setItem('lat',position.coords.latitude);
-									window.localStorage.setItem('lon',position.coords.longitude);
-									console.log("curLat=", curLat);
-									console.log("curLon=", curLon);
-									
-									
-
-									<!--2. 현재 내위치 좌표로 주소를 찾고 화면에 띄어주기(kakao지도 api라이브러리) -->
-									//x Number : x 좌표, 경위도인 경우 longitude
-									//y Number : y 좌표, 경위도인 경우 latitude
-									var geocoder = new kakao.maps.services.Geocoder();
-									var coord = new kakao.maps.LatLng(curLat, curLon);
-									var callback = function(result, status) {
-										if (status === kakao.maps.services.Status.OK) {
-											console.log('현재위치는 = '+ result[0].address.address_name);
-											//h3안에 입력해줌
-											document.getElementById("location").innerText = '현재 내 위치 : ' + result[0].address.address_name;
-											//로컬스토리지에 담았음
-											window.localStorage.setItem('location',result[0].address.address_name);
-										}
-									};
-									geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
-								}, function(error) {
-									console.log(error.message);
-								});
-						} else {
-							ALERT('GPS 허용을 눌러주세요');
-						}
-					}
-					//만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
-					let curLocation = window.localStorage.getItem('location');
-					if(!curLocation){
-						getLocation();
-					}else{
-						document.getElementById("location").innerText = '현재 내 위치 : ' + curLocation;
-					}
-					
-					
-					//3. 내 현재 주소를 daum 주소api로 바꾸기(daum주소 api)
-					function switchLocation(){
-						    new daum.Postcode({
-						        oncomplete: function(data) {
-						        	console.log(data.address);
-						        	document.getElementById("location").innerText = '현재 내 위치 : ' + data.address;
-						        	//로컬스토리지에 정보 덮어씀
-						        	window.localStorage.setItem('location',data.address);
-						        	
-						        	<!--4. 바뀐 내 주소로 새 좌표찾기(kakao지도 api라이브러리) -->
-						        	var geocoder = new kakao.maps.services.Geocoder();
-
-						        	var callback = function(result, status) {
-						        	    if (status === kakao.maps.services.Status.OK) {
-						        	    	let newLat = result[0].address.y;
-						        	    	let newLon = result[0].address.x;
-						        	    	console.log('바뀐주소Lat = ',result[0].address.y);
-						        	        console.log('바뀐주소Lon = ',result[0].address.x);
-						        	        //로컬스토리지에 정보 덮어씀
-						        	        window.localStorage.setItem('lat',result[0].address.y);
-											window.localStorage.setItem('lon',result[0].address.x);
-											window.location.reload();
-						        	    }     
-						        	};
-						        	geocoder.addressSearch(data.address, callback);
-						        }
-						    }).open(); 
-						 
-					}
-					
-				</script>
-				
-				
 				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
 					<h6 class="section-title bg-white text-center text-primary px-3">내주변</h6>
 					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
@@ -164,7 +82,7 @@
 						<p th:text="${hos.hospitalImg}"></p>
 						<p th:text="${hos.closetime}"></p>
 						<p th:text="${hos.address}"></p> -->
-						<div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s" style="text-align:center; padding-top:10px; width:250px; height:350px; border: 3px solid #D3E6FF;" id="ho">
+						<div class="col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s" style="text-align:center; margin-right:10px; margin-left:10px; padding-top:10px; width:250px; height:350px; border: 3px solid #D3E6FF;" id="ho">
 							<div class="team-item bg-light">
 								<div class="overflow-hidden">
 									<img th:src="@{/img/} + ${hos.hospitalImg}" alt="image" style="width:100%; height:200px;" class="img-fluid"/>
@@ -173,7 +91,7 @@
 							<div class="text-center p-4">
 								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5>
 								<small th:text="${hos.phone}"></small> <br /> 
-								<small th:text="${hos.address}" style="color: red; font-weight: bold;" id="address"></small>
+								<small th:text="${hos.address}" style="color: red; font-weight: bold;" class="address"></small>
 								<p th:text="${hos.closetime}"  id="closeTime">
 							</div>
 						</div>
@@ -183,6 +101,86 @@
 		</div>
 		
 		<script th:inline="javascript">
+		<!--1. 내 현재 좌표(위치)찾기(geolocation) -->
+			//방법 = navigator.geolocation.getCurrentPosition(success, error, [options])
+			function getLocation() {
+				if (navigator.geolocation) {
+					navigator.geolocation.getCurrentPosition(
+						function(position) {
+							//위도(y):latitude 경도(x):longitude
+							curLat = position.coords.latitude
+							curLon = position.coords.longitude
+							//로컬스토리지에 담았음
+							window.localStorage.setItem('lat',position.coords.latitude);
+							window.localStorage.setItem('lon',position.coords.longitude);
+							console.log("curLat=", curLat);
+							console.log("curLon=", curLon);
+							
+							
+		
+							<!--2. 현재 내위치 좌표로 주소를 찾고 화면에 띄어주기(kakao지도 api라이브러리) -->
+							//x Number : x 좌표, 경위도인 경우 longitude
+							//y Number : y 좌표, 경위도인 경우 latitude
+							var geocoder = new kakao.maps.services.Geocoder();
+							var coord = new kakao.maps.LatLng(curLat, curLon);
+							var callback = function(result, status) {
+								if (status === kakao.maps.services.Status.OK) {
+									console.log('현재위치는 = '+ result[0].address.address_name);
+									//h3안에 입력해줌
+									document.getElementById("location").innerText = '현재 내 위치 : ' + result[0].address.address_name;
+									//로컬스토리지에 담았음
+									window.localStorage.setItem('location',result[0].address.address_name);
+								}
+							};
+							geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+						}, function(error) {
+							console.log(error.message);
+						});
+				} else {
+					ALERT('GPS 허용을 눌러주세요');
+				}
+			}
+			//만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
+			let curLocation = window.localStorage.getItem('location');
+			if(!curLocation){
+				getLocation();
+			}else{
+				document.getElementById("location").innerText = '현재 내 위치 : ' + curLocation;
+			}
+			
+			
+			//3. 내 현재 주소를 daum 주소api로 바꾸기(daum주소 api)
+			function switchLocation(){
+				    new daum.Postcode({
+				        oncomplete: function(data) {
+				        	console.log(data.address);
+				        	document.getElementById("location").innerText = '현재 내 위치 : ' + data.address;
+				        	//로컬스토리지에 정보 덮어씀
+				        	window.localStorage.setItem('location',data.address);
+				        	
+				        	<!--4. 바뀐 내 주소로 새 좌표찾기(kakao지도 api라이브러리) -->
+				        	var geocoder = new kakao.maps.services.Geocoder();
+		
+				        	var callback = function(result, status) {
+				        	    if (status === kakao.maps.services.Status.OK) {
+				        	    	let newLat = result[0].address.y;
+				        	    	let newLon = result[0].address.x;
+				        	    	console.log('바뀐주소Lat = ',result[0].address.y);
+				        	        console.log('바뀐주소Lon = ',result[0].address.x);
+				        	        //로컬스토리지에 정보 덮어씀
+				        	        window.localStorage.setItem('lat',result[0].address.y);
+									window.localStorage.setItem('lon',result[0].address.x);
+									window.location.reload();
+				        	    }     
+				        	};
+				        	geocoder.addressSearch(data.address, callback);
+				        }
+				    }).open(); 
+				 
+			}
+		
+	
+			
 			//현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
 			//5. 병원주소를 좌표로 바꿈
 			function restart(){
@@ -203,12 +201,22 @@
 		      	      	
 		      	      	let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
 		      	      	console.log("총 거리 =", dist);
-		      	      	document.getElementById("address").innerText = dist + 'km';
+		      	      	let target = document.querySelector(".target")
+		      	      	target.innerText = dist + 'km';
+		      	      	target.classList.remove('target');
+		      	      	
 		      	    }     
 		      	};
-		      	let address = document.querySelector('#address').innerText;
-		      	//console.log('병원주소 = ',address);
-		      	geocoder.addressSearch(address, callback);
+		      	let address = document.querySelectorAll('.address');
+		      		address.forEach((item, index)=>{
+		      			//console.log("item",item.innerHTML);
+		      			item.className += ' target'
+		      			geocoder.addressSearch(item.innerHTML, callback);
+		      			
+		      		})
+		      		
+		      	console.log(address)
+		      	
 		      	return;
 			}
 	      	
@@ -260,9 +268,8 @@
 	        	let curHour = today.getHours();
 	        	let curMinute = today.getMinutes();
 	        	if(closeHour <= curHour && closeMinute < curMinute ){
-	        		console.log('냐냐냐')
 	        		let closeStyle = document.getElementById("ho");
-	        		closeStyle.style.backgroundColor = 'rgb(0, 0, 0, 0.6)';
+	        		closeStyle.style.opacity=0.5;
 	        	}
 	        	
 	        }
@@ -318,3 +325,4 @@
 	</div>
 </body>
 </html>
+<script></script>

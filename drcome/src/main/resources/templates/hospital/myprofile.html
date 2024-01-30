@@ -121,14 +121,14 @@
 							<tbody>
 								<th:block th:each="doc : ${docList}">
 									<tr>
-										<td th:text="${doc.doctorNo}"></td>
-										<td th:text="${doc.subject}"></td>
-										<td th:text="${doc.doctorName}"></td>
-										<td th:text="${doc.holiday}"></td>
+										<td rowspan=2 th:text="${doc.doctorNo}"></td>
+										<td rowspan=2 th:text="${doc.subject}"></td>
+										<td rowspan=2 th:text="${doc.doctorName}"></td>
+										<td rowspan=2 th:text="${doc.holiday}"></td>
 										<td th:if="${ doc.day == '1'}">월</td>
 										<td th:if="${ doc.day == '2'}">화</td>
-										<td th:text="|${doc.time}:00|"></td>
-										<td th:text="${doc.doctorLicense}"></td>
+										<td rowspan=2 th:text="|${doc.minTime}:00 ~ ${doc.maxTime}:00|"></td>
+										<td rowspan=2 th:text="${doc.doctorLicense}"></td>
 									</tr>
 								</th:block>
 							</tbody>

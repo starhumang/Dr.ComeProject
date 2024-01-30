@@ -15,5 +15,7 @@ public class DoctorVO {
 	private Integer doctorTimeno;
 	private String day;
 	private String time;
+	private String minTime;
+	private String maxTime;
 	private Date registerDate;
 }

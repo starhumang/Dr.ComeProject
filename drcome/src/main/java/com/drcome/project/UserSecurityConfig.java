@@ -34,6 +34,10 @@ public class UserSecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain userFilterChain(HttpSecurity http) throws Exception {
+		
+		// CSRF 설정
+        http.csrf().disable();
+        
 		http.authorizeHttpRequests((requests) -> requests
 				.antMatchers("/**").permitAll()
 				//.antMatchers("/", "/home", "/userjoin").permitAll() // 나중에 이걸로 바꿔야함
@@ -57,6 +61,7 @@ public class UserSecurityConfig {
 		return http.build();
 	}
 	
+	// static 접근 허용
 	@Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()

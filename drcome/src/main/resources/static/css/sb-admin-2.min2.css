@@ -11099,8 +11099,8 @@ a:focus {
 }
 
 .bg-gradient-primary {
-    background-color: #6b6b6b;
-    background-image: linear-gradient(180deg, #6b6b6b 10%, #424242 100%);
+    background-color: #e0e0e0;
+    background-image: linear-gradient(180deg, #e0e0e0 10%, ##c0c0c0 70%);
     background-size: cover
 }
 
@@ -11687,12 +11687,12 @@ a:focus {
     align-items: center;
     font-size: .875rem;
     border-radius: .35rem;
-    color: rgba(255, 255, 255, .8);
+    color: rgba(0, 0, 0, .8);
     margin-left: 1rem;
     margin-right: 1rem;
     margin-bottom: 1rem;
     padding: 1rem;
-    background-color: rgba(0, 0, 0, .1)
+    background-color: rgba(0, 0, 0, .05)
 }
 
 .sidebar .sidebar-card .sidebar-card-illustration {
@@ -11753,7 +11753,7 @@ a:focus {
 
     .sidebar .nav-item .nav-link span {
         font-size: .85rem;
-        display: inline
+        display: inline;
     }
 
     .sidebar .nav-item .nav-link[data-toggle=collapse]::after {
@@ -11913,47 +11913,47 @@ a:focus {
 }
 
 .sidebar-dark hr.sidebar-divider {
-    border-top: 1px solid rgba(255, 255, 255, .15)
+    border-top: 1px solid rgba(0, 0, 0, .15)
 }
 
 .sidebar-dark .sidebar-heading {
-    color: rgba(255, 255, 255, .4)
+    color: rgba(0, 0, 0, .4)
 }
 
 .sidebar-dark .nav-item .nav-link {
-    color: rgba(255, 255, 255, .8)
+    color: rgba(0, 0, 0, .8)
 }
 
 .sidebar-dark .nav-item .nav-link i {
-    color: rgba(255, 255, 255, .3)
+    color: rgba(0, 0, 0, .3)
 }
 
 .sidebar-dark .nav-item .nav-link:active,
 .sidebar-dark .nav-item .nav-link:focus,
 .sidebar-dark .nav-item .nav-link:hover {
-    color: #fff
+    color: black
 }
 
 .sidebar-dark .nav-item .nav-link:active i,
 .sidebar-dark .nav-item .nav-link:focus i,
 .sidebar-dark .nav-item .nav-link:hover i {
-    color: #fff
+    color: black
 }
 
 .sidebar-dark .nav-item .nav-link[data-toggle=collapse]::after {
-    color: rgba(255, 255, 255, .5)
+    color: rgba(0, 0, 0, .25)
 }
 
 .sidebar-dark .nav-item.active .nav-link {
-    color: #fff
+    color: black;
 }
 
 .sidebar-dark .nav-item.active .nav-link i {
-    color: #fff
+    color: black
 }
 
 .sidebar-dark #sidebarToggle {
-    background-color: rgba(255, 255, 255, .2)
+    background-color: rgba(0, 0, 0, .07)
 }
 
 .sidebar-dark #sidebarToggle::after {
@@ -11961,7 +11961,7 @@ a:focus {
 }
 
 .sidebar-dark #sidebarToggle:hover {
-    background-color: rgba(255, 255, 255, .25)
+    background-color: rgba(0, 0, 0, .25)
 }
 
 .sidebar-dark.toggled #sidebarToggle::after {

@@ -13,7 +13,7 @@
     <meta name="description" content="" />
     <meta name="author" content="" />
 
-    <title>SB Admin 2 - Dashboard</title>
+    <title>hospital - Dashboard</title>
 
     <!-- Custom fonts for this template-->
     <link
@@ -57,22 +57,20 @@
 				</div> 
 			</a>
 			-->
-        <th:block th:each="hos : ${hospitalSel}">
-          <div class="sidebar-card d-none d-lg-flex" style="margin-top: 20px">
+          <div class="sidebar-card d-none d-sm-flex" style="margin-top: 20px">
             <img
-              th:src="@{/img/} + ${hos.hospitalImg}"
+              th:src="@{/img/} + ${hospitalSel.hospitalImg}"
               alt="image"
               style="overflow: hidden; width: 100%; height: 100%"
             />
           </div>
           <div
-            class="sidebar-card d-none d-lg-flex"
+            class="sidebar-card d-none d-lg-flex" id="removeInfo"
             style="align-items: flex-start"
           >
-            <span th:text="${hos.hospitalId}"></span>
-            <span th:text="|${hos.hospitalName} ｜ ${hos.directorName}|"></span>
+            <span th:text="${hospitalSel.hospitalId}"></span>
+            <span th:text="|${hospitalSel.hospitalName} ｜ ${hospitalSel.directorName}|"></span>
           </div>
-        </th:block>
         <!-- Divider -->
         <hr class="sidebar-divider my-0" />
 
@@ -94,7 +92,7 @@
         <li class="nav-item">
           <a
             class="nav-link collapsed"
-            href="#"
+            href="/hospital/patientList"
             data-target="#collapseTwo"
             aria-expanded="true"
             aria-controls="collapseTwo"
@@ -126,7 +124,7 @@
             aria-controls="collapseUtilities"
           >
             <i class="fas fa-fw fa-file-medical"></i>
-            <span>진료 및 예약관리</span>
+            <span>진료 및 예약</span>
           </a>
           <div
             id="collapseUtilities"
@@ -214,7 +212,7 @@
         </li>
 
         <!-- Divider -->
-        <hr class="sidebar-divider d-none d-md-block" />
+        <hr class="sidebar-divider d-none d-md-block collepse" />
 
         <!-- Sidebar Toggler (Sidebar) -->
         <div class="text-center d-none d-md-inline">

@@ -7,6 +7,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.AuthenticatedPrincipal;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -42,16 +45,6 @@ public class UserMemberController {
 	@GetMapping("/userlogin")
 	public String userLogin() {
 		return "/member/userlogin";
-	}
-	
-	@GetMapping("/logout")
-	public void logout(HttpServletResponse response) throws IOException {
-		response.setContentType("text/html; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-		out.println("<script language='javascript'>");
-		out.println("alert('로그아웃'); location.href='/';");
-		out.println("</script>");
-		out.flush();
 	}
 
 	@GetMapping("/userjoin")

@@ -23,15 +23,15 @@ public class FailureHandler implements AuthenticationFailureHandler {
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
-		String message = "오류!!!!!!!!!!!!!!!!!!!!!!!";
+		String message = "오류";
 
 		// 아이디 x
 		if (exception instanceof UsernameNotFoundException) {
-			message = "아이디 없음";
+			message = "아이디 x";
 		}
 		// 비밀번호 오류
 		else if (exception instanceof BadCredentialsException) {
-			message = "비밀번호 틀림";
+			message = "비밀번호 x";
 		}
 
 		out.println("<script language='javascript'>");

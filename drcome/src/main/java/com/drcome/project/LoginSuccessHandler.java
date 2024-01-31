@@ -33,16 +33,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		session.setAttribute("userId", userDetailVO.getUserId()); // 아이디
 		session.setAttribute("userGrade", userDetailVO.getGrade()); // 권한
 		session.setAttribute("userName", userDetailVO.getUserName()); // 이름
-		
-		// 세션 정보를 세션 스토리지에 저장
-//        String script = "sessionStorage.setItem('userId', '" + userDetailVO.getUserId() + "');";
-//        script += "sessionStorage.setItem('userGrade', '" + userDetailVO.getGrade() + "');";
-//        script += "sessionStorage.setItem('userName', '" + userDetailVO.getUserName() + "');";
-//        response.getWriter().write("<script>" + script + "</script>");
-
-//		System.out.println("userId: " + session.getAttribute("userId"));
-//		System.out.println("userGrade: " + session.getAttribute("userGrade"));
-//		System.out.println("userName: " + session.getAttribute("userName"));
 
 		// location할 페이지 설정
 		String page = null;

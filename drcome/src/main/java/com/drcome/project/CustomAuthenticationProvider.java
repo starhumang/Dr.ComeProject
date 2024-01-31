@@ -23,13 +23,15 @@ public class CustomAuthenticationProvider extends DaoAuthenticationProvider {
     public Authentication authenticate(Authentication authentication) {
         try {
             return super.authenticate(authentication);
+          // FailureHandler로 예외처리
         } catch (BadCredentialsException e) {
-            // 패스워드가 잘못된 경우, 사용자가 존재하는지 확인하고 UsernameNotFoundException을 던집니다.
+        	
             UserDetails userDetails = getUserDetailsService().loadUserByUsername(authentication.getName());
+            
             if (userDetails != null) {
-                throw new BadCredentialsException("비밀번호 틀림", e);
+                throw new BadCredentialsException("wrong pw", e);
             } else {
-                throw new UsernameNotFoundException("아이디 없음", e);
+                throw new UsernameNotFoundException("no id", e);
             }
         }
     }

@@ -4,6 +4,7 @@ import javax.servlet.http.Cookie;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
+import org.springframework.boot.web.servlet.ServletListenerRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,6 +12,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -32,7 +34,7 @@ public class WebSecurityConfig {
 	public BCryptPasswordEncoder bCryptPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
-
+	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests((requests) -> requests
@@ -47,15 +49,12 @@ public class WebSecurityConfig {
 				.failureHandler(failureHandler)
 				.permitAll())
 				
-				.logout((logout) -> logout
-				.logoutUrl("/logout")
-				.logoutSuccessHandler((request, response, authentication) -> {
-					request.getSession().invalidate(); // 세션 무효화
-					response.sendRedirect("/"); // 로그아웃 후 리다이렉트할 페이지
-				})
-				.invalidateHttpSession(true)
-				.deleteCookies("JSESSIONID")
-				.permitAll());
+				.logout()
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/") //로그아웃 성공시 이동할 url
+                .invalidateHttpSession(true) //로그아웃시 생성된 세션 삭제 활성화
+                .deleteCookies("JSESSIONID")
+                .permitAll();
 
 		return http.build();
 	}

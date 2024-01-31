@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.admin.domain.Pharmacy;
 import com.drcome.project.admin.domain.Usertable;
-import com.drcome.project.admin.repository.HospitalRepository;
+import com.drcome.project.admin.repository.HospitalListRepository;
 import com.drcome.project.admin.repository.PharmacyRepository;
 import com.drcome.project.admin.repository.UsertableRepository;
 import com.drcome.project.admin.service.AdminService;
@@ -25,7 +25,7 @@ public class AdminController {
 	UsertableRepository urepo;
 	
 	@Autowired
-	HospitalRepository hrepo;
+	HospitalListRepository hrepo;
 	
 	@Autowired
 	PharmacyRepository prepo;

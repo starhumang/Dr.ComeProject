@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{admin/adminLayout}">
+<head>
+<meta charset="UTF-8">
+<title>UserList</title>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="card shadow mb-4">
+				<div class="card-header py-3" style="margin-top: 20px;">
+					<h4 class="m-0 font-weight-bold">
+						<i class="fas fa-fw fa-user"></i> 일반 사용자
+					</h4>
+				</div>
+				<div class="card-body">
+					<div class="table-responsive">
+						<table class="table table-bordered" id="dataTable" width="100%"
+							cellspacing="0">
+							<thead>
+								<tr>
+									<th>아이디</th>
+									<th>이름</th>
+									<th>전화번호</th>
+									<th>생년월일</th>
+									<th>성별</th>
+									<th>구분</th>
+									<th>가입날짜</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="usertable : ${list}">
+									<td th:text="${usertable.userId}"></td>
+									<td th:text="${usertable.userName}"></td>
+									<td th:text="${usertable.phone}"></td>
+									<td th:text="${usertable.birthday}"></td>
+									<td th:text="${usertable.gender}"></td>
+									<!-- <td >==[[${usertable.userStatus}]]==</td> -->
+									<td
+										th:if="${usertable.grade == 'USER' && usertable.userStatus != 'a2  '}">일반회원</td>
+									<td th:if="${usertable.grade == 'ADMIN'}">관리자</td>
+									<td th:if="${usertable.userStatus == 'a2  '}">탈퇴회원</td>
+									<td
+										th:text="${#dates.format(usertable.joindate, 'yyyy-MM-dd')}"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

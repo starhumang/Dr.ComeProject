@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.drcome.project.pharmacy.mapper.PharmacyMapper">
+	<!-- 약국 상세 조회 -->
+	<select id="selectPharmacyInfo" resultType="PharmacyVO">
+		SELECT pharmacy_id
+		       , pharmacy_name
+		       , address
+		       , pharmacy_phone
+		       , pharmacy_fax
+		       , pharmacy_img
+		       , ceo_name
+		       , ceo_phone
+		       , ceo_license
+		       , pharmacy_status
+		       , holiday
+		       , opentime
+		       , closetime
+		       , joindate
+		FROM PHARMACY
+		WHERE pharmacy_id = 'pharmacy1'<!-- #{pharmacyId} -->
+	</select>
+	<!-- 약국별 처방 현황 조회 -->
+	<select id="selectPrescriptionList" resultType="Map">
+		SELECT c.patient_no                 "patientNo"
+               , c.hospital_id              "hospitalId"
+		       , c.reserve_no               "reserveNo"
+		       , a.user_id                  "patientUserId"
+		       , u.user_name                "userName"
+		       , u.birthday                 "userBirthday"
+		       , u.phone                    "userPhone"
+		         /*------ 환자 정보 ------*/
+		       , h.hospital_name            "hospitalName"
+		       , h.phone                    "hospitalPhone"
+		         /*------ 병원 정보 ------*/
+		       , d.doctor_name              "doctorName"
+		         /*------ 의사 정보 ------*/
+                , p.print_status             "printStatus"
+		        , p.perscription_date        "perscriptionDate"
+                , s.pharmacy_id              "pharmacyId"
+		        , s.rejection                "rejection"
+		FROM clinic c 
+		LEFT JOIN patient a ON c.patient_no = a.patient_no
+		LEFT JOIN usertable u ON a.user_id = u.user_id
+		LEFT JOIN perscription p ON c.clinic_no = p.clinic_no
+		LEFT JOIN hospital h ON c.hospital_id = h.hospital_id
+		LEFT JOIN reservation r ON c.reserve_no = r.reserve_no
+		LEFT JOIN doctor d ON r.doctor_no = d.doctor_no
+        LEFT JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+        WHERE s.pharmacy_id = 'pharmacy1'
+	</select>
+</mapper>

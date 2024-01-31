@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{pharmacy/pharmacyLayout}">
+<head>
+<meta charset="UTF-8">
+<title>Pharmacy Info</title>
+<style>
+#btn {
+	margin-bottom: 20px;
+}
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+</style>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info"  th:each="pinfo : ${pinfo}">
+				<h4 th:text="${pinfo.pharmacyName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : 
+					<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+
+			<p>pharmacy Profile</p>
+			<div class="card shadow mb-4">
+				<div class="card-header py-3"
+					style="display: flex; justify-content: space-between; align-items: center;">
+					<h5 class="m-0 font-weight-bold text-secondary">
+						<i class="fas fa-fw fa-capsules"></i>약국 정보
+					</h5>
+				</div>
+			   <!--  <div class="card shadow mb-4">
+				<div class="card-header py-3" style="margin-top: 20px;">
+					<h4 class="m-0 font-weight-bold">
+						<i class="fas fa-fw fa-capsules"></i> 약국 사용자
+					</h4>
+				</div> -->
+				<div class="card-body"
+					style="display: flex; justify-content: center; align-items: center;">
+					<div class="left">
+						<img th:src="@{/img/} + ${pinfo.pharmacyImg}" alt="image"
+							width="300px" style="margin-right: 50px;" />
+					</div>
+					<div class="right">
+						<table class="table">
+							<tr>
+								<th>아이디</th>
+								<td th:text="${pinfo.pharmacyId}"></td>
+							</tr>
+							<tr>
+								<th>약국명</th>
+								<td th:text="${pinfo.pharmacyName}"></td>
+							</tr>
+							<tr>
+								<th>사업자번호</th>
+								<td th:text="${pinfo.ceoLicense}"></td>
+							</tr>
+							<tr>
+								<th>대표자이름</th>
+								<td th:text="${pinfo.ceoName}"></td>
+							</tr>
+							<tr>
+								<th>약국주소</th>
+								<td th:text="${pinfo.address}"></td>
+							</tr>
+							<tr>
+								<th>전화번호</th>
+								<td th:text="${pinfo.pharmacyPhone}"></td>
+							</tr>
+							<tr>
+								<th>팩스번호</th>
+								<td th:text="${pinfo.pharmacyFax}"></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				<div style="display: inline-block; text-align: center;">
+					<button class="btn btn-secondary" id="btn">수정하기</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>
+

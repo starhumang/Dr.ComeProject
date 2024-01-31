@@ -26,8 +26,8 @@ public class HospitalServiceImpl implements HospitalService{
 
 	//병원 - 의사 조회
 	@Override
-	public List<DoctorVO> getDoctorAll() {
-		return hospitalMapper.selectDoctorList();
+	public List<DoctorVO> getDoctorAll(String hospitalId) {
+		return hospitalMapper.selectDrList(hospitalId);
 	}
 	
 	

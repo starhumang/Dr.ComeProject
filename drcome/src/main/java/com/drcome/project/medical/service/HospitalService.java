@@ -11,5 +11,5 @@ public interface HospitalService {
 	public Hospital findByhospitalId(String hospitalId);
 	
 	//병원-의사 조회
-	public List<DoctorVO> getDoctorAll();
+	public List<DoctorVO> getDoctorAll(String hospitalId);
 }

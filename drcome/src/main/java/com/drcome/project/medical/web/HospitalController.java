@@ -30,15 +30,20 @@ public class HospitalController {
 //		return "hospital/myprofile";
 //	}
 	
+	//병원 프로필
 	//병원 단건조회(id로) + 병원-의사 조회
 	@GetMapping("/hospital/myProfile/{hospitalId}")
 	public String findHospital(@PathVariable String hospitalId, Model model) {
 		Hospital hosSel = hospitalService.findByhospitalId(hospitalId);
 		model.addAttribute("hospitalSel", hosSel);
 		
-		List<DoctorVO> docList = hospitalService.getDoctorAll();
+		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId);
+		System.out.println(docList);
 		model.addAttribute("docList", docList);
 		return "hospital/myprofile";
 	}
+	
+	//병원 환자 전체 조회
+	
 	
 }

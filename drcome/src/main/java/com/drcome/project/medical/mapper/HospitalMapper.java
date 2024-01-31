@@ -7,5 +7,5 @@ import com.drcome.project.medical.DoctorVO;
 public interface HospitalMapper {
 	
 	//병원-의사 조회
-	public List<DoctorVO> selectDoctorList();
+	public List<DoctorVO> selectDrList(String hospitalId);
 }

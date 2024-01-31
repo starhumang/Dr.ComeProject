@@ -48,7 +48,7 @@
 					<div class="card-body"
 						style="display: flex; justify-content: center; align-items: center;">
 						<div class="left">
-							<span th:text="'아이디 : ' + ${hos.hospitalId}"></span> <img
+							<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  --> <img
 								th:src="@{/img/} + ${hos.hospitalImg}" alt="image" width="200px" />
 							<button class="btn btn-sm btn-secondary shadow-sm">크게보기</button>
 						</div>
@@ -113,22 +113,24 @@
 									<th>진료과목</th>
 									<th>의사이름</th>
 									<th>휴진일</th>
-									<th>진료일</th>
-									<th>진료시간</th>
+									<th>진료일 / 진료시간</th>
 									<th>면허증</th>
 								</tr>
 							</thead>
 							<tbody>
 								<th:block th:each="doc : ${docList}">
 									<tr>
-										<td rowspan=2 th:text="${doc.doctorNo}"></td>
-										<td rowspan=2 th:text="${doc.subject}"></td>
-										<td rowspan=2 th:text="${doc.doctorName}"></td>
-										<td rowspan=2 th:text="${doc.holiday}"></td>
-										<td th:if="${ doc.day == '1'}">월</td>
-										<td th:if="${ doc.day == '2'}">화</td>
-										<td rowspan=2 th:text="|${doc.minTime}:00 ~ ${doc.maxTime}:00|"></td>
-										<td rowspan=2 th:text="${doc.doctorLicense}"></td>
+										<td th:text="${doc.doctorNo}"></td>
+										<td th:text="${doc.subject}"></td>
+										<td th:text="${doc.doctorName}"></td>
+										<td th:text="${doc.holiday}"></td>
+										<td>
+											<div th:each="drTime : ${doc.times}">
+												[[${drTime.day}]]&nbsp&nbsp
+												[[${drTime.minTime}]] : 00 ~ [[${drTime.maxTime}]] : 00
+											</div>
+										</td>
+										<td th:text="${doc.doctorLicense}"></td>
 									</tr>
 								</th:block>
 							</tbody>

@@ -2,7 +2,7 @@ package com.drcome.project.medical.service;
 
 import java.util.List;
 
-import com.drcome.project.medical.domain.Hospital;
+import com.drcome.project.admin.domain.Hospital;
 
 public interface HospitalService {
 	

@@ -1,5 +1,8 @@
 package com.drcome.project.pharmacy.mapper;
 
+import java.util.List;
+import java.util.Map;
+
 import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
@@ -9,5 +12,5 @@ public interface PharmacyMapper {
 	public PharmacyVO selectPharmacyInfo(PharmacyVO pharmacyVO);
 	
 	/* 약국별 처방 현황 */
-	public PharmacySelectVO selectPrescriptionList(PharmacySelectVO pharmacyselectVO);
+	public List<Map<String, Object>> selectPrescriptionList();
 }

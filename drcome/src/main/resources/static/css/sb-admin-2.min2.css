@@ -11687,12 +11687,12 @@ a:focus {
     align-items: center;
     font-size: .875rem;
     border-radius: .35rem;
-    color: rgba(255, 255, 255, .8);
+    color: rgba(0, 0, 0, .8);
     margin-left: 1rem;
     margin-right: 1rem;
     margin-bottom: 1rem;
     padding: 1rem;
-    background-color: rgba(0, 0, 0, .1)
+    background-color: rgba(0, 0, 0, .05)
 }
 
 .sidebar .sidebar-card .sidebar-card-illustration {

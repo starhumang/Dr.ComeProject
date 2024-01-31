@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+    <!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    <mapper namespace="com.drcome.project.main.mapper.MainMapper">
+    
+		<!-- 병원리스트 -->    
+    	<select id="selectHosList" resultType="HospitalVO">
+    		SELECT PHONE,
+	             HOSPITAL_ID,
+	             HOSPITAL_NAME,
+	             HOSPITAL_IMG,
+	             ADDRESS,
+	             CLOSETIME,
+	             HOLIDAY
+			FROM HOSPITAL
+    	</select> <!-- 자료 다 들어오고 붙이기 WHERE HOSPITAL_STATUS = 'b2' -->
+    	
+    	<!-- 약국리스트 --> 
+    	<select id="selectPhaList" resultType="PharmacyVO">
+	    	SELECT PHARMACY_PHONE,
+		            PHARMACY_ID,
+		            PHARMACY_NAME,
+		            PHARMACY_IMG,
+		            ADDRESS,
+		            CLOSETIME,
+		            HOLIDAY
+			FROM PHARMACY
+		</select> <!-- WHERE PHARMACY_STATUS = 'b2' -->
+		
+    </mapper>

@@ -2,7 +2,7 @@
 <html
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{admin/adminLayout}"
+	layout:decorate="~{hospital/hospitalLayout}"
 >
 	<head>
 		<meta charset="UTF-8" />
@@ -10,10 +10,9 @@
 	</head>
 	<body>
 		<div layout:fragment="content">
-		<div class="user-logout-link">
-    	<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
-	</div>
-			<p>하이룽</p>
+			<p>hospital Admin Home Dashboard</p>
+			
+			
 		</div>
 	</body>
 </html>

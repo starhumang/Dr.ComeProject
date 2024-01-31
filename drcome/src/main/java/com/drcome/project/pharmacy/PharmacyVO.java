@@ -7,19 +7,19 @@ import lombok.Data;
 @Data
 public class PharmacyVO {
 
-	String pharmacyId;
-	String pharmacyPw;
-	String pharmacyName;
-	String address;
-	String pharmacyPhone;
-	String pharmacyFax;
-	String pharmacyImg;
-	String ceoName;
-	String ceoPhone;
-	String ceoLicense;
-	String pharmacyStatus;
-	String holiday;
-	String opentime;
-	String closetime;
-	Date joindate;
-}
+	  private String pharmacyId;
+	  private String pharmacyPw;
+	  private String pharmacyName;
+	  private String address;
+	  private String pharmacyPhone;
+	  private String pharmacyFax;
+	  private String pharmacyImg;
+	  private String ceoName;
+	  private String ceoPhone;
+	  private String ceoLicense;
+	  private String pharmacyStatus;
+	  private String holiday;
+	  private String opentime;
+	  private String closetime;
+	  private Date joindate;
+	}

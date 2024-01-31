@@ -2,7 +2,7 @@ package com.drcome.project.medical.mapper;
 
 import java.util.List;
 
-import com.drcome.project.medical.DoctorVO;
+import com.drcome.project.medical.service.DoctorVO;
 
 public interface HospitalMapper {
 	

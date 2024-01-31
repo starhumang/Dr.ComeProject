@@ -41,6 +41,11 @@ public class UserMemberController {
 	public String userLogin() {
 		return "/member/userlogin";
 	}
+	
+	@GetMapping("/medicallogin")
+	public String medicalLogin() {
+		return "/member/medicallogin";
+	}
 
 	@GetMapping("/userjoin")
 	public String userJoinForm() {

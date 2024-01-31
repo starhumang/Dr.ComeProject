@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+
 	layout:decorate="~{layouts/layout}">
 <head>
 <meta charset="UTF-8" />
@@ -145,26 +146,26 @@
 		            
 				</div>
 				<div class="row g-4">
-					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6" style="width:280px; height:380px;">
-						<!-- <p th:text="${hos.phone}"></p>
-						<p th:text="${hos.hospitalId}"></p>
-						<p th:text="${hos.hospitalName}"></p>
-						<p th:text="${hos.hospitalImg}"></p>
-						<p th:text="${hos.closetime}"></p>
-						<p th:text="${hos.address}"></p> -->
+					<div th:each="pha: ${phaList}" class="col-lg-3 col-md-6" style="width:280px; height:380px;">
+						<!-- <p th:text="${pha.pharmacyPhone}"></p>
+						<p th:text="${pha.pharmacyId}"></p>
+						<p th:text="${pha.hospitalName}"></p>
+						<p th:text="${pha.hospitalImg}"></p>
+						<p th:text="${pha.closetime}"></p>
+						<p th:text="${pha.address}"></p> -->
 						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 							<div class="team-item bg-light">
 								<div class="overflow-hidden">
-									<img th:src="@{/img/} + ${hos.hospitalImg}" alt="image" style="width:100%; height:200px;" class="img-fluid"/>
+									<img th:src="@{/img/} + ${pha.hospitalImg}" alt="image" style="width:100%; height:200px;" class="img-fluid"/>
 								</div>
 							</div>
 							
 							<div class="text-center p-4">
-								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5>
-								<small th:text="${hos.phone}"></small> <br /> 
-								<small th:text="${hos.address}" style="color: red; font-weight: bold;" class="address"></small>
-								<p th:text="${hos.closetime}" style="display:none;"  class="closeTime">
-								<p th:text="${hos.holiday}" style="display:none;" class="closeDay" >
+								<h5 class="mb-0" th:text="${pha.hospitalName}"></h5>
+								<small th:text="${pha.phone}"></small> <br /> 
+								<small th:text="${pha.address}" style="color: red; font-weight: bold;" class="address"></small>
+								<p th:text="${pha.closetime}" style="display:none;"  class="closeTime">
+								<p th:text="${pha.holiday}" style="display:none;" class="closeDay" >
 							</div>
 						</div>
 						<div class="closeBlock">

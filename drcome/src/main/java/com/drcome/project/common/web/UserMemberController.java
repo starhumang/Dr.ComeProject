@@ -30,7 +30,7 @@ public class UserMemberController {
 	UserMemberService userMemService;
 
 	@Autowired
-	BCryptPasswordEncoder bCryptPasswordEncoder;
+	BCryptPasswordEncoder bCryptPasswordEncoder; 
 
 	@GetMapping(value = { "/admin/", "/admin/home"})
 	public String adminHome() {

@@ -11,9 +11,10 @@
 	             HOSPITAL_NAME,
 	             HOSPITAL_IMG,
 	             ADDRESS,
-	             CLOSETIME 
+	             CLOSETIME,
+	             HOLIDAY
 			FROM HOSPITAL
-    	</select>
+    	</select> <!-- 자료 다 들어오고 붙이기 WHERE HOSPITAL_STATUS = 'b2' -->
     	
     	<!-- 약국리스트 --> 
     	<!-- <select id="selectPhaList" resultType="PharmacyVO">

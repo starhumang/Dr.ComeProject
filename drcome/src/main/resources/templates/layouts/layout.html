@@ -79,7 +79,7 @@
 		<a th:href="@{/userlogin}" class="btn btn-primary">Login</a>
 	</div>
 	<div class="user-logout-link">
-    	<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
+    	<a th:href="@{/logout}" onclick="deletelocation()" class="btn btn-primary">Logout</a>
 	</div>
 	<div class="admin-link">
     	<a th:href="@{/admin/home}" class="btn btn-primary">관리자</a>
@@ -195,4 +195,9 @@
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
+<script>
+	function deletelocation(){
+		window.localStorage.clear();
+	}
+</script>
 </html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{pharmacy/pharmacyLayout}">
+<head>
+<meta charset="UTF-8">
+<title>Pharmacy Status</title>
+<style>
+#btn {
+	margin-bottom: 20px;
+}
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+</style>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info">
+				<h4>처방현황</h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : 
+					<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+
+			<p>처방전 승인 및 출력</p>
+			<div class="card shadow mb-4">
+				<div class="card-header py-3"
+					style="display: flex; justify-content: space-between; align-items: center;">
+					<h5 class="m-0 font-weight-bold text-secondary">
+						<i class="fas fa-fw fa-capsules"></i> 
+					</h5>
+				</div>
+				<div class="card-body"
+					style="display: flex; justify-content: center; align-items: center;">
+		<!--/* 			<div class="left">
+						<img th:src="@{/img/} + ${pinfo.pharmacyImg}" alt="image"
+							width="300px" style="margin-right: 50px;" />
+					</div> */-->
+					<div class="right">
+						<table class="table">
+							<tr>
+								<th>환자성명</th>
+								<th>생년월일</th>
+								<th>환자Tel</th>
+								<th>병원명</th>
+								<th>병원Tel</th>
+								<th>담당의</th>
+								<th>처방일자</th>
+								<th>처방전</th>
+								<th>출력</th>
+								<th>반환</th>
+							</tr>
+							<tr th:each="plist : ${plist}">
+								<td th:text="${plist.userName}"></td>
+								<td th:text="${plist.userBirthday}"></td>
+								<td th:text="${plist.userPhone}"></td>
+								<td th:text="${plist.hospitalName}"></td>
+								<td th:text="${plist.hospitalPhone}"></td>
+								<td th:text="${plist.doctorName}"></td>
+								<td th:text="${#dates.format(plist.perscriptionDate, 'yyyy-MM-dd')}"></td>
+								<td>이미지</td>
+								<td><button>출력하기</button></td>
+								<td><button>반환</button></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -151,7 +151,7 @@
 					<!-- 약국시작 -->
 					<h6 class="section-title bg-white text-center text-primary px-3">내
 						주변</h6>
-					<h1 class="mb-5">Pharmacy</h1>
+					<h1 class="mb-5" style="margin-top: 5px;">Pharmacy</h1>
 				</div>
 
 			</div>
@@ -174,9 +174,9 @@
 
 						<div class="text-center p-4">
 							<h5 class="mb-0" th:text="${pha.pharmacyName}"></h5>
-							<small th:text="${pha.pharmacyPhone}"></small> <br /> <small
-								th:text="${pha.address}" style="color: red; font-weight: bold;"
-								class="address2"></small>
+							<small th:text="${pha.pharmacyPhone}"></small> <br /> 
+							<small th:text="${pha.address}" 
+									style="color: red; font-weight: bold;" class="address2"></small>
 							<p th:text="${pha.closetime}" style="display: none;"
 								class="closeTime2">
 							<p th:text="${pha.holiday}" style="display: none;"

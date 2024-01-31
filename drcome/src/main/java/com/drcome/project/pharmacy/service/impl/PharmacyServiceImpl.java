@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.drcome.project.pharmacy.MedicineVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 import com.drcome.project.pharmacy.mapper.PharmacyMapper;
 import com.drcome.project.pharmacy.service.PharmacyService;
@@ -25,6 +26,11 @@ public class PharmacyServiceImpl implements PharmacyService{
 	public List<Map<String, Object>> selectPrescriptionList() {
 		List<Map<String, Object>> listmap = mapper.selectPrescriptionList();
 		return listmap;
+	}
+
+	@Override
+	public List<MedicineVO> findMedicine(String keyword) {
+		return mapper.searchMedicine(keyword);
 	}
 
 }

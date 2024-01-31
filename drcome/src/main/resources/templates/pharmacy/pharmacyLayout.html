@@ -37,15 +37,15 @@
         id="accordionSidebar">
 			
 		<!-- Sidebar - Brand -->
-		<th:block th:each="pinfo : ${pinfo}">
+		<th:block>
 			<div class="sidebar-card d-none d-lg-flex" style="margin-top: 20px">
-				<img th:src="@{/img/} + ${pinfo.pharmacyImg}" alt="image"
+		 		<img th:src="@{/img/} + ${pharmacy.pharmacyImg}" alt="image"
 				 style="overflow: hidden; width: 100%; height: 100%" />
 			</div>
-			<div class="sidebar-card d-none d-lg-flex"
+			<div class="sidebar-card d-none d-lg-flex collapse"
 			  style="align-items: flex-start">
-				<span th:text="${pinfo.pharmacyId}"></span>
-				<span th:text="|${pinfo.pharmacyName} ｜ ${pinfo.ceoName}|"></span>
+				<span th:text="${pharmacy.pharmacyId}" id="removeinfo"></span>
+				<span th:text="|${pharmacy.pharmacyName} ｜ ${pharmacy.ceoName}|" id="removeinfo"></span>
 			</div>
 		</th:block>
 			

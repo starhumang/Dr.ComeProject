@@ -44,8 +44,8 @@
 										<td th:text="${pharmarcy.pharmacyImg}"></td>
 										<td th:text="${pharmarcy.ceoName}"></td>
 										<td th:text="${pharmarcy.ceoPhone}"></td>
-										<td th:if="${pharmarcy.pharmacyStatus == 'b1  '}">승인대기</td>
-										<td th:if="${pharmarcy.pharmacyStatus == 'b2  '}">영업중</td>
+										<td th:if="${pharmarcy.pharmacyStatus == 'b1'}">승인대기</td>
+										<td th:if="${pharmarcy.pharmacyStatus == 'b2'}">영업중</td>
 										<td
 											th:text="${#dates.format(pharmarcy.joindate, 'yyyy-MM-dd')}"></td>
 										<td><button class="btn btn-warning"

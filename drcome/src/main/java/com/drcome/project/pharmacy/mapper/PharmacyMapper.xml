@@ -20,7 +20,7 @@
 		       , closetime
 		       , joindate
 		FROM PHARMACY
-		WHERE pharmacy_id = 'pharmacy1'<!-- #{pharmacyId} -->
+		WHERE pharmacy_id = #{pharmacyId}
 	</select>
 	<!-- 약국별 처방 현황 조회 -->
 	<select id="selectPrescriptionList" resultType="Map">
@@ -50,5 +50,14 @@
 		LEFT JOIN doctor d ON r.doctor_no = d.doctor_no
         LEFT JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
         WHERE s.pharmacy_id = 'pharmacy1'
+	</select>
+	<!-- 약 주성분 검색 -->
+	<select id="searchMedicine" resultType="MedicineVO">
+		SELECT medicine_code
+			   , medicine_name
+			   , ingredient
+			   , entp_name 
+		FROM medicine
+		WHERE ingredient LIKE '%{#keyword}%'
 	</select>
 </mapper>

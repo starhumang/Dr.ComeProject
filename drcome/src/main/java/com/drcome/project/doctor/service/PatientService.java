@@ -8,5 +8,7 @@ public interface PatientService {
 	public PatientVO getPatientInfo(PatientVO vo);
 	//환자 진료내역 조회
 	public List<PatientVO> getClinicList();
+	//환자 처방전 조회 
+	public List<PatientVO> getPerscription(PatientVO vo);
 
 }

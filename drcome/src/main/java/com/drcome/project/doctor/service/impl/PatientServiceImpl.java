@@ -25,7 +25,12 @@ public class PatientServiceImpl implements PatientService{
 	@Override
 	public List<PatientVO> getClinicList() {
 		return mapper.clinicList();
-	
+	}
+
+	//처방전조회
+	@Override
+	public List<PatientVO> getPerscription(PatientVO vo) {
+		return mapper.perscription(vo);
 	}
 
 }

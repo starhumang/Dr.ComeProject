@@ -12,4 +12,7 @@ public interface PatientMapper {
 	//내원이력조회
 	public List<PatientVO> clinicList();
 	
+	//처방전가져오기
+	public List<PatientVO> perscription(PatientVO vo);
+	
 }

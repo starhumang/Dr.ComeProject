@@ -15,11 +15,18 @@ public class PatientVO {
 	private String symptom;
 	
 	//진료이력
-	private int clinicNo;
+	private Integer clinicNo;
 	private String clinicSymptom;
 	private String specificity;
 	private String perscriptionYn;
 	private Date clinicDate;
+
+	
+	//처방전 가져오기
+	private String medicineName;
+	private int dosage;
+	private int doseCnt;
+	private int doseDay;
 
 
 }

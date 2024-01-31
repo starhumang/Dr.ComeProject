@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.drcome.project.medical.domain.Hospital;
+import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.medical.mapper.HospitalMapper;
 import com.drcome.project.medical.repository.HospitalRepository;
 import com.drcome.project.medical.service.DoctorVO;

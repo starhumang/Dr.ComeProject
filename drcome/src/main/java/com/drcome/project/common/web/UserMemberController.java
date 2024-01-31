@@ -32,11 +32,6 @@ public class UserMemberController {
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	@GetMapping(value = { "/", "/home" })
-	public String home() {
-		return "/user/home";
-	}
-	
 	@GetMapping(value = { "/admin/", "/admin/home"})
 	public String adminHome() {
 		return "/admin/home";

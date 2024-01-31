@@ -9,6 +9,7 @@ import com.drcome.project.main.mapper.MainMapper;
 import com.drcome.project.main.service.MainService;
 //import com.drcome.project.main.service.PharmacyVO;
 import com.drcome.project.medical.HospitalVO;
+import com.drcome.project.pharmacy.PharmacyVO;
 
 @Service
 public class MainServiceImpl implements MainService {
@@ -21,9 +22,9 @@ public class MainServiceImpl implements MainService {
 		return mainMapper.selectHosList();
 	}
 
-//	@Override
-//	public List<PharmacyVO> getPhaList() {
-//		return mainMapper.selectPhaList();
-//	}
+	@Override
+	public List<PharmacyVO> getPhaList() {
+		return mainMapper.selectPhaList();
+	}
 
 }

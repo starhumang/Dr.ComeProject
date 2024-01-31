@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 import com.drcome.project.main.service.MainService;
 import com.drcome.project.medical.HospitalVO;
+import com.drcome.project.pharmacy.PharmacyVO;
 
 @Controller
 public class MainController {
@@ -17,20 +18,13 @@ public class MainController {
 	MainService mainService;
 	
 	//병원목록
-	@GetMapping("hosList")
+	@GetMapping(value ={"/", "/home"})//주소
 	public String getHosList(Model model) {
-		List<HospitalVO> list = mainService.getHosList();
-		model.addAttribute("hosList", list);
-		System.out.println(list);
-		return "user/home";
+		List<HospitalVO> hosList = mainService.getHosList();
+		model.addAttribute("hosList", hosList);
+		List<PharmacyVO> phaList = mainService.getPhaList();
+		model.addAttribute("phaList", phaList);
+		System.out.println(phaList);
+		return "user/home";//폴더밑에 html 이름
 	}
-	
-	//약국목록
-//		@GetMapping("phaList")
-//		public String getPhaList(Model model) {
-//			List<PharmacyVO> list = mainService.getPhaList();
-//			model.addAttribute("phaList", list);
-//			return "/";
-//		}
-
 }

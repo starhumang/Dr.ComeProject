@@ -3,6 +3,7 @@ package com.drcome.project.main.mapper;
 import java.util.List;
 
 import com.drcome.project.medical.HospitalVO;
+import com.drcome.project.pharmacy.PharmacyVO;
 
 public interface MainMapper {
 	
@@ -10,5 +11,5 @@ public interface MainMapper {
 	public List<HospitalVO> selectHosList();
 	
 	//약국리스트
-//	public List<PharmacyVO> selectPhaList();
+	public List<PharmacyVO> selectPhaList();
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.drcome.project.medical.HospitalVO;
+import com.drcome.project.pharmacy.PharmacyVO;
 
 @Service
 public interface MainService {
@@ -13,5 +14,5 @@ public interface MainService {
 	public List<HospitalVO> getHosList();
 	
 	//약국목록
-//	public List<PharmacyVO> getPhaList();
+	public List<PharmacyVO> getPhaList();
 }

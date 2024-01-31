@@ -11,7 +11,7 @@
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <style scoped>
 .ho:hover{
-	border radius:50%;
+	border-radius:5%;
 	background-color:#D3E6FF;
 }
 .ho{
@@ -25,14 +25,16 @@
 	position:relative;
 }
 .closeBlock{
-	position:absolute; 
+	position:relative; 
 	background-color:#22313f; 
 	margin-right:10px;
 	margin-left:10px; 
 	padding-top:10px; 
+	left:0px;
+	top:-350px;
 	width:250px; 
 	height:350px;
-	opacity:0.35;
+	opacity:0.6;
 	text-align:center;
 	display:none;
 }
@@ -91,41 +93,92 @@
 					<button class="btn btn-warning rounded-pill px-3" type="button"
 						onclick="switchLocation()">현재위치변경</button>
 				</div>
-
+				
+				<!-- 병원시작 -->
 				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-					<h6 class="section-title bg-white text-center text-primary px-3">내주변</h6>
+					<h6 class="section-title bg-white text-center text-primary px-3">내 주변</h6>
 					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
 				</div>
 				<div class="row g-4">
-					<th:block th:each="hos: ${hosList}" >
+					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6" style="width:280px; height:380px;">
 						<!-- <p th:text="${hos.phone}"></p>
 						<p th:text="${hos.hospitalId}"></p>
 						<p th:text="${hos.hospitalName}"></p>
 						<p th:text="${hos.hospitalImg}"></p>
 						<p th:text="${hos.closetime}"></p>
 						<p th:text="${hos.address}"></p> -->
-						<div class="ho col-lg-3 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
+						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 							<div class="team-item bg-light">
 								<div class="overflow-hidden">
 									<img th:src="@{/img/} + ${hos.hospitalImg}" alt="image" style="width:100%; height:200px;" class="img-fluid"/>
 								</div>
 							</div>
+							
 							<div class="text-center p-4">
 								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5>
 								<small th:text="${hos.phone}"></small> <br /> 
 								<small th:text="${hos.address}" style="color: red; font-weight: bold;" class="address"></small>
-								<p th:text="${hos.closetime}"  class="closeTime">
-								<p th:text="${hos.holiday}" class="closeDay" >
+								<p th:text="${hos.closetime}" style="display:none;"  class="closeTime">
+								<p th:text="${hos.holiday}" style="display:none;" class="closeDay" >
 							</div>
 						</div>
 						<div class="closeBlock">
-							<h3 style="color:white; padding-top:80px;">Close</h3>
+							<h2 style="color:white; padding-top:80px;">Close</h2>
 						</div>
 						
-					</th:block>
+					</div>
 				</div>
+				<!-- 병원끝 -->
 			</div>
 		</div>
+		
+
+
+		<!-- Testimonial Start -->
+		 <div class="container-xxl py-5" style="padding-top: 10px;">
+			<div class="container">
+				<div style="text-align: center; margin-bottom: 50px;">
+				<!-- 약국시작 -->
+	                <h6 class="section-title bg-white text-center text-primary px-3">내 주변</h6>
+	                <h1 class="mb-5">Pharmacy</h1>
+		        </div>
+		            
+				</div>
+				<div class="row g-4">
+					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6" style="width:280px; height:380px;">
+						<!-- <p th:text="${hos.phone}"></p>
+						<p th:text="${hos.hospitalId}"></p>
+						<p th:text="${hos.hospitalName}"></p>
+						<p th:text="${hos.hospitalImg}"></p>
+						<p th:text="${hos.closetime}"></p>
+						<p th:text="${hos.address}"></p> -->
+						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
+							<div class="team-item bg-light">
+								<div class="overflow-hidden">
+									<img th:src="@{/img/} + ${hos.hospitalImg}" alt="image" style="width:100%; height:200px;" class="img-fluid"/>
+								</div>
+							</div>
+							
+							<div class="text-center p-4">
+								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5>
+								<small th:text="${hos.phone}"></small> <br /> 
+								<small th:text="${hos.address}" style="color: red; font-weight: bold;" class="address"></small>
+								<p th:text="${hos.closetime}" style="display:none;"  class="closeTime">
+								<p th:text="${hos.holiday}" style="display:none;" class="closeDay" >
+							</div>
+						</div>
+						<div class="closeBlock">
+							<h2 style="color:white; padding-top:80px;">Close</h2>
+						</div>
+						
+					</div>
+				</div>
+				<!-- 약국 끝 -->
+		        </div>
+		    </div>
+		<!-- Testimonial End -->
+		
+		
 		
 		<script th:inline="javascript">
 		<!--1. 내 현재 좌표(위치)찾기(geolocation) -->
@@ -315,79 +368,32 @@
 	        	console.log("curMinute=", curMinute);
 	        	
 	        	//close표시 먹여야하는 div 전체
-	        	let closeStyle = document.querySelectorAll(".closeBlock");
-    			console.log("closeStyle=",closeStyle);
+	        	let closeBlocks = document.querySelectorAll(".closeBlock");
+	        	console.log("closeBlocks =",closeBlocks);
 	        	//끝나는 시간을 기준으로 시간이랑 분 뽑아서 스타일 먹일거임
-	        	for(i=0; endTime.length -1; i++){
-	        		let closeHour = endTime[i].substr(0,2); //영업종료 시
-	        		let closeMinute = endTime[i].substr(3,2); //영업종료 분
-	        		console.log("closeHour=", closeHour);
-	        		console.log("closeMinute=", closeMinute);
-	        		if(closeHour <= curHour && closeMinute < curMinute){ //영업종료 시간보다 현재시간이 더 크거나
-		        		closeStyle[i].style.display='block';
-	        		}else if(closeWeek[i] == curDay){ //휴진일이 오늘날짜랑 같으면 블럭표시해줌
-	        			closeStyle[i].style.display='block';
-	        		}
-	        	}	        	
+	        	// 각 병원의 끝나는 시간을 기준으로 스타일을 적용
+				for (let i = 0; i < endTime.length; i++) {
+				    let closeHour = parseInt(endTime[i].substr(0, 2)); // 병원 영업 종료 시간 (시)
+				    let closeMinute = parseInt(endTime[i].substr(3, 2)); // 병원 영업 종료 시간 (분)
+				    console.log("closeHour=", closeHour);
+				    console.log("closeMinute=", closeMinute);
+				
+				    if (closeHour < curHour || (closeHour === curHour && closeMinute < curMinute)) {
+				        // 병원의 영업 종료 시간이 현재 시간보다 이전이면
+				        closeBlocks[i].style.display = "block"; // 또는 다른 스타일을 적용
+				        console.log('가가');
+				    } else if (closeWeek[i] === curDay) {
+				        // 휴진일이 오늘 날짜와 같으면
+				        closeBlocks[i].style.display = "block"; // 또는 다른 스타일을 적용
+				        console.log('나나');
+				    }else{
+				    	console.log('다다');
+				    }
+				}	        	
 	        	
-	        	/* 
-	        	
-	        	//for(i, )
-	        	console.log("curDay=", curDay);
-	        	if(closeHour <= curHour && closeMinute < curMinute || closeDay == curDay ){
-	        		let closeStyle = document.querySelectorAll("closeBlock");
-	        		closeStyle.style.display="block";
-	        	} */
 	        }
-			this.changeStyle();
+			changeStyle();
 		</script>
-		<!-- Team End -->
-
-
-		<!-- Testimonial Start -->
-		<!--  <div class="container-xxl py-5 wow fadeInUp" data-wow-delay="0.1s">
-		        <div class="container">
-		            <div class="text-center">
-		                <h6 class="section-title bg-white text-center text-primary px-3">내 주변</h6>
-		                <h1 class="mb-5">Pharmacy</h1>
-		            </div>
-		            <div class="owl-carousel testimonial-carousel position-relative">
-		                <div class="testimonial-item text-center">
-		                    <img class="border rounded-circle p-2 mx-auto mb-3" src="img/testimonial-1.jpg" style="width: 80px; height: 80px;">
-		                    <h5 class="mb-0">Client Name</h5>
-		                    <p>Profession</p>
-		                    <div class="testimonial-text bg-light text-center p-4">
-		                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-		                    </div>
-		                </div>
-		                <div class="testimonial-item text-center">
-		                    <img class="border rounded-circle p-2 mx-auto mb-3" src="img/testimonial-2.jpg" style="width: 80px; height: 80px;">
-		                    <h5 class="mb-0">Client Name</h5>
-		                    <p>Profession</p>
-		                    <div class="testimonial-text bg-light text-center p-4">
-		                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-		                    </div>
-		                </div>
-		                <div class="testimonial-item text-center">
-		                    <img class="border rounded-circle p-2 mx-auto mb-3" src="img/testimonial-3.jpg" style="width: 80px; height: 80px;">
-		                    <h5 class="mb-0">Client Name</h5>
-		                    <p>Profession</p>
-		                    <div class="testimonial-text bg-light text-center p-4">
-		                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-		                    </div>
-		                </div>
-		                <div class="testimonial-item text-center">
-		                    <img class="border rounded-circle p-2 mx-auto mb-3" src="img/testimonial-4.jpg" style="width: 80px; height: 80px;">
-		                    <h5 class="mb-0">Client Name</h5>
-		                    <p>Profession</p>
-		                    <div class="testimonial-text bg-light text-center p-4">
-		                    <p class="mb-0">Tempor erat elitr rebum at clita. Diam dolor diam ipsum sit diam amet diam et eos. Clita erat ipsum et lorem et sit.</p>
-		                    </div>
-		                </div>
-		            </div>
-		        </div>
-		    </div> -->
-		<!-- Testimonial End -->
 	</div>
 </body>
 </html>

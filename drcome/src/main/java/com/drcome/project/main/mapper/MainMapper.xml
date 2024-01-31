@@ -17,14 +17,15 @@
     	</select> <!-- 자료 다 들어오고 붙이기 WHERE HOSPITAL_STATUS = 'b2' -->
     	
     	<!-- 약국리스트 --> 
-    	<!-- <select id="selectPhaList" resultType="PharmacyVO">
+    	<select id="selectPhaList" resultType="PharmacyVO">
 	    	SELECT PHARMACY_PHONE,
 		            PHARMACY_ID,
 		            PHARMACY_NAME,
 		            PHARMACY_IMG,
 		            ADDRESS,
-		            CLOSETIME
+		            CLOSETIME,
+		            HOLIDAY
 			FROM PHARMACY
-		</select> -->
+		</select> <!-- WHERE PHARMACY_STATUS = 'b2' -->
 		
     </mapper>

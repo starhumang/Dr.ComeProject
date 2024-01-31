@@ -1,4 +1,4 @@
-package com.drcome.project.medical;
+package com.drcome.project.medical.service;
 
 import java.util.Date;
 

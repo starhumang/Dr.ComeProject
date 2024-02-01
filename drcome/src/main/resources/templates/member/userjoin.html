@@ -6,7 +6,7 @@
 >
 	<head>
 		<meta charset="UTF-8" />
-		<title>회원가입</title>
+		<title>사용자 회원가입</title>
 
 		<style>
 			.error-message {
@@ -223,7 +223,7 @@
 						<div class="form-content">
 							<div class="form-items">
 								<br />
-								<h3>회원가입</h3>
+								<h3>사용자 회원가입</h3>
 								<form th:action="@{/userjoin}" method="post" onsubmit="return validateForm()">
 									<br />
 									<div class="col-md-12">
@@ -248,28 +248,6 @@
 									</div>
 
 									<div class="col-md-12">
-										전화번호
-										<input
-											class="form-control"
-											type="tel"
-											name="phone"
-											id="phone"
-											placeholder="전화번호를 입력하세요"
-											required
-											maxlength="13"
-											oninput="formatPhoneNumber()"
-										/>
-										<span id="phoneErrorMessage" class="error-message"></span>
-										<input
-											type="button"
-											id="tel"
-											class="btn btn-warning"
-											value="전화번호인증"
-											onclick="checkPhone()"
-										/>
-									</div>
-
-									<div class="col-md-12">
 										비밀번호
 										<input
 											class="form-control"
@@ -289,7 +267,7 @@
 											class="form-control"
 											type="password"
 											id="rePw"
-											placeholder="비밀번호를 재입력하세요"
+											placeholder="비밀번호를 다시 입력하세요"
 											required
 											oninput="checkPasswordMatch()"
 										/>
@@ -308,6 +286,28 @@
 											oninput="checkName()"
 										/>
 										<span id="nameErrorMessage" class="error-message"></span>
+									</div>
+
+									<div class="col-md-12">
+										전화번호
+										<input
+											class="form-control"
+											type="tel"
+											name="phone"
+											id="phone"
+											placeholder="전화번호를 입력하세요"
+											required
+											maxlength="13"
+											oninput="formatPhoneNumber()"
+										/>
+										<span id="phoneErrorMessage" class="error-message"></span>
+										<input
+											type="button"
+											id="tel"
+											class="btn btn-warning"
+											value="전화번호인증"
+											onclick="checkPhone()"
+										/>
 									</div>
 
 									<div class="col-md-12">

@@ -38,7 +38,7 @@
 	<body>
 		<!-- Navbar Start -->
 		<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
-			<a href="index.html" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
+			<a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
 				<h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>로고자리</h2>
 			</a>
 			<button
@@ -74,16 +74,13 @@
   
 	<!-- Add a div for user login link -->
 	<div class="user-login-link">
-		<a th:href="@{/userlogin}" class="btn btn-primary">user Login</a>
-	</div>
-	<div class="user-login-link">
-		<a th:href="@{/medicallogin}" class="btn btn-primary">medical Login</a>
+		<a th:href="@{/userlogin}" class="btn btn-primary">Login</a>
 	</div>
 	<div class="user-logout-link">
-    	<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
+    	<a th:href="@{/logout}" class="btn btn-danger">Logout</a>
 	</div>
 	<div class="admin-link">
-    	<a th:href="@{/admin/home}" class="btn btn-primary">관리자</a>
+    	<a th:href="@{/admin/home}" class="btn btn-dark">관리자</a>
 	</div>
 	<!-- Your existing content goes here -->
 

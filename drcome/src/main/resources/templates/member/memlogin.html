@@ -10,7 +10,7 @@
 	<body>
 		<div layout:fragment="content">
 			<div class="registered-customers" style="margin: 0px auto; width: 300px">
-				<h3 class="blog-section-title border-left mb-30" id="pageTtl">사용자 로그인</h3>
+				<h3 class="blog-section-title border-left mb-30" id="pageTtl">로그인</h3>
 				<form th:action="@{/userlogin}" method="post">
 					<div class="login-account p-30 box-shadow">
 						<p>아이디</p>
@@ -29,19 +29,26 @@
 								</p>
 							</div>
 						</div>
-						<div class="mb-10"><input type="checkbox" name="remember-me" /> 로그인 상태 유지</div>
+						<!-- 						<div class="mb-10"><input class="form-check-input" type="checkbox" id="remember" /> 로그인 상태 유지</div> -->
 						<div class="mb-40" style="text-align: center">
 							<button class="submit-btn-1 btn-hover-1" type="submit">로그인</button>
-							<button class="submit-btn-1 btn-hover-1" type="button" onclick="joinForm()">
-								회원가입
+							<br />
+							<button class="submit-btn-1 btn-hover-1" type="button" onclick="userjoinForm()">
+								일반 사용자 회원가입
+							</button>
+							<button class="submit-btn-1 btn-hover-1" type="button" onclick="medicaljoinForm()">
+								의료기관 사용자 회원가입
 							</button>
 						</div>
 					</div>
 				</form>
 			</div>
 			<script type="text/javascript">
-				function joinForm() {
+				function userjoinForm() {
 					location.href = '/userjoin';
+				}
+				function medicaljoinForm() {
+					location.href = '/medicaljoin';
 				}
 			</script>
 		</div>

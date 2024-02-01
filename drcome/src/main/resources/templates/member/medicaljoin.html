@@ -30,6 +30,9 @@
 
 	<body>
 		<div class="container" layout:fragment="content">
+			<!-- <th:block th:each="detailCode : ${detailCodes}">
+				<p th:text="${detailCode.detailCode}"></p>
+			</th:block> -->
 			<div class="form-body">
 				<div class="row">
 					<div class="form-holder">
@@ -129,12 +132,14 @@
 										<select class="form-control" name="mainSubject" id="hsub">
 											<option selected>선택하세요</option>
 											<th:block th:each="detailCode : ${detailCodes}">
-												<th:if test="${detailCode.mainCode == 'OH'}">
+												<th:block
+													th:if="${detailCode.mainCode == 'OH' and detailCode.detailCode.startsWith('h')}"
+												>
 													<option
 														th:value="${detailCode.detailCode}"
 														th:text="${detailCode.codeName}"
 													></option>
-												</th:if>
+												</th:block>
 											</th:block>
 										</select>
 									</div>

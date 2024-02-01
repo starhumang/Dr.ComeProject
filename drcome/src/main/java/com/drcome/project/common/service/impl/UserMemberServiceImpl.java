@@ -1,7 +1,6 @@
 package com.drcome.project.common.service.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -12,22 +11,12 @@ import com.drcome.project.common.service.UserDetailVO;
 import com.drcome.project.common.service.UserMemberService;
 import com.drcome.project.common.service.UserMemberVO;
 
-
 @Service
 public class UserMemberServiceImpl implements UserMemberService, UserDetailsService {
 
 	@Autowired
 	UserMemberMapper mapper;
 	
-	@Value("${coolsms.api.key}")
-	private String apiKey;
-	 
-	@Value("${coolsms.api.secret}")
-	private String apiSecretKey;
-	 
-	@Value("${cool.sms.from.number}")
-	private String fromNumber;
-
 	@Override
 	public int insertUserMember(UserMemberVO vo) {
 		return mapper.insertUserMember(vo);

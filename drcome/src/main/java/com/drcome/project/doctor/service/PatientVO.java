@@ -27,6 +27,8 @@ public class PatientVO {
 	private int dosage;
 	private int doseCnt;
 	private int doseDay;
+	
+	
 
 
 }

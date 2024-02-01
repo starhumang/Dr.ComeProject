@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>비대면 진료페이지</title>
+    <style></style>
+  </head>
+
+  <body>
+    <section layout:fragment="content">
+      <h2
+        style="
+          background-color: #06bbcc;
+          margin: 10px;
+          padding: 10px;
+          text-align: center;
+          color: white;
+        "
+      >
+        비대면 진료중
+      </h2>
+
+      <!--비디오-->
+      <video id="localVideo" autoplay width="400" height="400"></video>
+      <video id="remoteVideo" autoplay width="400" height="400"></video>
+      <!---->
+
+      <!--기본정보-->
+      <table>
+        <tr>
+          <th>이름</th>
+          <th>성별</th>
+          <th>생년월일</th>
+          <th>증상</th>
+        </tr>
+
+        <tr>
+          <td th:text="${pInfo.userName}"></td>
+          <td th:text="${pInfo.gender}"></td>
+          <td th:text="${#dates.format(pInfo.birthday, 'yyyy-MM-dd')}"></td>
+          <td th:text="${pInfo.symptom}"></td>
+        </tr>
+      </table>
+      <!---->
+
+      <!--진료기록 초진-->
+      <th:block th:if="${#lists.size(clist)<1}">
+        <div>초진입니다</div>
+      </th:block>
+      <!---->
+
+      <!--진료기록-->
+      <th:block th:if="${#lists.size(clist)>0}">
+        <div>
+          <p>환자진료이력</p>
+          <table>
+            <tr>
+              <th>no</th>
+              <th>진료일자</th>
+              <th>증상</th>
+              <th>기타특이사항</th>
+              <th>처방전</th>
+            </tr>
+
+            <tr th:each="c : ${clist}">
+              <td th:text="${c.clinicNo}"></td>
+              <td th:text="${#dates.format(c.clinicDate, 'yyyy-MM-dd')}"></td>
+              <td th:text="${c.clinicSymptom}"></td>
+              <td th:text="${c.specificity}"></td>
+              <td>
+                <button
+                  id="viewper"
+                  th:onclick="viewPer([[${c.clinicNo}]])"
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModalCenter"
+                >
+                  처방전보기
+                </button>
+              </td>
+            </tr>
+          </table>
+        </div>
+      </th:block>
+      <!---->
+
+      <!--진료form-->
+      <form action="SaveClinic" method="post">
+        <div>
+          <label>
+            증상
+            <input type="text" name="clinicSymptom" />
+          </label>
+          <br />
+          <label>
+            특이사항
+            <input type="text" name="specificity" />
+          </label>
+          <br />
+          <input type="radio" name="pay" />급여
+          <br />
+          <input type="radio" name="pay" />비급여
+        </div>
+
+        <div>
+          <input type="checkbox" />처방전 없음
+          <input type="text" placeholder="약 이름 입력" />
+          <button class="btn btn-primary" onclick="searchMedicine()">
+            검색
+          </button>
+          <div id="msearch"></div>
+        </div>
+
+        <br />
+
+        <table>
+          <tr>
+            <th>약품명</th>
+            <th>투약량</th>
+            <th>횟수</th>
+            <th>일수</th>
+          </tr>
+        </table>
+
+        <div>
+          <button class="btn btn-primary" type="submit">진료기록저장</button>
+        </div>
+      </form>
+      <!---->
+
+      <!-- modal -->
+      <div
+        class="modal fade"
+        id="exampleModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="false"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">
+                처방전 상세보기
+              </h5>
+            </div>
+            <div class="modal-body">
+              <table id="modalTable">
+                <tr>
+                  <th>약품명</th>
+                  <th>투약량</th>
+                  <th>횟수</th>
+                  <th>일수</th>
+                </tr>
+              </table>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- -->
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+      <script src="/js/socket.js"></script>
+
+      <script>
+        function viewPer(no) {
+          console.log(no);
+          const modalTable = $("#modalTable");
+          $.ajax(`/perscription/${no}`) //fetch
+            .done((result) => {
+              modalTable.empty();
+              modalTable.append(
+                `<tr>
+                        <th>약품명</th>
+                        <th>투약량</th>
+                        <th>횟수</th>
+                        <th>일수</th>
+                    </tr>`
+              );
+
+              for (let i of result) {
+                modalTable.append(
+                  `<tr>
+                        <td>${i.medicineName}</td>
+                        <td>${i.dosage}</td>
+                        <td>${i.doseCnt}</td>
+                        <td>${i.doseDay}</td>
+                    </tr>`
+                );
+              }
+            })
+            .fail((err) => console.log(err)); //catch
+        }
+      </script>
+    </section>
+  </body>
+</html>

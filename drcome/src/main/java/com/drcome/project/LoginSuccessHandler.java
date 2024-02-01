@@ -38,21 +38,23 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		String page = null;
 		if (userDetailVO.getGrade().equals("ROLE_ADMIN")) {
 			page = "/admin/home";
+			response.sendRedirect(page);
 		} else {
 			page = "/";
+			response.sendRedirect(page);
 		}
 
 		// alert + location
-		try {
-			PrintWriter out = response.getWriter();
-			out.println("<script language='javascript'>");
-			out.println("alert('" + userDetailVO.getUserName() + "님 반갑습니다.'); location.href='" + page + "';");
-			out.println("</script>");
-
-			out.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			PrintWriter out = response.getWriter();
+//			out.println("<script language='javascript'>");
+//			out.println("alert('" + userDetailVO.getUserName() + "님 반갑습니다.');");
+//			out.println("</script>");
+//			out.flush();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+		
 	}
 
 }

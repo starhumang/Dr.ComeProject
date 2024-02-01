@@ -16,7 +16,7 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 
 	@Autowired
 	UserMemberMapper mapper;
-
+	
 	@Override
 	public int insertUserMember(UserMemberVO vo) {
 		return mapper.insertUserMember(vo);

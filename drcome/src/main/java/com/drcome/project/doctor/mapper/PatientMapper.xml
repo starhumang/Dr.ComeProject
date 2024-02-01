@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.drcome.project.doctor.mapper.PatientMapper">
+
+
+
+	<select id="selectPatientInfo"
+		resultType="com.drcome.project.doctor.service.PatientVO">
+		select user_name
+		,gender
+		,birthday
+		,symptom
+		from usertable u
+		join reservation r
+		on(u.user_id = r.user_id)
+		where r.reserve_no=1
+	</select>
+
+
+	<select id="clinicList"
+		resultType="com.drcome.project.doctor.service.PatientVO">
+		select clinic_no 
+		,clinic_date
+		,clinic_symptom
+		,specificity
+		,perscription_yn
+		from clinic
+		where patient_no = (select
+		patient_no
+		from
+		patient
+		where user_id='user1')
+		order by clinic_date desc
+	</select>
+
+
+	<select id="perscription"
+		resultType="com.drcome.project.doctor.service.PatientVO">
+		select medicine_name
+		,dosage
+		,dose_cnt
+		,dose_day
+		from
+		perscription p join medicine d
+		on (p.medicine_no = d.medicine_no)
+		where clinic_no =#{clinicNo}
+	</select>
+
+
+
+</mapper>

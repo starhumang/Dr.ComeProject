@@ -25,8 +25,10 @@
 			<div class="head_info">
 				<h4>처방현황</h4>
 				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
-						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					<i class="fas fa-fw fa-calendar" data-toggle="modal"
+						data-target="#calendarModal"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+						id="datepicker" th:name="datepicker"></span>
 				</p>
 			</div>
 
@@ -86,40 +88,73 @@
 					<div class="modal-body container">
 						<form>
 							<div class="form-check">
-							  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
-							  <label class="form-check-label" for="flexRadioDefault1">
-							    약 재고가 부족하여 조제가 취소되었습니다.
-							  </label>
+								<input class="form-check-input" type="radio"
+									name="flexRadioDefault" id="flexRadioDefault1"> <label
+									class="form-check-label" for="flexRadioDefault1"> 약 재고가
+									부족하여 조제가 취소되었습니다. </label>
 							</div>
 							<div class="form-check">
-							  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
-							  <label class="form-check-label" for="flexRadioDefault2">
-							    약국 사정상 조제가 어려워 취소되었습니다.
-							  </label>
+								<input class="form-check-input" type="radio"
+									name="flexRadioDefault" id="flexRadioDefault2" checked>
+								<label class="form-check-label" for="flexRadioDefault2">
+									약국 사정상 조제가 어려워 취소되었습니다. </label>
 							</div>
 							<div class="form-check">
-							  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" checked>
-							  <label class="form-check-label" for="flexRadioDefault2">
-							    약국 영업 시간이 아닙니다.
-							  </label>
+								<input class="form-check-input" type="radio"
+									name="flexRadioDefault" id="flexRadioDefault3" checked>
+								<label class="form-check-label" for="flexRadioDefault2">
+									약국 영업 시간이 아닙니다. </label>
 							</div>
 							<div class="form-check">
-								<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" checked>
+								<input class="form-check-input" type="radio"
+									name="flexRadioDefault" id="flexRadioDefault4" checked>
 								<label for="message-text" class="col-form-label">기타</label>
 								<div>
 									<textarea class="form-control" id="message-text"></textarea>
 								</div>
 							</div>
 						</form>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary"
+								data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-primary">반환</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 달력 모달 -->
+		<!-- 모달 창 추가 -->
+		<div class="modal" id="calendarModal" tabindex="-1" role="dialog">
+			<div class="modal-dialog" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title">Calendar Modal</h5>
+						<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+					</div>
+					<div class="modal-body">
+						<!-- 달력을 표시할 부분 -->
+						<!-- 달력 라이브러리를 사용하거나 직접 구현할 수 있음 -->
+						<!-- 이 예제에서는 datepicker를 사용 -->
+						<input type="text" id="datepicker">
+					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary"
-							data-bs-dismiss="modal">닫기</button>
-						<button type="button" class="btn btn-primary">반환</button>
+							data-dismiss="modal">Close</button>
+						<button type="button" class="btn btn-primary">Save
+							changes</button>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	</div>
 </body>
 </html>
+<script>
+	$(function() {
+		$("#datepicker").datepicker();
+	});
+</script>

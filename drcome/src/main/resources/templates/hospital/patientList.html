@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{hospital/hospitalLayout}">
+
 <head>
 <meta charset="UTF-8">
 <title>patientList</title>
@@ -11,8 +12,15 @@
 	justify-content: space-between;
 	margin-top: 30px;
 }
+
+.search {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 40px;
+}
 </style>
 </head>
+
 <body>
 	<div layout:fragment="content">
 		<div class="container-fluid">
@@ -23,7 +31,65 @@
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>환자관리</p>
+			<p>patient list</p>
+			<div class="search">
+				<!-- drop -->
+				<div>
+					<div class="dropdown mb-4">
+						<button class="btn btn-light dropdown-toggle" type="button"
+							id="dropdownMenuButton" data-toggle="dropdown"
+							aria-haspopup="true" aria-expanded="false">검색유형</button>
+						<div class="dropdown-menu animated--fade-in"
+							aria-labelledby="dropdownMenuButton" style="">
+							<a class="dropdown-item" href="#">Action</a> <a
+								class="dropdown-item" href="#">Another action</a> <a
+								class="dropdown-item" href="#">Something else here</a>
+						</div>
+					</div>
+				</div>
+
+				<!-- 검색 -->
+				<div>
+					<div class="input-group">
+						<button class="btn btn-info" type="button"
+							style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+							<i class="fas fa-search fa-sm"></i>
+						</button>
+						<input type="text" class="form-control bg-light border-1 small"
+							placeholder="검색어를 입력하세요." aria-label="Search"
+							aria-describedby="basic-addon2">
+						<div class="input-group-append">
+							<button class="btn btn-info" type="button">검색하기</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<!-- 환자리스트 -->
+			<div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>환자번호</th>
+							<th>환자이름</th>
+							<th>생년월일</th>
+							<th>성별</th>
+							<th>환자Tel</th>
+							<th>진료내역</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td><button class="btn btn-outline-warning">진료내역</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
 </body>

@@ -7,92 +7,131 @@
   <head>
     <meta charset="UTF-8" />
     <title>비대면 진료페이지</title>
-    <style>
-      .container {
-        display: flex;
-        justify-content: space-around;
-        flex-wrap: wrap;
-      }
-
-      .item {
-        width: 300px;
-        border: solid 1px;
-        height: 300px;
-        margin-bottom: 20px;
-      }
-
-      .record {
-        width: 150px;
-        height: 200px;
-        border: solid 1px;
-      }
-
-      table {
-        border-collapse: collapse;
-        width: 100%;
-      }
-
-      th,
-      td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
-      }
-
-      th {
-        background-color: #f2f2f2;
-      }
-
-      textarea {
-        width: 100%;
-        height: 100px;
-      }
-
-      .prescription input[type="text"] {
-        width: 100px;
-      }
-
-      #container2 {
-        margin: 0 auto;
-        text-align: center;
-        display: flex; /* 가로 정렬을 위해 Flexbox 사용 */
-        justify-content: space-between; /* 요소들 사이에 공간을 균등하게 배분 */
-      }
-
-      #container2 div {
-        width: 30%; /* 요소 너비 설정 */
-      }
-    </style>
+    <style></style>
   </head>
+
   <body>
     <section layout:fragment="content">
-      <h2 style="text-align: center; margin-top: 20px; margin-bottom: 20px">
+      <h2
+        style="
+          background-color: #06bbcc;
+          margin: 10px;
+          padding: 10px;
+          text-align: center;
+          color: white;
+        "
+      >
         비대면 진료중
       </h2>
 
-      <div id="chatLogs"></div>
+      <!--비디오-->
+      <video id="localVideo" autoplay width="400" height="400"></video>
+      <video id="remoteVideo" autoplay width="400" height="400"></video>
+      <!---->
 
-      <div class="container">
-        <video id="localVideo" autoplay muted></video>
-        <video id="remoteVideo" autoplay></video>
+      <!--기본정보-->
+      <table>
+        <tr>
+          <th>이름</th>
+          <th>성별</th>
+          <th>생년월일</th>
+          <th>증상</th>
+        </tr>
 
-        <div style="text-align: center">
+        <tr>
+          <td th:text="${pInfo.userName}"></td>
+          <td th:text="${pInfo.gender}"></td>
+          <td th:text="${#dates.format(pInfo.birthday, 'yyyy-MM-dd')}"></td>
+          <td th:text="${pInfo.symptom}"></td>
+        </tr>
+      </table>
+      <!---->
+
+      <!--진료기록 초진-->
+      <th:block th:if="${#lists.size(clist)<1}">
+        <div>초진입니다</div>
+      </th:block>
+      <!---->
+
+      <!--진료기록-->
+      <th:block th:if="${#lists.size(clist)>0}">
+        <div>
+          <p>환자진료이력</p>
           <table>
             <tr>
-              <th>이름</th>
-              <th>성별</th>
-              <th>생년월일</th>
+              <th>no</th>
+              <th>진료일자</th>
               <th>증상</th>
+              <th>기타특이사항</th>
+              <th>처방전</th>
             </tr>
-            <tr>
-              <td th:text="${pInfo.userName}"></td>
-              <td th:text="${pInfo.gender}"></td>
-              <td th:text="${#dates.format(pInfo.birthday, 'yyyy-MM-dd')}"></td>
-              <td th:text="${pInfo.symptom}"></td>
+
+            <tr th:each="c : ${clist}">
+              <td th:text="${c.clinicNo}"></td>
+              <td th:text="${#dates.format(c.clinicDate, 'yyyy-MM-dd')}"></td>
+              <td th:text="${c.clinicSymptom}"></td>
+              <td th:text="${c.specificity}"></td>
+              <td>
+                <button
+                  id="viewper"
+                  th:onclick="viewPer([[${c.clinicNo}]])"
+                  type="button"
+                  class="btn btn-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#exampleModalCenter"
+                >
+                  처방전보기
+                </button>
+              </td>
             </tr>
           </table>
         </div>
-      </div>
+      </th:block>
+      <!---->
+
+      <!--진료form-->
+      <form action="SaveClinic" method="post">
+        <div>
+          <label>
+            증상
+            <input type="text" name="clinicSymptom" />
+          </label>
+          <br />
+          <label>
+            특이사항
+            <input type="text" name="specificity" />
+          </label>
+          <br />
+          <input type="radio" name="pay" />급여
+          <br />
+          <input type="radio" name="pay" />비급여
+        </div>
+
+        <div>
+          <input type="checkbox" />처방전 없음
+          <input type="text" placeholder="약 이름 입력" />
+          <button class="btn btn-primary" onclick="searchMedicine()">
+            검색
+          </button>
+          <div id="msearch"></div>
+        </div>
+
+        <br />
+
+        <table>
+          <tr>
+            <th>약품명</th>
+            <th>투약량</th>
+            <th>횟수</th>
+            <th>일수</th>
+          </tr>
+        </table>
+
+        <div>
+          <button class="btn btn-primary" type="submit">진료기록저장</button>
+        </div>
+      </form>
+      <!---->
 
       <!-- modal -->
       <div
@@ -107,8 +146,8 @@
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLongTitle">
-				처방전 상세보기
-             
+                처방전 상세보기
+              </h5>
             </div>
             <div class="modal-body">
               <table id="modalTable">
@@ -133,92 +172,12 @@
           </div>
         </div>
       </div>
-
-      <!-- modal -->
-
-      <div id="container2" style="margin: 10%">
-        <th:block th:if="${#lists.size(clist)<1}">
-          <div>초진입니다</div>
-        </th:block>
-
-        <th:block th:if="${#lists.size(clist)>0}">
-          <div>
-            <p>환자진료이력</p>
-            <table>
-              <tr>
-                <th>no</th>
-                <th>진료일자</th>
-                <th>증상</th>
-                <th>기타특이사항</th>
-                <th>처방전</th>
-              </tr>
-
-              <tr th:each="c : ${clist}">
-                <td th:text="${c.clinicNo}"></td>
-                <td th:text="${#dates.format(c.clinicDate, 'yyyy-MM-dd')}"></td>
-                <td th:text="${c.clinicSymptom}"></td>
-                <td th:text="${c.specificity}"></td>
-                <td>
-                  <button
-                    id="viewper"
-                    th:onclick="viewPer([[${c.clinicNo}]])"
-                    type="button"
-                    class="btn btn-primary"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModalCenter"
-                  >
-                    처방전보기
-                  </button>
-                </td>
-              </tr>
-            </table>
-          </div>
-        </th:block>
-
-        <div>
-          <p>증상</p>
-          <textarea></textarea>
-
-          <p>기타특이사항</p>
-          <textarea></textarea>
-
-          <div>
-            <input type="radio" name="pay" />급여
-            <input type="radio" name="pay" />비급여
-          </div>
-        </div>
-
-
-
-        <div class="prescription">
-          <p>약처방</p>
-		  <input type="text" id="medicineName" placeholder="약 이름 입력">
-		  <button onclick="searchMedicine()">검색</button>
-		  <div id="searchResults"></div>
-
-          <table>
-            <tr>
-              <th>약품명</th>
-              <th>투약량</th>
-              <th>횟수</th>
-              <th>일수</th>
-            </tr>
-            <tr>
-              <td>타이레놀</td>
-              <td><input type="text" /></td>
-              <td><input type="text" /></td>
-              <td><input type="text" /></td>
-            </tr>
-          </table>
-
-		  
-          <button style="margin-top: 50px" type="submit">진료기록저장</button>
-        </div>
-      </div>
+      <!-- -->
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
       <script src="/js/socket.js"></script>
+
       <script>
         function viewPer(no) {
           console.log(no);

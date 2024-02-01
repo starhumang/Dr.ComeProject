@@ -45,7 +45,7 @@
 		,dose_day
 		from
 		perscription p join medicine d
-		on (p.medicine_code = d.medicine_code)
+		on (p.medicine_no = d.medicine_no)
 		where clinic_no =#{clinicNo}
 	</select>
 

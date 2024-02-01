@@ -17,5 +17,5 @@ public interface HospitalService {
 	public List<Map<String, Object>> getPaientList(String hospitalId);
 	
 	//환자 상세 진료내역 조회
-	public List<Map<String, Object>> getPaientDetailList(String hospitalId);
+	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo);
 }

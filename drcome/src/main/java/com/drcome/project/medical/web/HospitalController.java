@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.medical.service.DoctorVO;
@@ -52,13 +53,17 @@ public class HospitalController {
 		model.addAttribute("palist", palist);
 		return "hospital/patientList";
 	}
-	
+	//@RequestParam("userId") Long firstPageId
 	//병원 환자별 상세내역
 	@GetMapping("/hospital/patientList/patientDetail")
-	public String detailPatient(String hospitalId, Model model) {
+	public String detailPatient(String hospitalId, Integer patientNo, Model model) {
 		hospitalId = "krrlo";
-		List<Map<String, Object>> detailPList = hospitalService.getPaientDetailList(hospitalId);
+		System.out.println("Received patientNo: " + patientNo);
+		
+		List<Map<String, Object>> detailPList = hospitalService.getPaientDetailList(hospitalId, patientNo);
+		model.addAttribute("patientNo", patientNo);
 		model.addAttribute("detailPList", detailPList);
+		System.out.println(detailPList);
 		return "hospital/patientDetail";
 	}
 }

@@ -37,10 +37,11 @@ public class HospitalServiceImpl implements HospitalService{
 		List<Map<String, Object>> listPa = hospitalMapper.selectPatientList(hospitalId);
 		return listPa;
 	}
-
+	
+	//환자 상세 조회
 	@Override
-	public List<Map<String, Object>> getPaientDetailList(String hospitalId) {
-		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId);
+	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo) {
+		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
 		return listPaDe;
 	}
 	

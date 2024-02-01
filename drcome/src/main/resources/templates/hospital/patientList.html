@@ -69,7 +69,7 @@
 							<th>생년월일</th>
 							<th>성별</th>
 							<th>환자Tel</th>
-							<th>진료내역</th>
+							<th>진료 및 예약</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -79,15 +79,12 @@
 							<td th:text="${#dates.format(pl.userBirthday, 'yyyy-MM-dd')}"></td>
 							<td th:text="${pl.gender}"></td>
 							<td th:text="${pl.userPhone}"></td>
-							<td><button class="btn btn-sm btn-outline-warning">진료내역</button></td>
+							<td><a th:href="@{/hospital/patientList/patientDetail(patientNo=${pl.patientNo})}" class="btn btn-sm btn-outline-warning">상세보기</a></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
 	</div>
-	<script th:inline="javascript">
-		
-	</script>
 </body>
 </html>

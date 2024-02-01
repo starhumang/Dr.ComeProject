@@ -14,5 +14,5 @@ public interface HospitalMapper {
 	public List<Map<String, Object>> selectPatientList(String hospitalId);
 	
 	//환자 진료 상세 조회
-	public List<Map<String, Object>> selectPatientDetailList(String hospitalId);
+	public List<Map<String, Object>> selectPatientDetailList(String hospitalId, Integer patientNo);
 }

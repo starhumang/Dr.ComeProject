@@ -47,4 +47,7 @@ public class HospitalController {
 	public String searchPatient() {
 		return "hospital/patientList";
 	}
+	
+	
+	
 }

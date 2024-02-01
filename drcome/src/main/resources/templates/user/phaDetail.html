@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
+
+<head>
+<meta charset="UTF-8" />
+<title>약국 상세페이지</title>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.left {
+	display: flex;
+	flex-direction: column;
+	padding-right: 50px;
+}
+.right{
+	width: 60%;
+	
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<h1 style="text-align:center; margin-bottom:50px; margin-top:50px; color:gray;">- Detail Info -</h1>
+		<div class="container-fluid" style="margin-bottom:150px;">
+		
+			<th:block th:each="pha : ${phaInfo}">
+				<!-- 약국정보 -->
+				<div class="container" style="margin-bottom:50px;">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3"
+							style="display: flex; justify-content: space-between; align-items: center;">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-prescription-bottle-alt"></i>약국정보
+							</h5>
+						</div>
+						
+						<div class="card-body"
+							style="display: flex; justify-content: center; align-items: center;">
+							<div class="left">
+								<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  --> 
+								<img th:src="@{/images/} + ${pha.pharmacyImg}" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
+							</div>
+							<div class="right" style="text-align:center;">
+								<h3 th:text="| [  ${pha.pharmacyName} ] |" class="font-weight-bold text-secondary" style="margin-bottom:30px; margin-top:20px;"></h3>
+								<table class="table" style="text-align:center;">
+									<tr>
+										<th style="text-align:left;padding-left:30px; width:200px;" >- 대표자이름</th>
+										<td th:text="${pha.ceoName}"></td>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;">- 전화번호</th>
+										<td th:text="${pha.pharmacyPhone}"></td>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;">- 팩스번호</th>
+										<td th:text="${pha.pharmacyFax}"></td>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;">- 휴무일</th>
+										<td th:text="${pha.holiday}"></td>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;">- 운영시간</th>
+										<td th:text="|${pha.opentime} ~ ${pha.closetime}|"></td>
+									</tr>
+								</table>
+	
+							</div>
+						</div>
+	
+					</div>
+				</div>
+				
+				<!-- 약국위치 -->
+				<div class="container" style="margin-bottom:50px;">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3"
+							style="display: flex; align-items: center;">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-search-location"></i>약국위치 :
+							</h5>
+							<h5 class="m-0 font-weight-bold text-secondary me" th:text="${pha.address}"> </h5>
+						</div>
+						<div class="card-body"
+							style="display: flex; justify-content: center; align-items: center;">
+							
+							<div id="map" style="width:100%;height:400px;">
+							<script type="text/javascript">
+							
+								var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+								mapOption = {
+								    center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+								    level: 3 // 지도의 확대 레벨
+								};  
+								
+								//지도를 생성합니다    
+								var map = new kakao.maps.Map(mapContainer, mapOption); 
+								
+								//주소-좌표 변환 객체를 생성합니다
+								var geocoder = new kakao.maps.services.Geocoder();
+								
+								//주소로 좌표를 검색합니다
+								let hospitalAdd = document.querySelector(".me").innerText;
+								console.log(hospitalAdd);
+								geocoder.addressSearch(hospitalAdd, function(result, status) {
+								
+								// 정상적으로 검색이 완료됐으면 
+								 if (status === kakao.maps.services.Status.OK) {
+								
+								    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+								
+								    // 결과값으로 받은 위치를 마커로 표시합니다
+								    var marker = new kakao.maps.Marker({
+								        map: map,
+								        position: coords
+								    });
+								
+								    // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+								    map.setCenter(coords);
+								} 
+								});    
+							</script>
+							
+							</div>   
+							
+						</div>
+					</div>
+				</div>
+			</th:block>
+		</div>
+	</div>
+</body>
+
+</html>

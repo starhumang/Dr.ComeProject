@@ -26,4 +26,14 @@ public class MainServiceImpl implements MainService {
 		return mainMapper.selectPhaList();
 	}
 
+	@Override
+	public List<HospitalVO> searchHosList(String word) {
+		return mainMapper.searchHosList(word);
+	}
+
+	@Override
+	public List<PharmacyVO> searchPhaList(String word) {
+		return mainMapper.searchPhaList(word);
+	}
+
 }

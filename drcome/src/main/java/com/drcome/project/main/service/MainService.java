@@ -15,4 +15,10 @@ public interface MainService {
 	
 	//약국목록
 	public List<PharmacyVO> getPhaList();
+	
+	//병원검색
+	public List<HospitalVO> searchHosList(String word);
+	
+	//약국검색
+	public List<PharmacyVO> searchPhaList(String word);
 }

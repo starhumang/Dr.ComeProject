@@ -57,6 +57,35 @@
 	text-align: center;
 	display: none;
 }
+
+.ss:hover{
+	background-color:#06BBCC;
+}
+
+.ss{
+	color:white;
+	border-color:#FFFFF0; 
+	border-radius:20%; 
+	width:200px;
+}
+.img-button{
+	width:80px;
+	height:80px;
+	no-repeat;
+}
+.subject> tr> th > button:hover{
+	background-color:#B0E0E6;
+}
+.subject> tr> th > button{
+	margin: 10px 25px 10px 25px;
+	border-radius: 30%;
+	border-color:white;
+	
+}
+.subject > tr> td{
+	margin-top:20px;
+}
+
 </style>
 
 </head>
@@ -65,7 +94,7 @@
 
 		<!-- Header Start -->
 		<div class="container-fluid bg-primary py-5 mb-5 page-header"
-			style="height: 400px;">
+			style="height:480px;">
 			<div class="container py-5">
 				<div class="row justify-content-center">
 					<div class="col-lg-10 text-center" style="padding-top: 40px;">
@@ -87,20 +116,149 @@
 								fill="rgb(255,255,255)"
 								style="position: relative; top: -50px; left: 300px;"
 								class="bi bi-search" viewBox="0 0 16 16">
-                          <path
-									d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                     </svg>
+                          		<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                     		</svg>
 						</form>
-
-						<nav aria-label="breadcrumb">
-							<ol class="breadcrumb justify-content-center">
-							</ol>
-						</nav>
+						<button class="ss btn" 
+						data-bs-toggle="modal"
+						data-bs-target="#exampleModal">
+							진료과목으로 찾기
+						</button>
 					</div>
 				</div>
 			</div>
 		</div>
-
+		
+		<!-- Modal -->
+			<div class="modal" tabindex="-1" id="exampleModal">
+				<div class="modal-dialog">
+					<div class="modal-content" style="text-align:center;"><!--  width:700px; height:700px; -->
+						<!-- <div class="modal-header" style="text-align:center;">
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div> -->
+						<div class="modal-body" style="padding:30px 30px 30px 30px;" >
+						<h2 style="margin-bottom:20px;">진료과목을 선택해주세요</h2>
+						<hr>
+						<table>
+							<tbody class="subject">
+								<tr>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 002.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 003.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 004.png"/>
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>가정의학과</td>
+									<td>내과</td>
+									<td>비뇨기과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 005.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 006.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 007.png"/>
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>산부인과</td>
+									<td>성형외과</td>
+									<td>소아과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 008.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 009.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 010.png"/>
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>신경외과</td>
+									<td>안과</td>
+									<td>외과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 011.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 012.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 013.png"/>
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>이비인후과</td>
+									<td>응급의학과</td>
+									<td>정신건강의학과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 014.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 015.png"/>
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button" onclick="alert('클릭!')" >
+										  <img class="img-button" th:src="@{/images/} + 016.png"/>
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>정형외과</td>
+									<td>치과</td>
+									<td>피부과</td>
+								<tr>
+							</tbody>
+						</table>
+						
+							
+						</div>
+					</div>
+				</div>
+			</div>
 
 		<!-- Team Start -->
 		<div class="container-xxl py-5" style="padding-top: 10px;">
@@ -121,7 +279,10 @@
 				</div>
 				<div class="row g-4 here">
 					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6 hospitalItem"
-						style="width: 280px; height: 380px;">
+						style="width: 280px; height: 380px;"
+						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
+						<!-- 바로 위는 타임리프로 링크 보내버리는법 -->
+						
 						<!-- <p th:text="${hos.phone}"></p>
                   <p th:text="${hos.hospitalId}"></p>
                   <p th:text="${hos.hospitalName}"></p>
@@ -131,7 +292,9 @@
 						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 							<div class="team-item bg-light">
 								<div class="overflow-hidden">
-									<img th:src="@{/images/} + ${hos.hospitalImg}" alt="image"
+									<img th:if="${hos.hospitalImg}" th:src="@{/images/} + ${hos.hospitalImg}" alt="image"
+										style="width: 100%; height: 200px;" class="img-fluid" />
+									<img th:unless="${hos.hospitalImg}" th:src="@{/images/} + hospital.png" alt="image"
 										style="width: 100%; height: 200px;" class="img-fluid" />
 								</div>
 							</div>
@@ -172,17 +335,15 @@
 			</div>
 			<div class="row g-4 here2">
 				<div th:each="pha: ${phaList}" class="col-lg-3 col-md-6 pharmacyItem"
-					style="width: 280px; height: 380px;">
-					<!-- <p th:text="${pha.phone}"></p>
-                  <p th:text="${pha.hospitalId}"></p>
-                  <p th:text="${pha.hospitalName}"></p>
-                  <p th:text="${pha.hospitalImg}"></p>
-                  <p th:text="${pha.closetime}"></p>
-                  <p th:text="${pha.address}"></p> -->
+					style="width: 280px; height: 380px;"
+					th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|">
+					
 					<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 						<div class="team-item bg-light">
 							<div class="overflow-hidden">
-								<img th:src="@{/images/} + ${pha.pharmacyImg}" alt="image"
+								<img th:if="${pha.pharmacyImg}" th:src="@{/images/} + ${pha.pharmacyImg}" alt="image"
+									style="width: 100%; height: 200px;" class="img-fluid" />
+								<img th:unless="${pha.pharmacyImg}" th:src="@{/images/} + pharmacy.png" alt="image"
 									style="width: 100%; height: 200px;" class="img-fluid" />
 							</div>
 						</div>

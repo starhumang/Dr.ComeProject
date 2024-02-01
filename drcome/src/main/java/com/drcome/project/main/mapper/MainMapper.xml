@@ -11,6 +11,7 @@
 	             HOSPITAL_NAME,
 	             HOSPITAL_IMG,
 	             ADDRESS,
+	             OPENTIME,
 	             CLOSETIME,
 	             HOLIDAY
 			FROM HOSPITAL
@@ -27,5 +28,35 @@
 		            HOLIDAY
 			FROM PHARMACY
 		</select> <!-- WHERE PHARMACY_STATUS = 'b2' -->
+		
+		<!-- 병원이름검색하기 -->
+		<select id="searchHosList" resultType="HospitalVO">
+		SELECT HOSPITAL_NAME,
+			   PHONE,
+			   OPENTIME,
+	           CLOSETIME,
+	           ADDRESS,
+		FROM HOSPITAL
+		WHERE HOSPITAL_NAME LIKE '%' ||#{word}||'%' 	   
+		</select>
+		
+		<!-- 약국이름검색하기 -->
+		<select id="searchHosList" resultType="HospitalVO">
+		SELECT PHARMACY_NAME,
+			   PHARMACY_PHONE,
+			   OPENTIME,
+	           CLOSETIME,
+	           ADDRESS,
+		FROM PHARMACY
+		WHERE PHARMACY_NAME LIKE '%' ||#{word}||'%' 	   
+		</select>
+		
+		
+		
+		
+		
+		
+		
+		
 		
     </mapper>

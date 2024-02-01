@@ -43,6 +43,8 @@ public class HospitalController {
 	}
 	
 	//병원 환자 전체 조회
-	
-	
+	@GetMapping("/hospital/patientList")
+	public String searchPatient() {
+		return "hospital/patientList";
+	}
 }

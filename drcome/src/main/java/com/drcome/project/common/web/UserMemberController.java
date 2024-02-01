@@ -7,7 +7,6 @@ import java.util.List;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,12 +21,6 @@ import com.drcome.project.common.service.UserMemberVO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
-import net.nurigo.sdk.NurigoApp;
-import net.nurigo.sdk.message.model.Message;
-import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
-import net.nurigo.sdk.message.response.SingleMessageSentResponse;
-import net.nurigo.sdk.message.service.DefaultMessageService;
-
 @Controller
 public class UserMemberController {
 
@@ -39,38 +32,9 @@ public class UserMemberController {
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
-	
-	//COOLSMS
-    @Value("${coolsms.apiKey}")
-    private String coolSmsApiKey;
-
-    @Value("${coolsms.apiSecret}")
-    private String coolSmsApiSecret;
-    
-    @Value("${coolsms.fromNumber}")
-    private String coolSmsFromNumber;
     
 	@Autowired
 	private DetailCodeService detailCodeService;
-	
-	final DefaultMessageService messageService;
-	
-    public UserMemberController() {
-        this.messageService = NurigoApp.INSTANCE.initialize(coolSmsApiKey, coolSmsApiSecret, "https://api.coolsms.co.kr");
-    }
-    
-    @PostMapping("/send-one")
-    public SingleMessageSentResponse sendOne() {
-        Message message = new Message();
-        message.setFrom(coolSmsFromNumber);
-        message.setTo("수신번호 입력");
-        message.setText("한글 45자, 영자 90자 이하 입력되면 자동으로 SMS타입의 메시지가 추가됩니다.");
-
-        SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));
-        System.out.println(response);
-
-        return response;
-    }
 
 	@GetMapping(value = { "/admin/", "/admin/home"})
 	public String adminHome() {

@@ -42,6 +42,21 @@
 	text-align: center;
 	display: none;
 }
+
+.closeBlock2 {
+	position: relative;
+	background-color: #22313f;
+	margin-right: 10px;
+	margin-left: 10px;
+	padding-top: 10px;
+	left: 0px;
+	top: -350px;
+	width: 250px;
+	height: 350px;
+	opacity: 0.6;
+	text-align: center;
+	display: none;
+}
 </style>
 
 </head>
@@ -155,8 +170,8 @@
 				</div>
 
 			</div>
-			<div class="row g-4">
-				<div th:each="pha: ${phaList}" class="col-lg-3 col-md-6"
+			<div class="row g-4 here2">
+				<div th:each="pha: ${phaList}" class="col-lg-3 col-md-6 pharmacyItem"
 					style="width: 280px; height: 380px;">
 					<!-- <p th:text="${pha.phone}"></p>
                   <p th:text="${pha.hospitalId}"></p>
@@ -176,7 +191,7 @@
 							<h5 class="mb-0" th:text="${pha.pharmacyName}"></h5>
 							<small th:text="${pha.pharmacyPhone}"></small> <br /> 
 							<small th:text="${pha.address}" 
-									style="color: red; font-weight: bold;" class="address2"></small>
+									style="color: red; font-weight: bold;" class="phAddress"></small>
 							<p th:text="${pha.closetime}" style="display: none;"
 								class="closeTime2">
 							<p th:text="${pha.holiday}" style="display: none;"
@@ -279,16 +294,26 @@
          //현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
          //5. 병원주소를 좌표로 바꿈
          async function restart(){
+        	 var geocoder = new kakao.maps.services.Geocoder();
+        	 
+        	 //병원
         	 let address = document.querySelectorAll('.address');
         	 console.log("address=",address);
-
         	 if(!address){
         		 console.log("강제종료");
         		 return;
         	 }
-        	 
         	 let hospitalList = [];
-             var geocoder = new kakao.maps.services.Geocoder();
+             
+             
+             //약국
+        	 let phAddress = document.querySelectorAll('.phAddress');
+        	 console.log("phAddress=",phAddress);
+        	 if(!phAddress){
+        		 console.log("강제종료");
+        		 return;
+        	 }
+        	 let pharmacyList = [];
              
          	 function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
          		console.log("item= ",item);
@@ -296,7 +321,7 @@
          			 geocoder.addressSearch(item.innerHTML, (result, status)=>{ //item.innerHTML= 주소 그 자체
          				if (status === kakao.maps.services.Status.OK) {
          					console.log("카카오맵에서 찾았음")
-                            //병원 좌표
+                            //병원&약국 좌표
                             let hosLat = result[0].address.y;
                             let hosLon = result[0].address.x;
                             console.log('병원Lat = ',result[0].address.y);
@@ -312,11 +337,20 @@
                             let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
                             console.log("총 거리 =", dist);
                             item.innerText = dist + 'km';
-                            hospitalList.push({
-                            	'index' : index,
-                            	'dist' : dist,
-                            	'parent_node' : item.closest('.hospitalItem') //저 클래스가 있는 item의 상위요소
-                            });
+                            
+                            if((item.closest('.hospitalItem')) != null){
+	                            hospitalList.push({
+	                            	'index' : index,
+	                            	'dist' : dist,
+	                            	'parent_node' : item.closest('.hospitalItem') //저 클래스가 있는 item의 상위요소
+	                            });
+                            }else if((item.closest('.pharmacyItem')) != null){
+	                            pharmacyList.push({
+	                            	'index' : index,
+	                            	'dist' : dist,
+	                            	'parent_node' : item.closest('.pharmacyItem') //저 클래스가 있는 item의 상위요소
+	                            });
+                            }
                             resolve(); //여기까지 도달하면 성공했다는 뜻
                             
          			 	}else{
@@ -326,6 +360,7 @@
          		 	});
          	 	});       
              }  
+         	 //병원
          	 //address(태그자체)로 만든 배열을 새로운 배열로 바꿀건데,
          	 //그 새로운 배열map은 promiseFn함수에 address배열에 있는 
          	 //item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
@@ -347,7 +382,16 @@
 	         hospitalList.forEach(({parent_node}) =>{
 	        	 hospitalListBox.append(parent_node);
 	         })
-	         	 
+	         
+	         //약국
+	         const promises2 = Array.from(phAddress).map((item, index)=> promiseFn(item, index));
+	         await Promise.all(promises2);
+	         pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+	         const pharmacyListBox = document.querySelector('.here2');	 
+	         pharmacyList.forEach(({parent_node}) =>{
+	        	 pharmacyListBox.append(parent_node);
+	         })
+	         
          }; //restart함수 끝
             
             
@@ -387,7 +431,7 @@
            restart();
            
            
-           //영업시간 끝나면 스타일 바꾸는 함수
+           //영업시간 끝나면 스타일 바꾸는 함수(오픈시간은 생략)
            function changeStyle(){
         	  //병원 영업끝나는 시간과 휴무요일
               let closeTime = document.querySelectorAll(".closeTime");
@@ -475,7 +519,7 @@
 	              //console.log("closeHour2=", closeHour2);
 	              //console.log("closeMinute2=", closeMinute2);
 	          
-	              if (closeHour2 < curHour || (closeHour2 === curHour && closeMinut2e < curMinute)) {
+	              if (closeHour2 < curHour || (closeHour2 === curHour && closeMinute2 < curMinute)) {
 	                  // 병원의 영업 종료 시간이 현재 시간보다 이전이면
 	                  closeBlocks2[i].style.display = "block"; // 또는 다른 스타일을 적용
 	                  console.log('가가');

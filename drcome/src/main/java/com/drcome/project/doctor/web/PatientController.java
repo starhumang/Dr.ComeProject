@@ -6,15 +6,30 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.doctor.service.PatientService;
 import com.drcome.project.doctor.service.PatientVO;
+import com.drcome.project.medical.service.HospitalService;
 
 
 @Controller
 public class PatientController {
+	
+	@Autowired
+//	HospitalRepository repo;
+	HospitalService hospitalService;
+	
+	//공통 병원 정보 따로 빼기
+	@ModelAttribute("hospitalSel")
+	public Hospital getServerTime() {
+		String hospitalId = "krrlo";
+	    Hospital hosSel = hospitalService.findByhospitalId(hospitalId);
+	    return hosSel;
+	}	
 
 	@Autowired
 	PatientService patientService;

@@ -25,6 +25,13 @@
 				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
 				myModal.show();
 			}
+
+			function showForm(formId) {
+				document.getElementById('hospitalFormContainer').style.display =
+					formId == 'hospital' ? 'block' : 'none';
+				document.getElementById('pharmacyFormContainer').style.display =
+					formId == 'pharmacy' ? 'block' : 'none';
+			}
 		</script>
 	</head>
 
@@ -40,201 +47,405 @@
 							<div class="form-items">
 								<br />
 								<h3>의료기관 회원가입</h3>
-								<p>병원</p>
-								<p>약국</p>
-								<form th:action="@{/medicaljoin}" method="post">
-									<br />
-									<div class="col-md-12">
-										아이디
-										<input
-											class="form-control"
-											type="text"
-											name="hospitalId"
-											id="hid"
-											placeholder="아이디를 입력하세요"
-											required
-										/>
-										<input
-											type="button"
-											id="hidcheck"
-											class="btn btn-warning"
-											value="아이디 중복확인"
-										/>
-									</div>
+								<p><a href="#" onclick="showForm('hospital')">병원 회원가입</a></p>
+								<p><a href="#" onclick="showForm('pharmacy')">약국 회원가입</a></p>
 
-									<br />
-									<div class="col-md-12">
-										비밀번호
-										<input
-											class="form-control"
-											type="password"
-											name="hospitalPw"
-											id="hpw"
-											placeholder="비밀번호를 입력하세요"
-											required
-										/>
-									</div>
+								<div id="hospitalFormContainer">
+									<form th:action="@{/medicaljoin}" id="hospital" method="post">
+										<br />
+										<div class="col-md-12">
+											아이디
+											<input
+												class="form-control"
+												type="text"
+												name="hospitalId"
+												id="hid"
+												placeholder="아이디를 입력하세요"
+												required
+											/>
+											<input
+												type="button"
+												id="hidcheck"
+												class="btn btn-warning"
+												value="아이디 중복확인"
+											/>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										비밀번호 확인
-										<input
-											class="form-control"
-											type="password"
-											id="hpwcheck"
-											placeholder="비밀번호를 다시 입력하세요"
-											required
-										/>
-									</div>
+										<br />
+										<div class="col-md-12">
+											비밀번호
+											<input
+												class="form-control"
+												type="password"
+												name="hospitalPw"
+												id="hpw"
+												placeholder="비밀번호를 입력하세요"
+												required
+											/>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										병원 이름
-										<input
-											class="form-control"
-											type="text"
-											name="hospitalName"
-											id="hname"
-											placeholder="이름을 입력하세요"
-											required
-										/>
-									</div>
+										<br />
+										<div class="col-md-12">
+											비밀번호 확인
+											<input
+												class="form-control"
+												type="password"
+												id="hpwcheck"
+												placeholder="비밀번호를 다시 입력하세요"
+												required
+											/>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										병원주소
-										<input class="form-control" type="text" name="address" id="hadd" required />
-										<input type="button" id="haddcheck" class="btn btn-warning" value="주소검색" />
-									</div>
+										<br />
+										<div class="col-md-12">
+											병원 이름
+											<input
+												class="form-control"
+												type="text"
+												name="hospitalName"
+												id="hname"
+												placeholder="이름을 입력하세요"
+												required
+											/>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										전화번호
-										<input
-											class="form-control"
-											type="tel"
-											name="phone"
-											id="hphone"
-											placeholder="전화번호를 입력하세요"
-											required
-										/>
-									</div>
+										<br />
+										<div class="col-md-12">
+											병원주소
+											<input class="form-control" type="text" name="address" id="hadd" required />
+											<input
+												type="button"
+												id="haddcheck"
+												class="btn btn-warning"
+												value="주소검색"
+											/>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										대표 사진
-										<input class="form-control" type="file" name="hospitalImg" id="himg" />
-									</div>
+										<br />
+										<div class="col-md-12">
+											전화번호
+											<input
+												class="form-control"
+												type="tel"
+												name="phone"
+												id="hphone"
+												placeholder="전화번호를 입력하세요"
+												required
+											/>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										대표 진료 과목
-										<select class="form-control" name="mainSubject" id="hsub">
-											<option selected>선택하세요</option>
-											<th:block th:each="detailCode : ${detailCodes}">
-												<th:block
-													th:if="${detailCode.mainCode == 'OH' and detailCode.detailCode.startsWith('h')}"
-												>
-													<option
-														th:value="${detailCode.detailCode}"
-														th:text="${detailCode.codeName}"
-													></option>
+										<br />
+										<div class="col-md-12">
+											대표 사진
+											<input class="form-control" type="file" name="hospitalImg" id="himg" />
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											대표 진료 과목
+											<select class="form-control" name="mainSubject" id="hsub">
+												<option selected>선택하세요</option>
+												<th:block th:each="detailCode : ${detailCodes}">
+													<th:block
+														th:if="${detailCode.mainCode == 'OH' and detailCode.detailCode.startsWith('h')}"
+													>
+														<option
+															th:value="${detailCode.detailCode}"
+															th:text="${detailCode.codeName}"
+														></option>
+													</th:block>
 												</th:block>
-											</th:block>
-										</select>
-									</div>
+											</select>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										휴무일
-										<select class="form-control" name="holiday" id="hsub">
-											<option selected>선택하세요</option>
-											<option>1</option>
-											<option>2</option>
-											<option>3</option>
-											<option>4</option>
-										</select>
-									</div>
+										<br />
+										<div class="col-md-12">
+											휴무일
+											<select class="form-control" name="holiday" id="hsub">
+												<option selected>선택하세요</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+											</select>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										오픈시간
-										<select class="form-control" name="opentime" id="hsub">
-											<option selected>선택하세요</option>
-											<option>1</option>
-											<option>2</option>
-											<option>3</option>
-											<option>4</option>
-										</select>
-									</div>
+										<br />
+										<div class="col-md-12">
+											오픈시간
+											<select class="form-control" name="opentime" id="hsub">
+												<option selected>선택하세요</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+											</select>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										마감시간
-										<select class="form-control" name="closetime" id="hsub">
-											<option selected>선택하세요</option>
-											<option>1</option>
-											<option>2</option>
-											<option>3</option>
-											<option>4</option>
-										</select>
-									</div>
+										<br />
+										<div class="col-md-12">
+											마감시간
+											<select class="form-control" name="closetime" id="hsub">
+												<option selected>선택하세요</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+											</select>
+										</div>
 
-									<hr />
+										<hr />
 
-									<div class="col-md-12">
-										병원장 이름
-										<input
-											class="form-control"
-											type="text"
-											name="directorName"
-											id="hceoname"
-											placeholder="이름을 입력하세요"
-											required
-										/>
-									</div>
+										<div class="col-md-12">
+											병원장 이름
+											<input
+												class="form-control"
+												type="text"
+												name="directorName"
+												id="hceoname"
+												placeholder="이름을 입력하세요"
+												required
+											/>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										병원장 전화번호
-										<input
-											class="form-control"
-											type="tel"
-											name="directorPhone"
-											id="hceophone"
-											placeholder="전화번호를 입력하세요"
-											required
-										/>
-									</div>
+										<br />
+										<div class="col-md-12">
+											병원장 전화번호
+											<input
+												class="form-control"
+												type="tel"
+												name="directorPhone"
+												id="hceophone"
+												placeholder="전화번호를 입력하세요"
+												required
+											/>
+										</div>
 
-									<br />
-									<div class="col-md-12">
-										사업자등록번호
-										<input
-											class="form-control"
-											type="text"
-											name="directorLicense"
-											id="hceolicense"
-											placeholder="사업자등록번호를 입력하세요"
-											required
-										/>
-										<input
-											type="button"
-											id="hlicensecheck"
-											class="btn btn-warning"
-											value="사업자등록번호확인"
-										/>
-									</div>
+										<br />
+										<div class="col-md-12">
+											사업자등록번호
+											<input
+												class="form-control"
+												type="text"
+												name="directorLicense"
+												id="hceolicense"
+												placeholder="사업자등록번호를 입력하세요"
+												required
+											/>
+											<input
+												type="button"
+												id="hlicensecheck"
+												class="btn btn-warning"
+												value="사업자등록번호확인"
+											/>
+										</div>
 
-									<br />
-									<div class="form-check">
-										<label class="form-check-label" onclick="openModal()"> [전문보기]</label> 동의
-										<input class="form-check-input" type="checkbox" id="invalidCheck" required />
-									</div>
+										<br />
+										<div class="form-check">
+											<label class="form-check-label" onclick="openModal()"> [전문보기]</label>
+											동의
+											<input
+												class="form-check-input"
+												type="checkbox"
+												id="invalidCheck"
+												required
+											/>
+										</div>
 
-									<br />
-									<input type="submit" value="회원가입" class="btn btn-danger" />
-								</form>
+										<br />
+										<input type="submit" value="회원가입" class="btn btn-danger" />
+									</form>
+								</div>
+
+								<div id="pharmacyFormContainer" style="display: none">
+									<form th:action="@{/medicaljoin}" id="pharmacy" method="post">
+										<br />
+										<div class="col-md-12">
+											아이디
+											<input
+												class="form-control"
+												type="text"
+												name="pharmacyId"
+												id="pid"
+												placeholder="아이디를 입력하세요"
+												required
+											/>
+											<input
+												type="button"
+												id="pidcheck"
+												class="btn btn-warning"
+												value="아이디 중복확인"
+											/>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											비밀번호
+											<input
+												class="form-control"
+												type="password"
+												name="pharmacyPw"
+												id="ppw"
+												placeholder="비밀번호를 입력하세요"
+												required
+											/>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											비밀번호 확인
+											<input
+												class="form-control"
+												type="password"
+												id="ppwcheck"
+												placeholder="비밀번호를 다시 입력하세요"
+												required
+											/>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											약국 이름
+											<input
+												class="form-control"
+												type="text"
+												name="pharmacyName"
+												id="pname"
+												placeholder="이름을 입력하세요"
+												required
+											/>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											약국 주소
+											<input class="form-control" type="text" name="address" id="hadd" required />
+											<input
+												type="button"
+												id="haddcheck"
+												class="btn btn-warning"
+												value="주소검색"
+											/>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											전화번호
+											<input
+												class="form-control"
+												type="tel"
+												name="pharmacyPhone"
+												id="pphone"
+												placeholder="전화번호를 입력하세요"
+												required
+											/>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											팩스번호
+											<input
+												class="form-control"
+												type="tel"
+												name="pharmacyFax"
+												id="pfax"
+												placeholder="팩스번호를 입력하세요"
+												required
+											/>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											대표 사진
+											<input class="form-control" type="file" name="pharmacyImg" id="pimg" />
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											오픈시간
+											<select class="form-control" name="opentime" id="hsub">
+												<option selected>선택하세요</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+											</select>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											마감시간
+											<select class="form-control" name="closetime" id="hsub">
+												<option selected>선택하세요</option>
+												<option>1</option>
+												<option>2</option>
+												<option>3</option>
+												<option>4</option>
+											</select>
+										</div>
+
+										<hr />
+
+										<div class="col-md-12">
+											대표자 이름
+											<input
+												class="form-control"
+												type="text"
+												name="ceoName"
+												id="pceoname"
+												placeholder="이름을 입력하세요"
+												required
+											/>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											대표자 전화번호
+											<input
+												class="form-control"
+												type="tel"
+												name="ceoPhone"
+												id="pceophone"
+												placeholder="전화번호를 입력하세요"
+												required
+											/>
+										</div>
+
+										<br />
+										<div class="col-md-12">
+											사업자등록번호
+											<input
+												class="form-control"
+												type="text"
+												name="ceoLicense"
+												id="pceolicense"
+												placeholder="사업자등록번호를 입력하세요"
+												required
+											/>
+											<input
+												type="button"
+												id="plicensecheck"
+												class="btn btn-warning"
+												value="사업자등록번호확인"
+											/>
+										</div>
+
+										<br />
+										<div class="form-check">
+											<label class="form-check-label" onclick="openModal()"> [전문보기]</label>
+											동의
+											<input
+												class="form-check-input"
+												type="checkbox"
+												id="invalidCheck"
+												required
+											/>
+										</div>
+
+										<br />
+										<input type="submit" value="회원가입" class="btn btn-danger" />
+									</form>
+								</div>
 							</div>
 						</div>
 					</div>

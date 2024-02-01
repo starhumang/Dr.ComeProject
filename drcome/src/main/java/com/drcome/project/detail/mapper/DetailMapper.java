@@ -1,6 +1,6 @@
 package com.drcome.project.detail.mapper;
 
-import com.drcome.project.medical.HospitalVO;
+import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
 public interface DetailMapper {

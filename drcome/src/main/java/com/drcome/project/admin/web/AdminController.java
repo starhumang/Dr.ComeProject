@@ -3,11 +3,13 @@ package com.drcome.project.admin.web;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.admin.domain.Hospital;
@@ -15,14 +17,10 @@ import com.drcome.project.admin.domain.Pharmacy;
 import com.drcome.project.admin.domain.Usertable;
 import com.drcome.project.admin.repository.HospitalListRepository;
 import com.drcome.project.admin.repository.PharmacyRepository;
-import com.drcome.project.admin.repository.UsertableRepository;
 import com.drcome.project.admin.service.AdminService;
 
 @Controller
 public class AdminController {
-
-	@Autowired
-	UsertableRepository urepo;
 	
 	@Autowired
 	HospitalListRepository hrepo;
@@ -41,16 +39,16 @@ public class AdminController {
 	/* 일반 사용자 */
 	@GetMapping("/admin/user")
 	//@ResponseBody //restController일 땐 안 써도 됨
-	public String user(Model model) {
-		Iterable<Usertable> userlist = urepo.findAll();
+	public String user(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+		Page<Usertable> userlist = aservice.getuserAll(pageNo, 5);
 		model.addAttribute("list", userlist);
 		return "admin/adminUser";
 	}
 	
 	/* 병원 사용자 */
 	@GetMapping("/admin/hospital")
-	public String hospital(Model model) {
-		Iterable<Hospital> hospitallist = hrepo.findAll();
+	public String hospital(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+		Page<Hospital> hospitallist = aservice.findByhospitalStatus(pageNo, 5);
 		model.addAttribute("list", hospitallist);
 		return "admin/adminHospital";
 	}
@@ -73,8 +71,8 @@ public class AdminController {
 	
 	/* 약국 사용자 */
 	@GetMapping("/admin/pharmacy")
-	public String pharmacy(Model model) {
-		Iterable<Pharmacy> pharmacylist = prepo.findAll();
+	public String pharmacy(@RequestParam(required = false, defaultValue = "0") int pageNo,Model model) {
+		Page<Pharmacy> pharmacylist = aservice.findBypharmacyStatus(pageNo, 5);
 		model.addAttribute("list", pharmacylist);
 		return "admin/adminPharmacy";
 	}
@@ -95,5 +93,4 @@ public class AdminController {
 		System.out.println(count);
 		return "admin/adminPharmacyGrant";
 	}
-	
 }

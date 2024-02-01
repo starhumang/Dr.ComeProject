@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{pharmacy/pharmacyLayout}">
+
 <head>
 <meta charset="UTF-8">
 <title>Pharmacy Status</title>
@@ -9,6 +10,7 @@
 #btn {
 	margin-bottom: 20px;
 }
+
 .head_info {
 	display: flex;
 	justify-content: space-between;
@@ -16,14 +18,15 @@
 }
 </style>
 </head>
+
 <body>
 	<div layout:fragment="content">
 		<div class="container-fluid">
 			<div class="head_info">
 				<h4>처방현황</h4>
 				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : 
-					<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
 
@@ -32,46 +35,91 @@
 				<div class="card-header py-3"
 					style="display: flex; justify-content: space-between; align-items: center;">
 					<h5 class="m-0 font-weight-bold text-secondary">
-						<i class="fas fa-fw fa-capsules"></i> 
+						<i class="fas fa-fw fa-capsules"></i>
 					</h5>
 				</div>
 				<div class="card-body"
 					style="display: flex; justify-content: center; align-items: center;">
-		<!--/* 			<div class="left">
-						<img th:src="@{/img/} + ${pinfo.pharmacyImg}" alt="image"
-							width="300px" style="margin-right: 50px;" />
-					</div> */-->
-					<div class="right">
-						<table class="table">
-							<tr>
-								<th>환자성명</th>
-								<th>생년월일</th>
-								<th>환자Tel</th>
-								<th>병원명</th>
-								<th>병원Tel</th>
-								<th>담당의</th>
-								<th>처방일자</th>
-								<th>처방전</th>
-								<th>출력</th>
-								<th>반환</th>
-							</tr>
-							<tr th:each="plist : ${plist}">
-								<td th:text="${plist.userName}"></td>
-								<td th:text="${plist.userBirthday}"></td>
-								<td th:text="${plist.userPhone}"></td>
-								<td th:text="${plist.hospitalName}"></td>
-								<td th:text="${plist.hospitalPhone}"></td>
-								<td th:text="${plist.doctorName}"></td>
-								<td th:text="${#dates.format(plist.perscriptionDate, 'yyyy-MM-dd')}"></td>
-								<td>이미지</td>
-								<td><button>출력하기</button></td>
-								<td><button>반환</button></td>
-							</tr>
-						</table>
+					<table class="table">
+						<tr>
+							<th>No</th>
+							<th>환자성명</th>
+							<th>생년월일</th>
+							<th>환자Tel</th>
+							<th>병원명</th>
+							<th>병원Tel</th>
+							<th>담당의</th>
+							<th>처방일자</th>
+							<th>처방전</th>
+							<th>출력</th>
+							<th>반환</th>
+						</tr>
+						<tr th:each="plist, pstart : ${plist}">
+							<td th:text="${pstart.count}"></td>
+							<td th:text="${plist.userName}"></td>
+							<td th:text="${#dates.format(plist.userBirthday, 'yyyy-MM-dd')}"></td>
+							<td th:text="${plist.userPhone}"></td>
+							<td th:text="${plist.hospitalName}"></td>
+							<td th:text="${plist.hospitalPhone}"></td>
+							<td th:text="${plist.doctorName}"></td>
+							<td
+								th:text="${#dates.format(plist.perscriptionDate, 'yyyy-MM-dd')}"></td>
+							<td>이미지</td>
+							<td><button>출력하기</button></td>
+							<td><button id="returnbtn" data-bs-toggle="modal"
+									data-bs-target="#returnModal">반환</button></td>
+						</tr>
+					</table>
+				</div>
+			</div>
+		</div>
+		<!-- modal -->
+		<div class="modal fade" id="returnModal" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">반환 사유</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body container">
+						<form>
+							<div class="form-check">
+							  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault1">
+							  <label class="form-check-label" for="flexRadioDefault1">
+							    약 재고가 부족하여 조제가 취소되었습니다.
+							  </label>
+							</div>
+							<div class="form-check">
+							  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault2" checked>
+							  <label class="form-check-label" for="flexRadioDefault2">
+							    약국 사정상 조제가 어려워 취소되었습니다.
+							  </label>
+							</div>
+							<div class="form-check">
+							  <input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault3" checked>
+							  <label class="form-check-label" for="flexRadioDefault2">
+							    약국 영업 시간이 아닙니다.
+							  </label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio" name="flexRadioDefault" id="flexRadioDefault4" checked>
+								<label for="message-text" class="col-form-label">기타</label>
+								<div>
+									<textarea class="form-control" id="message-text"></textarea>
+								</div>
+							</div>
+						</form>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">닫기</button>
+						<button type="button" class="btn btn-primary">반환</button>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 	</div>
 </body>
 </html>

@@ -12,7 +12,7 @@ public interface PharmacyService {
 	public PharmacyVO selectPharmacyInfo(PharmacyVO pharmacyVO);
 	
 	/* 약국별 처방 현황 */
-	public List<Map<String, Object>> selectPrescriptionList();
+	public List<Map<String, Object>> selectPrescriptionList(String pharmacyId);
 	
 	/* 약 주성분 검색 */
 	public List<MedicineVO> findMedicine(String keyword);

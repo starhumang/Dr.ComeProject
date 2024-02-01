@@ -23,8 +23,8 @@ public class PharmacyServiceImpl implements PharmacyService{
 	}
 
 	@Override
-	public List<Map<String, Object>> selectPrescriptionList() {
-		List<Map<String, Object>> listmap = mapper.selectPrescriptionList();
+	public List<Map<String, Object>> selectPrescriptionList(String pharmacyId) {
+		List<Map<String, Object>> listmap = mapper.selectPrescriptionList(pharmacyId);
 		return listmap;
 	}
 

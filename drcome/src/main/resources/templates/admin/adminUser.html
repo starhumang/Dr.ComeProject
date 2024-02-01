@@ -35,7 +35,7 @@
 									<td th:text="${usertable.userId}"></td>
 									<td th:text="${usertable.userName}"></td>
 									<td th:text="${usertable.phone}"></td>
-									<td th:text="${usertable.birthday}"></td>
+									<td th:text="${#dates.format(usertable.birthday, 'yyyy-MM-dd')}"></td>
 									<td th:text="${usertable.gender}"></td>
 									<!-- <td >==[[${usertable.userStatus}]]==</td> -->
 									<td
@@ -51,6 +51,62 @@
 				</div>
 			</div>
 		</div>
+		<!-- 페이징 컴포넌트 -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li th:class="${list.first ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{/admin/user(pageNo=0)}" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, list.totalPages - 1)}" th:class="${i == list.number ? 'page-item active' : 'page-item'}">
+                    <a class="page-link" th:href="@{/admin/user(pageNo=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li th:class="${list.last ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{/admin/user(pageNo=${list.totalPages - 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
+        <!-- 모달창 -->
+        <!-- <div class="modal-dialog modal-dialog-centered" id="exampleModal" tabindex="-1" aria-hidden="true">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		        모달모달
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary">Save changes</button>
+		      </div>
+		    </div>
+		  </div>
+		</div> -->
+		
+		<div class="modal-dialog modal-dialog-centered" tabindex="-1" id="exampleModal">
+		  <div class="modal-dialog">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title">Modal title</h5>
+		        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+		      </div>
+		      <div class="modal-body">
+		        <p>Modal body text goes here.</p>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+		        <button type="button" class="btn btn-primary">Save changes</button>
+		      </div>
+		    </div>
+		  </div>
+		</div>
 	</div>
 </body>
 </html>
+<script th:inline="javascript">
+	$(document).ready(function() {
+	    // 페이지가 열릴 때 모달 창을 띄우는 코드
+	    $('#exampleModal').modal('show');
+	});
+</script>

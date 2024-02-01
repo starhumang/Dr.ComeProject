@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import com.drcome.project.pharmacy.PharmacyVO;
 import com.drcome.project.pharmacy.service.PharmacyService;
@@ -34,19 +35,19 @@ public class PharmacyController {
 	}
 	
 	@GetMapping("/pharmacy/status")
-	public String pharmacyList(Model model) {
-		List<Map<String, Object>> plist = pservice.selectPrescriptionList();
-		System.out.println(plist);
+	public String pharmacyList(String pharmacyId, Model model) {
+		pharmacyId = "pharmacy1";
+		List<Map<String, Object>> plist = pservice.selectPrescriptionList(pharmacyId);
 		model.addAttribute("plist", plist);
 		return "pharmacy/perscriptionStatus";
-		
 	}
 	
-	@GetMapping("/pharmacy/medicine")
-	public String findMedicine(String keyword, Model model) {
-		return "pharmacy/pharmacySearch";
-		
-	}
+//	/*
+//	 * @GetMapping("/pharmacy/medicine") public String findMedicine(String keyword,
+//	 * Model model) { return "pharmacy/pharmacySearch";
+//	 * 
+//	 * }
+//	 */
 	
 	@ModelAttribute("pharmacy")
 	public PharmacyVO getServer() {

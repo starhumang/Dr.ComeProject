@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<div class="registered-customers" style="margin: 0px auto; width: 300px">
+				<h3 class="blog-section-title border-left mb-30" id="pageTtl">사용자 로그인</h3>
+				<form th:action="@{/userlogin}" method="post">
+					<div class="login-account p-30 box-shadow">
+						<p>아이디</p>
+						<input type="text" name="username" />
+						<p>비밀번호</p>
+						<input type="password" name="password" />
+						<div class="row">
+							<div class="col-sm-8">
+								<p>
+									<small><a href="#">아이디찾기</a></small>
+								</p>
+							</div>
+							<div class="col-sm-4">
+								<p>
+									<small><a href="#">비밀번호찾기</a></small>
+								</p>
+							</div>
+						</div>
+						<div class="mb-10"><input type="checkbox" name="remember-me" /> 로그인 상태 유지</div>
+						<div class="mb-40" style="text-align: center">
+							<button class="submit-btn-1 btn-hover-1" type="submit">로그인</button>
+							<button class="submit-btn-1 btn-hover-1" type="button" onclick="joinForm()">
+								회원가입
+							</button>
+						</div>
+					</div>
+				</form>
+			</div>
+			<script type="text/javascript">
+				function joinForm() {
+					location.href = '/userjoin';
+				}
+			</script>
+		</div>
+	</body>
+</html>

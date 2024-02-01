@@ -1,6 +1,7 @@
 package com.drcome.project.medical.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,6 +29,19 @@ public class HospitalServiceImpl implements HospitalService{
 	@Override
 	public List<DoctorVO> getDoctorAll(String hospitalId) {
 		return hospitalMapper.selectDrList(hospitalId);
+	}
+
+	//환자 조회
+	@Override
+	public List<Map<String, Object>> getPaientList(String hospitalId) {
+		List<Map<String, Object>> listPa = hospitalMapper.selectPatientList(hospitalId);
+		return listPa;
+	}
+
+	@Override
+	public List<Map<String, Object>> getPaientDetailList(String hospitalId) {
+		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId);
+		return listPaDe;
 	}
 	
 	

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}">
+
+<head>
+<meta charset="UTF-8">
+<title>patientList</title>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.info-box {
+	display: flex;
+	justify-content: center;
+}
+
+#p-info {
+	text-align: center;
+	margin-bottom: 30px;
+	background-color: #DEE0E3;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info">
+				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+			<p>Patient Detail</p>
+
+			<!-- 환자 정보 -->
+				<div class="card shadow h-100 py-2" id="p-info">
+					<div class="card-body">
+						<h5 class="m-0 font-weight-bold text-secondary">
+							<i class="fas fa-fw fa-user"></i> &emsp;
+							[[${detailPList[0].userName}]] &emsp; | &emsp;
+							[[${#dates.format(detailPList[0].userBirthday, 'yyyy-MM-dd')}]]
+							&emsp; | &emsp; [[${detailPList[0].userPhone}]] &emsp; | &emsp;
+							[[${detailPList[0].gender}]]
+						</h5>
+					</div>
+				</div>
+			<!-- 환자리스트 -->
+			<div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>1</th>
+							<th>2</th>
+							<th>3</th>
+							<th>4</th>
+							<th>5</th>
+							<th>6</th>
+							<th>7</th>
+							<th>8</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="pdl : ${detailPList}">
+							<td th:text="${pdl.clinicNo}"></td>
+
+							<td th:if="${ pdl.payYn == 'Y' }">급여</td>
+							<td th:unless="${ pdl.payYn == 'Y' }">비급여</td>
+							<td th:text="${#dates.format(pdl.clinicDate, 'yyyy-MM-dd')}"></td>
+							<td th:text="${pdl.clinicSymptom}"></td>
+							<td th:text="${pdl.specificity}"></td>
+							<td th:text="${pdl.perscriptionYn}"></td>
+							<td th:text="${pdl.reserveStatus}"></td>
+							<td><button class="btn btn-sm btn-outline-warning">진료내역</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

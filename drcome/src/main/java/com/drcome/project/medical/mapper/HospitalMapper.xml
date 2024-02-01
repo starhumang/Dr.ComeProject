@@ -21,6 +21,7 @@
 			holiday,
 			doctor_license
 		FROM DOCTOR
+		WHERE hospital_id = #{hospitalId}
 	</select>
 
 	<select id="selectDrTimeList" resultType="DoctorTimeVO">
@@ -39,5 +40,48 @@
 		ORDER BY doctor_no, days
 	</select>
 
-
+	<!-- 환자 리스트 -->
+	<select id="selectPatientList" resultType="Map">
+		SELECT a.patient_no "patientNo"
+			, u.user_name "userName"
+			, u.birthday "userBirthday"
+			, u.gender "gender"
+			, u.phone "userPhone"
+		FROM patient a 
+		JOIN usertable u ON a.user_id = u.user_id
+		WHERE a.hospital_id = #{hospitalId}
+		ORDER BY a.patient_no
+	</select>
+	
+	<!-- 환자 상세 -->
+	<select id="selectPatientDetailList" resultType="Map">
+	SELECT c.clinic_no "clinicNo"
+		, c.pay_yn "payYn"
+		, c.clinic_date "clinicDate"
+		, c.clinic_symptom "clinicSymptom"
+		, c.specificity "specificity"
+		, c.perscription_yn "perscriptionYn"
+		, r.reserve_status "reserveStatus"
+		, u.user_name "userName"
+		, u.birthday "userBirthday"
+		, u.gender "gender"
+		, u.phone "userPhone" 
+	FROM clinic c 
+	JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
+	JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
+	JOIN usertable u ON u.user_id = a.user_id
+	WHERE a.hospital_id = #{hospitalId}
+	GROUP BY c.clinic_no 
+		, c.pay_yn
+		, c.clinic_date
+		, c.clinic_symptom
+		, c.specificity
+		, c.perscription_yn
+		, r.reserve_status
+		, u.user_name
+		, u.birthday
+		, u.gender
+		, u.phone
+	ORDER BY c.clinic_no
+	</select>
 </mapper>

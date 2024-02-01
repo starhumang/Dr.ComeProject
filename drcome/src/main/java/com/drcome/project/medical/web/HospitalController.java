@@ -1,6 +1,7 @@
 package com.drcome.project.medical.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -36,6 +37,7 @@ public class HospitalController {
 	//병원 단건조회(id로) + 병원-의사 조회
 	@GetMapping("/hospital/myProfile")
 	public String findHospital(String hospitalId, Model model) {
+		hospitalId = "krrlo";
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId);
 		System.out.println(docList);
 		model.addAttribute("docList", docList);
@@ -44,7 +46,19 @@ public class HospitalController {
 	
 	//병원 환자 전체 조회
 	@GetMapping("/hospital/patientList")
-	public String searchPatient() {
+	public String searchPatient(String hospitalId, Model model) {
+		hospitalId = "krrlo";
+		List<Map<String, Object>> palist = hospitalService.getPaientList(hospitalId);
+		model.addAttribute("palist", palist);
 		return "hospital/patientList";
+	}
+	
+	//병원 환자별 상세내역
+	@GetMapping("/hospital/patientList/patientDetail")
+	public String detailPatient(String hospitalId, Model model) {
+		hospitalId = "krrlo";
+		List<Map<String, Object>> detailPList = hospitalService.getPaientDetailList(hospitalId);
+		model.addAttribute("detailPList", detailPList);
+		return "hospital/patientDetail";
 	}
 }

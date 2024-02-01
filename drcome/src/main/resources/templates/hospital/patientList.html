@@ -34,18 +34,12 @@
 			<p>patient list</p>
 			<div class="search">
 				<!-- drop -->
-				<div>
-					<div class="dropdown mb-4">
-						<button class="btn btn-light dropdown-toggle" type="button"
-							id="dropdownMenuButton" data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="false">검색유형</button>
-						<div class="dropdown-menu animated--fade-in"
-							aria-labelledby="dropdownMenuButton" style="">
-							<a class="dropdown-item" href="#">Action</a> <a
-								class="dropdown-item" href="#">Another action</a> <a
-								class="dropdown-item" href="#">Something else here</a>
-						</div>
-					</div>
+				<div style="margin-right: 5px;">
+					<select class="custom-select" aria-label="Default select example">
+						<option selected>검색유형</option>
+						<option value="1">환자번호</option>
+						<option value="2">환자이름</option>
+					</select>
 				</div>
 
 				<!-- 검색 -->
@@ -64,7 +58,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<!-- 환자리스트 -->
 			<div>
 				<table class="table">
@@ -79,18 +73,21 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td><button class="btn btn-outline-warning">진료내역</button></td>
+						<tr th:each="pl : ${palist}">
+							<td th:text="${pl.patientNo}"></td>
+							<td th:text="${pl.userName}"></td>
+							<td th:text="${#dates.format(pl.userBirthday, 'yyyy-MM-dd')}"></td>
+							<td th:text="${pl.gender}"></td>
+							<td th:text="${pl.userPhone}"></td>
+							<td><button class="btn btn-sm btn-outline-warning">진료내역</button></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
 	</div>
+	<script th:inline="javascript">
+		
+	</script>
 </body>
 </html>

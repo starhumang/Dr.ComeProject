@@ -1,23 +1,225 @@
 <!DOCTYPE html>
-<html
-	xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{hospital/hospitalLayout}"
->
-	<head>
-		<meta charset="UTF-8" />
-		<title>Insert title here</title>
-	</head>
-	<body>
-		<div layout:fragment="content">
-			<p>hospital Admin Home Dashboard</p>
-			
-			<table class="table">
-				<thead>
-				</thead>
-				<tbody>
-				</tbody>
-			</table>
+	layout:decorate="~{hospital/hospitalLayout}">
+<head>
+<meta charset="UTF-8" />
+<title>dashboard</title>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.qnaTitle {
+	margin-bottom: 20px;
+}
+
+</style>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<!-- 날짜 및 병원 정보 헤더 -->
+			<div class="head_info">
+				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+			<p>Dashboard</p>
+
+			<!-- 카드카드 -->
+			<div class="row">
+
+				<!-- Earnings (Monthly) Card Example -->
+				<div class="col-xl-3 col-md-6 mb-4">
+					<div class="card border-left-primary shadow h-100 py-2">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div
+										class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+										reservation(Monthly)</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800">82</div>
+								</div>
+								<div class="col-auto">
+									<i class="fas fa-calendar fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Earnings (Annual) Card Example -->
+				<div class="col-xl-3 col-md-6 mb-4">
+					<div class="card border-left-success shadow h-100 py-2">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div
+										class="text-xs font-weight-bold text-success text-uppercase mb-1">
+										Earnings(Monthly)</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800">&#8361
+										875,000</div>
+								</div>
+								<div class="col-auto">
+									<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Tasks Card Example -->
+				<div class="col-xl-3 col-md-6 mb-4">
+					<div class="card border-left-info shadow h-100 py-2">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div
+										class="text-xs font-weight-bold text-info text-uppercase mb-1">Rate(n-f)
+									</div>
+									<div class="row no-gutters align-items-center">
+										<div class="col-auto">
+											<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">62%</div>
+										</div>
+										<div class="col">
+											<div class="progress progress-sm mr-2">
+												<div class="progress-bar bg-info" role="progressbar"
+													style="width: 62%" aria-valuenow="62" aria-valuemin="0"
+													aria-valuemax="100"></div>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-auto">
+									<i class="fas fa-clipboard-list fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Pending Requests Card Example -->
+				<div class="col-xl-3 col-md-6 mb-4">
+					<div class="card border-left-warning shadow h-100 py-2">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div
+										class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+										Review</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+								</div>
+								<div class="col-auto">
+									<i class="fas fa-comments fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 진료예약현황 -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3"
+					style="display: flex; justify-content: space-between; align-items: center;">
+					<h5 class="m-0 font-weight-bold text-secondary">진료예약현황</h5>
+					<div class="btn1">
+						<button class="btn btn-sm btn-dark shadow-sm">더보기</button>
+					</div>
+				</div>
+				<div class="card-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>진료코드</th>
+								<th>환자이름</th>
+								<th>생년월일</th>
+								<th>환자Tel</th>
+								<th>성별</th>
+								<th>예약시간</th>
+								<th>담당의</th>
+								<th>구분</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td>111111</td>
+								<td>김길동</td>
+								<td>1995-01-01</td>
+								<td>010-1111-2222</td>
+								<td>남</td>
+								<td>15:00</td>
+								<td>라의사</td>
+								<td>비대면</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- Q&A -->
+			<div class="card shadow mb-4">
+				<div class="card-header py-3"
+					style="display: flex; justify-content: space-between; align-items: center;">
+					<h5 class="m-0 font-weight-bold text-secondary">Q&A</h5>
+				</div>
+				<div class="card-body"
+					style="display: flex; justify-content: space-around;">
+					<div class="left">
+						<div class="qnaTitle">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-question-circle"></i>Q&A 답변대기
+							</h5>
+						</div>
+						<table class="table table-hover">
+							<tbody>
+								<tr>
+									<td>111111</td>
+									<td>김길동</td>
+									<td>1995-01-01</td>
+									<td>010-1111-2222</td>
+									<td>남</td>
+									<td>15:00</td>
+									<td>라의사</td>
+									<td>비대면</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="right">
+						<div class="qnaTitle">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-exclamation-circle"></i>Q&A 답변완료
+							</h5>
+						</div>
+						<table class="table table-hover">
+							<tbody>
+								<tr>
+									<td>111111</td>
+									<td>김길동</td>
+									<td>1995-01-01</td>
+									<td>010-1111-2222</td>
+									<td>남</td>
+									<td>15:00</td>
+									<td>라의사</td>
+									<td>비대면</td>
+								</tr>
+							</tbody>
+						</table>
+
+
+
+					</div>
+
+				</div>
+			</div>
 		</div>
-	</body>
+
+	</div>
+</body>
 </html>

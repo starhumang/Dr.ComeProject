@@ -30,7 +30,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		UserDetailVO userDetailVO = (UserDetailVO) auth.getPrincipal();
 
 		HttpSession session = request.getSession();
-		session.setAttribute("userId", userDetailVO.getUserId()); // 아이디
+		session.setAttribute("userId", userDetailVO.getUsername()); // 아이디
 		session.setAttribute("userGrade", userDetailVO.getGrade()); // 권한
 		session.setAttribute("userName", userDetailVO.getUserName()); // 이름
 
@@ -38,6 +38,12 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		String page = null;
 		if (userDetailVO.getGrade().equals("ROLE_ADMIN")) {
 			page = "/admin/home";
+			response.sendRedirect(page);
+		} else if (userDetailVO.getGrade().equals("ROLE_HOSPITAL")) {
+			page = "/hospital";
+			response.sendRedirect(page);
+		} else if (userDetailVO.getGrade().equals("ROLE_PHARMACY")) {
+			page = "/pharmacy";
 			response.sendRedirect(page);
 		} else {
 			page = "/";

@@ -1,8 +1,9 @@
 package com.drcome.project.admin.service.impl;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.drcome.project.admin.domain.Hospital;
@@ -26,8 +27,9 @@ public class AdminServiceImpl implements AdminService {
 	PharmacyRepository prepo;
 	
 	@Override
-	public List<Usertable> getuserAll() {
-		return urepo.findAll();
+	public Page<Usertable> getuserAll(int pageNo, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		return urepo.findAll(pageable);
 	}
 
 	@Override
@@ -45,7 +47,16 @@ public class AdminServiceImpl implements AdminService {
 		prepo.save(pharmacysearch);
 		return pharmacysearch;
 	}
-	
-	
 
+	@Override
+	public Page<Hospital> findByhospitalStatus(String hospitalStatus, int pageNo, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		return hrepo.findByhospitalStatus(hospitalStatus, pageable);
+	}
+
+	@Override
+	public Page<Pharmacy> findBypharmacyStatus(String phamacyStatus, int pageNo, int pageSize) {
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		return prepo.findBypharmacyStatus(phamacyStatus, pageable);
+	}
 }

@@ -34,12 +34,12 @@ public class UserSecurityConfig {
 		return new BCryptPasswordEncoder();
 	}
 	
+
 	@Bean
-	public SecurityFilterChain userFilterChain(HttpSecurity http) throws Exception {
+	
+	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
-		// CSRF 설정
-        http.csrf().disable();
-        
+		http.csrf().disable();
 		http.authorizeHttpRequests((requests) -> requests
 				.antMatchers("/**").permitAll()
 				//.antMatchers("/", "/home", "/userjoin").permitAll() // 나중에 이걸로 바꿔야함

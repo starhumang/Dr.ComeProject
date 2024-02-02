@@ -37,16 +37,20 @@ public class PatientController {
 	//비대면진료페이지
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
-		//기본정보
+		
+		//기본정보  //reserve no 받아오기 
+		vo.setReserveNo(1);
 		PatientVO findVO = patientService.getPatientInfo(vo);
+		System.out.println(findVO);
 		model.addAttribute("pInfo" , findVO);
 		
-		//진료기록리스트
-		List <PatientVO> clinicList = patientService.getClinicList();
+		
+		//진료기록리스트 //hid uid 받아오기....하
+		List <PatientVO> clinicList = patientService.getClinicList("krrlo" , "user1");
 		model.addAttribute("clist" , clinicList);
 		System.out.println(clinicList);
-		
 		return "doctor/untactClinic";
+		
 		
 		
 	}
@@ -59,7 +63,6 @@ public class PatientController {
 		System.out.println(findVO);
 		return "doctor/clinic";
 		
-		
 	}
 	
 	//처방전 조회 
@@ -71,6 +74,16 @@ public class PatientController {
 		return patientService.getPerscription(vo);
 	}
 	
+	
+
+	//약검색
+	@GetMapping("medicine")
+	@ResponseBody
+	public List<PatientVO> msearch(PatientVO vo){
+		System.out.println(vo);
+		return patientService.getmnameList(vo);
+		
+	}
 	
 	
 	

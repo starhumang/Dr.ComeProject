@@ -5,6 +5,9 @@
 <head>
 <meta charset="UTF-8">
 <title>UserList</title>
+<style>
+
+</style>
 </head>
 <body>
 	<div layout:fragment="content">
@@ -35,7 +38,7 @@
 									<td th:text="${usertable.userId}"></td>
 									<td th:text="${usertable.userName}"></td>
 									<td th:text="${usertable.phone}"></td>
-									<td th:text="${usertable.birthday}"></td>
+									<td th:text="${#dates.format(usertable.birthday, 'yyyy-MM-dd')}"></td>
 									<td th:text="${usertable.gender}"></td>
 									<!-- <td >==[[${usertable.userStatus}]]==</td> -->
 									<td
@@ -51,6 +54,20 @@
 				</div>
 			</div>
 		</div>
+		<!-- 페이징 컴포넌트 -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li th:class="${list.first ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{/admin/user(pageNo=0)}" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, list.totalPages - 1)}" th:class="${i == list.number ? 'page-item active' : 'page-item'}">
+                    <a class="page-link" th:href="@{/admin/user(pageNo=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li th:class="${list.last ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{/admin/user(pageNo=${list.totalPages - 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
 	</div>
 </body>
 </html>

@@ -1,19 +1,12 @@
 package com.drcome.project.admin.repository;
 
-import java.util.List;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.drcome.project.admin.domain.Hospital;
 
 public interface HospitalListRepository extends JpaRepository<Hospital, String>{
-
-	public List<Hospital> findByhospitalStatus(String hospitalStatus);
-	
-//	@Modifying
-//	@Query("UPDATE hospital SET hospitalStatus == 'b2  ' WHERE hospitalId = :id")
-//	void hospitalStatusUpdate(@Param("id")String hospitalId);
-	
-	
+	public Page<Hospital> findByhospitalStatus(String hstatus, Pageable pageable);
 }
 

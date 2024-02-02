@@ -27,6 +27,9 @@ public class PatientVO {
 	private int dosage;
 	private int doseCnt;
 	private int doseDay;
+	
+	//약검색
+	private int medicineNo;
 
 
 }

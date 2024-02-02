@@ -25,5 +25,30 @@ public class MainServiceImpl implements MainService {
 	public List<PharmacyVO> getPhaList() {
 		return mainMapper.selectPhaList();
 	}
+	
+	@Override
+	public HospitalVO getHos(String hospitalId) {
+		return mainMapper.selectHos(hospitalId);
+	}
+
+	@Override
+	public PharmacyVO getPha(String pharmacyId) {
+		return mainMapper.selectPha(pharmacyId);
+	}
+
+	@Override
+	public List<HospitalVO> searchHosList(String word) {
+		return mainMapper.searchHosList(word);
+	}
+
+	@Override
+	public List<PharmacyVO> searchPhaList(String word) {
+		return mainMapper.searchPhaList(word);
+	}
+
+	@Override
+	public List<HospitalVO> searchSubjectHos(String mainSubject) {
+		return mainMapper.searchSubjectHos(mainSubject);
+	}
 
 }

@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>Search</title>
+<script type="text/javascript"
+	th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.search {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 40px;
+}
+
+.ho:hover {
+	background-color: #B0E0E6;
+	cursor: pointer;
+}
+
+button {
+	border: none;
+	font-weight: bold;
+	font-size: 18px;
+}
+
+button:hover {
+	color: #06BBCC;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container" style="margin-top: 50px; text-align: center;">
+			<div class="head"
+				style="display: flex; justify-content: center; margin-bottom: 130px;">
+				<div style="width: 600px;">
+					<h2 th:text="|Result : ${mainSubject}|"
+						style="margin-bottom: 20px; color: #363636;"></h2>
+					<hr>
+					<hr>
+					<h5 class="loc" style="color: gray;">현재위치들어가는 곳</h5>
+				</div>
+			</div>
+			<script th:inline="javascript">
+				function nowLocation(){
+					const loc = window.localStorage.getItem("location");
+					console.log(loc);
+					document.querySelector(".loc").innerText='현재 내 위치는 ' + loc + ' 입니다.';
+				}
+				nowLocation();
+			</script>
+
+
+			<!-- 병원리스트 -->
+			<div style="margin-bottom: 200px;">
+				<div style="display: flex; justify-content: right;">
+					<button class="na" onclick="restart()">거리순</button>
+					|
+					<button style="color: #06BBCC;" onclick="changeSort()" class="ga">가나다순</button>
+				</div>
+				<h3 style="color: gray; margin-bottom: 50px;">- 병원목록 -</h3>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>병원명</th>
+							<th>전화번호</th>
+							<th>운영시간</th>
+							<th style="width: 400px;">주소</th>
+							<th class="lo">거리</th>
+						</tr>
+					</thead>
+					<tbody class="here">
+						<th:block th:each="hos : ${subject}">
+							<tr th:if="${#lists.size(subject) > 0}" class="ho hospitalItem"
+								th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
+								<td th:text="${hos.hospitalName}"></td>
+								<td th:text="${hos.phone}"></td>
+								<td th:text="|${hos.opentime} ~ ${hos.closetime}|"></td>
+								<td th:text="${hos.address}"></td>
+								<td style="font-weight: bold;" class="address"
+									th:text="${hos.address}"></td>
+							</tr>
+						</th:block>
+						<tr th:unless="${#lists.size(subject) > 0}">
+							<td colspan="5"
+								style="color: gray; height: 100px; vertical-align: middle;">검색
+								조건에 맞는 병원이 없습니다.</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+
+			<script th:inline="javascript">
+		//현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
+	    //5. 병원주소를 좌표로 바꿈
+	    async function restart(){
+	    	document.querySelector(".na").style.color='#06BBCC';
+	  	  	document.querySelector(".ga").style.color='black';
+		   	 var geocoder = new kakao.maps.services.Geocoder();
+		   	 
+		   	let locs = document.querySelectorAll('.lo');
+	    	  locs.forEach((loc)=>{
+	    		  loc.style.display = "block";
+	    	  });
+		   	 
+		   	 //병원
+		   	 let address = document.querySelectorAll('.address');
+			   	address.forEach((add)=>{
+			   		add.style.display = "block";
+		    	  });
+		   	 console.log("address=",address);
+		   	 if(!address){
+		   		 console.log("강제종료");
+		   		 return;
+		   	 }
+		   	 
+		   	 
+		   	 let hospitalList = [];
+		        
+		    	 function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
+		    		console.log("item= ",item);
+		    		 return new Promise((resolve)=>{
+		    			 geocoder.addressSearch(item.innerHTML, (result, status)=>{ //item.innerHTML= 주소 그 자체
+		    				if (status === kakao.maps.services.Status.OK) {
+		    					console.log("카카오맵에서 찾았음")
+		                       //병원 좌표
+		                       let hosLat = result[0].address.y;
+		                       let hosLon = result[0].address.x;
+		                       console.log('병원Lat = ',result[0].address.y);
+		                       console.log('병원Lon = ',result[0].address.x);
+		                       
+		                     	//현재위치 좌표
+		                       let curLat = window.localStorage.getItem('lat');
+		                       let curLon = window.localStorage.getItem('lon');
+		                       console.log('세션Lat = ',curLat);
+		                       console.log('세션Lon = ',curLon);
+		                       
+		                       //거리계산된 값
+		                       let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
+		                       console.log("총 거리 =", dist);
+		                       item.innerText = dist + 'km';
+		                       
+		                       if((item.closest('.hospitalItem')) != null){
+		                           hospitalList.push({
+		                           	'index' : index,
+		                           	'dist' : dist,
+		                           	'parent_node' : item.closest('.hospitalItem') //저 클래스가 있는 item의 상위요소
+		                           });
+		                       }else if((item.closest('.pharmacyItem')) != null){
+		                           pharmacyList.push({
+		                           	'index' : index,
+		                           	'dist' : dist,
+		                           	'parent_node' : item.closest('.pharmacyItem') //저 클래스가 있는 item의 상위요소
+		                           });
+		                       }
+		                       resolve(); //여기까지 도달하면 성공했다는 뜻
+		                       
+		    			 	}else{
+		    			 		console.log("restart함수실행안됨");
+		    			 		reject()
+		    			 	}         				
+		    		 	});
+		    	 	});       
+		        }  
+		    	 //병원
+		    	 //address(태그자체)로 만든 배열을 새로운 배열로 바꿀건데,
+		    	 //그 새로운 배열map은 promiseFn함수에 address배열에 있는 
+		    	 //item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
+		        const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
+		        console.log("promises=",promises)
+		        await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
+				 
+		        //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
+		        //parseFloat()=문자열을 실수로 변경
+		        hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+		        console.log("hospitalList=", hospitalList);
+		        
+		        //hospitalItem클래스를 가진 div전체(하위요소 포함)
+		        const hospitalListBox = document.querySelector('.here');
+		        
+		        console.log("hospitalListBox=", hospitalListBox); 
+		        
+		        //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된)를 넣어줌
+		        hospitalList.forEach(({parent_node}) =>{
+		       	 hospitalListBox.append(parent_node);
+		        })
+		        
+		    }; //restart함수 끝
+		       
+		       
+		    //6. 본격 좌표로 거리계산 시작
+		      //Math.PI 는 파이값임(3.14...)
+		      //Math.sin()은 라디안으로 주어진 각도의 사인 값인 -1과 1 사이의 수를 반환 | sin = 높이 / 빗변
+		      //Math.cos는 라디안으로 주어진 각도의 코사인 값을 반환합니다 | cos = 밑변 / 빗변
+		      //Math.tan()은 각도의 탄젠트 값을 표현하는 수를 반환 | tan = 높이 / 밑변
+		      //Math.Atan2(Double, Double)는 탄젠트를 적용했을 때 지정된 두 숫자의 몫이 나오는 각도를 반환
+		      //Math.Sqrt()는 double타입의 인수를 전달하면 인수에 대한 double타입의 제곱근 값을 리턴
+		
+		      // 각도를 라디안(1라디안 = 57.3도)으로 변환하는 함수
+		      //라디안 값 = 각도 x (파이 / 180 )
+		      function radian( i ){
+		          return i * (Math.PI / 180)
+		      }
+		
+		      //거리 구하는 함수
+		      function distance(curLat, curLon, hosLat, hosLon){ //현재좌표 - 병원좌표
+		          const earth_r = 6371 // 지구의 반지름(km)
+		          const lat = radian( hosLat - curLat ) //위도끼리 뺀 값
+		          console.log("위도 뺀 값=", lat)
+		          const lon = radian( hosLon - curLon ) // 경도끼리 뺀 값
+		          console.log("경도 뺀 값=", lon)
+		          
+		          const a = Math.sin(lat/2) * Math.sin(lat/2) + //위도
+		          Math.cos(radian(curLat)) * Math.cos(radian(hosLat)) * // cos
+		          Math.sin(lon/2) * Math.sin(lon/2); //경도
+		          console.log("a =", a);
+		
+		          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+		          console.log("c 2개의 각도 =", c);
+		          const distance = earth_r * c // 반지름 x 2개의 각도값
+		
+		          return distance;
+		      }
+		      //restart();
+		      
+		      //가나다순
+		      window.onload = function(){
+		    	  let ga = document.querySelector(".ga");
+		    	  let addresses = document.querySelectorAll('.address');
+		    	  addresses.forEach((address)=>{
+		    		  address.style.display = "none";
+		    	  });
+		    	  
+		    	  let locs = document.querySelectorAll('.lo')
+		    	  locs.forEach((loc)=>{
+		    		  loc.style.display = "none";
+		    	  });
+		    	  
+		    	  ga.style.color='#06BBCC';
+			  	  document.querySelector(".na").style.color='black';
+			  	  
+		    	  function changeSort(){
+				  	  window.location.reload();
+		      	  }
+		    	  ga.onclick = changeSort;
+		    	  
+		      } 
+			  
+		</script>
+		</div>
+	</div>
+
+</body>
+</html>

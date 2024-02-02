@@ -32,6 +32,6 @@ public class Pharmacy {
 	private Date joindate;
 	
 	public void pharmacyStatusUdpate() {
-			this.pharmacyStatus = "b2";
+		this.pharmacyStatus = "b2";
 	}
 }

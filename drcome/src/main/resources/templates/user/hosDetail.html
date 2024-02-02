@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
+
+<head>
+<meta charset="UTF-8" />
+<title>병원 상세페이지</title>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.left {
+	display: flex;
+	flex-direction: column;
+	padding-right: 50px;
+}
+
+.bb{
+	display:inline;
+	width:200px;
+	height:60px;
+	margin:10px 10px 10px 10px;
+}
+.right{
+	width: 60%;
+	
+}
+.butt{
+	display:flex;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<h1 style="text-align:center; margin-bottom:50px; margin-top:50px; color:gray;">- Detail Info -</h1>
+		<div class="container-fluid" style="margin-bottom:150px;">
+		
+			<th:block th:each="hos : ${hosInfo}">
+				<!-- 병원정보 -->
+				<div class="container" style="margin-bottom:50px;">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3"
+							style="display: flex; justify-content: space-between; align-items: center;">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-hospital"></i>병원정보
+							</h5>
+						</div>
+						
+						<div class="card-body"
+							style="display: flex; justify-content: center; align-items: center;">
+							<div class="left">
+								<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  --> 
+								<img th:if="${hos.hospitalImg}" th:src="@{/images/} + ${hos.hospitalImg}" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
+								<img th:unless="${hos.hospitalImg}" th:src="@{/images/} + hospital.png" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
+							</div>
+							<div class="right" style="text-align:center;">
+								<h3 th:text="| [  ${hos.hospitalName} ] |" class="font-weight-bold text-secondary" style="margin-bottom:30px; margin-top:20px;"></h3>
+								<table class="table" style="text-align:center;">
+									<tr >
+										<th style="text-align:left; width:200px; padding-left:30px;" >- 대표진료과목</th>
+										<td th:text="${hos.mainSubject}" ></td>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;" >- 대표자이름</th>
+										<td th:text="${hos.directorName}"></td>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;" >- 전화번호</th>
+										<td th:text="${hos.phone}"></td>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;" >- 휴무일</th>
+										<td th:text="${hos.holiday}"></td>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;" >- 운영시간</th>
+										<td th:text="|${hos.opentime} ~ ${hos.closetime}|"></td>
+									</tr>
+								</table>
+								<div class="butt">
+									<button type="button" class="bb btn btn-primary ">방문예약하기</button>
+									<button type="button" class="bb btn btn-primary ">비대면예약하기</button>
+									<button type="button" class="bb btn btn-primary ">실시간 비대면 진료 <br/>접수하기</button>
+									<button type="button" class="bb btn btn-primary ">문의하기</button>
+								</div>
+							</div>
+						</div>
+	
+					</div>
+				</div>
+				
+				<!-- 병원위치 -->
+				<div class="container" style="margin-bottom:50px;">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3"
+							style="display: flex; align-items: center;">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-search-location"></i>병원위치 :
+							</h5>
+							<h5 class="m-0 font-weight-bold text-secondary me" th:text="${hos.address}"> </h5>
+						</div>
+						<div class="card-body"
+							style="display: flex; justify-content: center; align-items: center;">
+							
+							<div id="map" style="width:100%;height:400px;">
+							<script type="text/javascript">
+							
+								var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+								mapOption = {
+								    center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+								    level: 3 // 지도의 확대 레벨
+								};  
+								
+								//지도를 생성합니다    
+								var map = new kakao.maps.Map(mapContainer, mapOption); 
+								
+								//주소-좌표 변환 객체를 생성합니다
+								var geocoder = new kakao.maps.services.Geocoder();
+								
+								//주소로 좌표를 검색합니다
+								let hospitalAdd = document.querySelector(".me").innerText;
+								console.log(hospitalAdd);
+								geocoder.addressSearch(hospitalAdd, function(result, status) {
+								
+								// 정상적으로 검색이 완료됐으면 
+								 if (status === kakao.maps.services.Status.OK) {
+								
+								    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+								
+								    // 결과값으로 받은 위치를 마커로 표시합니다
+								    var marker = new kakao.maps.Marker({
+								        map: map,
+								        position: coords
+								    });
+								
+								    // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+								    map.setCenter(coords);
+								} 
+								});    
+							</script>
+							
+							</div>   
+							
+						</div>
+					</div>
+				</div>
+			</th:block>
+				<!-- 의사정보 -->
+				<div class="container" style="margin-bottom:50px;">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3"
+							style="display: flex; justify-content: space-between; align-items: center; ">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-user-nurse"></i>의사정보
+							</h5>
+						</div>
+						<div class="card-body" style="text-align:center; ">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>의사이름</th>
+										<th>진료과목</th>
+										<th>휴진일</th>
+										<th>진료일 / 진료시간</th>
+									</tr>
+								</thead>
+								<tbody style="vertical-align:middle;">
+									<th:block th:each="doc : ${docList}">
+										<tr>
+											<td th:text="${doc.doctorName}"></td>
+											<td th:text="${doc.subject}"></td>
+											<td th:text="${doc.holiday}"></td>
+											<td>
+												<div th:each="drTime : ${doc.times}">
+													[[${drTime.day}]]&nbsp&nbsp
+													[[${drTime.minTime}]] : 00 ~ [[${drTime.maxTime}]] : 00
+												</div>
+											</td>
+										</tr>
+									</th:block>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+		</div>
+
+
+	</div>
+</body>
+
+</html>

@@ -8,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.medical.service.DoctorVO;
@@ -17,9 +16,10 @@ import com.drcome.project.medical.service.HospitalService;
 @Controller
 public class HospitalController {
 	@Autowired
-//	HospitalRepository repo;
+	//HospitalRepository repo;
 	HospitalService hospitalService;
 	
+	/* 공통 */
 	//공통 병원 정보 따로 빼기
 	@ModelAttribute("hospitalSel")
 	public Hospital getServerTime() {
@@ -28,13 +28,29 @@ public class HospitalController {
 	    return hosSel;
 	}	
 	
-	//병원 마이페이지 메인-대시보드
+	/* 대시보드 */
+	//today 진료 내역 및 예약 내역 리스트 -- 1
+	//QNA 답변 -- 2
 	@GetMapping(value = {"/hospital", "/hospitalHome"})
-	public String home() {
-		return "/hospital/home";
+	public String home(String hospitalId, Model model) {
+		hospitalId = "krrlo";
+		List<Map<String, Object>> tolist = hospitalService.getTodayReserve(hospitalId);
+		List<Map<String, Object>> QnAO = hospitalService.getQnAO(hospitalId);
+		List<Map<String, Object>> QnAX = hospitalService.getQnAX(hospitalId);
+		model.addAttribute("tolist", tolist);
+		model.addAttribute("QnAO", QnAO);
+		model.addAttribute("QnAX", QnAX);
+		return "hospital/home";
+	}
+	
+	/* 진료및예약 */
+	//메인
+	@GetMapping("/hospital/clinicMain")
+	public String clinicReserve() {
+		return "hospital/clinicMain";
 	}
 
-	//병원 마이프로필
+	/* 병원프로필 */
 	//병원 단건조회(id로) + 병원-의사 조회
 	@GetMapping("/hospital/myProfile")
 	public String findHospital(String hospitalId, Model model) {
@@ -42,9 +58,10 @@ public class HospitalController {
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId);
 		System.out.println(docList);
 		model.addAttribute("docList", docList);
-		return "hospital/myprofile";
+		return "hospital/myProfile";
 	}
 	
+	/* 환자리스트 */
 	//병원 환자 전체 조회
 	@GetMapping("/hospital/patientList")
 	public String searchPatient(String hospitalId, Model model) {

@@ -7,9 +7,21 @@ import com.drcome.project.medical.service.DoctorVO;
 
 public interface HospitalMapper {
 	
+	/* 대시보드 */
+	//진료및예약리스트
+	public List<Map<String, Object>> selectTodayReserve(String hospitalId);
+	
+	//QnA답변O
+	public List<Map<String, Object>> selectQnAO(String hospitalId);
+	
+	//QnA답변X
+	public List<Map<String, Object>> selectQnAX(String hospitalId);
+	
+	/* 병원프로필 */
 	//병원-의사 조회
 	public List<DoctorVO> selectDrList(String hospitalId);
 	
+	/* 환자리스트 */
 	//환자 조회
 	public List<Map<String, Object>> selectPatientList(String hospitalId);
 	

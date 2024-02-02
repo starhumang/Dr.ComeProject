@@ -5,7 +5,62 @@
 
 <mapper namespace="com.drcome.project.medical.mapper.HospitalMapper">
 
+	<!-- Dashboard -->
+	<!-- 오늘 진료 및 예약 리스트 -->
+	<select id="selectTodayReserve" resultType="Map">
+		SELECT c.clinic_no "clinicNo"
+			 , u.birthday "userBirthday"
+			 , u.gender "gender"
+			 , u.phone "userPhone" 
+			 , u.user_name "userName"
+			 , r.reserve_time "reserveTime"
+			 , d.doctor_name "doctorName"
+			 , r.reserve_kindstatus "reserveKindstatus"
+		  FROM clinic c 
+		  JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
+		  JOIN doctor d ON r.doctor_no = d.doctor_no
+		  JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
+		  JOIN usertable u ON u.user_id = a.user_id
+		  WHERE a.hospital_id = #{hospitalId} 
+		  AND reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
+		  GROUP BY c.clinic_no
+				 , u.birthday
+				 , u.gender
+				 , u.phone
+				 , u.user_name
+				 , r.reserve_time
+				 , d.doctor_name
+				 , r.reserve_kindstatus
+		  ORDER BY r.reserve_time, c.clinic_no
+	</select>
+	<!-- QnA 리스트(답변/노답변) -->
+	<!-- 답변O -->
+	<select id="selectQnAO" resultType="Map">
+		<![CDATA[		
+			SELECT user_id "userId",
+				   category_status "categoryStatus",
+				   title "title",
+				   ans_status "ansStatus"
+			  FROM QNA
+			  WHERE hospital_id = #{hospitalId} AND ans_status = 'j2' AND ROWNUM <= 5
+			  ORDER BY wdate
+		]]>
+	</select>
 	
+	<!-- 답변X -->
+	<select id="selectQnAX" resultType="Map">
+		<![CDATA[		
+			SELECT user_id "userId",
+				   category_status "categoryStatus",
+				   title "title",
+				   ans_status "ansStatus"
+			  FROM QNA
+			  WHERE hospital_id = #{hospitalId} AND ans_status = 'j1' AND ROWNUM <= 5
+			  ORDER BY wdate
+		]]>
+	</select>	
+
+	<!-- MyProfile -->
 	<!-- 병원-의사-시간 조회 -->
 	<resultMap id="drResult" type="DoctorVO">
 		<id column="doctor_no" property="doctorNo"/>
@@ -40,6 +95,7 @@
 		ORDER BY doctor_no, days
 	</select>
 
+	<!-- Patient -->
 	<!-- 환자 리스트 -->
 	<select id="selectPatientList" resultType="Map">
 		SELECT a.patient_no "patientNo"

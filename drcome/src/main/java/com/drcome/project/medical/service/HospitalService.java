@@ -7,12 +7,24 @@ import com.drcome.project.admin.domain.Hospital;
 
 public interface HospitalService {
 	
+	/* 대시보드 */
+	//오늘의 진료현황 리스트
+	public List<Map<String, Object>> getTodayReserve(String hospitalId);
+	
+	//QnA답변O
+	public List<Map<String, Object>> getQnAO(String hospitalId);
+	
+	//QnA답변X
+	public List<Map<String, Object>> getQnAX(String hospitalId);
+	
+	/* 병원프로필 */
 	//병원 단건조회(id로)
 	public Hospital findByhospitalId(String hospitalId);
 	
 	//병원-의사 조회
 	public List<DoctorVO> getDoctorAll(String hospitalId);
 	
+	/* 환자리스트 */
 	//환자 조회
 	public List<Map<String, Object>> getPaientList(String hospitalId);
 	

@@ -49,7 +49,7 @@
 					style="display: flex; justify-content: center; align-items: center;">
 					<div class="left">
 						<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  -->
-						<img th:src="@{/img/} + ${hospitalSel.hospitalImg}" alt="image"
+						<img th:src="@{/images/} + ${hospitalSel.hospitalImg}" alt="image"
 							width="200px" />
 						<button class="btn btn-sm btn-secondary shadow-sm" id="modalBtn"
 							data-bs-toggle="modal" data-bs-target="#exampleModal">크게보기</button>
@@ -152,7 +152,7 @@
 								data-bs-dismiss="modal" aria-label="Close">X</button>
 						</div>
 						<div class="modal-body">
-							<img th:src="@{/img/} + ${hospitalSel.hospitalImg}" alt="image"
+							<img th:src="@{/images/} + ${hospitalSel.hospitalImg}" alt="image"
 								width="100%; overflow:hidden;" />
 						</div>
 						<div class="modal-footer">

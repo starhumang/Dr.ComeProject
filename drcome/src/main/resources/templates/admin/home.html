@@ -10,10 +10,40 @@
 	</head>
 	<body>
 		<div layout:fragment="content">
-		<div class="user-logout-link">
-    	<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
-	</div>
-			<p>하이룽</p>
+			<div class="user-logout-link">
+				<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
+			</div>
+			<!-- 모달 -->
+			<div class="modal fade" tabindex="-1" id="toggleMyModal">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title">승인 업무</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<p>병원 사용자 승인 건수 [[${grantlisth.totalPages}]]건</p>
+
+							<p>약국 사용자 승인 건수 [[${grantlistp.totalPages}]]건</p>
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>
+<script th:inline="javascript">
+	var openmodal = sessionStorage.getItem('autosave');
+	if (openmodal != 'y') {
+		var myModal = new bootstrap.Modal(document.getElementById('toggleMyModal'), {
+			keyboard: false,
+		});
+
+		var modalToggle = document.getElementById('toggleMyModal');
+		myModal.show(modalToggle);
+		sessionStorage.setItem('autosave', 'y');
+	}
+</script>

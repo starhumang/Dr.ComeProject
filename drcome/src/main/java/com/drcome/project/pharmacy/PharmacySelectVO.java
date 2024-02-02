@@ -11,4 +11,11 @@ public class PharmacySelectVO {
 	String produceStatus;
 	String rejection;
 	String sendStatus;
+	
+	//처방전 가져오기
+	private String medicineName;
+	private int dosage;
+	private int doseCnt;
+	private int doseDay;
+	private Integer clinicNo;
 }

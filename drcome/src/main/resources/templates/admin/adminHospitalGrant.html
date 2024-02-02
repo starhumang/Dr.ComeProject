@@ -19,8 +19,7 @@
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
-						<th:block th:each="hospital : ${grantlist}"
-							th:if="${hospital.hospitalStatus == 'b1'}">
+						<th:block th:each="hospital : ${grantlisth}" th:if="${grantlisth} != null">
 							<table class="table table-bordered" id="dataTable" width="100%"
 								cellspacing="0">
 								<thead>
@@ -64,16 +63,34 @@
 				</div>
 			</div>
 		</div>
+		<!-- 페이징 컴포넌트 -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+                <li th:class="${grantlisth.first ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{/admin/pharmacy(pageNo=0)}" tabindex="-1" aria-disabled="true">Previous</a>
+                </li>
+                <li th:each="i : ${#numbers.sequence(0, grantlisth.totalPages - 1)}" th:class="${i == grantlisth.number ? 'page-item active' : 'page-item'}">
+                    <a class="page-link" th:href="@{/admin/pharmacy(pageNo=${i})}" th:text="${i + 1}"></a>
+                </li>
+                <li th:class="${grantlisth.last ? 'page-item disabled' : 'page-item'}">
+                    <a class="page-link" th:href="@{/admin/pharmacy(pageNo=${grantlisth.totalPages - 1})}">Next</a>
+                </li>
+            </ul>
+        </nav>
 	</div>
 </body>
 </html>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 <script>
 	function hospitalupdate(hid) {
 		$.ajax("/admin/hospital/grant/"+hid, {
 	          type: "post"
 	        }).done((result) => {
 	            console.log("Insert", result);
-	            alert("병원 승인 처리되었습니다!!!!!");
+	            swal({
+				  icon: "success",
+				  text: "병원 승인 처리 완료"
+				});
 	            location.reload();
 	          })
 	          .fail((err) => console.log(err));

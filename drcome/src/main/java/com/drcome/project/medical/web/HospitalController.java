@@ -71,6 +71,7 @@ public class HospitalController {
 		model.addAttribute("palist", palist);
 		return "hospital/patientList";
 	}
+
 	//@RequestParam("userId") Long firstPageId
 	//병원 환자별 상세내역
 	@GetMapping("/hospital/patientList/patientDetail")

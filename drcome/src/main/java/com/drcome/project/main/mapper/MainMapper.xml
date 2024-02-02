@@ -11,7 +11,9 @@
 	             HOSPITAL_NAME,
 	             HOSPITAL_IMG,
 	             ADDRESS,
+	             OPENTIME,
 	             CLOSETIME,
+	             MAIN_SUBJECT,
 	             HOLIDAY
 			FROM HOSPITAL
     	</select> <!-- 자료 다 들어오고 붙이기 WHERE HOSPITAL_STATUS = 'b2' -->
@@ -27,5 +29,79 @@
 		            HOLIDAY
 			FROM PHARMACY
 		</select> <!-- WHERE PHARMACY_STATUS = 'b2' -->
+		
+		<!-- 병원상세 -->
+	    <select id="selectHos" resultType="HospitalVO">
+	    	SELECT HOSPITAL_NAME,
+	              ADDRESS,
+	              PHONE,
+	              HOSPITAL_IMG, 
+	              MAIN_SUBJECT,
+	              DIRECTOR_NAME,
+	              HOLIDAY,
+	              OPENTIME,
+	              CLOSETIME
+			FROM HOSPITAL
+			WHERE HOSPITAL_ID = #{hospitalId}
+		</select>
+		
+		<!-- 약국상세 -->
+		<select id="selectPha" resultType="PharmacyVO">
+			SELECT PHARMACY_NAME,
+	              ADDRESS,
+	              PHARMACY_PHONE,
+	              PHARMACY_FAX,
+	              PHARMACY_IMG,
+	              CEO_NAME,
+	              HOLIDAY,
+	              OPENTIME,
+	              CLOSETIME
+			FROM PHARMACY
+			WHERE PHARMACY_ID = #{pharmacyId}
+		</select>
+		
+		<!-- 병원이름검색하기 -->
+		<select id="searchHosList" resultType="HospitalVO">
+		SELECT HOSPITAL_NAME,
+			   HOSPITAL_ID,
+			   PHONE,
+			   OPENTIME,
+	           CLOSETIME,
+	           ADDRESS
+		FROM HOSPITAL
+		WHERE HOSPITAL_NAME LIKE '%' ||#{word}||'%'
+		ORDER BY HOSPITAL_NAME  
+		</select>
+		
+		<!-- 약국이름검색하기 -->
+		<select id="searchPhaList" resultType="PharmacyVO">
+		SELECT PHARMACY_NAME,
+			   PHARMACY_ID,
+			   PHARMACY_PHONE,
+			   OPENTIME,
+	           CLOSETIME,
+	           ADDRESS
+		FROM PHARMACY
+		WHERE PHARMACY_NAME LIKE '%' ||#{word}||'%' 
+		ORDER BY PHARMACY_NAME  
+		</select>
+		
+		<!-- 병원 진료과목으로 검색하기 -->
+		<select id="searchSubjectHos" resultType="HospitalVO">
+		SELECT HOSPITAL_NAME,
+			   HOSPITAL_ID,
+			   PHONE,
+			   OPENTIME,
+	           CLOSETIME,
+	           ADDRESS
+		FROM HOSPITAL
+		WHERE MAIN_SUBJECT = #{mainSubject}
+		ORDER BY HOSPITAL_NAME
+		</select>
+		
+		
+		
+		
+		
 		
     </mapper>

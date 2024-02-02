@@ -57,6 +57,35 @@
 	text-align: center;
 	display: none;
 }
+
+.ss:hover{
+	background-color:#06BBCC;
+}
+
+.ss{
+	color:white;
+	border-color:#FFFFF0; 
+	border-radius:20%; 
+	width:200px;
+}
+.img-button{
+	width:80px;
+	height:80px;
+	no-repeat;
+}
+.subject> tr> th > button:hover{
+	background-color:#B0E0E6;
+}
+.subject> tr> th > button{
+	margin: 10px 25px 10px 25px;
+	border-radius: 30%;
+	border-color:white;
+	
+}
+.subject > tr> td{
+	margin-top:20px;
+}
+
 </style>
 
 </head>
@@ -64,42 +93,192 @@
 	<div layout:fragment="content">
 		<!-- Header Start -->
 		<div class="container-fluid bg-primary py-5 mb-5 page-header"
-			style="height: 400px;">
+			style="height:480px;">
 			<div class="container py-5">
 				<div class="row justify-content-center">
 					<div class="col-lg-10 text-center" style="padding-top: 40px;">
 						<h1 class="display-3 text-white animated slideInDown"
 							style="font-size: 40px;">어떤 병원을 찾고 계신가요?</h1>
 
-						<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
+						<div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
 							role="search" style="padding-left: 170px; margin-top: 40px;">
 
-
 							<!-- 검색창 -->
-							<input type="search"
-								class="form-control form-control-dark text-bg-dark"
+							<input type="search" id="search" 
+								class="form-control form-control-dark text-bg-dark search"
 								placeholder="찾으시는 병원이나 약국을 검색해보세요" aria-label="Search"
 								style="width: 78%; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
-
+							
+							<!-- 검색참고용 -->
+							<!-- <form class="d-flex" action="searchList.do" method="POST">
+								<input style="width: 800px;" class="form-control me-sm-2" type="search" placeholder="Search" name="word">
+								<button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+							</form> -->
+							
 							<!-- 돋보기 아이콘 -->
-							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
+							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" onclick="searchResult()"
 								fill="rgb(255,255,255)"
-								style="position: relative; top: -50px; left: 300px;"
+								style="position: relative; top: -50px; left: 300px; cursor: pointer;"
 								class="bi bi-search" viewBox="0 0 16 16">
-                          <path
-									d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                     </svg>
-						</form>
-
-						<nav aria-label="breadcrumb">
-							<ol class="breadcrumb justify-content-center">
-							</ol>
-						</nav>
+                          		<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                     		</svg>
+                     		
+						</div>
+						<button class="ss btn" 
+						data-bs-toggle="modal"
+						data-bs-target="#exampleModal">
+							진료과목으로 찾기
+						</button>
 					</div>
 				</div>
 			</div>
 		</div>
-
+		
+		<!-- Modal -->
+			<div class="modal" tabindex="-1" id="exampleModal">
+				<div class="modal-dialog">
+					<div class="modal-content" style="text-align:center;"><!--  width:700px; height:700px; -->
+						<!-- <div class="modal-header" style="text-align:center;">
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div> -->
+						<div class="modal-body" style="padding:30px 30px 30px 30px;" >
+						<h2 style="margin-bottom:20px;">진료과목을 선택해주세요</h2>
+						<hr>
+						<table>
+							<tbody class="subject">
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 002.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h1)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 003.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h2)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 004.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h3)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>가정의학과</td>
+									<td>내과</td>
+									<td>비뇨기과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 005.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h4)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 006.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h5)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 007.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h6)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>산부인과</td>
+									<td>성형외과</td>
+									<td>소아과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 008.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h7)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 009.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h8)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 010.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h9)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>신경외과</td>
+									<td>안과</td>
+									<td>외과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 011.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h10)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 012.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h11)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 013.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h12)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>이비인후과</td>
+									<td>응급의학과</td>
+									<td>정신건강의학과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 014.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h13)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 015.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h14)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 016.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h15)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>정형외과</td>
+									<td>치과</td>
+									<td>피부과</td>
+								<tr>
+							</tbody>
+						</table>
+						
+							
+						</div>
+					</div>
+				</div>
+			</div>
 
 		<!-- Team Start -->
 		<div class="container-xxl py-5" style="padding-top: 10px;">
@@ -120,7 +299,10 @@
 				</div>
 				<div class="row g-4 here">
 					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6 hospitalItem"
-						style="width: 280px; height: 380px;">
+						style="width: 280px; height: 380px;"
+						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
+						<!-- 바로 위는 타임리프로 링크 보내버리는법 -->
+						
 						<!-- <p th:text="${hos.phone}"></p>
                   <p th:text="${hos.hospitalId}"></p>
                   <p th:text="${hos.hospitalName}"></p>
@@ -130,7 +312,9 @@
 						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 							<div class="team-item bg-light">
 								<div class="overflow-hidden">
-									<img th:src="@{/images/} + ${hos.hospitalImg}" alt="image"
+									<img th:if="${hos.hospitalImg}" th:src="@{/images/} + ${hos.hospitalImg}" alt="image"
+										style="width: 100%; height: 200px;" class="img-fluid" />
+									<img th:unless="${hos.hospitalImg}" th:src="@{/images/} + hospital.png" alt="image"
 										style="width: 100%; height: 200px;" class="img-fluid" />
 								</div>
 							</div>
@@ -171,17 +355,15 @@
 			</div>
 			<div class="row g-4 here2">
 				<div th:each="pha: ${phaList}" class="col-lg-3 col-md-6 pharmacyItem"
-					style="width: 280px; height: 380px;">
-					<!-- <p th:text="${pha.phone}"></p>
-                  <p th:text="${pha.hospitalId}"></p>
-                  <p th:text="${pha.hospitalName}"></p>
-                  <p th:text="${pha.hospitalImg}"></p>
-                  <p th:text="${pha.closetime}"></p>
-                  <p th:text="${pha.address}"></p> -->
+					style="width: 280px; height: 380px;"
+					th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|">
+					
 					<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 						<div class="team-item bg-light">
 							<div class="overflow-hidden">
-								<img th:src="@{/images/} + ${pha.pharmacyImg}" alt="image"
+								<img th:if="${pha.pharmacyImg}" th:src="@{/images/} + ${pha.pharmacyImg}" alt="image"
+									style="width: 100%; height: 200px;" class="img-fluid" />
+								<img th:unless="${pha.pharmacyImg}" th:src="@{/images/} + pharmacy.png" alt="image"
 									style="width: 100%; height: 200px;" class="img-fluid" />
 							</div>
 						</div>
@@ -530,10 +712,28 @@
 	                 console.log('다다');
 	              }
 	          }     
-	            
-	            
            }
          changeStyle();
+         
+       //검색 함수
+  		function searchResult(e){
+  			let word = document.getElementById("search").value;
+  			console.log("검색한 단어= ",word);
+  			if(word == ''){
+  				alert("검색한 단어가 없습니다.");
+  			}else{
+  				location.href="search?word="+word;
+  			}
+  		}
+         
+         //키보드 엔터 눌러도 제출되게끔
+         let enter = document.querySelector(".search")
+         enter.addEventListener('keyup', (event) => {
+             if (event.key === 'Enter') {
+                 searchResult();
+             }
+         });
+         
       </script>
 	</div>
 </body>

@@ -37,7 +37,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		// location할 페이지 설정
 		String page = null;
 		if (userDetailVO.getGrade().equals("ROLE_ADMIN")) {
-			page = "/admin/home";
+			page = "/admin";
 			response.sendRedirect(page);
 		} else if (userDetailVO.getGrade().equals("ROLE_HOSPITAL")) {
 			page = "/hospital";

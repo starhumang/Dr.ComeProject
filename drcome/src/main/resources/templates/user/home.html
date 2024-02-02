@@ -101,24 +101,30 @@
 						<h1 class="display-3 text-white animated slideInDown"
 							style="font-size: 40px;">어떤 병원을 찾고 계신가요?</h1>
 
-						<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
+						<div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
 							role="search" style="padding-left: 170px; margin-top: 40px;">
 
-
 							<!-- 검색창 -->
-							<input type="search"
-								class="form-control form-control-dark text-bg-dark"
+							<input type="search" id="search" 
+								class="form-control form-control-dark text-bg-dark search"
 								placeholder="찾으시는 병원이나 약국을 검색해보세요" aria-label="Search"
 								style="width: 78%; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
-
+							
+							<!-- 검색참고용 -->
+							<!-- <form class="d-flex" action="searchList.do" method="POST">
+								<input style="width: 800px;" class="form-control me-sm-2" type="search" placeholder="Search" name="word">
+								<button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+							</form> -->
+							
 							<!-- 돋보기 아이콘 -->
-							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
+							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" onclick="searchResult()"
 								fill="rgb(255,255,255)"
-								style="position: relative; top: -50px; left: 300px;"
+								style="position: relative; top: -50px; left: 300px; cursor: pointer;"
 								class="bi bi-search" viewBox="0 0 16 16">
                           		<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                      		</svg>
-						</form>
+                     		
+						</div>
 						<button class="ss btn" 
 						data-bs-toggle="modal"
 						data-bs-target="#exampleModal">
@@ -143,18 +149,21 @@
 							<tbody class="subject">
 								<tr>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 002.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 002.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h1)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 003.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 003.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h2)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 004.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 004.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h3)}'|">
 										</button>
 									</th>
 								<tr>
@@ -165,18 +174,21 @@
 								<tr>
 								<tr>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 005.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 005.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h4)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 006.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 006.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h5)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 007.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 007.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h6)}'|">
 										</button>
 									</th>
 								<tr>
@@ -187,18 +199,21 @@
 								<tr>
 								<tr>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 008.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 008.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h7)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 009.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 009.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h8)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 010.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 010.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h9)}'|">
 										</button>
 									</th>
 								<tr>
@@ -209,18 +224,21 @@
 								<tr>
 								<tr>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 011.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 011.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h10)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 012.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 012.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h11)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 013.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 013.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h12)}'|">
 										</button>
 									</th>
 								<tr>
@@ -231,18 +249,21 @@
 								<tr>
 								<tr>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 014.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 014.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h13)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 015.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 015.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h14)}'|">
 										</button>
 									</th>
 									<th>
-										<button id="ddd" type="button" onclick="alert('클릭!')" >
-										  <img class="img-button" th:src="@{/images/} + 016.png"/>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 016.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h15)}'|">
 										</button>
 									</th>
 								<tr>
@@ -692,10 +713,28 @@
 	                 console.log('다다');
 	              }
 	          }     
-	            
-	            
            }
          changeStyle();
+         
+       //검색 함수
+  		function searchResult(e){
+  			let word = document.getElementById("search").value;
+  			console.log("검색한 단어= ",word);
+  			if(word == ''){
+  				alert("검색한 단어가 없습니다.");
+  			}else{
+  				location.href="search?word="+word;
+  			}
+  		}
+         
+         //키보드 엔터 눌러도 제출되게끔
+         let enter = document.querySelector(".search")
+         enter.addEventListener('keyup', (event) => {
+             if (event.key === 'Enter') {
+                 searchResult();
+             }
+         });
+         
       </script>
 	</div>
 </body>

@@ -16,9 +16,19 @@ public interface MainService {
 	//약국목록
 	public List<PharmacyVO> getPhaList();
 	
+	//병원상세정보
+	public HospitalVO getHos(String hospitalId);
+	
+	//약국상세정보
+	public PharmacyVO getPha(String pharmacyId);
+	
 	//병원검색
 	public List<HospitalVO> searchHosList(String word);
 	
 	//약국검색
 	public List<PharmacyVO> searchPhaList(String word);
+
+	//병원진료과목 검색
+	public List<HospitalVO> searchSubjectHos(String mainSubject);
+		
 }

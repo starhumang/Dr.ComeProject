@@ -44,7 +44,7 @@ button:hover {
 			<div class="head"
 				style="display: flex; justify-content: center; margin-bottom: 130px;">
 				<div style="width: 600px;">
-					<h2 th:text="|Result : ${word}|"
+					<h2 th:text="|Result : ${mainSubject}|"
 						style="margin-bottom: 20px; color: #363636;"></h2>
 					<hr>
 					<hr>
@@ -66,7 +66,7 @@ button:hover {
 				<div style="display: flex; justify-content: right;">
 					<button class="na" onclick="restart()">거리순</button>
 					|
-					<button style="color: #06BBCC;" class="ga">가나다순</button>
+					<button style="color: #06BBCC;" onclick="changeSort()" class="ga">가나다순</button>
 				</div>
 				<h3 style="color: gray; margin-bottom: 50px;">- 병원목록 -</h3>
 				<table class="table">
@@ -80,8 +80,8 @@ button:hover {
 						</tr>
 					</thead>
 					<tbody class="here">
-						<th:block th:each="hos : ${searchHos}">
-							<tr th:if="${#lists.size(searchHos) > 0}" class="ho hospitalItem"
+						<th:block th:each="hos : ${subject}">
+							<tr th:if="${#lists.size(subject) > 0}" class="ho hospitalItem"
 								th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
 								<td th:text="${hos.hospitalName}"></td>
 								<td th:text="${hos.phone}"></td>
@@ -91,49 +91,15 @@ button:hover {
 									th:text="${hos.address}"></td>
 							</tr>
 						</th:block>
-						<tr th:unless="${#lists.size(searchHos) > 0}">
+						<tr th:unless="${#lists.size(subject) > 0}">
 							<td colspan="5"
 								style="color: gray; height: 100px; vertical-align: middle;">검색
 								조건에 맞는 병원이 없습니다.</td>
 						</tr>
-
 					</tbody>
 				</table>
 			</div>
 
-			<!-- 약국리스트 -->
-			<div style="margin-bottom: 200px;">
-				<h3 style="color: gray; margin-bottom: 50px;">- 약국목록 -</h3>
-				<table class="table">
-					<thead>
-						<tr>
-							<th>약국명</th>
-							<th>전화번호</th>
-							<th>운영시간</th>
-							<th style="width: 400px;">주소</th>
-							<th class="lo">거리</th>
-						</tr>
-					</thead>
-					<tbody class="here2">
-						<th:block th:each="pha : ${searchPha}">
-							<tr th:if="${#lists.size(searchPha) > 0}" class="ho pharmacyItem"
-								th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|">
-								<td th:text="${pha.pharmacyName}"></td>
-								<td th:text="${pha.pharmacyPhone}"></td>
-								<td th:text="|${pha.opentime} ~ ${pha.closetime}|"></td>
-								<td th:text="${pha.address}"></td>
-								<td style="font-weight: bold;" class="phAddress"
-									th:text="${pha.address}"></td>
-							</tr>
-						</th:block>
-						<tr th:unless="${#lists.size(searchPha) > 0}">
-							<td colspan="5"
-								style="color: gray; height: 100px; vertical-align: middle;">검색
-								조건에 맞는 약국이 없습니다.</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
 			<script th:inline="javascript">
 		//현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
 	    //5. 병원주소를 좌표로 바꿈
@@ -161,26 +127,13 @@ button:hover {
 		   	 
 		   	 let hospitalList = [];
 		        
-		        
-		        //약국
-		   	 let phAddress = document.querySelectorAll('.phAddress');
-	    	  phAddress.forEach((address)=>{
-	    		  address.style.display = "block";
-	    	  });
-		   	 console.log("phAddress=",phAddress);
-		   	 if(!phAddress){
-		   		 console.log("강제종료");
-		   		 return;
-		   	 }
-		   	 let pharmacyList = [];
-		        
 		    	 function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
 		    		console.log("item= ",item);
 		    		 return new Promise((resolve)=>{
 		    			 geocoder.addressSearch(item.innerHTML, (result, status)=>{ //item.innerHTML= 주소 그 자체
 		    				if (status === kakao.maps.services.Status.OK) {
 		    					console.log("카카오맵에서 찾았음")
-		                       //병원&약국 좌표
+		                       //병원 좌표
 		                       let hosLat = result[0].address.y;
 		                       let hosLon = result[0].address.x;
 		                       console.log('병원Lat = ',result[0].address.y);
@@ -242,15 +195,6 @@ button:hover {
 		       	 hospitalListBox.append(parent_node);
 		        })
 		        
-		        //약국
-		        const promises2 = Array.from(phAddress).map((item, index)=> promiseFn(item, index));
-		        await Promise.all(promises2);
-		        pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-		        const pharmacyListBox = document.querySelector('.here2');	 
-		        pharmacyList.forEach(({parent_node}) =>{
-		       	 pharmacyListBox.append(parent_node);
-		        })
-		        
 		    }; //restart함수 끝
 		       
 		       
@@ -302,11 +246,6 @@ button:hover {
 		    		  loc.style.display = "none";
 		    	  });
 		    	  
-		    	  let phAddress = document.querySelectorAll('.phAddress');
-		    	  phAddress.forEach((address)=>{
-		    		  address.style.display = "none";
-		    	  });
-		    	  
 		    	  ga.style.color='#06BBCC';
 			  	  document.querySelector(".na").style.color='black';
 			  	  
@@ -316,6 +255,7 @@ button:hover {
 		    	  ga.onclick = changeSort;
 		    	  
 		      } 
+			  
 		</script>
 		</div>
 	</div>

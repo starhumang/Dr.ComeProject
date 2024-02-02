@@ -15,6 +15,12 @@ public interface MainMapper {
 	//약국리스트
 	public List<PharmacyVO> selectPhaList();
 	
+	//병원상세정보
+	public HospitalVO selectHos(String hospitalId);
+	
+	//약국상세정보
+	public PharmacyVO selectPha(String pharmacyId);
+	
 	//병원검색
 	/*참고용 : public List<RestaurantVO> selectSearch(@Param("word") String word);*/
 	public List<HospitalVO> searchHosList(@Param("word") String word);
@@ -22,6 +28,7 @@ public interface MainMapper {
 	//약국검색
 	public List<PharmacyVO> searchPhaList(@Param("word") String word);
 	
-	//병원과목 선택 시
+	//병원진료과목 검색
+	public List<HospitalVO> searchSubjectHos(String mainSubject);
 	
 }

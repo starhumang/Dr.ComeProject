@@ -56,7 +56,8 @@
 							style="display: flex; justify-content: center; align-items: center;">
 							<div class="left">
 								<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  --> 
-								<img th:src="@{/images/} + ${hos.hospitalImg}" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
+								<img th:if="${hos.hospitalImg}" th:src="@{/images/} + ${hos.hospitalImg}" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
+								<img th:unless="${hos.hospitalImg}" th:src="@{/images/} + hospital.png" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
 							</div>
 							<div class="right" style="text-align:center;">
 								<h3 th:text="| [  ${hos.hospitalName} ] |" class="font-weight-bold text-secondary" style="margin-bottom:30px; margin-top:20px;"></h3>

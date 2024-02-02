@@ -29,7 +29,6 @@ public class UserSecurityConfig {
     }
 
 	@Bean
-	@Primary
 	public BCryptPasswordEncoder userPasswordEncoder() {
 		return new BCryptPasswordEncoder();
 	}
@@ -41,9 +40,11 @@ public class UserSecurityConfig {
 		
 		http.csrf().disable();
 		http.authorizeHttpRequests((requests) -> requests
-				.antMatchers("/**").permitAll()
-				//.antMatchers("/", "/home", "/userjoin").permitAll() // 나중에 이걸로 바꿔야함
-				//.antMatchers("/admin/**").hasAnyRole("ADMIN") // 얘도
+				//.antMatchers("/**").permitAll()
+				.antMatchers("/", "/home", "/userjoin", "/medicaljoin").permitAll() // 나중에 이걸로 바꿔야함
+				.antMatchers("/admin/**").hasAnyRole("ADMIN") // 얘도
+				.antMatchers("/hospital/**").hasAnyRole("HOSPITAL") // 얘도				
+				.antMatchers("/pharmacy/**").hasAnyRole("PHARMACY") // 얘도
 				.anyRequest().authenticated())
 		
 				.formLogin((form) -> form
@@ -52,9 +53,9 @@ public class UserSecurityConfig {
 				.successHandler(loginSuccessHandler)
 				.failureHandler(failureHandler)
 				.permitAll())
-				
+
 				.logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))	
                 .logoutSuccessUrl("/") //로그아웃 성공시 이동할 url
                 .invalidateHttpSession(true) //로그아웃시 생성된 세션 삭제 활성화
                 .deleteCookies("JSESSIONID")

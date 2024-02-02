@@ -19,81 +19,81 @@ import com.drcome.project.admin.service.AdminService;
 
 @Controller
 public class AdminController {
-	
-	@Autowired
-	HospitalListRepository hrepo;
-	
-	@Autowired
-	PharmacyRepository prepo;
-	
-	@Autowired
-	AdminService aservice;
-	
-	@GetMapping("/admin")
-	public String home(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-		Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
-		model.addAttribute("grantlisth", grantlisth);
-		
-		Page<Pharmacy> grantlistp = aservice.findBypharmacyStatus("b1", pageNo, 5);
-		model.addAttribute("grantlistp", grantlistp);
-		return "admin/home";
-	}
-	
-	/* 일반 사용자 */
-	@GetMapping("/admin/user")
-	//@ResponseBody //restController일 땐 안 써도 됨
-	public String user(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-		Page<Usertable> userlist = aservice.getuserAll(pageNo, 5);
-		model.addAttribute("list", userlist);
-		return "admin/adminUser";
-	}
-	
-	/* 승인된 병원 사용자 */
-	@GetMapping("/admin/hospital")
-	public String hospital(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-		Page<Hospital> hospitallist = aservice.findByhospitalStatus("b2", pageNo, 5);
-		model.addAttribute("list", hospitallist);
-		return "admin/adminHospital";
-	}
-	/* 병원 사용자 승인 대기 리스트 */
-	@GetMapping("/admin/hospital/grant")
-	public String findByhospitalStatus(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-		Page<Hospital> grantlist = aservice.findByhospitalStatus("b1", pageNo, 5);
-		model.addAttribute("grantlisth", grantlist);
-		return "admin/adminHospitalGrant";
-	}
-	
-	/* 병원 사용자 승인 처리*/
-	@PostMapping("/admin/hospital/grant/{HospitalId}")
-	@ResponseBody
-	public String updateStatus(@PathVariable String HospitalId) {
-		Hospital count = aservice.updateStatus(HospitalId);
-		System.out.println(count);
-		return "admin/adminHospitalGrant";
-	}
-	
-	/* 약국 사용자 */
-	@GetMapping("/admin/pharmacy")
-	public String pharmacy(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-		Page<Pharmacy> pharmacylist = aservice.findBypharmacyStatus("b2", pageNo, 5);
-		model.addAttribute("list", pharmacylist);
-		return "admin/adminPharmacy";
-	}
-	
-	/* 약국 사용자 승인 대기 리스트 */
-	@GetMapping("/admin/pharmacy/grant")
-	public String findBypharmacyStatus(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-		Page<Pharmacy> grantlist = aservice.findBypharmacyStatus("b1", pageNo, 5);
-		model.addAttribute("grantlistp", grantlist);
-		return "admin/adminPharmacyGrant";
-	}
-	
-	/* 약국 사용자 승인 처리*/
-	@PostMapping("/admin/pharmacy/grant/{pharmacyId}")
-	@ResponseBody
-	public String updatePharmacyStatus(@PathVariable String pharmacyId) {
-		Pharmacy count = aservice.updatePharmacyStatus(pharmacyId);
-		System.out.println(count);
-		return "admin/adminPharmacyGrant";
-	}
+   
+   @Autowired
+   HospitalListRepository hrepo;
+   
+   @Autowired
+   PharmacyRepository prepo;
+   
+   @Autowired
+   AdminService aservice;
+   
+   @GetMapping("/admin")
+   public String home(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+      Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
+      model.addAttribute("grantlisth", grantlisth);
+      
+      Page<Pharmacy> grantlistp = aservice.findBypharmacyStatus("b1", pageNo, 5);
+      model.addAttribute("grantlistp", grantlistp);
+      return "admin/home";
+   }
+   
+   /* 일반 사용자 */
+   @GetMapping("/admin/user")
+   //@ResponseBody //restController일 땐 안 써도 됨
+   public String user(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+      Page<Usertable> userlist = aservice.getuserAll(pageNo, 5);
+      model.addAttribute("list", userlist);
+      return "admin/adminUser";
+   }
+   
+   /* 승인된 병원 사용자 */
+   @GetMapping("/admin/hospital")
+   public String hospital(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+      Page<Hospital> hospitallist = aservice.findByhospitalStatus("b2", pageNo, 5);
+      model.addAttribute("list", hospitallist);
+      return "admin/adminHospital";
+   }
+   /* 병원 사용자 승인 대기 리스트 */
+   @GetMapping("/admin/hospital/grant")
+   public String findByhospitalStatus(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+      Page<Hospital> grantlist = aservice.findByhospitalStatus("b1", pageNo, 5);
+      model.addAttribute("grantlisth", grantlist);
+      return "admin/adminHospitalGrant";
+   }
+   
+   /* 병원 사용자 승인 처리*/
+   @PostMapping("/admin/hospital/grant/{HospitalId}")
+   @ResponseBody
+   public String updateStatus(@PathVariable String HospitalId) {
+      Hospital count = aservice.updateStatus(HospitalId);
+      System.out.println(count);
+      return "admin/adminHospitalGrant";
+   }
+   
+   /* 약국 사용자 */
+   @GetMapping("/admin/pharmacy")
+   public String pharmacy(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+      Page<Pharmacy> pharmacylist = aservice.findBypharmacyStatus("b2", pageNo, 5);
+      model.addAttribute("list", pharmacylist);
+      return "admin/adminPharmacy";
+   }
+   
+   /* 약국 사용자 승인 대기 리스트 */
+   @GetMapping("/admin/pharmacy/grant")
+   public String findBypharmacyStatus(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+      Page<Pharmacy> grantlist = aservice.findBypharmacyStatus("b1", pageNo, 5);
+      model.addAttribute("grantlistp", grantlist);
+      return "admin/adminPharmacyGrant";
+   }
+   
+   /* 약국 사용자 승인 처리*/
+   @PostMapping("/admin/pharmacy/grant/{pharmacyId}")
+   @ResponseBody
+   public String updatePharmacyStatus(@PathVariable String pharmacyId) {
+      Pharmacy count = aservice.updatePharmacyStatus(pharmacyId);
+      System.out.println(count);
+      return "admin/adminPharmacyGrant";
+   }
 }

@@ -85,4 +85,12 @@ public class HospitalController {
 		System.out.println(detailPList);
 		return "hospital/patientDetail";
 	}
+	
+	/* QnA */
+	//QnA 리스트
+	@GetMapping("/hospital/qnaList")
+	public String qnaList(Principal principal, String hospitalId) {
+		hospitalId = principal.getName();
+		return "hospital/qnaList";
+	}
 }

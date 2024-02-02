@@ -49,13 +49,9 @@
 			</a>
 			-->
 
-			<div
-				class="sidebar-card sidebar-brand d-flex align-items-center justify-content-center"
-				style="margin-top: 20px;">
-				<div class="sidebar-brand-icon">
-					<img th:src="@{/images/} + ${hospitalSel.hospitalImg}" alt="image"
-						style="width: 100%;" />
-				</div>
+			<div class="sidebar-card" style="margin-top: 20px;">
+				<img th:src="@{/images/} + ${hospitalSel.hospitalImg}" alt="image"
+					style="overflow: hidden; width: 100%; height: 160px;" />
 
 			</div>
 
@@ -78,19 +74,10 @@
 			<!-- <div class="sidebar-heading">환자관리</div> -->
 
 			<!-- Nav Item - Pages Collapse Menu -->
-			<li class="nav-item"><a class="nav-link collapsed"
-				href="/hospital/patientList" data-target="#collapseTwo"
-				aria-expanded="true" aria-controls="collapseTwo"> <i
+			<li class="nav-item"><a class="nav-link"
+				href="/hospital/patientList"> <i
 					class="fas fa-fw fa-hospital-user"></i> <span>환자관리</span>
-			</a>
-				<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
-					data-parent="#accordionSidebar">
-					<!-- <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">Custom Components:</h6>
-              <a class="collapse-item" href="buttons.html">Buttons</a>
-              <a class="collapse-item" href="cards.html">Cards</a>
-            </div> -->
-				</div></li>
+			</a></li>
 
 			<!-- Nav Item - Utilities Collapse Menu -->
 			<li class="nav-item"><a class="nav-link collapsed" href="#"
@@ -104,7 +91,7 @@
 						<!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
 						<a class="collapse-item" href="/hospital/clinicMain"><i
 							class="fas fa-fw fa-clinic-medical"></i> 전체보기</a> <a
-							class="collapse-item" href="utilities-border.html"><i
+							class="collapse-item" href="#"><i
 							class="fas fa-fw fa-stethoscope"></i> 진료실</a>
 						<!-- <a class="collapse-item" href="utilities-animation.html"
                 >Animations</a
@@ -120,33 +107,17 @@
 			<!-- <div class="sidebar-heading">Addons</div> -->
 
 			<!-- Nav Item - Pages Collapse Menu -->
-			<li class="nav-item"><a class="nav-link collapsed" href="#"
-				data-toggle="collapse" data-target="#collapsePages"
-				aria-expanded="true" aria-controls="collapsePages"> <i
+			<li class="nav-item"><a class="nav-link" href="/hospital/qnaList"> <i
 					class="fas fa-fw fa-question"></i> <span>Q&A</span>
-			</a>
-				<div id="collapsePages" class="collapse"
-					aria-labelledby="headingPages" data-parent="#accordionSidebar">
-					<div class="bg-white py-2 collapse-inner rounded">
-						<h6 class="collapse-header">Login Screens:</h6>
-						<a class="collapse-item" href="login.html">Login</a> <a
-							class="collapse-item" href="register.html">Register</a> <a
-							class="collapse-item" href="forgot-password.html">Forgot
-							Password</a>
-						<div class="collapse-divider"></div>
-						<h6 class="collapse-header">Other Pages:</h6>
-						<a class="collapse-item" href="404.html">404 Page</a> <a
-							class="collapse-item" href="blank.html">Blank Page</a>
-					</div>
-				</div></li>
+			</a></li>
 
 			<!-- Nav Item - Charts -->
-			<li class="nav-item"><a class="nav-link" href="charts.html">
+			<li class="nav-item"><a class="nav-link" href="#">
 					<i class="fas fa-fw fa-bullhorn"></i> <span>공지사항</span>
 			</a></li>
 
 			<!-- Nav Item - Tables -->
-			<li class="nav-item"><a class="nav-link" href="tables.html">
+			<li class="nav-item"><a class="nav-link" href="#">
 					<i class="fas fa-fw fa-comment"></i> <span>리뷰</span>
 			</a></li>
 

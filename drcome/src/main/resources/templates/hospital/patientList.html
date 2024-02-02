@@ -1,22 +1,22 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{hospital/hospitalLayout}">
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{hospital/hospitalLayout}">
 
 <head>
 <meta charset="UTF-8">
 <title>patientList</title>
 <style>
 .head_info {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 30px;
+   display: flex;
+   justify-content: space-between;
+   margin-top: 30px;
 }
 
 .search {
-	display: flex;
-	justify-content: flex-end;
-	margin-bottom: 40px;
+   display: flex;
+   justify-content: flex-end;
+   margin-bottom: 40px;
 }
 </style>
 </head>
@@ -34,18 +34,12 @@
 			<p>patient list</p>
 			<div class="search">
 				<!-- drop -->
-				<div>
-					<div class="dropdown mb-4">
-						<button class="btn btn-light dropdown-toggle" type="button"
-							id="dropdownMenuButton" data-toggle="dropdown"
-							aria-haspopup="true" aria-expanded="false">검색유형</button>
-						<div class="dropdown-menu animated--fade-in"
-							aria-labelledby="dropdownMenuButton" style="">
-							<a class="dropdown-item" href="#">Action</a> <a
-								class="dropdown-item" href="#">Another action</a> <a
-								class="dropdown-item" href="#">Something else here</a>
-						</div>
-					</div>
+				<div style="margin-right: 5px;">
+					<select class="custom-select" aria-label="Default select example">
+						<option selected>검색유형</option>
+						<option value="1">환자번호</option>
+						<option value="2">환자이름</option>
+					</select>
 				</div>
 
 				<!-- 검색 -->
@@ -64,7 +58,7 @@
 					</div>
 				</div>
 			</div>
-			
+
 			<!-- 환자리스트 -->
 			<div>
 				<table class="table">
@@ -75,17 +69,17 @@
 							<th>생년월일</th>
 							<th>성별</th>
 							<th>환자Tel</th>
-							<th>진료내역</th>
+							<th>진료 및 예약</th>
 						</tr>
 					</thead>
 					<tbody>
-						<tr>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td><button class="btn btn-outline-warning">진료내역</button></td>
+						<tr th:each="pl : ${palist}">
+							<td th:text="${pl.patientNo}"></td>
+							<td th:text="${pl.userName}"></td>
+							<td th:text="${#dates.format(pl.userBirthday, 'yyyy-MM-dd')}"></td>
+							<td th:text="${pl.gender}"></td>
+							<td th:text="${pl.userPhone}"></td>
+							<td><a th:href="@{/hospital/patientList/patientDetail(patientNo=${pl.patientNo})}" class="btn btn-sm btn-outline-warning">상세보기</a></td>
 						</tr>
 					</tbody>
 				</table>

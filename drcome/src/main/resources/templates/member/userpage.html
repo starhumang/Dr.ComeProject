@@ -6,6 +6,24 @@
 >
 	<head>
 		<meta charset="UTF-8" />
+
+		<script type="text/javascript">
+			function checkDupliId() {
+				let checkId = $('#userid').val();
+				console.log(checkId);
+				let url = '/checkId?userId=' + checkId;
+				$.ajax({
+					url: url,
+					type: 'get',
+				})
+					.done((resp) => {
+						console.log(resp);
+					})
+					.fail((err) => {
+						console.log(err);
+					});
+			}
+		</script>
 	</head>
 	<body>
 		<div layout:fragment="content">
@@ -16,6 +34,13 @@
 			<p th:text="${application.detailCode}"></p>
 			<p>개별코드</p>
 			[[${application.detailCode_a}]]
+
+			<div class="col-md-12">
+				아이디
+				<input type="text" id="userid" />
+			</div>
+
+			<a class="btn btn-warning" onclick="checkDupliId()">중복확인</a>
 		</div>
 	</body>
 </html>

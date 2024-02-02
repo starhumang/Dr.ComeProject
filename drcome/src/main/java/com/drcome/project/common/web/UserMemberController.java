@@ -2,6 +2,7 @@ package com.drcome.project.common.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -13,6 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.drcome.project.FileUploadService;
@@ -127,6 +130,21 @@ public class UserMemberController {
 		UserMemberVO myprofile = memMapper.selectMem(id);
 		model.addAttribute("profile", myprofile);
 		return "/member/userpage";
+	}
+	
+	@GetMapping("/checkId")
+	@ResponseBody
+	public String checkDupliId(@RequestParam String userId) {
+		int cnt = memMapper.checkId(userId);
+		String msg = null;
+		if(cnt == 1) {
+			msg = "중복";
+		} else {
+			msg = "아님";
+		}
+		System.out.println(msg);
+
+		return msg;
 	}
 
 }

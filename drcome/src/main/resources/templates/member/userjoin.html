@@ -73,6 +73,25 @@
 				return true;
 			}
 
+			function checkDupliId() {
+				let checkId = 'admin';
+				console.log(checkId);
+
+				let url = '/checkId?userId=' + checkId;
+
+				$.ajax({
+					url: url,
+					type: 'get',
+				})
+					.done((resp) => {
+						console.log(resp);
+						// Handle the response here, e.g., update UI based on the response.
+					})
+					.fail((err) => {
+						console.log(err);
+					});
+			}
+
 			function formatPhoneNumber() {
 				let phoneInput = document.getElementById('phone');
 				let inputValue = phoneInput.value.replace(/[^0-9]/g, '');
@@ -207,7 +226,7 @@
 				<div class="row">
 					<div class="form-holder">
 						<div class="form-content">
-							<a class="btn btn-warning" onclick="checkDupliId(event)">중복확인</a>
+							<a onclick="checkDupliId()">중복확인</a>
 							<div class="form-items">
 								<br />
 								<h3>사용자 회원가입</h3>

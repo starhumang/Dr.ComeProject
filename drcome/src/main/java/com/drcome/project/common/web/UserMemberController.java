@@ -128,16 +128,5 @@ public class UserMemberController {
 		model.addAttribute("profile", myprofile);
 		return "/member/userpage";
 	}
-	
-	@PostMapping("/checkid/{userId}")
-	public String userIdChk(@PathVariable String userId) {
-		int chk = memMapper.checkId(userId);
-				
-		String result = "dd";
-		if (chk == 0) {
-			result = "ss";
-		}
-		
-		return result;
-	}
+
 }

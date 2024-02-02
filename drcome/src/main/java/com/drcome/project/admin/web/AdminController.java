@@ -1,7 +1,5 @@
 package com.drcome.project.admin.web;
 
-import java.util.List;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -32,7 +30,12 @@ public class AdminController {
 	AdminService aservice;
 	
 	@GetMapping("/admin")
-	public String home() {
+	public String home(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+		Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
+		model.addAttribute("grantlisth", grantlisth);
+		
+		Page<Pharmacy> grantlistp = aservice.findBypharmacyStatus("b1", pageNo, 5);
+		model.addAttribute("grantlistp", grantlistp);
 		return "admin/home";
 	}
 	
@@ -45,18 +48,18 @@ public class AdminController {
 		return "admin/adminUser";
 	}
 	
-	/* 병원 사용자 */
+	/* 승인된 병원 사용자 */
 	@GetMapping("/admin/hospital")
 	public String hospital(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-		Page<Hospital> hospitallist = aservice.findByhospitalStatus(pageNo, 5);
+		Page<Hospital> hospitallist = aservice.findByhospitalStatus("b2", pageNo, 5);
 		model.addAttribute("list", hospitallist);
 		return "admin/adminHospital";
 	}
-	/* 병원 사용자 승인 리스트 */
+	/* 병원 사용자 승인 대기 리스트 */
 	@GetMapping("/admin/hospital/grant")
-	public String findByhospitalStatus(Model model) {
-		List<Hospital> grantlist = hrepo.findAll();
-		model.addAttribute("grantlist", grantlist);
+	public String findByhospitalStatus(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+		Page<Hospital> grantlist = aservice.findByhospitalStatus("b1", pageNo, 5);
+		model.addAttribute("grantlisth", grantlist);
 		return "admin/adminHospitalGrant";
 	}
 	
@@ -71,17 +74,17 @@ public class AdminController {
 	
 	/* 약국 사용자 */
 	@GetMapping("/admin/pharmacy")
-	public String pharmacy(@RequestParam(required = false, defaultValue = "0") int pageNo,Model model) {
-		Page<Pharmacy> pharmacylist = aservice.findBypharmacyStatus(pageNo, 5);
+	public String pharmacy(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+		Page<Pharmacy> pharmacylist = aservice.findBypharmacyStatus("b2", pageNo, 5);
 		model.addAttribute("list", pharmacylist);
 		return "admin/adminPharmacy";
 	}
 	
-	/* 약국 사용자 승인 업무 */
+	/* 약국 사용자 승인 대기 리스트 */
 	@GetMapping("/admin/pharmacy/grant")
-	public String findBypharmacyStatus(Model model) {
-		Iterable<Pharmacy> grantlist = prepo.findAll();
-		model.addAttribute("grantlist", grantlist);
+	public String findBypharmacyStatus(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+		Page<Pharmacy> grantlist = aservice.findBypharmacyStatus("b1", pageNo, 5);
+		model.addAttribute("grantlistp", grantlist);
 		return "admin/adminPharmacyGrant";
 	}
 	

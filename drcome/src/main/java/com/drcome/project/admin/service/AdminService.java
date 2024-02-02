@@ -9,9 +9,8 @@ import com.drcome.project.admin.domain.Usertable;
 public interface AdminService {
 
 	public Page<Usertable> getuserAll(int pageNo, int pageSize);
-	public Page<Hospital> findByhospitalStatus(int pageNo, int pageSize);
-	public Page<Pharmacy> findBypharmacyStatus(int pageNo, int pageSize);
+	public Page<Hospital> findByhospitalStatus(String hstatus, int pageNo, int pageSize);
+	public Page<Pharmacy> findBypharmacyStatus(String pstatus, int pageNo, int pageSize);
 	public Hospital updateStatus(String hospitalId);
 	public Pharmacy updatePharmacyStatus(String PharmacyId);
-	/* public Page<Usertable> getEntitiesWithPaging(int pageNo, int pageSize); */
 }

@@ -49,14 +49,14 @@ public class AdminServiceImpl implements AdminService {
 	}
 
 	@Override
-	public Page<Hospital> findByhospitalStatus(int pageNo, int pageSize) {
+	public Page<Hospital> findByhospitalStatus(String hospitalStatus, int pageNo, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
-		return hrepo.findAll(pageable);
+		return hrepo.findByhospitalStatus(hospitalStatus, pageable);
 	}
 
 	@Override
-	public Page<Pharmacy> findBypharmacyStatus(int pageNo, int pageSize) {
+	public Page<Pharmacy> findBypharmacyStatus(String phamacyStatus, int pageNo, int pageSize) {
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
-		return prepo.findAll(pageable);
+		return prepo.findBypharmacyStatus(phamacyStatus, pageable);
 	}
 }

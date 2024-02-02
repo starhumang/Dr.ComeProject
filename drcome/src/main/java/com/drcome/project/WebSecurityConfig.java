@@ -37,6 +37,7 @@ public class WebSecurityConfig {
 	
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+		http.csrf().disable();
 		http.authorizeHttpRequests((requests) -> requests
 				.antMatchers("/**").permitAll()
 				//.antMatchers("/", "/home", "/userjoin").permitAll() // 나중에 이걸로 바꿔야함

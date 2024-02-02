@@ -5,7 +5,7 @@
 <mapper namespace="com.drcome.project.pharmacy.mapper.PharmacyMapper">
 	<!-- 약국 상세 조회 -->
 	<select id="selectPharmacyInfo" resultType="PharmacyVO">
-		SELECT pharmacy_id
+		SELECT   pharmacy_id
 		       , pharmacy_name
 		       , address
 		       , pharmacy_phone
@@ -19,12 +19,13 @@
 		       , opentime
 		       , closetime
 		       , joindate
-		FROM PHARMACY
-		WHERE pharmacy_id = #{pharmacyId}
+		  FROM PHARMACY
+		 WHERE pharmacy_id = #{pharmacyId}
 	</select>
 	<!-- 약국별 처방 현황 조회 -->
 	<select id="selectPrescriptionList" resultType="Map">
-		SELECT c.patient_no                         "patientNo"
+		SELECT   c.patient_no               "patientNo"
+			   , c.clinic_no                "clinicNo"
                , c.hospital_id              "hospitalId"
 		       , c.reserve_no               "reserveNo"
                , c.perscription_yn          "perscriptionYn"
@@ -39,16 +40,17 @@
 		       , c.clinic_date        "perscriptionDate"
                , s.send_status              "sendStatus"
 		       , s.rejection                "rejection"
-		FROM clinic c 
-		LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
-		JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
-        JOIN hospital h ON c.hospital_id = h.hospital_id
-        JOIN reservation r ON c.reserve_no = r.reserve_no
-        JOIN doctor d ON r.doctor_no = d.doctor_no
-        JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
-        WHERE s.print_status = '출력대기'
-        AND s.send_status = 'Y'
-        AND s.pharmacy_id = #{pharmacyId}
+		  FROM clinic c 
+		  LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
+		  JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
+          JOIN hospital h ON c.hospital_id = h.hospital_id
+          JOIN reservation r ON c.reserve_no = r.reserve_no
+          JOIN doctor d ON r.doctor_no = d.doctor_no
+          JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+          WHERE s.print_status = '출력대기'
+          AND s.send_status = 'Y'
+          AND to_char(c.clinic_date, 'yyyy-mm-dd' ) = #{date}
+          AND s.pharmacy_id = #{pharmacyId}
 	</select>
 	<!-- 약 주성분 검색 -->
 	<select id="searchMedicine" resultType="MedicineVO">
@@ -56,7 +58,18 @@
 			   , medicine_name
 			   , ingredient
 			   , entp_name 
-		FROM medicine
-		WHERE ingredient LIKE '%{#keyword}%'
+		  FROM medicine
+		 WHERE ingredient LIKE '%{#keyword}%'
+	</select>
+	<!-- 처방전 미리보기 -->
+	<select id="perscription"
+		resultType="PharmacySelectVO">
+		SELECT medicine_name
+			   ,dosage
+		       ,dose_cnt
+		       ,dose_day
+		  FROM perscription p join medicine d
+		    ON (p.medicine_no = d.medicine_no)
+		 WHERE clinic_no =#{clinicNo}
 	</select>
 </mapper>

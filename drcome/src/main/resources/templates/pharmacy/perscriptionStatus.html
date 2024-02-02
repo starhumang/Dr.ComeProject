@@ -18,17 +18,17 @@
 }
 </style>
 </head>
-
 <body>
 	<div layout:fragment="content">
 		<div class="container-fluid">
 			<div class="head_info">
 				<h4>처방현황</h4>
 				<p>
-					<i class="fas fa-fw fa-calendar" data-toggle="modal"
+					<!-- <i class="fas fa-fw fa-calendar" data-toggle="modal"
 						data-target="#calendarModal"></i> 현재날짜 : <span
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
-						id="datepicker" th:name="datepicker"></span>
+						id="datepicker" th:name="datepicker"></span> -->
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜  <input type="text" id="datepicker">
 				</p>
 			</div>
 
@@ -66,7 +66,8 @@
 							<td th:text="${plist.doctorName}"></td>
 							<td
 								th:text="${#dates.format(plist.perscriptionDate, 'yyyy-MM-dd')}"></td>
-							<td>이미지</td>
+							<td><button id="viewper" th:onclick="viewPer([[${plist.clinicNo}]])" type="button" class="btn btn-info"
+								data-bs-toggle="modal" data-bs-target="#exampleModalCenter">미리보기</button></td>
 							<td><button>출력하기</button></td>
 							<td><button id="returnbtn" data-bs-toggle="modal"
 									data-bs-target="#returnModal">반환</button></td>
@@ -123,38 +124,118 @@
 				</div>
 			</div>
 		</div>
-		<!-- 달력 모달 -->
-		<!-- 모달 창 추가 -->
-		<div class="modal" id="calendarModal" tabindex="-1" role="dialog">
-			<div class="modal-dialog" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title">Calendar Modal</h5>
-						<button type="button" class="close" data-dismiss="modal"
-							aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<!-- 달력을 표시할 부분 -->
-						<!-- 달력 라이브러리를 사용하거나 직접 구현할 수 있음 -->
-						<!-- 이 예제에서는 datepicker를 사용 -->
-						<input type="text" id="datepicker">
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary"
-							data-dismiss="modal">Close</button>
-						<button type="button" class="btn btn-primary">Save
-							changes</button>
-					</div>
-				</div>
-			</div>
-		</div>
+		<!-- 처방전 미리보기 모달 -->
+		<!-- modal -->
+        <div
+          class="modal fade"
+          id="exampleModalCenter"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalCenterTitle"
+          aria-hidden="false"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                  처방전 상세보기
+                </h5>
+              </div>
+              <div class="modal-body">
+                <table id="modalTable">
+                  <tr>
+                    <th>약품명</th>
+                    <th>투약량</th>
+                    <th>횟수</th>
+                    <th>일수</th>
+                  </tr>
+                </table>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+		<!--  -->
 	</div>
 </body>
 </html>
 <script>
-	$(function() {
-		$("#datepicker").datepicker();
-	});
+$(function() {
+    //input을 datepicker로 선언
+    $('#datepicker').datepicker({
+        dateFormat: 'yy-mm-dd' //달력 날짜 형태
+        ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+        ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
+        ,changeYear: true //option값 년 선택 가능
+        ,changeMonth: true //option값  월 선택 가능            
+        ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
+        ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
+        ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
+        ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
+        ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 Tooltip
+        ,minDate: "-5Y" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+        ,maxDate: "D" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)  
+    });                    
+    
+    //초기값을 오늘 날짜로 설정해줘야 합니다.
+    $('#datepicker').datepicker('setDate', 'today', {dateFormat: 'yyyy-MM-dd'}); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)            
+});
+
+function viewPer(no) {
+    console.log(no);
+    const modalTable = $("#modalTable");
+    $.ajax(`/perscription/${no}`) //fetch
+      .done((result) => {
+        modalTable.empty();
+        modalTable.append(
+          `<tr>
+                <th>약품명</th>
+                <th>투약량</th>
+                <th>횟수</th>
+                <th>일수</th>
+            </tr>`
+        );
+
+        for (let i of result) {
+          modalTable.append(
+            `<tr>
+                <td>${i.medicineName}</td>
+                <td>${i.dosage}</td>
+                <td>${i.doseCnt}</td>
+                <td>${i.doseDay}</td>
+            </tr>`
+          );
+        }
+      })
+      .fail((err) => console.log(err)); //catch
+  }
+
+/* function sendDate() {
+    var dateValue = $("#datepicker").val();
+
+    $.ajax({
+        type: "GET", 
+        url: `/pharmacy/status/{dateValue}`, // 백엔드 엔드포인트로 교체
+        success: function (response) {
+            console.log("Ajax 요청 성공");
+            maketabl4e
+        },
+        error: function (error) {
+            console.error("Ajax 요청 실패:", error);
+        }
+    });
+}
+
+$(document).ready(function() {
+    sendDate(); 
+}); */
 </script>

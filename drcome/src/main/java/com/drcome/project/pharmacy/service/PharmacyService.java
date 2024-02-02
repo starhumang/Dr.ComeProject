@@ -1,9 +1,11 @@
 package com.drcome.project.pharmacy.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import com.drcome.project.pharmacy.MedicineVO;
+import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
 public interface PharmacyService {
@@ -12,8 +14,11 @@ public interface PharmacyService {
 	public PharmacyVO selectPharmacyInfo(PharmacyVO pharmacyVO);
 	
 	/* 약국별 처방 현황 */
-	public List<Map<String, Object>> selectPrescriptionList(String pharmacyId);
+	public List<Map<String, Object>> selectPrescriptionList(String date, String pharmacyId);
 	
 	/* 약 주성분 검색 */
 	public List<MedicineVO> findMedicine(String keyword);
+	
+	/* 환자 처방전 조회 */ 
+	public List<PharmacySelectVO> getPerscription(PharmacySelectVO vo);
 }

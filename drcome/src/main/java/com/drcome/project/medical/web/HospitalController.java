@@ -1,5 +1,6 @@
 package com.drcome.project.medical.web;
 
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +23,8 @@ public class HospitalController {
 	/* 공통 */
 	//공통 병원 정보 따로 빼기
 	@ModelAttribute("hospitalSel")
-	public Hospital getServerTime() {
-		String hospitalId = "krrlo";
+	public Hospital getServerTime(Principal principal) {
+		String hospitalId = principal.getName();
 	    Hospital hosSel = hospitalService.findByhospitalId(hospitalId);
 	    return hosSel;
 	}	
@@ -32,8 +33,8 @@ public class HospitalController {
 	//today 진료 내역 및 예약 내역 리스트 -- 1
 	//QNA 답변 -- 2
 	@GetMapping(value = {"/hospital", "/hospitalHome"})
-	public String home(String hospitalId, Model model) {
-		hospitalId = "krrlo";
+	public String home(Principal principal, String hospitalId, Model model) {
+		hospitalId = principal.getName();
 		List<Map<String, Object>> tolist = hospitalService.getTodayReserve(hospitalId);
 		List<Map<String, Object>> QnAO = hospitalService.getQnAO(hospitalId);
 		List<Map<String, Object>> QnAX = hospitalService.getQnAX(hospitalId);
@@ -53,8 +54,8 @@ public class HospitalController {
 	/* 병원프로필 */
 	//병원 단건조회(id로) + 병원-의사 조회
 	@GetMapping("/hospital/myProfile")
-	public String findHospital(String hospitalId, Model model) {
-		hospitalId = "krrlo";
+	public String findHospital(Principal principal, String hospitalId, Model model) {
+		hospitalId = principal.getName();
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId);
 		System.out.println(docList);
 		model.addAttribute("docList", docList);
@@ -64,8 +65,8 @@ public class HospitalController {
 	/* 환자리스트 */
 	//병원 환자 전체 조회
 	@GetMapping("/hospital/patientList")
-	public String searchPatient(String hospitalId, Model model) {
-		hospitalId = "krrlo";
+	public String searchPatient(Principal principal, String hospitalId, Model model) {
+		hospitalId = principal.getName();
 		List<Map<String, Object>> palist = hospitalService.getPaientList(hospitalId);
 		model.addAttribute("palist", palist);
 		return "hospital/patientList";
@@ -73,8 +74,8 @@ public class HospitalController {
 	//@RequestParam("userId") Long firstPageId
 	//병원 환자별 상세내역
 	@GetMapping("/hospital/patientList/patientDetail")
-	public String detailPatient(String hospitalId, Integer patientNo, Model model) {
-		hospitalId = "krrlo";
+	public String detailPatient(Principal principal, String hospitalId, Integer patientNo, Model model) {
+		hospitalId = principal.getName();
 		System.out.println("Received patientNo: " + patientNo);
 		
 		List<Map<String, Object>> detailPList = hospitalService.getPaientDetailList(hospitalId, patientNo);

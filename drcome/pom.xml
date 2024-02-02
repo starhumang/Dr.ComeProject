@@ -20,6 +20,8 @@
 
 	<dependencies>
 
+		
+
 		<!-- 스프링부트 -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -96,6 +98,13 @@
 			<version>2.3.2</version>
 			<scope>test</scope>
 		</dependency>
+		
+		<!-- COOLSMS -->
+		<dependency>
+            <groupId>net.nurigo</groupId>
+            <artifactId>sdk</artifactId>
+            <version>4.2.7</version>
+        </dependency>
 
 	</dependencies>
 

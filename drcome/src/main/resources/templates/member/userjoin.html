@@ -6,17 +6,199 @@
 >
 	<head>
 		<meta charset="UTF-8" />
-		<title>회원가입</title>
+		<title>사용자 회원가입</title>
+
+		<style>
+			.error-message {
+				color: red;
+				font-size: 0.8em;
+			}
+
+			.modal {
+				text-align: center;
+			}
+
+			.modal-dialog {
+				display: flex !important;
+				align-items: center;
+				justify-content: center;
+			}
+
+			.gender-radio {
+				display: flex;
+				justify-content: space-between;
+				width: 200px;
+				margin: 10px 0;
+			}
+
+			.gender-radio label {
+				display: flex;
+				align-items: center;
+			}
+		</style>
 
 		<script type="text/javascript">
+			function validateForm() {
+				return (
+					uploadImg() &&
+					checkId() &&
+					checkPhone() &&
+					checkPassword() &&
+					checkPasswordMatch() &&
+					checkName() &&
+					checkBirthday() &&
+					checkGender() &&
+					checkAgreement()
+				);
+			}
+
 			function checkId() {
-				alert('꺄앆');
+				let userId = document.getElementById('id').value;
+				let idErrorMessage = document.getElementById('idErrorMessage');
+
+				if (userId === '') {
+					idErrorMessage.innerHTML = '아이디를 입력하세요.';
+					idErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				let idRegex = /^[a-zA-Z0-9]{5,20}$/;
+				if (!idRegex.test(userId)) {
+					idErrorMessage.innerHTML = '아이디는 5자에서 20자의 영문 대소문자 또는 숫자로 입력하세요.';
+					idErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				// 중복 확인 추가...
+
+				idErrorMessage.innerHTML = '';
+				return true;
 			}
-			function checkPhone() {
-				alert('으악');
+
+			function formatPhoneNumber() {
+				let phoneInput = document.getElementById('phone');
+				let inputValue = phoneInput.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+				let formattedValue = '';
+
+				if (inputValue.length > 3) {
+					formattedValue += inputValue.substr(0, 3) + '-';
+					if (inputValue.length > 6) {
+						formattedValue += inputValue.substr(3, 4) + '-' + inputValue.substr(7);
+					} else {
+						formattedValue += inputValue.substr(3);
+					}
+				} else {
+					formattedValue = inputValue;
+				}
+
+				phoneInput.value = formattedValue;
 			}
+
+			function checkPassword() {
+				let password = document.getElementById('pw').value;
+				let passwordErrorMessage = document.getElementById('pwErrorMessage');
+
+				if (password === '') {
+					passwordErrorMessage.innerHTML = '비밀번호를 입력하세요.';
+					passwordErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				let passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+				if (!passwordRegex.test(password)) {
+					passwordErrorMessage.innerHTML =
+						'비밀번호는 최소 8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다.';
+					passwordErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				passwordErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkPasswordMatch() {
+				let password = document.getElementById('pw').value;
+				let rePassword = document.getElementById('rePw').value;
+				let rePasswordErrorMessage = document.getElementById('rePasswordErrorMessage');
+
+				if (password !== rePassword) {
+					rePasswordErrorMessage.innerHTML = '비밀번호가 일치하지 않습니다.';
+					rePasswordErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				rePasswordErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkName() {
+				let name = document.getElementById('name').value;
+				let nameErrorMessage = document.getElementById('nameErrorMessage');
+
+				if (name === '') {
+					nameErrorMessage.innerHTML = '이름을 입력하세요.';
+					nameErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				nameErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkBirthday() {
+				let birthday = document.getElementById('birthDay').value;
+				let birthdayErrorMessage = document.getElementById('birthdayErrorMessage');
+
+				if (birthday === '') {
+					birthdayErrorMessage.innerHTML = '생년월일을 입력하세요.';
+					birthdayErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				birthdayErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkGender() {
+				let gender = document.querySelector('input[name="gender"]:checked');
+				let genderErrorMessage = document.getElementById('genderErrorMessage');
+
+				if (!gender) {
+					genderErrorMessage.innerHTML = '성별을 선택하세요.';
+					genderErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				genderErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkAgreement() {
+				let agreement = document.getElementById('invalidCheck').checked;
+				let agreementErrorMessage = document.getElementById('agreementErrorMessage');
+
+				if (!agreement) {
+					agreementErrorMessage.innerHTML = '약관에 동의해야 합니다.';
+					agreementErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				agreementErrorMessage.innerHTML = '';
+				return true;
+			}
+
 			function openModal() {
-				alert('크아악');
+				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+				myModal.show();
+			}
+
+			function uploadImg() {
+				let formData = new FormData();
+				let inputFile = document.querySelector('#myImg').files[0];
+				for (var i = 0; i < inputFile.length; i++) {
+					console.log(inputFile[i]);
+					formData.append('uploadFiles', files[i]);
+				}
 			}
 		</script>
 	</head>
@@ -29,18 +211,26 @@
 						<div class="form-content">
 							<div class="form-items">
 								<br />
-								<h3>회원가입</h3>
-								<form th:action="@{/userjoin}" method="post">
+								<h3>사용자 회원가입</h3>
+								<form
+									th:action="@{/userjoin}"
+									method="post"
+									onsubmit="return validateForm()"
+									enctype="multipart/form-data"
+								>
 									<br />
 									<div class="col-md-12">
-										아이디<input
+										아이디
+										<input
 											class="form-control"
 											type="text"
 											name="userId"
 											id="id"
 											placeholder="아이디를 입력하세요"
 											required
+											oninput="checkId()"
 										/>
+										<span id="idErrorMessage" class="error-message"></span>
 										<input
 											type="button"
 											id="userid"
@@ -50,44 +240,50 @@
 										/>
 									</div>
 
-									<br />
 									<div class="col-md-12">
-										비밀번호<input
+										비밀번호
+										<input
 											class="form-control"
 											type="password"
 											name="userPw"
 											id="pw"
 											placeholder="비밀번호를 입력하세요"
 											required
+											oninput="checkPassword()"
 										/>
+										<span id="pwErrorMessage" class="error-message"></span>
 									</div>
 
-									<br />
 									<div class="col-md-12">
-										비밀번호 확인<input
+										비밀번호 확인
+										<input
 											class="form-control"
 											type="password"
 											id="rePw"
-											placeholder="비밀번호를 재입력하세요"
+											placeholder="비밀번호를 다시 입력하세요"
 											required
+											oninput="checkPasswordMatch()"
 										/>
+										<span id="rePasswordErrorMessage" class="error-message"></span>
 									</div>
 
-									<br />
 									<div class="col-md-12">
-										이름<input
+										이름
+										<input
 											class="form-control"
 											type="text"
 											name="userName"
 											id="name"
 											placeholder="이름을 입력하세요"
 											required
+											oninput="checkName()"
 										/>
+										<span id="nameErrorMessage" class="error-message"></span>
 									</div>
 
-									<br />
 									<div class="col-md-12">
-										전화번호<input
+										전화번호
+										<input
 											class="form-control"
 											type="tel"
 											name="phone"
@@ -95,7 +291,9 @@
 											placeholder="전화번호를 입력하세요"
 											required
 											maxlength="13"
+											oninput="formatPhoneNumber()"
 										/>
+										<span id="phoneErrorMessage" class="error-message"></span>
 										<input
 											type="button"
 											id="tel"
@@ -105,31 +303,50 @@
 										/>
 									</div>
 
-									<br />
 									<div class="col-md-12">
-										생년월일<input
+										생년월일
+										<input
 											class="form-control"
 											type="date"
 											name="birthday"
 											id="birthDay"
 											required
+											oninput="checkBirthday()"
 										/>
+										<span id="birthdayErrorMessage" class="error-message"></span>
 									</div>
 
-									<br />
 									<div class="col-md-12">
-										<label
-											>성별
-											<br />
-											남성
-											<input class="form-control" type="radio" name="gender" value="M" /> 여성
-											<input class="form-control" type="radio" name="gender" value="F" />
-										</label>
+										성별
+										<div class="gender-radio">
+											<label class="form-check-label">
+												<input
+													class="form-check-input"
+													type="radio"
+													name="gender"
+													id="male"
+													value="M"
+												/>
+												남성
+											</label>
+											<label class="form-check-label">
+												<input
+													class="form-check-input"
+													type="radio"
+													name="gender"
+													id="female"
+													value="F"
+												/>
+												여성
+											</label>
+										</div>
+										<span id="genderErrorMessage" class="error-message"></span>
 									</div>
 
 									<br />
 									<div class="col-md-12">
 										<label>신분증 사진<br /></label>
+										<input type="file" id="myImg" name="uploadFiles" multiple />
 									</div>
 
 									<br />
@@ -149,16 +366,6 @@
 										<input class="form-check-input" type="checkbox" id="invalidCheck" required />
 									</div>
 
-									<!-- Button trigger modal -->
-									<button
-										type="button"
-										class="btn btn-primary"
-										data-bs-toggle="modal"
-										data-bs-target="#exampleModal"
-									>
-										Open Modal
-									</button>
-
 									<br />
 									<input type="submit" value="회원가입" class="btn btn-danger" />
 								</form>
@@ -172,16 +379,9 @@
 			<div class="modal" tabindex="-1" id="exampleModal">
 				<div class="modal-dialog">
 					<div class="modal-content">
-						<div class="modal-header">
-							<h5 class="modal-title">Modal title</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div>
 						<div class="modal-body">
-							<p>Modal body text goes here.</p>
-						</div>
-						<div class="modal-footer">
+							<p>대충 개인정보약관 내용</p>
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-							<button type="button" class="btn btn-primary">Save changes</button>
 						</div>
 					</div>
 				</div>

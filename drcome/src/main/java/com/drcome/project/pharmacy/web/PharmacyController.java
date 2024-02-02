@@ -1,6 +1,5 @@
 package com.drcome.project.pharmacy.web;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -57,13 +56,6 @@ public class PharmacyController {
 	 * return pservice.selectPrescriptionList(date, pharmacyId); }
 	 */
 
-	@GetMapping("perscription/{no}")
-	@ResponseBody
-	public List<PharmacySelectVO> perscriptionInfo(@PathVariable Integer no) {
-		PharmacySelectVO pharmacyVO = new PharmacySelectVO();
-		pharmacyVO.setClinicNo(no);
-		return pservice.getPerscription(pharmacyVO);
-	}
 
 	@ModelAttribute("pharmacy")
 	public PharmacyVO getServer() {

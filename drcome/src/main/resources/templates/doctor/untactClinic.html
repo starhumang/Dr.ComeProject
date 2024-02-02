@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{hospital/hospitalLayout}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>비대면 진료페이지</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <style>
+      .title {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 10px;
+      }
+
+      .title-right {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+      }
+
+      p {
+        margin-bottom: 0;
+      }
+
+      #full {
+        display: flex;
+        justify-content: space-around;
+      }
+
+      .select {
+        padding: 20px 10px;
+      }
+      .select input[type="radio"] {
+        display: none;
+      }
+      .select input[type="radio"] + label {
+        display: inline-block;
+        cursor: pointer;
+        height: 35px;
+        width: 120px;
+        border: 1px solid #858796;
+        border-radius: 7px;
+        line-height: 35px;
+        text-align: center;
+        /* font-weight: bold; */
+        font-size: 13px;
+      }
+      .select input[type="radio"] + label {
+        background-color: #ffffff;
+        color: #858796;
+      }
+      .select input[type="radio"]:checked + label {
+        background-color: #4e73df;
+        color: #fff;
+      }
+
+      input[type="checkbox"] {
+        zoom: 1.4;
+      }
+      #myButton {
+        float: right;
+      }
+
+      #perscription {
+        display: none;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div layout:fragment="content">
+      <!--container-fluid-->
+      <div class="container-fluid">
+        <!--title-->
+        <div class="title" style="background-color: #06bbcc; padding: 5px">
+          <h3
+            style="
+              width: 80%;
+              text-align: center;
+              margin-bottom: 0;
+              padding-left: 120px;
+              color: white;
+            "
+          >
+            비대면 진료중
+          </h3>
+
+          <!--title-right-->
+          <div class="title-right">
+            <p style="margin-right: 15px">
+              <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+              <span
+                th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+              ></span>
+            </p>
+            <button class="btn btn-dark" style="margin-right: 15px">
+              진료종료
+            </button>
+          </div>
+          <!--title-right--->
+        </div>
+        <!--title-->
+
+        <!--오왼-->
+        <div id="full" style="margin: 3%">
+          <!--왼쪽-->
+          <div id="left" style="width: 49%; margin-right: 7%">
+            <!--비디오-->
+            <div
+              id="video"
+              style="width: 100%; display: flex; justify-content: center"
+            >
+              <video id="localVideo" autoplay width="48%" height="52%"></video>
+              <video id="remoteVideo" autoplay width="48%" height="52%"></video>
+            </div>
+            <!--비디오-->
+
+            <!--진료기록-->
+            <div
+              id="clinic"
+              style="width: 100%; justify-content: center; margin-top: 20%"
+            >
+              <th:block th:if="${#lists.size(clist)<1}">
+                <div>초진입니다</div>
+              </th:block>
+
+              <th:block th:if="${#lists.size(clist)>0}">
+                <div>
+                  <div style="margin-bottom: 15px">
+                    <i class="bi bi-clipboard-data fa-lg"></i>
+                    <span>
+                      <h5
+                        style="
+                          display: inline-block;
+                          vertical-align: middle;
+                          margin-left: 10px;
+                          margin-bottom: 0;
+                          width: 200px;
+                          color: #858796;
+                        "
+                      >
+                        진료 기록
+                      </h5>
+                    </span>
+                  </div>
+                  <table class="table">
+                    <tr>
+                      <th>no</th>
+                      <th>진료일자</th>
+                      <th>증상</th>
+                      <th>기타특이사항</th>
+                      <th>처방전</th>
+                    </tr>
+
+                    <tr th:each="c,status : ${clist}">
+                      <td th:text="${status.count}"></td>
+                      <td
+                        th:text="${#dates.format(c.clinicDate, 'yyyy-MM-dd')}"
+                      ></td>
+                      <td th:text="${c.clinicSymptom}"></td>
+                      <td th:text="${c.specificity}"></td>
+                      <td>
+                        <button
+                          id="viewper"
+                          th:onclick="viewPer([[${c.clinicNo}]])"
+                          type="button"
+                          class="btn btn-info"
+                          data-bs-toggle="modal"
+                          data-bs-target="#exampleModalCenter"
+                        >
+                          처방전보기
+                        </button>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </th:block>
+            </div>
+            <!--진료기록-->
+          </div>
+          <!--왼쪽-->
+
+          <!--오른쪽-->
+          <div id="right" style="width: 49%">
+            <!--기본정보-->
+            <div style="margin-bottom: 15%">
+              <div style="margin-bottom: 15px">
+                <i class="bi bi-person-circle fa-lg"></i>
+                <span>
+                  <h5
+                    style="
+                      display: inline-block;
+                      vertical-align: middle;
+                      margin-left: 10px;
+                      margin-bottom: 0;
+                      width: 200px;
+                      color: #858796;
+                    "
+                  >
+                    기본 정보
+                  </h5>
+                </span>
+              </div>
+              <table class="table">
+                <tr>
+                  <th>이름</th>
+                  <th>성별</th>
+                  <th>생년월일</th>
+                  <th>증상</th>
+                </tr>
+
+                <tr>
+                  <td th:text="${pInfo.userName}"></td>
+                  <td th:text="${pInfo.gender}"></td>
+                  <td
+                    th:text="${#dates.format(pInfo.birthday, 'yyyy-MM-dd')}"
+                  ></td>
+                  <td th:text="${pInfo.symptom}"></td>
+                </tr>
+              </table>
+            </div>
+            <!--기본정보-->
+
+            <!--진료form-->
+            <div>
+              <div style="margin-bottom: 15px">
+                <i class="bi bi-pencil-square fa-lg"></i>
+                <span>
+                  <h5
+                    style="
+                      display: inline-block;
+                      vertical-align: middle;
+                      margin-left: 10px;
+                      margin-bottom: 0;
+                      width: 200px;
+                      color: #858796;
+                    "
+                  >
+                    진단
+                  </h5>
+                </span>
+              </div>
+              <form action="saveClinic" method="post">
+                <!--필수-->
+                <div style="margin-bottom: 20px">
+                  <label style="color: #858796; font-size: 1rem">
+                    증상
+                    <textarea
+                      rows="4"
+                      cols="80"
+                      class="form-control"
+                      name="clinicSymptom"
+                      style="margin-top: 10px"
+                    ></textarea>
+                  </label>
+                  <br />
+                  <br />
+                  <label style="color: #858796; font-size: 1rem">
+                    특이사항
+                    <textarea
+                      rows="4"
+                      cols="80"
+                      class="form-control"
+                      name="specificity"
+                      style="margin-top: 10px"
+                    ></textarea>
+                  </label>
+                  <br />
+                  <br />
+                  <!--급여여부-->
+                  <div
+                    class="select"
+                    style="
+                      text-align: center;
+                      margin-top: 3%;
+                      margin-bottom: 3%;
+                    "
+                  >
+                    <input type="radio" id="select" name="pay" />
+                    <label for="select" style="margin-right: 10%">급여</label>
+                    <input type="radio" id="select2" name="pay" />
+                    <label for="select2">비급여</label>
+                  </div>
+                  <!--급여여부-->
+                </div>
+                <!--필수-->
+
+                <input
+                  type="checkbox"
+                  id="check_btn"
+                  style="margin-right: 5px"
+                /><label for="check_btn" style="color: #858796; font-size: 1rem"
+                  >처방전 없음</label
+                >
+
+                <!--약전체-->
+                <div style="margin-top: 25px" id="pform">
+                  <!--제목-->
+                  <div style="margin-bottom: 15px">
+                    <i class="bi bi-bandaid"></i>
+                    <span>
+                      <h5
+                        style="
+                          display: inline-block;
+                          vertical-align: middle;
+                          margin-left: 10px;
+                          margin-bottom: 0;
+                          width: 200px;
+                          color: #858796;
+                        "
+                      >
+                        약 처방
+                      </h5>
+                    </span>
+                  </div>
+                  <!--제목-->
+
+                  <!--약검색-->
+                  <div
+                    class="row align-items-center"
+                    style="
+                      margin: 10px;
+                      justify-content: center;
+                      margin-top: 10px;
+                    "
+                  >
+                    <!--검색창-->
+                    <div class="col-7">
+                      <input
+                        id="search"
+                        class="form-control border-1 py-3 ps-4 pe-5"
+                        type="text"
+                        placeholder="약 이름 입력"
+                        onkeydown="if(event.keyCode==13) event.preventDefault();"
+                      />
+                    </div>
+                    <!--검색창-->
+
+                    <!--버튼-->
+                    <div class="col-auto">
+                      <button
+                        onclick="searchMedicine()"
+                        type="button"
+                        class="btn btn-primary py-2"
+                      >
+                        검색
+                      </button>
+                    </div>
+                    <!--버튼-->
+                  </div>
+                  <!--약검색-->
+
+                  <!--검색결과-->
+                  <table
+                    class="table"
+                    id="msearch"
+                    style="margin-left: 40px; margin-top: 20px; width: 80%"
+                  ></table>
+                  <!--검색결과-->
+
+                  <!--추가된 약 -->
+
+                  <table id="perscription" class="table" style="margin-top: 5%">
+                    <thead>
+                      <tr>
+                        <th>약품명</th>
+                        <th>투약량</th>
+                        <th>횟수</th>
+                        <th>일수</th>
+                      </tr>
+                    </thead>
+                  </table>
+
+                  <!--추가된 약 -->
+                </div>
+                <!--약전체 -->
+
+                <br />
+
+                <div style="text-align: center">
+                  <button class="btn btn-info" type="submit">
+                    진료기록저장
+                  </button>
+                </div>
+              </form>
+            </div>
+            <!--진료form-->
+          </div>
+          <!--오른쪽-->
+        </div>
+        <!--오왼-->
+
+        <!--bottom-->
+        <div
+          style="
+            width: 100%;
+            height: 43px;
+            margin-bottom: 0;
+            margin-top: 15px;
+            padding-left: 120px;
+            background-color: #06bbcc;
+          "
+        ></div>
+        <!--bottom-->
+
+        <!-- modal -->
+        <div
+          class="modal fade"
+          id="exampleModalCenter"
+          tabindex="-1"
+          role="dialog"
+          aria-labelledby="exampleModalCenterTitle"
+          aria-hidden="false"
+        >
+          <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">
+                  처방전 상세보기
+                </h5>
+              </div>
+              <div class="modal-body">
+                <table id="modalTable"></table>
+              </div>
+
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- -->
+
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+        <script src="/js/socket.js"></script>
+
+        <script>
+          //체크하면 약 폼 숨기기
+          const cb = document.querySelector("#check_btn");
+          cb.addEventListener("change", (event) => {
+            const value = event.target.checked;
+            console.log(value);
+            if (value == true) {
+              let pform = document.getElementById("pform");
+              pform.style.display = "none";
+            } else {
+              pform.style.display = "block";
+            }
+          });
+
+          //처방전상세보기
+          function viewPer(no) {
+            console.log(no);
+            const modalTable = $("#modalTable");
+            $.ajax(`/perscription/${no}`) //fetch
+              .done((result) => {
+                modalTable.empty();
+                modalTable.append(
+                  `<tr>
+                        <th>약품명</th>
+                        <th>투약량</th>
+                        <th>횟수</th>
+                        <th>일수</th>
+                    </tr>`
+                );
+
+                for (let i of result) {
+                  modalTable.append(
+                    `<tr>
+                        <td>${i.medicineName}</td>
+                        <td>${i.dosage}</td>
+                        <td>${i.doseCnt}</td>
+                        <td>${i.doseDay}</td>
+                    </tr>`
+                  );
+                }
+              })
+              .fail((err) => console.log(err)); //catch
+          }
+
+          //약검색하기
+          function searchMedicine() {
+            let mname = document.getElementById("search").value;
+            //console.log(mname);
+            const xhtp = new XMLHttpRequest();
+            xhtp.open("get", `/medicine?medicineName=${mname}`);
+            xhtp.send();
+
+            xhtp.onload = function () {
+              console.log(xhtp.responseText);
+              //검색된 약 리스트
+              let array = JSON.parse(xhtp.responseText);
+              console.log(array);
+
+              let table = (document.getElementById("msearch").innerHTML = "");
+
+              //약 list출력
+              for (let i of array) {
+                // console.log(i.medicineName);
+                table = document.getElementById("msearch");
+                let tr = document.createElement("tr");
+                let td = document.createElement("td");
+                td.innerHTML = i.medicineName;
+                tr.appendChild(td);
+                let btn = document.createElement("button");
+                btn.textContent = "추가";
+                btn.classList.add("btn", "btn-primary", "py-2");
+                btn.setAttribute("id", "myButton");
+                tr.appendChild(btn); //추가버튼
+                table.appendChild(tr);
+
+                //추가를 누르면
+                btn.addEventListener("click", function () {
+                  document.getElementById("search").value = "";
+
+                  event.preventDefault();
+                  console.log(
+                    event.target.parentNode.firstElementChild.innerHTML
+                  );
+
+                  let selectm =
+                    event.target.parentNode.firstElementChild.innerHTML;
+
+                  //선택된애 지우고
+                  event.target.parentNode.remove();
+
+                  //추가된 약 나오는 테이블
+                  let ptable = document.getElementById("perscription");
+                  ptable.style.display = "block";
+
+                  let tr = document.createElement("tr");
+                  let mtd = document.createElement("td");
+                  mtd.innerHTML = selectm;
+                  mtd.setAttribute("style", "width: 200px;");
+                  tr.appendChild(mtd);
+                  //input태그생성
+                  for (let i = 0; i < 3; i++) {
+                    let td = document.createElement("td");
+                    let input = document.createElement("input");
+                    input.type = "number";
+                    input.setAttribute("style", "width: 100px;");
+                    td.appendChild(input);
+
+                    tr.appendChild(td);
+                  }
+                  //삭제버튼생성
+                  let dbtn = document.createElement("button");
+                  dbtn.textContent = "삭제";
+                  dbtn.classList.add("btn", "btn-primary", "py-1");
+                  dbtn.setAttribute("style", "margin-top: 10px;");
+                  tr.appendChild(dbtn);
+                  //ptable에 한행 append
+                  ptable.appendChild(tr);
+
+                  dbtn.addEventListener("click", function () {
+                    event.preventDefault();
+                    event.target.parentNode.remove();
+                    if (
+                      document.getElementById("perscription").rows.length == 1
+                    ) {
+                      ptable.style.display = "none";
+                    }
+                  }); //삭제 이벤트
+                }); //추가 이벤트
+              } //for
+            };
+          }
+        </script>
+      </div>
+      <!--container-fluid-->
+    </div>
+  </body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{hospital/hospitalLayout}">
+
+<head>
+<meta charset="UTF-8">
+<title>patientList</title>
+<style>
+.head_info {
+   display: flex;
+   justify-content: space-between;
+   margin-top: 30px;
+}
+
+.search {
+   display: flex;
+   justify-content: flex-end;
+   margin-bottom: 40px;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info">
+				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+			<p>patient list</p>
+			<div class="search">
+				<!-- drop -->
+				<div style="margin-right: 5px;">
+					<select class="custom-select" aria-label="Default select example">
+						<option selected>검색유형</option>
+						<option value="1">환자번호</option>
+						<option value="2">환자이름</option>
+					</select>
+				</div>
+
+				<!-- 검색 -->
+				<div>
+					<div class="input-group">
+						<button class="btn btn-info" type="button"
+							style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+							<i class="fas fa-search fa-sm"></i>
+						</button>
+						<input type="text" class="form-control bg-light border-1 small"
+							placeholder="검색어를 입력하세요." aria-label="Search"
+							aria-describedby="basic-addon2">
+						<div class="input-group-append">
+							<button class="btn btn-info" type="button">검색하기</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- 환자리스트 -->
+			<div>
+				<table class="table">
+					<thead>
+						<tr>
+							<th>환자번호</th>
+							<th>환자이름</th>
+							<th>생년월일</th>
+							<th>성별</th>
+							<th>환자Tel</th>
+							<th>진료 및 예약</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="pl : ${palist}">
+							<td th:text="${pl.patientNo}"></td>
+							<td th:text="${pl.userName}"></td>
+							<td th:text="${#dates.format(pl.userBirthday, 'yyyy-MM-dd')}"></td>
+							<td th:text="${pl.gender}"></td>
+							<td th:text="${pl.userPhone}"></td>
+							<td><a th:href="@{/hospital/patientList/patientDetail(patientNo=${pl.patientNo})}" class="btn btn-sm btn-outline-warning">상세보기</a></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

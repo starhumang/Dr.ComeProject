@@ -1,4 +1,4 @@
-package com.drcome.project.main.service.Impl;
+package com.drcome.project.main.serviceImpl;
 
 import java.util.List;
 
@@ -24,6 +24,31 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public List<PharmacyVO> getPhaList() {
 		return mainMapper.selectPhaList();
+	}
+	
+	@Override
+	public HospitalVO getHos(String hospitalId) {
+		return mainMapper.selectHos(hospitalId);
+	}
+
+	@Override
+	public PharmacyVO getPha(String pharmacyId) {
+		return mainMapper.selectPha(pharmacyId);
+	}
+
+	@Override
+	public List<HospitalVO> searchHosList(String word) {
+		return mainMapper.searchHosList(word);
+	}
+
+	@Override
+	public List<PharmacyVO> searchPhaList(String word) {
+		return mainMapper.searchPhaList(word);
+	}
+
+	@Override
+	public List<HospitalVO> searchSubjectHos(String mainSubject) {
+		return mainMapper.searchSubjectHos(mainSubject);
 	}
 
 }

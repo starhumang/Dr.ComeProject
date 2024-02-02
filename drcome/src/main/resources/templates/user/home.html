@@ -1,88 +1,284 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-
 	layout:decorate="~{layouts/layout}">
 <head>
 <meta charset="UTF-8" />
 <title>Dr.Come</title>
 <!-- 좌표로 주소찾는 라이브러리 불러오기 -->
-<script type="text/javascript" th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
+<script type="text/javascript"
+	th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
 <!-- 주소검색 다음api -->
-<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script
+	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <style scoped>
-.ho:hover{
-	border-radius:5%;
-	background-color:#D3E6FF;
+.ho:hover {
+	border-radius: 5%;
+	background-color: #D3E6FF;
 }
-.ho{
-	text-align:center;
-	margin-right:10px;
-	margin-left:10px; 
-	padding-top:10px; 
-	width:250px; 
-	height:350px; 
+
+.ho {
+	text-align: center;
+	margin-right: 10px;
+	margin-left: 10px;
+	padding-top: 10px;
+	width: 250px;
+	height: 350px;
 	border: 3px solid #D3E6FF;
-	position:relative;
+	position: relative;
 }
-.closeBlock{
-	position:relative; 
-	background-color:#22313f; 
-	margin-right:10px;
-	margin-left:10px; 
-	padding-top:10px; 
-	left:0px;
-	top:-350px;
-	width:250px; 
-	height:350px;
-	opacity:0.6;
-	text-align:center;
-	display:none;
+
+.closeBlock {
+	position: relative;
+	background-color: #22313f;
+	margin-right: 10px;
+	margin-left: 10px;
+	padding-top: 10px;
+	left: 0px;
+	top: -350px;
+	width: 250px;
+	height: 350px;
+	opacity: 0.6;
+	text-align: center;
+	display: none;
 }
-</style>
+
+.closeBlock2 {
+	position: relative;
+	background-color: #22313f;
+	margin-right: 10px;
+	margin-left: 10px;
+	padding-top: 10px;
+	left: 0px;
+	top: -350px;
+	width: 250px;
+	height: 350px;
+	opacity: 0.6;
+	text-align: center;
+	display: none;
+}
+
+.ss:hover{
+	background-color:#06BBCC;
+}
+
+.ss{
+	color:white;
+	border-color:#FFFFF0; 
+	border-radius:20%; 
+	width:200px;
+}
+.img-button{
+	width:80px;
+	height:80px;
+	no-repeat;
+}
+.subject> tr> th > button:hover{
+	background-color:#B0E0E6;
+}
+.subject> tr> th > button{
+	margin: 10px 25px 10px 25px;
+	border-radius: 30%;
+	border-color:white;
 	
+}
+.subject > tr> td{
+	margin-top:20px;
+}
+
+</style>
+
 </head>
 <body>
 	<div layout:fragment="content">
-
 		<!-- Header Start -->
 		<div class="container-fluid bg-primary py-5 mb-5 page-header"
-			style="height: 400px;">
+			style="height:480px;">
 			<div class="container py-5">
 				<div class="row justify-content-center">
 					<div class="col-lg-10 text-center" style="padding-top: 40px;">
 						<h1 class="display-3 text-white animated slideInDown"
 							style="font-size: 40px;">어떤 병원을 찾고 계신가요?</h1>
 
-						<form class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
+						<div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
 							role="search" style="padding-left: 170px; margin-top: 40px;">
 
-
 							<!-- 검색창 -->
-							<input type="search"
-								class="form-control form-control-dark text-bg-dark"
+							<input type="search" id="search" 
+								class="form-control form-control-dark text-bg-dark search"
 								placeholder="찾으시는 병원이나 약국을 검색해보세요" aria-label="Search"
 								style="width: 78%; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
-
+							
+							<!-- 검색참고용 -->
+							<!-- <form class="d-flex" action="searchList.do" method="POST">
+								<input style="width: 800px;" class="form-control me-sm-2" type="search" placeholder="Search" name="word">
+								<button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+							</form> -->
+							
 							<!-- 돋보기 아이콘 -->
-							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
+							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" onclick="searchResult()"
 								fill="rgb(255,255,255)"
-								style="position: relative; top: -50px; left: 300px;"
+								style="position: relative; top: -50px; left: 300px; cursor: pointer;"
 								class="bi bi-search" viewBox="0 0 16 16">
-  								<path
-									d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-							</svg>
-						</form>
-
-						<nav aria-label="breadcrumb">
-							<ol class="breadcrumb justify-content-center">
-							</ol>
-						</nav>
+                          		<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                     		</svg>
+                     		
+						</div>
+						<button class="ss btn" 
+						data-bs-toggle="modal"
+						data-bs-target="#exampleModal">
+							진료과목으로 찾기
+						</button>
 					</div>
 				</div>
 			</div>
 		</div>
 		
+		<!-- Modal -->
+			<div class="modal" tabindex="-1" id="exampleModal">
+				<div class="modal-dialog">
+					<div class="modal-content" style="text-align:center;"><!--  width:700px; height:700px; -->
+						<!-- <div class="modal-header" style="text-align:center;">
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div> -->
+						<div class="modal-body" style="padding:30px 30px 30px 30px;" >
+						<h2 style="margin-bottom:20px;">진료과목을 선택해주세요</h2>
+						<hr>
+						<table>
+							<tbody class="subject">
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 002.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h1)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 003.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h2)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 004.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h3)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>가정의학과</td>
+									<td>내과</td>
+									<td>비뇨기과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 005.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h4)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 006.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h5)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 007.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h6)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>산부인과</td>
+									<td>성형외과</td>
+									<td>소아과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 008.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h7)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 009.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h8)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 010.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h9)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>신경외과</td>
+									<td>안과</td>
+									<td>외과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 011.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h10)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 012.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h11)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 013.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h12)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>이비인후과</td>
+									<td>응급의학과</td>
+									<td>정신건강의학과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 014.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h13)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 015.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h14)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+										  <img class="img-button" th:src="@{/images/} + 016.png"
+										  th:onclick="|location.href='@{searchSubject(mainSubject=h15)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight:bolder;">
+									<td>정형외과</td>
+									<td>치과</td>
+									<td>피부과</td>
+								<tr>
+							</tbody>
+						</table>
+						
+							
+						</div>
+					</div>
+				</div>
+			</div>
 
 		<!-- Team Start -->
 		<div class="container-xxl py-5" style="padding-top: 10px;">
@@ -94,307 +290,451 @@
 					<button class="btn btn-warning rounded-pill px-3" type="button"
 						onclick="switchLocation()">현재위치변경</button>
 				</div>
-				
+
 				<!-- 병원시작 -->
 				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-					<h6 class="section-title bg-white text-center text-primary px-3">내 주변</h6>
+					<h6 class="section-title bg-white text-center text-primary px-3">내
+						주변</h6>
 					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
 				</div>
-				<div class="row g-4">
-					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6" style="width:280px; height:380px;">
+				<div class="row g-4 here">
+					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6 hospitalItem"
+						style="width: 280px; height: 380px;"
+						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
+						<!-- 바로 위는 타임리프로 링크 보내버리는법 -->
+						
 						<!-- <p th:text="${hos.phone}"></p>
-						<p th:text="${hos.hospitalId}"></p>
-						<p th:text="${hos.hospitalName}"></p>
-						<p th:text="${hos.hospitalImg}"></p>
-						<p th:text="${hos.closetime}"></p>
-						<p th:text="${hos.address}"></p> -->
+                  <p th:text="${hos.hospitalId}"></p>
+                  <p th:text="${hos.hospitalName}"></p>
+                  <p th:text="${hos.hospitalImg}"></p>
+                  <p th:text="${hos.closetime}"></p>
+                  <p th:text="${hos.address}"></p> -->
 						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 							<div class="team-item bg-light">
 								<div class="overflow-hidden">
-									<img th:src="@{/images/} + ${hos.hospitalImg}" alt="image" style="width:100%; height:200px;" class="img-fluid"/>
+									<img th:if="${hos.hospitalImg}" th:src="@{/images/} + ${hos.hospitalImg}" alt="image"
+										style="width: 100%; height: 200px;" class="img-fluid" />
+									<img th:unless="${hos.hospitalImg}" th:src="@{/images/} + hospital.png" alt="image"
+										style="width: 100%; height: 200px;" class="img-fluid" />
 								</div>
 							</div>
-							
+
 							<div class="text-center p-4">
 								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5>
-								<small th:text="${hos.phone}"></small> <br /> 
-								<small th:text="${hos.address}" style="color: red; font-weight: bold;" class="address"></small>
-								<p th:text="${hos.closetime}" style="display:none;"  class="closeTime">
-								<p th:text="${hos.holiday}" style="display:none;" class="closeDay" >
+								<small th:text="${hos.phone}"></small> <br /> <small
+									th:text="${hos.address}" style="color: red; font-weight: bold;"
+									class="address"></small>
+								<p th:text="${hos.closetime}" style="display: none;"
+									class="closeTime">
+								<p th:text="${hos.holiday}" style="display: none;"
+									class="closeDay">
 							</div>
 						</div>
 						<div class="closeBlock">
-							<h2 style="color:white; padding-top:80px;">Close</h2>
+							<h2 style="color: white; padding-top: 80px;">Close</h2>
 						</div>
-						
+
 					</div>
 				</div>
 				<!-- 병원끝 -->
 			</div>
 		</div>
-		
+
 
 
 		<!-- Testimonial Start -->
-		 <div class="container-xxl py-5" style="padding-top: 10px;">
+		<div class="container-xxl py-5" style="padding-top: 10px;">
 			<div class="container">
 				<div style="text-align: center; margin-bottom: 50px;">
-				<!-- 약국시작 -->
-	                <h6 class="section-title bg-white text-center text-primary px-3">내 주변</h6>
-	                <h1 class="mb-5">Pharmacy</h1>
-		        </div>
-		            
+					<!-- 약국시작 -->
+					<h6 class="section-title bg-white text-center text-primary px-3">내
+						주변</h6>
+					<h1 class="mb-5" style="margin-top: 5px;">Pharmacy</h1>
 				</div>
-				<div class="row g-4">
-					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6" style="width:280px; height:380px;">
-						<!-- <p th:text="${hos.phone}"></p>
-						<p th:text="${hos.hospitalId}"></p>
-						<p th:text="${hos.hospitalName}"></p>
-						<p th:text="${hos.hospitalImg}"></p>
-						<p th:text="${hos.closetime}"></p>
-						<p th:text="${hos.address}"></p> -->
-						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
-							<div class="team-item bg-light">
-								<div class="overflow-hidden">
-									<img th:src="@{/images/} + ${hos.hospitalImg}" alt="image" style="width:100%; height:200px;" class="img-fluid"/>
-								</div>
-							</div>
-							
-							<div class="text-center p-4">
-								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5>
-								<small th:text="${hos.phone}"></small> <br /> 
-								<small th:text="${hos.address}" style="color: red; font-weight: bold;" class="address"></small>
-								<p th:text="${hos.closetime}" style="display:none;"  class="closeTime">
-								<p th:text="${hos.holiday}" style="display:none;" class="closeDay" >
+
+			</div>
+			<div class="row g-4 here2">
+				<div th:each="pha: ${phaList}" class="col-lg-3 col-md-6 pharmacyItem"
+					style="width: 280px; height: 380px;"
+					th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|">
+					
+					<div class="ho wow fadeInUp" data-wow-delay="0.1s">
+						<div class="team-item bg-light">
+							<div class="overflow-hidden">
+								<img th:if="${pha.pharmacyImg}" th:src="@{/images/} + ${pha.pharmacyImg}" alt="image"
+									style="width: 100%; height: 200px;" class="img-fluid" />
+								<img th:unless="${pha.pharmacyImg}" th:src="@{/images/} + pharmacy.png" alt="image"
+									style="width: 100%; height: 200px;" class="img-fluid" />
 							</div>
 						</div>
-						<div class="closeBlock">
-							<h2 style="color:white; padding-top:80px;">Close</h2>
+
+						<div class="text-center p-4">
+							<h5 class="mb-0" th:text="${pha.pharmacyName}"></h5>
+							<small th:text="${pha.pharmacyPhone}"></small> <br /> 
+							<small th:text="${pha.address}" 
+									style="color: red; font-weight: bold;" class="phAddress"></small>
+							<p th:text="${pha.closetime}" style="display: none;"
+								class="closeTime2">
+							<p th:text="${pha.holiday}" style="display: none;"
+								class="closeDay2">
 						</div>
-						
 					</div>
+					<div class="closeBlock2">
+						<h2 style="color: white; padding-top: 80px;">Close</h2>
+					</div>
+
 				</div>
-				<!-- 약국 끝 -->
-		        </div>
-		    </div>
+			</div>
+			<!-- 약국 끝 -->
+		</div>
 		<!-- Testimonial End -->
-		
-		
-		
+
+
+
 		<script th:inline="javascript">
-		<!--1. 내 현재 좌표(위치)찾기(geolocation) -->
-			//방법 = navigator.geolocation.getCurrentPosition(success, error, [options])
-			function getLocation() {
-				if (navigator.geolocation) {
-					navigator.geolocation.getCurrentPosition(
-						function(position) {
-							//위도(y):latitude 경도(x):longitude
-							curLat = position.coords.latitude
-							curLon = position.coords.longitude
-							//로컬스토리지에 담았음
-							window.localStorage.setItem('lat',position.coords.latitude);
-							window.localStorage.setItem('lon',position.coords.longitude);
-							console.log("curLat=", curLat);
-							console.log("curLon=", curLon);
-							
-							
-		
-							<!--2. 현재 내위치 좌표로 주소를 찾고 화면에 띄어주기(kakao지도 api라이브러리) -->
-							//x Number : x 좌표, 경위도인 경우 longitude
-							//y Number : y 좌표, 경위도인 경우 latitude
-							var geocoder = new kakao.maps.services.Geocoder();
-							var coord = new kakao.maps.LatLng(curLat, curLon);
-							var callback = function(result, status) {
-								if (status === kakao.maps.services.Status.OK) {
-									console.log('현재위치는 = '+ result[0].address.address_name);
-									//h3안에 입력해줌
-									document.getElementById("location").innerText = '현재 내 위치 : ' + result[0].address.address_name;
-									//로컬스토리지에 담았음
-									window.localStorage.setItem('location',result[0].address.address_name);
-								}
-							};
-							geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
-						}, function(error) {
-							console.log(error.message);
-						});
-				} else {
-					ALERT('GPS 허용을 눌러주세요');
-				}
-			}
-			//만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
-			let curLocation = window.localStorage.getItem('location');
-			if(!curLocation){
-				getLocation();
-			}else{
-				document.getElementById("location").innerText = '현재 내 위치 : ' + curLocation;
-			}
-			
-			
-			//3. 내 현재 주소를 daum 주소api로 바꾸기(daum주소 api)
-			function switchLocation(){
-				    new daum.Postcode({
-				        oncomplete: function(data) {
-				        	console.log(data.address);
-				        	document.getElementById("location").innerText = '현재 내 위치 : ' + data.address;
-				        	//로컬스토리지에 정보 덮어씀
-				        	window.localStorage.setItem('location',data.address);
-				        	
-				        	<!--4. 바뀐 내 주소로 새 좌표찾기(kakao지도 api라이브러리) -->
-				        	var geocoder = new kakao.maps.services.Geocoder();
-		
-				        	var callback = function(result, status) {
-				        	    if (status === kakao.maps.services.Status.OK) {
-				        	    	let newLat = result[0].address.y;
-				        	    	let newLon = result[0].address.x;
-				        	    	console.log('바뀐주소Lat = ',result[0].address.y);
-				        	        console.log('바뀐주소Lon = ',result[0].address.x);
-				        	        //로컬스토리지에 정보 덮어씀
-				        	        window.localStorage.setItem('lat',result[0].address.y);
-									window.localStorage.setItem('lon',result[0].address.x);
-									window.location.reload();
-				        	    }     
-				        	};
-				        	geocoder.addressSearch(data.address, callback);
-				        }
-				    }).open(); 
-				 
-			}
-		
-	
-			
-			//현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
-			//5. 병원주소를 좌표로 바꿈
-			function restart(){
-				var geocoder = new kakao.maps.services.Geocoder();
-			
-		      	var callback = function(result, status) {
-		      	    if (status === kakao.maps.services.Status.OK) {
-		      	    	//병원 좌표
-		      	    	let hosLat = result[0].address.y;
-		      	    	let hosLon = result[0].address.x;
-		      	    	console.log('병원Lat = ',result[0].address.y);
-		      	        console.log('병원Lon = ',result[0].address.x);
-		      	        //현재위치 좌표
-		      	        let curLat = window.localStorage.getItem('lat');
-		      	      	let curLon = window.localStorage.getItem('lon');
-		      	      	console.log('세션Lat = ',curLat);
-		      	      	console.log('세션Lon = ',curLon);
-		      	      	
-		      	      	let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
-		      	      	console.log("총 거리 =", dist);
-		      	      	let target = document.querySelector(".target")
-		      	      	target.innerText = dist + 'km';
-		      	      	target.classList.remove('target');
-		      	      	
-		      	    }     
-		      	};
-		      	let address = document.querySelectorAll('.address');
-		      		address.forEach((item, index)=>{
-		      			//console.log("item",item.innerHTML);
-		      			item.className += ' target'
-		      			geocoder.addressSearch(item.innerHTML, callback);
-		      			
-		      		})
-		      		
-		      	console.log(address)
-		      	
-		      	return;
-			}
-	      	
-	      	
-			//6. 본격 좌표로 거리계산 시작
-	        //Math.PI 는 파이값임(3.14...)
-	        //Math.sin()은 라디안으로 주어진 각도의 사인 값인 -1과 1 사이의 수를 반환 | sin = 높이 / 빗변
-	        //Math.cos는 라디안으로 주어진 각도의 코사인 값을 반환합니다 | cos = 밑변 / 빗변
-	        //Math.tan()은 각도의 탄젠트 값을 표현하는 수를 반환 | tan = 높이 / 밑변
-	        //Math.Atan2(Double, Double)는 탄젠트를 적용했을 때 지정된 두 숫자의 몫이 나오는 각도를 반환
-	        //Math.Sqrt()는 double타입의 인수를 전달하면 인수에 대한 double타입의 제곱근 값을 리턴
+      <!--1. 내 현재 좌표(위치)찾기(geolocation) -->
+         //방법 = navigator.geolocation.getCurrentPosition(success, error, [options])
+         function getLocation() {
+            if (navigator.geolocation) {
+               navigator.geolocation.getCurrentPosition(
+                  function(position) {
+                     //위도(y):latitude 경도(x):longitude
+                     curLat = position.coords.latitude
+                     curLon = position.coords.longitude
+                     //로컬스토리지에 담았음
+                     window.localStorage.setItem('lat',position.coords.latitude);
+                     window.localStorage.setItem('lon',position.coords.longitude);
+                     console.log("curLat=", curLat);
+                     console.log("curLon=", curLon);
+                     
+                     
+      
+                     <!--2. 현재 내위치 좌표로 주소를 찾고 화면에 띄어주기(kakao지도 api라이브러리) -->
+                     //x Number : x 좌표, 경위도인 경우 longitude
+                     //y Number : y 좌표, 경위도인 경우 latitude
+                     var geocoder = new kakao.maps.services.Geocoder();
+                     var coord = new kakao.maps.LatLng(curLat, curLon);
+                     var callback = function(result, status) {
+                        if (status === kakao.maps.services.Status.OK) {
+                           console.log('현재위치는 = '+ result[0].address.address_name);
+                           //h3안에 입력해줌
+                           document.getElementById("location").innerText = '현재 내 위치 : ' + result[0].address.address_name;
+                           //로컬스토리지에 담았음
+                           window.localStorage.setItem('location',result[0].address.address_name);
+                        }
+                     };
+                     geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
+                  }, function(error) {
+                     console.log(error.message);
+                  });
+            } else {
+               ALERT('GPS 허용을 눌러주세요');
+            }
+         }
+         //만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
+         let curLocation = window.localStorage.getItem('location');
+         if(!curLocation){
+            getLocation();
+         }else{
+            document.getElementById("location").innerText = '현재 내 위치 : ' + curLocation;
+         }
+         
+         
+         //3. 내 현재 주소를 daum 주소api로 바꾸기(daum주소 api)
+         function switchLocation(){
+                new daum.Postcode({
+                    oncomplete: function(data) {
+                       console.log(data.address);
+                       document.getElementById("location").innerText = '현재 내 위치 : ' + data.address;
+                       //로컬스토리지에 정보 덮어씀
+                       window.localStorage.setItem('location',data.address);
+                       
+                       <!--4. 바뀐 내 주소로 새 좌표찾기(kakao지도 api라이브러리) -->
+                       var geocoder = new kakao.maps.services.Geocoder();
+      
+                       var callback = function(result, status) {
+                           if (status === kakao.maps.services.Status.OK) {
+                              let newLat = result[0].address.y;
+                              let newLon = result[0].address.x;
+                              console.log('바뀐주소Lat = ',result[0].address.y);
+                               console.log('바뀐주소Lon = ',result[0].address.x);
+                               //로컬스토리지에 정보 덮어씀
+                               window.localStorage.setItem('lat',result[0].address.y);
+                           window.localStorage.setItem('lon',result[0].address.x);
+                           window.location.reload();
+                           }     
+                       };
+                       geocoder.addressSearch(data.address, callback);
+                    }
+                }).open(); 
+             
+         }
+      
+   
+         
+         //현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
+         //5. 병원주소를 좌표로 바꿈
+         async function restart(){
+        	 var geocoder = new kakao.maps.services.Geocoder();
+        	 
+        	 //병원
+        	 let address = document.querySelectorAll('.address');
+        	 console.log("address=",address);
+        	 if(!address){
+        		 console.log("강제종료");
+        		 return;
+        	 }
+        	 let hospitalList = [];
+             
+             
+             //약국
+        	 let phAddress = document.querySelectorAll('.phAddress');
+        	 console.log("phAddress=",phAddress);
+        	 if(!phAddress){
+        		 console.log("강제종료");
+        		 return;
+        	 }
+        	 let pharmacyList = [];
+             
+         	 function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
+         		console.log("item= ",item);
+         		 return new Promise((resolve)=>{
+         			 geocoder.addressSearch(item.innerHTML, (result, status)=>{ //item.innerHTML= 주소 그 자체
+         				if (status === kakao.maps.services.Status.OK) {
+         					console.log("카카오맵에서 찾았음")
+                            //병원&약국 좌표
+                            let hosLat = result[0].address.y;
+                            let hosLon = result[0].address.x;
+                            console.log('병원Lat = ',result[0].address.y);
+                            console.log('병원Lon = ',result[0].address.x);
+                            
+                          	//현재위치 좌표
+                            let curLat = window.localStorage.getItem('lat');
+                            let curLon = window.localStorage.getItem('lon');
+                            console.log('세션Lat = ',curLat);
+                            console.log('세션Lon = ',curLon);
+                            
+                            //거리계산된 값
+                            let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
+                            console.log("총 거리 =", dist);
+                            item.innerText = dist + 'km';
+                            
+                            if((item.closest('.hospitalItem')) != null){
+	                            hospitalList.push({
+	                            	'index' : index,
+	                            	'dist' : dist,
+	                            	'parent_node' : item.closest('.hospitalItem') //저 클래스가 있는 item의 상위요소
+	                            });
+                            }else if((item.closest('.pharmacyItem')) != null){
+	                            pharmacyList.push({
+	                            	'index' : index,
+	                            	'dist' : dist,
+	                            	'parent_node' : item.closest('.pharmacyItem') //저 클래스가 있는 item의 상위요소
+	                            });
+                            }
+                            resolve(); //여기까지 도달하면 성공했다는 뜻
+                            
+         			 	}else{
+         			 		console.log("restart함수실행안됨");
+         			 		reject()
+         			 	}         				
+         		 	});
+         	 	});       
+             }  
+         	 //병원
+         	 //address(태그자체)로 만든 배열을 새로운 배열로 바꿀건데,
+         	 //그 새로운 배열map은 promiseFn함수에 address배열에 있는 
+         	 //item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
+	         const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
+	         console.log("promises=",promises)
+	         await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
+			 
+	         //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
+	         //parseFloat()=문자열을 실수로 변경
+	         hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+	         console.log("hospitalList=", hospitalList);
+	         
+	         //hospitalItem클래스를 가진 div전체(하위요소 포함)
+	         const hospitalListBox = document.querySelector('.here');
+	         
+	         console.log("hospitalListBox=", hospitalListBox); 
+	         
+	         //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된)를 넣어줌
+	         hospitalList.forEach(({parent_node}) =>{
+	        	 hospitalListBox.append(parent_node);
+	         })
+	         
+	         //약국
+	         const promises2 = Array.from(phAddress).map((item, index)=> promiseFn(item, index));
+	         await Promise.all(promises2);
+	         pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+	         const pharmacyListBox = document.querySelector('.here2');	 
+	         pharmacyList.forEach(({parent_node}) =>{
+	        	 pharmacyListBox.append(parent_node);
+	         })
+	         
+         }; //restart함수 끝
+            
+            
+         //6. 본격 좌표로 거리계산 시작
+           //Math.PI 는 파이값임(3.14...)
+           //Math.sin()은 라디안으로 주어진 각도의 사인 값인 -1과 1 사이의 수를 반환 | sin = 높이 / 빗변
+           //Math.cos는 라디안으로 주어진 각도의 코사인 값을 반환합니다 | cos = 밑변 / 빗변
+           //Math.tan()은 각도의 탄젠트 값을 표현하는 수를 반환 | tan = 높이 / 밑변
+           //Math.Atan2(Double, Double)는 탄젠트를 적용했을 때 지정된 두 숫자의 몫이 나오는 각도를 반환
+           //Math.Sqrt()는 double타입의 인수를 전달하면 인수에 대한 double타입의 제곱근 값을 리턴
 
-	        // 각도를 라디안(1라디안 = 57.3도)으로 변환하는 함수
-	        //라디안 값 = 각도 x (파이 / 180 )
-	        function radian( i ){
-	            return i * (Math.PI / 180)
-	        }
+           // 각도를 라디안(1라디안 = 57.3도)으로 변환하는 함수
+           //라디안 값 = 각도 x (파이 / 180 )
+           function radian( i ){
+               return i * (Math.PI / 180)
+           }
 
-	        //거리 구하는 함수
-	        function distance(curLat, curLon, hosLat, hosLon){ //현재좌표 - 병원좌표
-	            const earth_r = 6371 // 지구의 반지름(km)
-	            const lat = radian( hosLat - curLat ) //위도끼리 뺀 값
-	            console.log("위도 뺀 값=", lat)
-	            const lon = radian( hosLon - curLon ) // 경도끼리 뺀 값
-	            console.log("경도 뺀 값=", lon)
-	            
-	            const a = Math.sin(lat/2) * Math.sin(lat/2) + //위도
-	            Math.cos(radian(curLat)) * Math.cos(radian(hosLat)) * // cos
-	            Math.sin(lon/2) * Math.sin(lon/2); //경도
-	            console.log("a =", a);
+           //거리 구하는 함수
+           function distance(curLat, curLon, hosLat, hosLon){ //현재좌표 - 병원좌표
+               const earth_r = 6371 // 지구의 반지름(km)
+               const lat = radian( hosLat - curLat ) //위도끼리 뺀 값
+               console.log("위도 뺀 값=", lat)
+               const lon = radian( hosLon - curLon ) // 경도끼리 뺀 값
+               console.log("경도 뺀 값=", lon)
+               
+               const a = Math.sin(lat/2) * Math.sin(lat/2) + //위도
+               Math.cos(radian(curLat)) * Math.cos(radian(hosLat)) * // cos
+               Math.sin(lon/2) * Math.sin(lon/2); //경도
+               console.log("a =", a);
 
-	            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-	            console.log("c 2개의 각도 =", c);
-	            const distance = earth_r * c // 반지름 x 2개의 각도값
+               const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+               console.log("c 2개의 각도 =", c);
+               const distance = earth_r * c // 반지름 x 2개의 각도값
 
-	            return distance;
-	        }
-	        this.restart();
-	        
-	        
-	        //영업시간 끝나면 스타일 바꾸는 함수
-	        function changeStyle(){
-	        	let closeTime = document.querySelectorAll(".closeTime");
-	        	let closeDay = document.querySelectorAll(".closeDay");
-	        	console.log("closeTime=", closeTime);
-	        	console.log("closeDay=", closeDay);
-	        	//병원리스트의 요일을 배열에 넣음
-	        	let closeWeek = [];
-	        	let day = {"일":0,"월":1,"화":2,"수":3,"목":4,"금":5,"토":6}
-	        	closeDay.forEach((ele, idx)=>{
-	        		//console.log("ele",ele.innerText);
-	        		closeWeek.push(day[ele.innerText])
-	        	})
-	        	console.log("closeWeek=",closeWeek);
-	        	
-	        	//병원리스트의 시간을 배열에 넣음
-	        	let endTime = [];
-	        	closeTime.forEach((ele, idx)=>{
-	        		endTime.push((ele.innerText))	
-	        	})
-	        	console.log("endTime=", endTime);
-	        	
-	        	//현재시간
-	        	let today = new Date();
-	        	let curHour = today.getHours();
-	        	let curMinute = today.getMinutes();
-	        	let curDay = today.getDay();
-	        	console.log("curHour=", curHour);
-	        	console.log("curMinute=", curMinute);
-	        	
-	        	//close표시 먹여야하는 div 전체
-	        	let closeBlocks = document.querySelectorAll(".closeBlock");
-	        	console.log("closeBlocks =",closeBlocks);
-	        	//끝나는 시간을 기준으로 시간이랑 분 뽑아서 스타일 먹일거임
-	        	// 각 병원의 끝나는 시간을 기준으로 스타일을 적용
-				for (let i = 0; i < endTime.length; i++) {
-				    let closeHour = parseInt(endTime[i].substr(0, 2)); // 병원 영업 종료 시간 (시)
-				    let closeMinute = parseInt(endTime[i].substr(3, 2)); // 병원 영업 종료 시간 (분)
-				    console.log("closeHour=", closeHour);
-				    console.log("closeMinute=", closeMinute);
-				
-				    if (closeHour < curHour || (closeHour === curHour && closeMinute < curMinute)) {
-				        // 병원의 영업 종료 시간이 현재 시간보다 이전이면
-				        closeBlocks[i].style.display = "block"; // 또는 다른 스타일을 적용
-				        console.log('가가');
-				    } else if (closeWeek[i] === curDay) {
-				        // 휴진일이 오늘 날짜와 같으면
-				        closeBlocks[i].style.display = "block"; // 또는 다른 스타일을 적용
-				        console.log('나나');
-				    }else{
-				    	console.log('다다');
-				    }
-				}	        	
-	        	
-	        }
-			changeStyle();
-		</script>
+               return distance;
+           }
+           restart();
+           
+           
+           //영업시간 끝나면 스타일 바꾸는 함수(오픈시간은 생략)
+           function changeStyle(){
+        	  //병원 영업끝나는 시간과 휴무요일
+              let closeTime = document.querySelectorAll(".closeTime");
+              let closeDay = document.querySelectorAll(".closeDay");
+              //약국 영업끝나는 시간과 휴무요일
+              let closeTime2 = document.querySelectorAll(".closeTime2");
+              let closeDay2 = document.querySelectorAll(".closeDay2");
+              
+              //병원 및 약국리스트의 요일을 배열에 넣음
+              let day = {"일":0,"월":1,"화":2,"수":3,"목":4,"금":5,"토":6}
+              
+              //병원
+              let closeWeek = []; 
+              closeDay.forEach((ele, idx)=>{
+                 //console.log("ele",ele.innerText);
+                 closeWeek.push(day[ele.innerText])
+              })
+              //console.log("closeWeek=",closeWeek);
+              
+              //약국
+              let closeWeek2 = []; 
+              closeDay2.forEach((ele, idx)=>{
+                  closeWeek2.push(day[ele.innerText])
+               })
+              
+              
+              
+              //병원리스트의 시간을 배열에 넣음
+              let endTime = [];
+              closeTime.forEach((ele, idx)=>{
+                 endTime.push((ele.innerText))   
+              })
+              //console.log("endTime=", endTime);
+              
+              let endTime2 = [];
+              closeTime2.forEach((ele, idx)=>{
+                 endTime2.push((ele.innerText))   
+              })
+              //console.log("endTime=", endTime);
+              
+              //현재시간
+              let today = new Date();
+              let curHour = today.getHours();
+              let curMinute = today.getMinutes();
+              let curDay = today.getDay();
+              console.log("curHour=", curHour);
+              console.log("curMinute=", curMinute);
+              
+              
+              //병원 조건걸고 적용
+              //close표시 먹여야하는 div 전체
+              let closeBlocks = document.querySelectorAll(".closeBlock");
+              console.log("closeBlocks =",closeBlocks);
+              //끝나는 시간을 기준으로 시간이랑 분 뽑아서 스타일 먹일거임
+              // 각 병원의 끝나는 시간을 기준으로 스타일을 적용
+            for (let i = 0; i < endTime.length; i++) {
+                let closeHour = parseInt(endTime[i].substr(0, 2)); // 병원 영업 종료 시간 (시)
+                let closeMinute = parseInt(endTime[i].substr(3, 2)); // 병원 영업 종료 시간 (분)
+                console.log("closeHour=", closeHour);
+                console.log("closeMinute=", closeMinute);
+            
+                if (closeHour < curHour || (closeHour === curHour && closeMinute < curMinute)) {
+                    // 병원의 영업 종료 시간이 현재 시간보다 이전이면
+                    closeBlocks[i].style.display = "block"; // 또는 다른 스타일을 적용
+                    //console.log('가가');
+                } else if (closeWeek[i] === curDay) {
+                    // 휴진일이 오늘 날짜와 같으면
+                    closeBlocks[i].style.display = "block"; // 또는 다른 스타일을 적용
+                    //console.log('나나');
+                }else{
+                   //console.log('다다');
+                }
+            }              
+              
+              
+              //약국 조건걸고 적용
+	          //close표시 먹여야하는 div 전체
+	            let closeBlocks2 = document.querySelectorAll(".closeBlock2");
+	            //console.log("closeBlocks =",closeBlocks);
+	            //끝나는 시간을 기준으로 시간이랑 분 뽑아서 스타일 먹일거임
+	            // 각 병원의 끝나는 시간을 기준으로 스타일을 적용
+	          for (let i = 0; i < endTime2.length; i++) {
+	              let closeHour2 = parseInt(endTime2[i].substr(0, 2)); // 병원 영업 종료 시간 (시)
+	              let closeMinute2 = parseInt(endTime2[i].substr(3, 2)); // 병원 영업 종료 시간 (분)
+	              //console.log("closeHour2=", closeHour2);
+	              //console.log("closeMinute2=", closeMinute2);
+	          
+	              if (closeHour2 < curHour || (closeHour2 === curHour && closeMinute2 < curMinute)) {
+	                  // 병원의 영업 종료 시간이 현재 시간보다 이전이면
+	                  closeBlocks2[i].style.display = "block"; // 또는 다른 스타일을 적용
+	                  console.log('가가');
+	              } else if (closeWeek2[i] === curDay) {
+	                  // 휴진일이 오늘 날짜와 같으면
+	                  closeBlocks2[i].style.display = "block"; // 또는 다른 스타일을 적용
+	                  console.log('나나');
+	              }else{
+	                 console.log('다다');
+	              }
+	          }     
+           }
+         changeStyle();
+         
+       //검색 함수
+  		function searchResult(e){
+  			let word = document.getElementById("search").value;
+  			console.log("검색한 단어= ",word);
+  			if(word == ''){
+  				alert("검색한 단어가 없습니다.");
+  			}else{
+  				location.href="search?word="+word;
+  			}
+  		}
+         
+         //키보드 엔터 눌러도 제출되게끔
+         let enter = document.querySelector(".search")
+         enter.addEventListener('keyup', (event) => {
+             if (event.key === 'Enter') {
+                 searchResult();
+             }
+         });
+         
+      </script>
 	</div>
 </body>
 </html>

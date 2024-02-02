@@ -48,10 +48,17 @@
 				</div> 
 			</a>
 			-->
-			<div class="sidebar-card d-none d-sm-flex" style="margin-top: 20px">
-				<img th:src="@{/images/} + ${hospitalSel.hospitalImg}" alt="image"
-					style="overflow: hidden; width: 100%; height: 100%" />
+
+			<div
+				class="sidebar-card sidebar-brand d-flex align-items-center justify-content-center"
+				style="margin-top: 20px;">
+				<div class="sidebar-brand-icon">
+					<img th:src="@{/images/} + ${hospitalSel.hospitalImg}" alt="image"
+						style="width: 100%;" />
+				</div>
+
 			</div>
+
 			<div class="sidebar-card" style="align-items: flex-start">
 				<span th:text="${hospitalSel.hospitalId}"></span> <span
 					th:text="|${hospitalSel.hospitalName} ｜ ${hospitalSel.directorName}|"></span>

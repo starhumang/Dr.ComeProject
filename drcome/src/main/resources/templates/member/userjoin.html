@@ -1,43 +1,41 @@
 <!DOCTYPE html>
-<html
-	xmlns:th="http://www.thymeleaf.org"
+<html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout}"
->
-	<head>
-		<meta charset="UTF-8" />
-		<title>사용자 회원가입</title>
+	layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8" />
+<title>사용자 회원가입</title>
 
-		<style>
-			.error-message {
-				color: red;
-				font-size: 0.8em;
-			}
+<style>
+.error-message {
+	color: red;
+	font-size: 0.8em;
+}
 
-			.modal {
-				text-align: center;
-			}
+.modal {
+	text-align: center;
+}
 
-			.modal-dialog {
-				display: flex !important;
-				align-items: center;
-				justify-content: center;
-			}
+.modal-dialog {
+	display: flex !important;
+	align-items: center;
+	justify-content: center;
+}
 
-			.gender-radio {
-				display: flex;
-				justify-content: space-between;
-				width: 200px;
-				margin: 10px 0;
-			}
+.gender-radio {
+	display: flex;
+	justify-content: space-between;
+	width: 200px;
+	margin: 10px 0;
+}
 
-			.gender-radio label {
-				display: flex;
-				align-items: center;
-			}
-		</style>
+.gender-radio label {
+	display: flex;
+	align-items: center;
+}
+</style>
 
-		<script type="text/javascript">
+<script type="text/javascript">
 			function validateForm() {
 				return (
 					uploadImg() &&
@@ -53,7 +51,7 @@
 			}
 
 			function checkId() {
-				let userId = document.getElementById('id').value;
+				let userId = document.getElementById('userid').value;
 				let idErrorMessage = document.getElementById('idErrorMessage');
 
 				if (userId === '') {
@@ -77,7 +75,7 @@
 
 			function formatPhoneNumber() {
 				let phoneInput = document.getElementById('phone');
-				let inputValue = phoneInput.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
+				let inputValue = phoneInput.value.replace(/[^0-9]/g, '');
 				let formattedValue = '';
 
 				if (inputValue.length > 3) {
@@ -200,192 +198,137 @@
 					formData.append('uploadFiles', files[i]);
 				}
 			}
+			function checkDupliId(event) {
+				event.preventDefault();
+			    $.ajax({
+			        url: '/checkid/',
+			        data: 'userId='+$('#userid').val(),
+			        type: 'post',
+			        contentType: 'application/json',
+			        success: function(result) {
+			            console.log(result);
+			        },
+			        error: function(error) {
+			            console.log(error);
+			        }
+			    });
+			}
 		</script>
-	</head>
+</head>
 
-	<body>
-		<div class="container" layout:fragment="content">
-			<div class="form-body">
-				<div class="row">
-					<div class="form-holder">
-						<div class="form-content">
-							<div class="form-items">
+<body>
+	<div class="container" layout:fragment="content">
+		<div class="form-body">
+			<div class="row">
+				<div class="form-holder">
+					<div class="form-content">
+						<div class="form-items">
+							<br />
+							<h3>사용자 회원가입</h3>
+							<form th:action="@{/userjoin}" method="post"
+								onsubmit="return validateForm()" enctype="multipart/form-data">
 								<br />
-								<h3>사용자 회원가입</h3>
-								<form
-									th:action="@{/userjoin}"
-									method="post"
-									onsubmit="return validateForm()"
-									enctype="multipart/form-data"
-								>
-									<br />
-									<div class="col-md-12">
-										아이디
-										<input
-											class="form-control"
-											type="text"
-											name="userId"
-											id="id"
-											placeholder="아이디를 입력하세요"
-											required
-											oninput="checkId()"
-										/>
-										<span id="idErrorMessage" class="error-message"></span>
-										<input
-											type="button"
-											id="userid"
-											class="btn btn-warning"
-											value="아이디 중복확인"
-											onclick="checkId()"
-										/>
+								<div class="col-md-12">
+									아이디 <input class="form-control" type="text" name="userId"
+										id="userid" placeholder="아이디를 입력하세요" required oninput="checkId()" />
+									<span id="idErrorMessage" class="error-message"></span> 
+									<a class="btn btn-warning" onclick="checkDupliId(event)">중복확인</a>
+								</div>
+
+								<div class="col-md-12">
+									비밀번호 <input class="form-control" type="password" name="userPw"
+										id="pw" placeholder="비밀번호를 입력하세요" required
+										oninput="checkPassword()" /> <span id="pwErrorMessage"
+										class="error-message"></span>
+								</div>
+
+								<div class="col-md-12">
+									비밀번호 확인 <input class="form-control" type="password" id="rePw"
+										placeholder="비밀번호를 다시 입력하세요" required
+										oninput="checkPasswordMatch()" /> <span
+										id="rePasswordErrorMessage" class="error-message"></span>
+								</div>
+
+								<div class="col-md-12">
+									이름 <input class="form-control" type="text" name="userName"
+										id="name" placeholder="이름을 입력하세요" required
+										oninput="checkName()" /> <span id="nameErrorMessage"
+										class="error-message"></span>
+								</div>
+
+								<div class="col-md-12">
+									전화번호 <input class="form-control" type="tel" name="phone"
+										id="phone" placeholder="전화번호를 입력하세요" required maxlength="13"
+										oninput="formatPhoneNumber()" /> <span id="phoneErrorMessage"
+										class="error-message"></span> <input type="button" id="tel"
+										class="btn btn-warning" value="전화번호인증" onclick="checkPhone()" />
+								</div>
+
+								<div class="col-md-12">
+									생년월일 <input class="form-control" type="date" name="birthday"
+										id="birthDay" required oninput="checkBirthday()" /> <span
+										id="birthdayErrorMessage" class="error-message"></span>
+								</div>
+
+								<div class="col-md-12">
+									성별
+									<div class="gender-radio">
+										<label class="form-check-label"> <input
+											class="form-check-input" type="radio" name="gender" id="male"
+											value="M" /> 남성
+										</label> <label class="form-check-label"> <input
+											class="form-check-input" type="radio" name="gender"
+											id="female" value="F" /> 여성
+										</label>
 									</div>
+									<span id="genderErrorMessage" class="error-message"></span>
+								</div>
 
-									<div class="col-md-12">
-										비밀번호
-										<input
-											class="form-control"
-											type="password"
-											name="userPw"
-											id="pw"
-											placeholder="비밀번호를 입력하세요"
-											required
-											oninput="checkPassword()"
-										/>
-										<span id="pwErrorMessage" class="error-message"></span>
-									</div>
+								<br />
+								<div class="col-md-12">
+									<label>신분증 사진<br /></label> <input type="file" id="myImg"
+										name="uploadFiles" multiple />
+								</div>
 
-									<div class="col-md-12">
-										비밀번호 확인
-										<input
-											class="form-control"
-											type="password"
-											id="rePw"
-											placeholder="비밀번호를 다시 입력하세요"
-											required
-											oninput="checkPasswordMatch()"
-										/>
-										<span id="rePasswordErrorMessage" class="error-message"></span>
-									</div>
+								<br />
+								<div class="col-md-12">
+									<label>결제 수단<br /></label>
+								</div>
 
-									<div class="col-md-12">
-										이름
-										<input
-											class="form-control"
-											type="text"
-											name="userName"
-											id="name"
-											placeholder="이름을 입력하세요"
-											required
-											oninput="checkName()"
-										/>
-										<span id="nameErrorMessage" class="error-message"></span>
-									</div>
+								<br />
+								<div class="form-check">
+									<label class="form-check-label"> 만 17세 이상입니다 </label> <input
+										class="form-check-input" type="checkbox" id="invalidCheck"
+										required />
+								</div>
 
-									<div class="col-md-12">
-										전화번호
-										<input
-											class="form-control"
-											type="tel"
-											name="phone"
-											id="phone"
-											placeholder="전화번호를 입력하세요"
-											required
-											maxlength="13"
-											oninput="formatPhoneNumber()"
-										/>
-										<span id="phoneErrorMessage" class="error-message"></span>
-										<input
-											type="button"
-											id="tel"
-											class="btn btn-warning"
-											value="전화번호인증"
-											onclick="checkPhone()"
-										/>
-									</div>
+								<br />
+								<div class="form-check">
+									<label class="form-check-label" onclick="openModal()">
+										[전문보기]</label> 동의 <input class="form-check-input" type="checkbox"
+										id="invalidCheck" required />
+								</div>
 
-									<div class="col-md-12">
-										생년월일
-										<input
-											class="form-control"
-											type="date"
-											name="birthday"
-											id="birthDay"
-											required
-											oninput="checkBirthday()"
-										/>
-										<span id="birthdayErrorMessage" class="error-message"></span>
-									</div>
-
-									<div class="col-md-12">
-										성별
-										<div class="gender-radio">
-											<label class="form-check-label">
-												<input
-													class="form-check-input"
-													type="radio"
-													name="gender"
-													id="male"
-													value="M"
-												/>
-												남성
-											</label>
-											<label class="form-check-label">
-												<input
-													class="form-check-input"
-													type="radio"
-													name="gender"
-													id="female"
-													value="F"
-												/>
-												여성
-											</label>
-										</div>
-										<span id="genderErrorMessage" class="error-message"></span>
-									</div>
-
-									<br />
-									<div class="col-md-12">
-										<label>신분증 사진<br /></label>
-										<input type="file" id="myImg" name="uploadFiles" multiple />
-									</div>
-
-									<br />
-									<div class="col-md-12">
-										<label>결제 수단<br /></label>
-									</div>
-
-									<br />
-									<div class="form-check">
-										<label class="form-check-label"> 만 17세 이상입니다 </label>
-										<input class="form-check-input" type="checkbox" id="invalidCheck" required />
-									</div>
-
-									<br />
-									<div class="form-check">
-										<label class="form-check-label" onclick="openModal()"> [전문보기]</label> 동의
-										<input class="form-check-input" type="checkbox" id="invalidCheck" required />
-									</div>
-
-									<br />
-									<input type="submit" value="회원가입" class="btn btn-danger" />
-								</form>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<!-- Modal -->
-			<div class="modal" tabindex="-1" id="exampleModal">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-body">
-							<p>대충 개인정보약관 내용</p>
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+								<br /> <input type="submit" value="회원가입" class="btn btn-danger" />
+							</form>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-	</body>
+
+		<!-- Modal -->
+		<div class="modal" tabindex="-1" id="exampleModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<p>대충 개인정보약관 내용</p>
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Close</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
 </html>

@@ -13,4 +13,6 @@ public interface UserMemberMapper {
 	public MemVO getMember(String id);
 	
 	public UserMemberVO selectMem(String id);
+	
+	int checkId(String id);
 }

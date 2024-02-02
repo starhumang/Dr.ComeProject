@@ -61,5 +61,12 @@
         (#{hospitalId}, #{hospitalPw}, #{hospitalName}, #{address}, #{phone}, #{hospitalImg}, #{mainSubject}, #{directorName}, #{directorPhone}, #{directorLicense}, #{holiday}, #{opentime}, #{closetime})
         ]]>
 	</insert>
+	
+	<select id="checkId" resultType="int" parameterType="String">
+		SELECT
+		COUNT(user_id)
+		FROM user_login_view
+		WHERE user_id = #{id}
+	</select>
 
 </mapper>

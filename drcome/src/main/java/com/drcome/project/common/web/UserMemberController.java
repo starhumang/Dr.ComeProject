@@ -11,6 +11,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
@@ -126,5 +127,17 @@ public class UserMemberController {
 		UserMemberVO myprofile = memMapper.selectMem(id);
 		model.addAttribute("profile", myprofile);
 		return "/member/userpage";
+	}
+	
+	@PostMapping("/checkid/{userId}")
+	public String userIdChk(@PathVariable String userId) {
+		int chk = memMapper.checkId(userId);
+				
+		String result = "dd";
+		if (chk == 0) {
+			result = "ss";
+		}
+		
+		return result;
 	}
 }

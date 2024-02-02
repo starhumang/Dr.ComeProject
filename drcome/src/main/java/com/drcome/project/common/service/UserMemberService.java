@@ -11,5 +11,7 @@ public interface UserMemberService {
 	public MemVO getMember(String id);
 	
 	public UserMemberVO selectMem(String id);
+	
+	int checkId(String id);
 
 }

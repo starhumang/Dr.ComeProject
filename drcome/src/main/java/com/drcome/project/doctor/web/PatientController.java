@@ -52,6 +52,7 @@ public class PatientController {
 		return "doctor/untactClinic";
 		
 		
+		
 	}
 	
 	//대면진료페이지
@@ -73,6 +74,16 @@ public class PatientController {
 		return patientService.getPerscription(vo);
 	}
 	
+	
+
+	//약검색
+	@GetMapping("medicine")
+	@ResponseBody
+	public List<PatientVO> msearch(PatientVO vo){
+		System.out.println(vo);
+		return patientService.getmnameList(vo);
+		
+	}
 	
 	
 	

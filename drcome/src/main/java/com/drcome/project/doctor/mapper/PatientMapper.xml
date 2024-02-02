@@ -60,7 +60,7 @@
 	<select id="mnameList"
 		resultType="com.drcome.project.doctor.service.PatientVO">
 		select * from medicine where medicine_name LIKE
-		'%'||#{word}||'%'
+		#{medicineName}||'%'
 	</select>
 
 

@@ -65,6 +65,13 @@
       input[type="checkbox"] {
         zoom: 1.4;
       }
+      #myButton {
+        float: right;
+      }
+
+      #perscription {
+        display: none;
+      }
     </style>
   </head>
 
@@ -241,7 +248,7 @@
                   </h5>
                 </span>
               </div>
-              <form action="SaveClinic" method="post">
+              <form action="saveClinic" method="post">
                 <!--필수-->
                 <div style="margin-bottom: 20px">
                   <label style="color: #858796; font-size: 1rem">
@@ -294,8 +301,9 @@
                   >처방전 없음</label
                 >
 
-                <!--약-->
-                <div style="margin-top: 25px">
+                <!--약전체-->
+                <div style="margin-top: 25px" id="pform">
+                  <!--제목-->
                   <div style="margin-bottom: 15px">
                     <i class="bi bi-bandaid"></i>
                     <span>
@@ -313,7 +321,9 @@
                       </h5>
                     </span>
                   </div>
+                  <!--제목-->
 
+                  <!--약검색-->
                   <div
                     class="row align-items-center"
                     style="
@@ -322,14 +332,19 @@
                       margin-top: 10px;
                     "
                   >
+                    <!--검색창-->
                     <div class="col-7">
                       <input
+                        id="search"
                         class="form-control border-1 py-3 ps-4 pe-5"
                         type="text"
                         placeholder="약 이름 입력"
+                        onkeydown="if(event.keyCode==13) event.preventDefault();"
                       />
                     </div>
+                    <!--검색창-->
 
+                    <!--버튼-->
                     <div class="col-auto">
                       <button
                         onclick="searchMedicine()"
@@ -339,12 +354,34 @@
                         검색
                       </button>
                     </div>
-
-                    <div id="msearch"></div>
+                    <!--버튼-->
                   </div>
-                  <table class="table"></table>
+                  <!--약검색-->
+
+                  <!--검색결과-->
+                  <table
+                    class="table"
+                    id="msearch"
+                    style="margin-left: 40px; margin-top: 20px; width: 80%"
+                  ></table>
+                  <!--검색결과-->
+
+                  <!--추가된 약 -->
+
+                  <table id="perscription" class="table" style="margin-top: 5%">
+                    <thead>
+                      <tr>
+                        <th>약품명</th>
+                        <th>투약량</th>
+                        <th>횟수</th>
+                        <th>일수</th>
+                      </tr>
+                    </thead>
+                  </table>
+
+                  <!--추가된 약 -->
                 </div>
-                <!--약-->
+                <!--약전체 -->
 
                 <br />
 
@@ -391,14 +428,7 @@
                 </h5>
               </div>
               <div class="modal-body">
-                <table id="modalTable">
-                  <tr>
-                    <th>약품명</th>
-                    <th>투약량</th>
-                    <th>횟수</th>
-                    <th>일수</th>
-                  </tr>
-                </table>
+                <table id="modalTable"></table>
               </div>
 
               <div class="modal-footer">
@@ -420,6 +450,20 @@
         <script src="/js/socket.js"></script>
 
         <script>
+          //체크하면 약 폼 숨기기
+          const cb = document.querySelector("#check_btn");
+          cb.addEventListener("change", (event) => {
+            const value = event.target.checked;
+            console.log(value);
+            if (value == true) {
+              let pform = document.getElementById("pform");
+              pform.style.display = "none";
+            } else {
+              pform.style.display = "block";
+            }
+          });
+
+          //처방전상세보기
           function viewPer(no) {
             console.log(no);
             const modalTable = $("#modalTable");
@@ -449,7 +493,93 @@
               .fail((err) => console.log(err)); //catch
           }
 
-          function searchMedicine() {}
+          //약검색하기
+          function searchMedicine() {
+            let mname = document.getElementById("search").value;
+            //console.log(mname);
+            const xhtp = new XMLHttpRequest();
+            xhtp.open("get", `/medicine?medicineName=${mname}`);
+            xhtp.send();
+
+            xhtp.onload = function () {
+              console.log(xhtp.responseText);
+              //검색된 약 리스트
+              let array = JSON.parse(xhtp.responseText);
+              console.log(array);
+
+              let table = (document.getElementById("msearch").innerHTML = "");
+
+              //약 list출력
+              for (let i of array) {
+                // console.log(i.medicineName);
+                table = document.getElementById("msearch");
+                let tr = document.createElement("tr");
+                let td = document.createElement("td");
+                td.innerHTML = i.medicineName;
+                tr.appendChild(td);
+                let btn = document.createElement("button");
+                btn.textContent = "추가";
+                btn.classList.add("btn", "btn-primary", "py-2");
+                btn.setAttribute("id", "myButton");
+                tr.appendChild(btn); //추가버튼
+                table.appendChild(tr);
+
+                //추가를 누르면
+                btn.addEventListener("click", function () {
+                  document.getElementById("search").value = "";
+
+                  event.preventDefault();
+                  console.log(
+                    event.target.parentNode.firstElementChild.innerHTML
+                  );
+
+                  let selectm =
+                    event.target.parentNode.firstElementChild.innerHTML;
+
+                  //선택된애 지우고
+                  event.target.parentNode.remove();
+
+                  //추가된 약 나오는 테이블
+                  let ptable = document.getElementById("perscription");
+                  ptable.style.display = "block";
+
+                  let tr = document.createElement("tr");
+                  let mtd = document.createElement("td");
+                  mtd.innerHTML = selectm;
+                  mtd.setAttribute("style", "width: 200px;");
+                  tr.appendChild(mtd);
+                  //input태그생성
+                  for (let i = 0; i < 3; i++) {
+                    let td = document.createElement("td");
+                    let input = document.createElement("input");
+                    input.type = "number";
+                    input.setAttribute("style", "width: 100px;");
+                    td.appendChild(input);
+
+                    tr.appendChild(td);
+                  }
+                  //삭제버튼생성
+                  let dbtn = document.createElement("button");
+                  dbtn.textContent = "삭제";
+                  dbtn.classList.add("btn", "btn-primary", "py-1");
+                  dbtn.setAttribute("style", "margin-top: 10px;");
+                  tr.appendChild(dbtn);
+                  //ptable에 한행 append
+                  ptable.appendChild(tr);
+
+                  dbtn.addEventListener("click", function () {
+                    event.preventDefault();
+                    event.target.parentNode.remove();
+                    if (
+                      document.getElementById("perscription").rows.length == 1
+                    ) {
+                      ptable.style.display = "none";
+                    }
+                  }); //삭제 이벤트
+                }); //추가 이벤트
+              } //for
+            };
+          }
         </script>
       </div>
       <!--container-fluid-->

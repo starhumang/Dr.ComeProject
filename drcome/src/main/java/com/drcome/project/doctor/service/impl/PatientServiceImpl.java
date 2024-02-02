@@ -36,7 +36,7 @@ public class PatientServiceImpl implements PatientService {
 	// 약검색
 	@Override
 	public List<PatientVO> getmnameList(PatientVO vo) {
-		return null;
+		return mapper.mnameList(vo);
 	}
 
 }

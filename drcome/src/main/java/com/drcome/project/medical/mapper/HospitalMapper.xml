@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.drcome.project.medical.mapper.HospitalMapper">
+
+	
+	<!-- 병원-의사-시간 조회 -->
+	<resultMap id="drResult" type="DoctorVO">
+		<id column="doctor_no" property="doctorNo"/>
+		<collection property="times" javaType="ArrayList"
+			column="doctor_no" ofType="DoctorTimeVO" select="selectDrTimeList" />
+	</resultMap>
+
+	<select id="selectDrList" resultMap="drResult">
+		SELECT 
+			doctor_no,
+			subject,
+			doctor_name,
+			holiday,
+			doctor_license
+		FROM DOCTOR
+	</select>
+
+	<select id="selectDrTimeList" resultType="DoctorTimeVO">
+		SELECT
+			doctor_no,
+			find_code(day) day,
+			day days,
+			MIN(time) AS min_time,
+			MAX(time) AS max_time
+		FROM
+			doctor_time
+		WHERE doctor_no = #{doctorNo}
+		GROUP BY
+			doctor_no,
+			day
+		ORDER BY doctor_no, days
+	</select>
+
+
+</mapper>

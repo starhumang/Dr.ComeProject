@@ -57,6 +57,11 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 	public MemVO getMember(String id) {
 		return mapper.getMember(id);
 	}
+	
+	@Override
+	public UserMemberVO selectMem(String id) {
+		return mapper.selectMem(id);
+	}
 
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {	    

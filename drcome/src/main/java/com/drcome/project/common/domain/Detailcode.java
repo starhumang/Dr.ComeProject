@@ -1,4 +1,4 @@
-package com.drcome.project;
+package com.drcome.project.common.domain;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

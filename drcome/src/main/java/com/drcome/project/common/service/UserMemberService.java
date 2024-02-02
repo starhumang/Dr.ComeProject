@@ -9,5 +9,7 @@ public interface UserMemberService {
 	int insertHosMember(HospitalVO vo);
 	
 	public MemVO getMember(String id);
+	
+	public UserMemberVO selectMem(String id);
 
 }

@@ -3,15 +3,24 @@ package com.drcome.project.common.service;
 import java.util.Date;
 
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 public class UserMemberVO {
+	
+	private MultipartFile[] uploadFiles;
+	
+	public MultipartFile[] getUploadFiles() {
+        return uploadFiles;
+    }
+	
+	public void setUploadFiles(MultipartFile[] uploadFiles) {
+        this.uploadFiles = uploadFiles;
+    }
 	
 	private String userId;
 	private String userPw;

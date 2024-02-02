@@ -12,10 +12,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
-import com.drcome.project.Detailcode;
+import com.drcome.project.FileUploadService;
 import com.drcome.project.common.mapper.UserMemberMapper;
-import com.drcome.project.common.service.DetailCodeService;
 import com.drcome.project.common.service.UserMemberService;
 import com.drcome.project.common.service.UserMemberVO;
 import com.drcome.project.medical.service.HospitalVO;
@@ -25,16 +25,16 @@ import com.drcome.project.pharmacy.PharmacyVO;
 public class UserMemberController {
 
 	@Autowired
-	UserMemberMapper dao;
+	UserMemberMapper memMapper;
 
 	@Autowired
 	UserMemberService userMemService;
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
-    
+	
 	@Autowired
-	private DetailCodeService detailCodeService;
+    private FileUploadService fileUploadService;
 
 	@GetMapping(value = { "/admin/", "/admin/home"})
 	public String adminHome() {
@@ -56,9 +56,18 @@ public class UserMemberController {
 		String userPw = mVO.getUserPw();
 		userPw = bCryptPasswordEncoder.encode(userPw);
 		mVO.setUserPw(userPw);
-
+		
+		System.out.println(mVO);
+		
 		resp.setContentType("text/html; charset=UTF-8");
+		
+		List<String> imageList = fileUploadService.uploadFiles(mVO.getUploadFiles());
+		
+		String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
+        mVO.setIdentification(uploadedFileName);
 
+        System.out.println(mVO);
+        
 		int cnt = userMemService.insertUserMember(mVO);
 		try {
 			if (cnt > 0) {
@@ -80,10 +89,7 @@ public class UserMemberController {
 	}
 	
 	@GetMapping("/medicaljoin")
-	public String medicalJoinForm(Model model) {
-		List<Detailcode> detailCodes = detailCodeService.getAllDetailCodes();
-        model.addAttribute("detailCodes", detailCodes);
-        System.out.println(detailCodes);
+	public String medicalJoinForm() {
 		return "/member/medicaljoin";
 	}
 	
@@ -113,5 +119,12 @@ public class UserMemberController {
 		} catch (IOException e) {
 			e.printStackTrace(); // 예외 처리 추가
 		}
+	}
+	
+	@GetMapping("/mypage")
+	public String myPage(@SessionAttribute(name = "userId", required = false) String id, Model model) {
+		UserMemberVO myprofile = memMapper.selectMem(id);
+		model.addAttribute("profile", myprofile);
+		return "/member/userpage";
 	}
 }

@@ -40,6 +40,7 @@
 		<script type="text/javascript">
 			function validateForm() {
 				return (
+					uploadImg() &&
 					checkId() &&
 					checkPhone() &&
 					checkPassword() &&
@@ -74,28 +75,6 @@
 				return true;
 			}
 
-			// function checkPhone() {
-			// 	let phone = document.getElementById('phone').value;
-			// 	let phoneErrorMessage = document.getElementById('phoneErrorMessage');
-
-			// 	if (phone === '') {
-			// 		phoneErrorMessage.innerHTML = '전화번호를 입력하세요.';
-			// 		phoneErrorMessage.style.color = 'red';
-			// 		return false;
-			// 	}
-
-			// 	let phoneRegex = /^\d{3}-\d{3,4}-\d{4}$/;
-			// 	if (!phoneRegex.test(phone)) {
-			// 		phoneErrorMessage.innerHTML = '올바른 전화번호 형식이 아닙니다.';
-			// 		phoneErrorMessage.style.color = 'red';
-			// 		return false;
-			// 	}
-
-			// 	// 전화번호 중복 확인 로직 추가...
-
-			// 	phoneErrorMessage.innerHTML = '';
-			// 	return true;
-			// }
 			function formatPhoneNumber() {
 				let phoneInput = document.getElementById('phone');
 				let inputValue = phoneInput.value.replace(/[^0-9]/g, ''); // Remove non-numeric characters
@@ -212,6 +191,15 @@
 				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
 				myModal.show();
 			}
+
+			function uploadImg() {
+				let formData = new FormData();
+				let inputFile = document.querySelector('#myImg').files[0];
+				for (var i = 0; i < inputFile.length; i++) {
+					console.log(inputFile[i]);
+					formData.append('uploadFiles', files[i]);
+				}
+			}
 		</script>
 	</head>
 
@@ -224,7 +212,12 @@
 							<div class="form-items">
 								<br />
 								<h3>사용자 회원가입</h3>
-								<form th:action="@{/userjoin}" method="post" onsubmit="return validateForm()">
+								<form
+									th:action="@{/userjoin}"
+									method="post"
+									onsubmit="return validateForm()"
+									enctype="multipart/form-data"
+								>
 									<br />
 									<div class="col-md-12">
 										아이디
@@ -353,6 +346,7 @@
 									<br />
 									<div class="col-md-12">
 										<label>신분증 사진<br /></label>
+										<input type="file" id="myImg" name="uploadFiles" multiple />
 									</div>
 
 									<br />

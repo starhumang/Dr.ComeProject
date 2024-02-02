@@ -9,23 +9,54 @@
 	<insert id="insertUserMember"
 		parameterType="com.drcome.project.common.service.UserMemberVO">
         <![CDATA[
-        INSERT INTO usertable (user_id, user_pw, user_name, phone, birthday, gender)
+        INSERT INTO usertable (user_id
+        					, user_pw
+        					, user_name
+        					, phone
+        					, birthday
+        					, gender
+        					, identification)
         VALUES
-        (#{userId}, #{userPw}, #{userName}, #{phone}, #{birthday}, #{gender})
+        (#{userId}, #{userPw}, #{userName}, #{phone}, #{birthday}, #{gender}, #{identification})
         ]]>
 	</insert>
 
 	<select id="getMember" resultType="MemVo">
-		SELECT user_id, user_pw,
-		user_name, 'ROLE_' || grade as grade
-		FROM user_login_view WHERE user_id
-		= #{id}
+		SELECT user_id
+			, user_pw
+			, user_name
+			, 'ROLE_' || grade as grade
+		FROM user_login_view 
+		WHERE user_id = #{id}
+	</select>
+	
+	<select id="selectMem" resultType="UserMemberVO">
+		SELECT user_id
+			, user_name
+			, phone
+			, birthday
+			, gender
+			, identification
+		FROM usertable
+		WHERE user_id = #{id}
 	</select>
 
 	<insert id="insertHosMember"
 		parameterType="com.drcome.project.medical.service.HospitalVO">
 	<![CDATA[
-        INSERT INTO hospital (hospital_id, hospital_pw, hospital_name, address, phone, hospital_img, main_subject, director_name, director_phone, director_license, holiday, opentime, closetime)
+        INSERT INTO hospital (hospital_id
+        					, hospital_pw
+        					, hospital_name
+        					, address
+        					, phone
+        					, hospital_img
+        					, main_subject
+        					, director_name
+        					, director_phone
+        					, director_license
+        					, holiday
+        					, opentime
+        					, closetime)
         VALUES
         (#{hospitalId}, #{hospitalPw}, #{hospitalName}, #{address}, #{phone}, #{hospitalImg}, #{mainSubject}, #{directorName}, #{directorPhone}, #{directorLicense}, #{holiday}, #{opentime}, #{closetime})
         ]]>

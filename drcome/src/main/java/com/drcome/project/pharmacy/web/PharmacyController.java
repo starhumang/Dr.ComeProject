@@ -43,7 +43,6 @@ public class PharmacyController {
 		return "pharmacy/perscriptionStatus";
 	}
 
-	
 	/*
 	 * @GetMapping("/pharmacy/status/{date}")
 	 * 
@@ -55,7 +54,6 @@ public class PharmacyController {
 	 * 
 	 * return pservice.selectPrescriptionList(date, pharmacyId); }
 	 */
-
 
 	@ModelAttribute("pharmacy")
 	public PharmacyVO getServer() {

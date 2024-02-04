@@ -1,196 +1,306 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{pharmacy/pharmacyLayout}">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{pharmacy/pharmacyLayout}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Pharmacy Status</title>
+    <style>
+      #btn {
+        margin-bottom: 20px;
+      }
 
-<head>
-<meta charset="UTF-8">
-<title>Pharmacy Status</title>
-<style>
-#btn {
-	margin-bottom: 20px;
-}
-
-.head_info {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 30px;
-}
-</style>
-</head>
-<body>
-	<div layout:fragment="content">
-		<div class="container-fluid">
-			<div class="head_info">
-				<h4>처방현황</h4>
-				<p>
-					<!-- <i class="fas fa-fw fa-calendar" data-toggle="modal"
+      .head_info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
+    </style>
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <div class="container-fluid">
+        <div class="head_info">
+          <h4>처방현황</h4>
+          <p>
+            <!-- <i class="fas fa-fw fa-calendar" data-toggle="modal"
 						data-target="#calendarModal"></i> 현재날짜 : <span
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
 						id="datepicker" th:name="datepicker"></span> -->
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜  <input type="text" id="datepicker">
-				</p>
-			</div>
+            <i class="fas fa-fw fa-calendar"></i> 현재날짜
+            <input type="text" id="datepicker" />
+          </p>
+        </div>
 
-			<p>처방전 승인 및 출력</p>
-			<div class="card shadow mb-4">
-				<div class="card-header py-3"
-					style="display: flex; justify-content: space-between; align-items: center;">
-					<h5 class="m-0 font-weight-bold text-secondary">
-						<i class="fas fa-fw fa-capsules"></i>
-					</h5>
-				</div>
-				<div class="card-body"
-					style="display: flex; justify-content: center; align-items: center;">
-					<table class="table">
-						<tr>
-							<th>No</th>
-							<th>환자성명</th>
-							<th>생년월일</th>
-							<th>환자Tel</th>
-							<th>병원명</th>
-							<th>병원Tel</th>
-							<th>담당의</th>
-							<th>처방일자</th>
-							<th>처방전</th>
-							<th>출력</th>
-							<th>반환</th>
-						</tr>
-						<tr th:each="plist, pstart : ${plist}">
-							<td th:text="${pstart.count}"></td>
-							<td th:text="${plist.userName}"></td>
-							<td th:text="${#dates.format(plist.userBirthday, 'yyyy-MM-dd')}"></td>
-							<td th:text="${plist.userPhone}"></td>
-							<td th:text="${plist.hospitalName}"></td>
-							<td th:text="${plist.hospitalPhone}"></td>
-							<td th:text="${plist.doctorName}"></td>
-							<td
-								th:text="${#dates.format(plist.perscriptionDate, 'yyyy-MM-dd')}"></td>
-							<td><button id="viewper" th:onclick="viewPer([[${plist.clinicNo}]])" type="button" class="btn btn-info"
-								data-bs-toggle="modal" data-bs-target="#exampleModalCenter">미리보기</button></td>
-							<td><button>출력하기</button></td>
-							<td><button id="returnbtn" data-bs-toggle="modal"
-									data-bs-target="#returnModal">반환</button></td>
-						</tr>
-					</table>
-				</div>
-			</div>
-		</div>
-		<!-- modal -->
-		<div class="modal fade" id="returnModal" tabindex="-1"
-			aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">반환 사유</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
-					</div>
-					<div class="modal-body container">
-						<form>
-							<div class="form-check">
-								<input class="form-check-input" type="radio"
-									name="flexRadioDefault" id="flexRadioDefault1"> <label
-									class="form-check-label" for="flexRadioDefault1"> 약 재고가
-									부족하여 조제가 취소되었습니다. </label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio"
-									name="flexRadioDefault" id="flexRadioDefault2" checked>
-								<label class="form-check-label" for="flexRadioDefault2">
-									약국 사정상 조제가 어려워 취소되었습니다. </label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio"
-									name="flexRadioDefault" id="flexRadioDefault3" checked>
-								<label class="form-check-label" for="flexRadioDefault2">
-									약국 영업 시간이 아닙니다. </label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio"
-									name="flexRadioDefault" id="flexRadioDefault4" checked>
-								<label for="message-text" class="col-form-label">기타</label>
-								<div>
-									<textarea class="form-control" id="message-text"></textarea>
-								</div>
-							</div>
-						</form>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal">닫기</button>
-							<button type="button" class="btn btn-primary">반환</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-		<!-- 처방전 미리보기 모달 -->
-		<!-- modal -->
-        <div
-          class="modal fade"
-          id="exampleModalCenter"
-          tabindex="-1"
-          role="dialog"
-          aria-labelledby="exampleModalCenterTitle"
-          aria-hidden="false"
-        >
-          <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLongTitle">
-                  처방전 상세보기
-                </h5>
-              </div>
-              <div class="modal-body">
-                <table id="modalTable">
-                  <tr>
-                    <th>약품명</th>
-                    <th>투약량</th>
-                    <th>횟수</th>
-                    <th>일수</th>
-                  </tr>
-                </table>
-              </div>
-
+        <p>처방전 승인 및 출력</p>
+        <div class="card shadow mb-4">
+          <div
+            class="card-header py-3"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <h5 class="m-0 font-weight-bold text-secondary">
+              <i class="fas fa-fw fa-capsules"></i>
+            </h5>
+          </div>
+          <div
+            class="card-body"
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <table class="table">
+              <tr>
+                <th>No</th>
+                <th>환자성명</th>
+                <th>생년월일</th>
+                <th>환자Tel</th>
+                <th>병원명</th>
+                <th>병원Tel</th>
+                <th>담당의</th>
+                <th>처방일자</th>
+                <th>처방전</th>
+                <th>출력</th>
+                <th>반환</th>
+              </tr>
+              <tr th:each="plist, pstart : ${plist}">
+                <td th:text="${pstart.count}"></td>
+                <td th:text="${plist.userName}"></td>
+                <td
+                  th:text="${#dates.format(plist.userBirthday, 'yyyy-MM-dd')}"
+                ></td>
+                <td th:text="${plist.userPhone}"></td>
+                <td th:text="${plist.hospitalName}"></td>
+                <td th:text="${plist.hospitalPhone}"></td>
+                <td th:text="${plist.doctorName}"></td>
+                <td
+                  th:text="${#dates.format(plist.perscriptionDate, 'yyyy-MM-dd')}"
+                ></td>
+                <td>
+                  <button
+                    id="viewper"
+                    th:onclick="viewPer([[${plist.clinicNo}]])"
+                    type="button"
+                    class="btn btn-info"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModalCenter"
+                  >
+                    미리보기
+                  </button>
+                </td>
+                <td><button>출력하기</button></td>
+                <td>
+                  <button
+                    id="returnbtn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#returnModal"
+                  >
+                    반환
+                  </button>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- modal -->
+      <div
+        class="modal fade"
+        id="returnModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">반환 사유</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              ></button>
+            </div>
+            <div class="modal-body container">
+              <form>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault1"
+                  />
+                  <label class="form-check-label" for="flexRadioDefault1">
+                    약 재고가 부족하여 조제가 취소되었습니다.
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault2"
+                    checked
+                  />
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    약국 사정상 조제가 어려워 취소되었습니다.
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault3"
+                    checked
+                  />
+                  <label class="form-check-label" for="flexRadioDefault2">
+                    약국 영업 시간이 아닙니다.
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault4"
+                    checked
+                  />
+                  <label for="message-text" class="col-form-label">기타</label>
+                  <div>
+                    <textarea class="form-control" id="message-text"></textarea>
+                  </div>
+                </div>
+              </form>
               <div class="modal-footer">
                 <button
                   type="button"
                   class="btn btn-secondary"
                   data-bs-dismiss="modal"
                 >
-                  Close
+                  닫기
                 </button>
+                <button type="button" class="btn btn-primary">반환</button>
               </div>
             </div>
           </div>
         </div>
-		<!--  -->
-	</div>
-</body>
+      </div>
+      <!-- 처방전 미리보기 모달 -->
+      <!-- modal -->
+      <div
+        class="modal fade"
+        id="exampleModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="false"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">
+                처방전 상세보기
+              </h5>
+            </div>
+            <div class="modal-body">
+              <table id="modalTable">
+                <tr>
+                  <th>약품명</th>
+                  <th>투약량</th>
+                  <th>횟수</th>
+                  <th>일수</th>
+                </tr>
+              </table>
+            </div>
+
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--  -->
+    </div>
+  </body>
 </html>
 <script>
-$(function() {
+  $(function () {
     //input을 datepicker로 선언
-    $('#datepicker').datepicker({
-        dateFormat: 'yy-mm-dd' //달력 날짜 형태
-        ,showOtherMonths: true //빈 공간에 현재월의 앞뒤월의 날짜를 표시
-        ,showMonthAfterYear:true // 월- 년 순서가아닌 년도 - 월 순서
-        ,changeYear: true //option값 년 선택 가능
-        ,changeMonth: true //option값  월 선택 가능            
-        ,yearSuffix: "년" //달력의 년도 부분 뒤 텍스트
-        ,monthNamesShort: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 텍스트
-        ,monthNames: ['1월','2월','3월','4월','5월','6월','7월','8월','9월','10월','11월','12월'] //달력의 월 부분 Tooltip
-        ,dayNamesMin: ['일','월','화','수','목','금','토'] //달력의 요일 텍스트
-        ,dayNames: ['일요일','월요일','화요일','수요일','목요일','금요일','토요일'] //달력의 요일 Tooltip
-        ,minDate: "-5Y" //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
-        ,maxDate: "D" //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)  
-    });                    
-    
-    //초기값을 오늘 날짜로 설정해줘야 합니다.
-    $('#datepicker').datepicker('setDate', 'today', {dateFormat: 'yyyy-MM-dd'}); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)            
-});
+    $("#datepicker").datepicker({
+      dateFormat: "yy-mm-dd", //달력 날짜 형태
+      showOtherMonths: true, //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+      showMonthAfterYear: true, // 월- 년 순서가아닌 년도 - 월 순서
+      changeYear: true, //option값 년 선택 가능
+      changeMonth: true, //option값  월 선택 가능
+      yearSuffix: "년", //달력의 년도 부분 뒤 텍스트
+      monthNamesShort: [
+        "1월",
+        "2월",
+        "3월",
+        "4월",
+        "5월",
+        "6월",
+        "7월",
+        "8월",
+        "9월",
+        "10월",
+        "11월",
+        "12월",
+      ], //달력의 월 부분 텍스트
+      monthNames: [
+        "1월",
+        "2월",
+        "3월",
+        "4월",
+        "5월",
+        "6월",
+        "7월",
+        "8월",
+        "9월",
+        "10월",
+        "11월",
+        "12월",
+      ], //달력의 월 부분 Tooltip
+      dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"], //달력의 요일 텍스트
+      dayNames: [
+        "일요일",
+        "월요일",
+        "화요일",
+        "수요일",
+        "목요일",
+        "금요일",
+        "토요일",
+      ], //달력의 요일 Tooltip
+      minDate: "-5Y", //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+      maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)
+    });
 
-function viewPer(no) {
+    //초기값을 오늘 날짜로 설정해줘야 합니다.
+    $("#datepicker").datepicker("setDate", "today", {
+      dateFormat: "yyyy-MM-dd",
+    }); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
+    
+    $("#datepicker").on("change", function () {
+        // 선택된 날짜를 콘솔에 출력
+        console.log("선택된 날짜:", $(this).val());
+      });
+
+      // 페이지 로드 시 현재 날짜를 콘솔에 출력
+      console.log("현재 날짜:", $("#datepicker").val());
+  });
+
+  function viewPer(no) {
     console.log(no);
     const modalTable = $("#modalTable");
     $.ajax(`/perscription/${no}`) //fetch
@@ -227,7 +337,7 @@ function viewPer(no) {
         url: `/pharmacy/status/{dateValue}`, // 백엔드 엔드포인트로 교체
         success: function (response) {
             console.log("Ajax 요청 성공");
-            maketabl4e
+            createTable();
         },
         error: function (error) {
             console.error("Ajax 요청 실패:", error);
@@ -238,4 +348,57 @@ function viewPer(no) {
 $(document).ready(function() {
     sendDate(); 
 }); */
+
+/* function createTable(data) {
+    // 동적으로 테이블 생성
+    var table = $("<table>").addClass("table");
+    var thead = $("<thead>").appendTo(table);
+    var tbody = $("<tbody>").appendTo(table);
+
+    // 테이블 헤더 생성
+    var headerRow = $("<tr>").appendTo(thead);
+    var headers = ["No", "환자성명", "생년월일", "환자Tel", "병원명", "병원Tel", "담당의", "처방일자", "처방전", "출력", "반환"];
+
+	 $.each(headers, function(index, text) {
+	     $("<th>").text(text).appendTo(headerRow);
+	 });
+
+    // 테이블 내용 생성
+    $.each(data, function(index, item) {
+        var row = $("<tr>").appendTo(tbody);
+        $.each(item, function(key, value) {
+            $("<td>").text(value).appendTo(row);
+        });
+        var viewButton = $("<button>")
+        .text("미리보기")
+        .addClass("btn btn-info")
+        .attr({
+            "type": "button",
+            "id": "viewper",
+            "data-bs-toggle": "modal",
+            "data-bs-target": "#exampleModalCenter",
+        })
+        .on("click", function() {
+            viewPer([[item.clinicNo]]);
+        });
+
+    var printButton = $("<button>")
+        .text("출력하기")
+        .addClass("btn btn-primary");
+
+    var returnButton = $("<button>")
+        .text("반환")
+        .addClass("btn btn-danger")
+        .attr({
+            "data-bs-toggle": "modal",
+            "data-bs-target": "#returnModal",
+        });
+
+    // 버튼 열 추가
+    $("<td>").append(viewButton).appendTo(row);
+    $("<td>").append(printButton).appendTo(row);
+    $("<td>").append(returnButton).appendTo(row);
+    }); */
+
+
 </script>

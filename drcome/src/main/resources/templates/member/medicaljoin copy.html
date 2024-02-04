@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>의료기관 회원가입</title>
+
+		<style>
+			.modal {
+				text-align: center;
+			}
+
+			.modal-dialog {
+				display: flex !important;
+				align-items: center;
+				justify-content: center;
+			}
+		</style>
+
+		<script type="text/javascript">
+			function scsAlert(content) {
+				Swal.fire({
+					icon: 'success',
+					text: content,
+				});
+			}
+
+			function errAlert(content) {
+				Swal.fire({
+					icon: 'error',
+					text: content,
+				});
+			}
+
+			function checkId() {
+				let userId = document.getElementById('userid').value;
+				let idErrorMessage = document.getElementById('idErrorMessage');
+				let checkDupliIdBtn = document.getElementById('checkDupliIdBtn');
+
+				if (userId === '') {
+					idErrorMessage.innerHTML = '아이디를 입력하세요.';
+					idErrorMessage.style.color = 'red';
+					checkDupliIdBtn.disabled = true;
+					return false;
+				}
+
+				let idRegex = /^[a-zA-Z0-9]{5,20}$/;
+				if (!idRegex.test(userId)) {
+					idErrorMessage.innerHTML = '아이디는 5자에서 20자의 영문 대소문자 또는 숫자로 입력하세요.';
+					idErrorMessage.style.color = 'red';
+					checkDupliIdBtn.disabled = true;
+					return false;
+				}
+
+				idErrorMessage.innerHTML = '';
+				checkDupliIdBtn.disabled = false;
+				return true;
+			}
+
+			function checkDupliId() {
+				let checkId = $('#userid').val();
+				console.log(checkId);
+				let url = '/auth/checkId?userId=' + checkId;
+				$.ajax({
+					url: url,
+					type: 'get',
+				})
+					.done((resp) => {
+						if (resp == 1) {
+							alert('이미 사용중인 아이디입니다.');
+							// errAlert('이미 사용중인 아이디입니다.');
+						} else {
+							alert('사용가능한 아이디입니다.');
+							// scsAlert('사용가능한 아이디입니다.');
+						}
+					})
+					.fail((err) => {
+						alert('오류 발생');
+						console.log(err);
+					});
+			}
+
+			function checkPassword() {
+				let password = document.getElementById('pw').value;
+				let passwordErrorMessage = document.getElementById('pwErrorMessage');
+
+				if (password === '') {
+					passwordErrorMessage.innerHTML = '비밀번호를 입력하세요.';
+					passwordErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				let passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+				if (!passwordRegex.test(password)) {
+					passwordErrorMessage.innerHTML =
+						'비밀번호는 최소 8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다.';
+					passwordErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				passwordErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkPasswordMatch() {
+				let password = document.getElementById('pw').value;
+				let rePassword = document.getElementById('rePw').value;
+				let rePasswordErrorMessage = document.getElementById('rePasswordErrorMessage');
+
+				if (password !== rePassword) {
+					rePasswordErrorMessage.innerHTML = '비밀번호가 일치하지 않습니다.';
+					rePasswordErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				rePasswordErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkName() {
+				let name = document.getElementById('name').value;
+				let nameErrorMessage = document.getElementById('nameErrorMessage');
+
+				if (name === '') {
+					nameErrorMessage.innerHTML = '이름을 입력하세요.';
+					nameErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				nameErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkBirthday() {
+				let birthday = document.getElementById('birthDay').value;
+				let birthdayErrorMessage = document.getElementById('birthdayErrorMessage');
+
+				if (birthday === '') {
+					birthdayErrorMessage.innerHTML = '생년월일을 입력하세요.';
+					birthdayErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				birthdayErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkAgreement() {
+				let agreement = document.getElementById('invalidCheck').checked;
+				let agreementErrorMessage = document.getElementById('agreementErrorMessage');
+
+				if (!agreement) {
+					agreementErrorMessage.innerHTML = '약관에 동의해야 합니다.';
+					agreementErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				agreementErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function openModal() {
+				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+				myModal.show();
+			}
+		</script>
+	</head>
+
+	<body>
+		<div class="container" layout:fragment="content">
+			<div class="form-body">
+				<div class="row">
+					<div class="form-holder">
+						<div class="form-content">
+							<div class="form-items">
+								<br />
+								<h3>의료기관 회원가입</h3>
+								<p>병원가입</p>
+								<p>약국가입</p>
+								<form th:action="@{/medicaljoin}" id="hospital" method="post">
+									<br />
+									<div class="col-md-12">
+										아이디
+										<input
+											class="form-control"
+											type="text"
+											name="hospitalId"
+											id="hid"
+											placeholder="아이디를 입력하세요"
+											required
+										/>
+										<input
+											type="button"
+											id="hidcheck"
+											class="btn btn-warning"
+											value="아이디 중복확인"
+										/>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										비밀번호
+										<input
+											class="form-control"
+											type="password"
+											name="hospitalPw"
+											id="hpw"
+											placeholder="비밀번호를 입력하세요"
+											required
+										/>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										비밀번호 확인
+										<input
+											class="form-control"
+											type="password"
+											id="hpwcheck"
+											placeholder="비밀번호를 다시 입력하세요"
+											required
+										/>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										병원 이름
+										<input
+											class="form-control"
+											type="text"
+											name="hospitalName"
+											id="hname"
+											placeholder="이름을 입력하세요"
+											required
+										/>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										병원주소
+										<input class="form-control" type="text" name="address" id="hadd" required />
+										<input type="button" id="haddcheck" class="btn btn-warning" value="주소검색" />
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										전화번호
+										<input
+											class="form-control"
+											type="tel"
+											name="phone"
+											id="hphone"
+											placeholder="전화번호를 입력하세요"
+											required
+										/>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										대표 사진
+										<input class="form-control" type="file" name="hospitalImg" id="himg" />
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										대표 진료 과목
+										<select class="form-control" name="mainSubject" id="hsub">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_h}">
+												<option
+													th:value="${detailCode.detailCode}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										휴무일
+										<select class="form-control" name="holiday" id="hday">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_i}">
+												<option
+													th:value="${detailCode.detailCode}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										오픈시간
+										<select class="form-control" name="holiday" id="hotime">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.detailCode}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										마감시간
+										<select class="form-control" name="holiday" id="hctime">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.detailCode}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+
+									<hr />
+
+									<div class="col-md-12">
+										병원장 이름
+										<input
+											class="form-control"
+											type="text"
+											name="directorName"
+											id="hceoname"
+											placeholder="이름을 입력하세요"
+											required
+										/>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										병원장 전화번호
+										<input
+											class="form-control"
+											type="tel"
+											name="directorPhone"
+											id="hceophone"
+											placeholder="전화번호를 입력하세요"
+											required
+										/>
+									</div>
+
+									<br />
+									<div class="col-md-12">
+										사업자등록번호
+										<input
+											class="form-control"
+											type="text"
+											name="directorLicense"
+											id="hceolicense"
+											placeholder="사업자등록번호를 입력하세요"
+											required
+										/>
+										<input
+											type="button"
+											id="hlicensecheck"
+											class="btn btn-warning"
+											value="사업자등록번호확인"
+										/>
+									</div>
+
+									<br />
+									<div class="form-check">
+										<label class="form-check-label" onclick="openModal()"> [전문보기]</label>
+										동의
+										<input class="form-check-input" type="checkbox" id="invalidCheck" required />
+									</div>
+
+									<br />
+									<input type="submit" value="회원가입" class="btn btn-danger" />
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<!-- Modal -->
+			<div class="modal" tabindex="-1" id="exampleModal">
+				<div class="modal-dialog">
+					<div class="modal-content">
+						<div class="modal-body">
+							<p>대충 개인정보약관 내용</p>
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

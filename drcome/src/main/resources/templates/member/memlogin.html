@@ -6,6 +6,69 @@
 >
 	<head>
 		<meta charset="UTF-8" />
+		<style>
+			.registered-customers {
+				margin: 0 auto;
+				width: 300px;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.blog-section-title {
+				color: #333;
+				border-left: 2px solid #06bbcc;
+				padding-left: 10px;
+			}
+
+			form {
+				margin-top: 20px;
+			}
+
+			.login-account p {
+				margin: 10px 0 5px;
+				color: #333;
+			}
+
+			input {
+				width: 100%;
+				padding: 10px;
+				margin-bottom: 10px;
+				border: 1px solid #ccc;
+				border-radius: 4px;
+				box-sizing: border-box;
+			}
+
+			button {
+				width: 100%;
+				padding: 10px;
+				color: #fff;
+				background-color: #06bbcc;
+				border: none;
+				border-radius: 4px;
+				cursor: pointer;
+				font-size: 16px;
+				transition: background-color 0.3s;
+			}
+
+			button:hover {
+				background-color: #333;
+			}
+
+			.mb-40 button {
+				margin-bottom: 10px;
+			}
+
+			a {
+				color: #06bbcc;
+				text-decoration: none;
+			}
+
+			a:hover {
+				text-decoration: underline;
+			}
+		</style>
 	</head>
 	<body>
 		<div layout:fragment="content">
@@ -17,40 +80,26 @@
 						<input type="text" name="username" />
 						<p>비밀번호</p>
 						<input type="password" name="password" />
-						<div class="row">
-							<div class="col-sm-8">
-								<p>
-									<small><a href="#">아이디찾기</a></small>
-								</p>
-							</div>
-							<div class="col-sm-4">
-								<p>
-									<small><a href="#">비밀번호찾기</a></small>
-								</p>
-							</div>
-						</div>
 						<!-- 						<div class="mb-10"><input class="form-check-input" type="checkbox" id="remember" /> 로그인 상태 유지</div> -->
 						<div class="mb-40" style="text-align: center">
-							<button class="submit-btn-1 btn-hover-1" type="submit">로그인</button>
+							<button type="submit">로그인</button>
 							<br />
-							<button class="submit-btn-1 btn-hover-1" type="button" onclick="userjoinForm()">
-								일반 사용자 회원가입
-							</button>
-							<button class="submit-btn-1 btn-hover-1" type="button" onclick="medicaljoinForm()">
-								의료기관 사용자 회원가입
-							</button>
+							<div class="mb-40">
+								<p>
+									<small><a href="/findAccount">아이디/비밀번호 찾기</a></small>
+								</p>
+							</div>
+							<div class="mb-40">
+								<p>
+									<small><a href="/userjoin">일반 사용자 회원가입</a></small>
+									<br />
+									<small><a href="/medicaljoin">의료기관 사용자 회원가입</a></small>
+								</p>
+							</div>
 						</div>
 					</div>
 				</form>
 			</div>
-			<script type="text/javascript">
-				function userjoinForm() {
-					location.href = '/userjoin';
-				}
-				function medicaljoinForm() {
-					location.href = '/medicaljoin';
-				}
-			</script>
 		</div>
 	</body>
 </html>

@@ -16,5 +16,5 @@ public class Detailcode {
 	private String detailCode;
     private String codeName;
     private String mainCode;
-
+    
 }

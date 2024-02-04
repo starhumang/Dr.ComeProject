@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.drcome.project.FileUploadService;
 import com.drcome.project.common.mapper.UserMemberMapper;
+import com.drcome.project.common.service.MemVO;
 import com.drcome.project.common.service.UserMemberService;
 import com.drcome.project.common.service.UserMemberVO;
 import com.drcome.project.medical.service.HospitalVO;
@@ -39,17 +41,46 @@ public class UserMemberController {
 	
 	@Autowired
     private FileUploadService fileUploadService;
-
-	@GetMapping(value = { "/admin/", "/admin/home"})
-	public String adminHome() {
-		return "/admin/home";
-	}
 	
 	@GetMapping("/userlogin")
 	public String userLogin() {
 		return "/member/memlogin";
 	}
+	
+	@GetMapping("findAccount")
+	public String findAccount() {
+		return "/member/findAccount";
+	}
+	
+	@GetMapping("/auth/findId")
+	@ResponseBody
+	public String findId(@RequestParam String userName, @RequestParam String phone) {
+	    System.out.println("이름: " + userName + "전화번호: " + phone);
 
+	    String userId = userMemService.findId(userName, phone);
+	    
+	    System.out.println("값: " + userId);
+	    
+	    if (userId == null) {
+	    	userId = "no name";
+	    }
+	    
+	    return userId;
+	}
+	
+	@GetMapping("/auth/findPw")
+	@ResponseBody
+	public int findPw(@RequestParam String userId, @RequestParam String password) {
+		MemVO vo = userMemService.getMember(userId);
+		password = bCryptPasswordEncoder.encode(password);
+		vo.setUserPw(password);
+		
+		int result = userMemService.updatePw(vo);
+				
+		return result;
+	}
+	
+	
 	@GetMapping("/userjoin")
 	public String userJoinForm() {
 		return "/member/userjoin";
@@ -104,6 +135,13 @@ public class UserMemberController {
 		hVO.setHospitalPw(hospitalPw);
 		
 		resp.setContentType("text/html; charset=UTF-8");
+		
+		List<String> imageList = fileUploadService.uploadFiles(hVO.getUploadFiles());
+		
+		String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
+		hVO.setHospitalImg(uploadedFileName);
+
+        System.out.println(hVO);
 
 		int cnt = userMemService.insertHosMember(hVO);
 		try {
@@ -132,19 +170,22 @@ public class UserMemberController {
 		return "/member/userpage";
 	}
 	
-	@GetMapping("/checkId")
+	@GetMapping("/auth/checkId")
 	@ResponseBody
-	public String checkDupliId(@RequestParam String userId) {
-		int cnt = memMapper.checkId(userId);
-		String msg = null;
-		if(cnt == 1) {
-			msg = "중복";
-		} else {
-			msg = "아님";
-		}
-		System.out.println(msg);
+	public int checkDupliId(@RequestParam String userId) {
+	    System.out.println("중복체크할 아이디: " + userId);
 
-		return msg;
+	    int cnt = userMemService.checkId(userId);
+	    
+	    System.out.println("값: " + cnt);
+	    
+	    return cnt;
+	}
+	
+	@GetMapping("/auth/checkPhone")
+	@ResponseBody
+	public Map<String, Object> sendNumber(@RequestParam String phoneNum) {
+		return userMemService.sendNumber(phoneNum);
 	}
 
 }

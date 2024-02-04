@@ -1,5 +1,8 @@
 package com.drcome.project.common.service.impl;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,9 @@ import com.drcome.project.common.service.UserMemberVO;
 import com.drcome.project.medical.service.HospitalVO;
 
 import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
 @Service
@@ -24,7 +30,7 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 
 	@Autowired
 	UserMemberMapper mapper;
-	
+		
 	//COOLSMS
     @Value("${coolsms.apiKey}")
     private String coolSmsApiKey;
@@ -66,6 +72,35 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 	@Override
 	public int checkId(String id) {
 		return mapper.checkId(id);
+	}
+	
+	@Override
+	public String findId(String userName, String phone) {
+		return mapper.findId(userName, phone);
+	}
+	
+	@Override
+	public int updatePw(MemVO vo) {
+		return mapper.updatePw(vo);
+	}
+	
+	@Override
+	public Map<String, Object> sendNumber(String phoneNum) {
+		int checkNum = (int) (Math.random() * 9000) + 1000;
+		Map<String,Object> result = new HashMap<String,Object>();
+		
+		result.put("checkNum", checkNum);
+		
+//		Message message = new Message();
+//		message.setFrom(coolSmsFromNumber);
+//    	message.setTo(phoneNum);
+//    	message.setText("[DrCome] 인증번호: "+checkNum);
+//    
+//    	SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));        
+//    	result.put("result", response);
+//    	result.put("checkNum", checkNum);
+
+		return result;
 	}
 
 	@Override

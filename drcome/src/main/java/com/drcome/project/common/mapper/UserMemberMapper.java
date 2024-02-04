@@ -15,4 +15,8 @@ public interface UserMemberMapper {
 	public UserMemberVO selectMem(String id);
 	
 	int checkId(String id);
+
+	String findId(String userName, String phone);
+	
+	int updatePw(MemVO vo);
 }

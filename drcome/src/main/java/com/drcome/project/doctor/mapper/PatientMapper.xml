@@ -59,9 +59,54 @@
 	<!-- 약검색 -->
 	<select id="mnameList"
 		resultType="com.drcome.project.doctor.service.PatientVO">
-		select * from medicine where medicine_name LIKE
+		select * from medicine
+		where medicine_name LIKE
 		#{medicineName}||'%'
 	</select>
 
 
+	<!-- 재진 -환자번호조회 -->
+	<select id="searchPno" resultType="int">
+		select patient_no
+		from patient
+		where user_id=#{userId} and hospital_id=#{hospitalId}
+	</select>
+
+	<insert id="insertClinic" parameterType="PatientVO">
+
+		<selectKey keyProperty="clinicNo" resultType="int"
+			order="BEFORE">
+			select nvl(max(clinic_no), 0)+1
+			from clinic
+		</selectKey>
+
+
+		insert into
+		clinic(
+		clinic_no
+		,clinic_symptom
+		,specificity
+		,pay_yn
+		,reserve_no
+		,perscription_yn
+		,hospital_id
+		,patient_no
+		)
+
+		values (
+		#{clinicNo}
+		,#{clinicSymptom}
+		,#{specificity}
+		,#{payYn}
+		,#{reserveNo}
+		,
+		<choose>
+			<when test="perscriptionYn == null or perscriptionYn == ''"> 'Y' </when>
+			<otherwise> #{perscriptionYn} </otherwise>
+		</choose>
+		,#{hospitalId}
+		,#{patientNo}
+		)
+
+	</insert>
 </mapper>

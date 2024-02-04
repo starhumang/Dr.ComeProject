@@ -39,4 +39,19 @@ public class PatientServiceImpl implements PatientService {
 		return mapper.mnameList(vo);
 	}
 
+	// 재진-환자번호조회
+	@Override
+	public int getPno(PatientVO vo) {
+		// System.out.println("서비스" + mapper.searchPno(vo));
+		return mapper.searchPno(vo);
+	}
+
+	// 진료기록 인서트 후 생성된 clinicNo 가져오기
+	@Override
+	public int insertClinic(PatientVO vo) {
+		mapper.insertClinic(vo);
+		System.out.println("왜 아난오냐고 " + vo.getClinicNo());
+		return mapper.insertClinic(vo);
+	}
+
 }

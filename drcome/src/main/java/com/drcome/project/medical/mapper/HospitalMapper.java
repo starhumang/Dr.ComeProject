@@ -17,6 +17,10 @@ public interface HospitalMapper {
 	//QnA답변X
 	public List<Map<String, Object>> selectQnAX(String hospitalId);
 	
+	/* QnA */
+	//QnA 전체
+	public List<Map<String, Object>> selectQnaList(String hospitalId);
+	
 	/* 병원프로필 */
 	//병원-의사 조회
 	public List<DoctorVO> selectDrList(String hospitalId);

@@ -58,6 +58,21 @@
 			  WHERE hospital_id = #{hospitalId} AND ans_status = 'j1' AND ROWNUM <= 5
 			  ORDER BY wdate
 		]]>
+	</select>
+	
+	<!-- QnA -->
+	<!-- QnA 전체 -->
+	<select id ="selectQnaList" resultType="Map">
+		SELECT qna_no "qnaNo",
+			   title "title",
+			   user_id "userId",
+			   category_status "categoryStatus",
+			   wdate "wDate",
+			   udate "uDate",
+			   ans_status "ansStatus"
+		  FROM qna
+		 WHERE hospital_id = #{hospitalId} AND ANS_STATUS IS NOT NULL
+		 ORDER BY qna_no DESC
 	</select>	
 
 	<!-- MyProfile -->

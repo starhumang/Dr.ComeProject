@@ -41,6 +41,14 @@ public class HospitalServiceImpl implements HospitalService{
 		return listQnAX;
 	}
 	
+	/* QnA */
+	//QnA 전체
+	@Override
+	public List<Map<String, Object>> getQnaList(String hospitalId) {
+		List<Map<String, Object>> listQnaAll = hospitalMapper.selectQnaList(hospitalId);
+		return listQnaAll;
+	}
+	
 	/* 병원프로필 */
 	//병원 단건조회(id로)
 	@Override
@@ -69,6 +77,7 @@ public class HospitalServiceImpl implements HospitalService{
 		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
 		return listPaDe;
 	}
+
 
 
 

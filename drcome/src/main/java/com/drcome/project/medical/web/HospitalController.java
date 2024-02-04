@@ -50,7 +50,7 @@ public class HospitalController {
 	public String clinicReserve() {
 		return "hospital/clinicMain";
 	}
-
+	
 	/* 병원프로필 */
 	//병원 단건조회(id로) + 병원-의사 조회
 	@GetMapping("/hospital/myProfile")
@@ -87,10 +87,12 @@ public class HospitalController {
 	}
 	
 	/* QnA */
-	//QnA 리스트
+	//QnA 전체
 	@GetMapping("/hospital/qnaList")
-	public String qnaList(Principal principal, String hospitalId) {
+	public String qnaList(Principal principal, String hospitalId, Model model) {
 		hospitalId = principal.getName();
+		List<Map<String, Object>> qnaAllList = hospitalService.getQnaList(hospitalId);
+		model.addAttribute("qnaAllList", qnaAllList);
 		return "hospital/qnaList";
 	}
 }

@@ -17,6 +17,10 @@ public interface HospitalService {
 	//QnA답변X
 	public List<Map<String, Object>> getQnAX(String hospitalId);
 	
+	/* QnA */
+	//QnA 전체
+	public List<Map<String, Object>> getQnaList(String hospitalId);
+	
 	/* 병원프로필 */
 	//병원 단건조회(id로)
 	public Hospital findByhospitalId(String hospitalId);

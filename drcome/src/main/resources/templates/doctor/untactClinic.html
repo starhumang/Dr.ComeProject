@@ -250,7 +250,7 @@
               </div>
 
               <form name="clinicForm">
-                <!--예약번호-->
+                <!--예약번호 받아와야함-->
                 <input type="hidden" name="reserveNo" value="4" />
                 <!--병원아이디-->
                 <input
@@ -265,7 +265,7 @@
                   th:value="${#lists.size(clist) > 0 ? 'second' : 'first'}"
                 />
                 <!--유저아이디-->
-                <input type="hidden" name="userId" value="user1" />
+                <input type="hidden" name="userId" value="test3" />
                 <!--필수-->
                 <div style="margin-bottom: 20px">
                   <label style="color: #858796; font-size: 1rem">
@@ -474,13 +474,19 @@
           $("form[name='clinicForm']").on("submit", function (e) {
             e.preventDefault();
             //console.log("ddd");
-            let cobj = objClinic();
+            let cobj = objClinic(); //진료기록
+            let parr = objPer(); //약 배열
+
+            //진료기록객체에 약 배열 추가
+            cobj["perary"] = parr;
+            //console.log(cobj);
 
             $.ajax("saveClinic", {
               type: "post",
-              data: cobj,
-              //data: JSON.stringify(boardDta),
-              //contentType: "application/json",
+              data: JSON.stringify(cobj),
+              traditional: true, //배열및 리스트로 값 넘기기위해.. 적으래
+              dataType: "json",
+              contentType: "application/json",
             })
               .done((result) => {
                 console.log("돌아와", result);
@@ -488,9 +494,10 @@
               .fail((err) => console.log(err));
           });
 
+          //진료기록 객체 만들기
           function objClinic() {
             let formAry = $('form[name="clinicForm"]').serializeArray();
-            console.log(formAry);
+            //console.log("Dddddddd", formAry);
 
             let formObj = {};
             $(formAry).each((idx, tag) => {
@@ -504,6 +511,35 @@
             formObj.reserveNo = rno;
             console.log(formObj);
             return formObj;
+          }
+
+          //처방전 객체 만들기
+          function objPer() {
+            let fname = ["dosage", "doseCnt", "doseDay"];
+            let pary = [];
+            // 테이블에서 모든 tr을 가져옴
+            let rows = document.querySelectorAll("#perscription tr");
+
+            // 첫 번째 tr은 제외하고 반복
+            for (let i = 1; i < rows.length; i++) {
+              let rowData = {};
+              //tr의 모든 td가져옴
+              let cells = rows[i].querySelectorAll("td");
+              // console.log(cells);
+
+              // 0번째 td의 텍스트 값을 medicineNo로 설정
+              rowData["medicineNo"] = parseInt(cells[0].textContent.trim());
+
+              // 234 td의 input 요소의 value 값을 fname 배열에 따라 설정
+              for (let j = 2; j < cells.length; j++) {
+                let input = cells[j].querySelector("input");
+                rowData[fname[j - 2]] = parseInt(input.value.trim());
+              }
+              // 현재 행의 데이터를 pary 배열에 추가
+              pary.push(rowData);
+            } //for
+
+            return pary;
           }
 
           //처방전 유무 체크
@@ -525,6 +561,7 @@
             const modalTable = $("#modalTable");
             $.ajax(`/perscription/${no}`) //fetch
               .done((result) => {
+                //console.log(result);
                 modalTable.empty();
                 modalTable.append(
                   `<tr>
@@ -558,7 +595,7 @@
             xhtp.send();
 
             xhtp.onload = function () {
-              console.log(xhtp.responseText);
+              // console.log(xhtp.responseText);
               //검색된 약 리스트
               let array = JSON.parse(xhtp.responseText);
               //console.log(array);
@@ -649,5 +686,6 @@
       </div>
       <!--container-fluid-->
     </div>
+    <!--<div layout:fragment="content">-->
   </body>
 </html>

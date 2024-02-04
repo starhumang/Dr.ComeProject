@@ -1,6 +1,7 @@
 package com.drcome.project.doctor.service;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -41,5 +42,7 @@ public class PatientVO {
 
 	// 초진 재진 여부
 	private String visit;
+
+	private List<PatientVO> perary;
 
 }

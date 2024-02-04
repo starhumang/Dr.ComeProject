@@ -25,4 +25,10 @@ public interface PatientMapper {
 
 	// 진료기록 insert
 	public int insertClinic(PatientVO vo);
+
+	// 처방전 insert
+	public int insertPer(PatientVO vo);
+
+	// 신규환자 insert
+	public int patientInsert(PatientVO vo);
 }

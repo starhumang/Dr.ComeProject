@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.admin.domain.Hospital;
@@ -38,16 +39,16 @@ public class PatientController {
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
 
-		// 기본정보 //reserve no 받아오기
-		vo.setReserveNo(1);
+		// 기본정보 // 입장버튼 눌렀을때 reserve no 받아오기
+		vo.setReserveNo(4);
 		PatientVO findVO = patientService.getPatientInfo(vo);
-		System.out.println(findVO);
+		// System.out.println(findVO);
 		model.addAttribute("pInfo", findVO);
 
-		// 진료기록리스트 //hid uid 받아오기....하
-		List<PatientVO> clinicList = patientService.getClinicList("krrlo", "user1");
+		// 진료기록리스트 //입장버튼 눌렀을때 hid uid 받아오기
+		List<PatientVO> clinicList = patientService.getClinicList("krrlo", "test3");
 		model.addAttribute("clist", clinicList);
-		System.out.println(clinicList);
+		// System.out.println(clinicList);
 		return "doctor/untactClinic";
 
 	}
@@ -57,7 +58,7 @@ public class PatientController {
 	public String getInfo(PatientVO vo, Model model) {
 		PatientVO findVO = patientService.getPatientInfo(vo);
 		model.addAttribute("pInfo", findVO);
-		System.out.println(findVO);
+		// System.out.println(findVO);
 		return "doctor/clinic";
 
 	}
@@ -68,6 +69,7 @@ public class PatientController {
 	public List<PatientVO> perscriptionInfo(@PathVariable Integer no) {
 		PatientVO vo = new PatientVO();
 		vo.setClinicNo(no);
+		// System.out.println(vo);
 		return patientService.getPerscription(vo);
 	}
 
@@ -75,7 +77,7 @@ public class PatientController {
 	@GetMapping("medicine")
 	@ResponseBody
 	public List<PatientVO> msearch(PatientVO vo) {
-		System.out.println(vo);
+		// System.out.println(vo);
 		return patientService.getmnameList(vo);
 
 	}
@@ -83,24 +85,47 @@ public class PatientController {
 	// 진료기록 저장
 	@PostMapping("saveClinic")
 	@ResponseBody
-	public String saveInfo(PatientVO vo) {
-		// System.out.println("나오나나오나나오나나오나나오나" + vo);
-		// System.out.println(vo.getVisit());
+	public String saveInfo(@RequestBody PatientVO vo) {
 
+		// System.out.println(vo);
+
+		List<PatientVO> plist = vo.getPerary();
+
+		// 재진이면
 		if (vo.getVisit().equals("second")) {
-			// System.out.println("재진");
+			// 환자번호 select
 			int pno = patientService.getPno(vo);
-			// System.out.println(pno);
+			// vo에 set
 			vo.setPatientNo(pno);
-			System.out.println("진료기록에 들어갈" + vo);
-			patientService.insertClinic(vo);
-			System.out.println("새로운아이" + vo);
+			// 진료기록 insert 한후 insertid 받아오기
+			int cno = patientService.insertClinic(vo);
+			// 처방전이있다면
+			if (vo.getPerscriptionYn() == null) {
+				for (PatientVO obj : plist) {
+					obj.setClinicNo(cno);
+					patientService.insertPer(obj);
 
+				}
+			}
 		} else {
-			// System.out.println("초진");
-		}
+			// 초진이면 신규환자등록
+			patientService.patientInsert(vo);
+			// 환자번호 select
+			int pno = patientService.getPno(vo);
+			// vo에 set
+			vo.setPatientNo(pno);
+			// 진료기록 insert 한후 insertid 받아오기
+			int cno = patientService.insertClinic(vo);
+			// 처방전이있다면
+			if (vo.getPerscriptionYn() == null) {
+				for (PatientVO obj : plist) {
+					obj.setClinicNo(cno);
+					patientService.insertPer(obj);
+				}
+			}
+		} // else
 
 		return "ddd";
 	}
 
-}
+}// end class

@@ -72,6 +72,8 @@
 		where user_id=#{userId} and hospital_id=#{hospitalId}
 	</select>
 
+
+	<!-- 진료기록저장 -->
 	<insert id="insertClinic" parameterType="PatientVO">
 
 		<selectKey keyProperty="clinicNo" resultType="int"
@@ -109,4 +111,53 @@
 		)
 
 	</insert>
+
+	<!-- 처방전 저장 -->
+	<insert id="insertPer" parameterType="PatientVO">
+
+		<selectKey keyProperty="perscriptionNo" resultType="int"
+			order="BEFORE">
+			select nvl(max(perscription_no), 0)+1
+			from perscription
+		</selectKey>
+
+
+		insert into
+		perscription(
+		perscription_no
+		,dosage
+		,dose_cnt
+		,dose_day
+		,clinic_no
+		,medicine_no
+		)
+
+		values (
+		#{perscriptionNo}
+		,#{dosage}
+		,#{doseCnt}
+		,#{doseDay}
+		,#{clinicNo}
+		,#{medicineNo}
+		)
+
+	</insert>
+	
+	
+	<!-- 신규환자등록 -->
+	<insert id="patientInsert" parameterType="PatientVO">
+
+		insert into
+		patient(
+		user_id
+		,hospital_id
+		)
+
+		values (
+		#{userId}
+		,#{hospitalId}
+		)
+
+	</insert>
+	
 </mapper>

@@ -43,8 +43,10 @@ public class PatientVO {
 	// 초진 재진 여부
 	private String visit;
 
+	// 처방전리스트
 	private List<PatientVO> perary;
-	
-	private String page;
+
+	// 로우넘
+	private int rn;
 
 }

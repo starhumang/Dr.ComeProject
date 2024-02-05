@@ -13,6 +13,25 @@
     />
 
     <style>
+      .pagination a {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 0 2px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        color: #333;
+        text-decoration: none;
+      }
+
+      .pagination a.active {
+        background-color: #4e73df;
+        color: #fff;
+        border: 1px solid #4e73df;
+      }
+
+      .pagination a:hover {
+        background-color: #bfc5d8;
+      }
       .title {
         display: flex;
         justify-content: space-between;
@@ -134,13 +153,13 @@
               style="width: 100%; justify-content: center; margin-top: 20%"
             >
               <!--초진-->
-              <th:block>
-                <div>초진입니다</div>
-              </th:block>
+
+              <div>초진입니다</div>
 
               <!--재진-->
               <th:block>
                 <div>
+                  <!--제목-->
                   <div style="margin-bottom: 15px">
                     <i class="bi bi-clipboard-data fa-lg"></i>
                     <span>
@@ -158,20 +177,30 @@
                       </h5>
                     </span>
                   </div>
-
-                  <table id="clist" class="table">
-                    <tr>
-                      <th>no</th>
-                      <th>진료일자</th>
-                      <th>증상</th>
-                      <th>기타특이사항</th>
-                      <th>처방전</th>
-                    </tr>
-                  </table>
-
-                  <div class="pagination"></div>
+                  <!--제목-->
+                  <!--table pagination-->
+                  <div>
+                    <table id="clist" class="table" style="text-align: center">
+                      <thead>
+                        <tr>
+                          <th>NO</th>
+                          <th>진료일자</th>
+                          <th>증상</th>
+                          <th>기타특이사항</th>
+                          <th>처방전</th>
+                        </tr>
+                      </thead>
+                      <tbody></tbody>
+                    </table>
+                    <div
+                      class="pagination"
+                      style="display: flex; justify-content: center"
+                    ></div>
+                  </div>
+                  <!--table pagination-->
                 </div>
               </th:block>
+              <!--재진-->
             </div>
             <!--진료기록-->
           </div>
@@ -198,13 +227,16 @@
                   </h5>
                 </span>
               </div>
-              <table class="table">
-                <tr>
-                  <th>이름</th>
-                  <th>성별</th>
-                  <th>생년월일</th>
-                  <th>증상</th>
-                </tr>
+              <table class="table" style="text-align: center">
+                <thead>
+                  <tr>
+                    <th>NO</th>
+                    <th>이름</th>
+                    <th>성별</th>
+                    <th>생년월일</th>
+                    <th>증상</th>
+                  </tr>
+                </thead>
 
                 <tr>
                   <td th:text="${pInfo.userName}"></td>
@@ -248,11 +280,7 @@
                   th:value="${session.userId}"
                 />
                 <!-- 초진/재진여부 수정해야함 -->
-                <input
-                  type="hidden"
-                  name="visit"
-                  value="1 > 0 ? 'second' : 'first'"
-                />
+                <input type="hidden" name="visit" />
                 <!--유저아이디-->
                 <input type="hidden" name="userId" value="test1" />
                 <!--필수-->
@@ -459,9 +487,18 @@
 
         <script>
           //진료기록목록
+          let page = 1;
           showList();
-
           function showList(pg = 1) {
+            //초기화
+            let table = document.getElementById("clist");
+            let tbody = table.querySelector("tbody");
+            let trList = tbody.querySelectorAll("tr");
+            // 각 tr 요소를 순회하면서 삭제합니다.
+            trList.forEach((tr) => {
+              tr.remove();
+            });
+
             //페이지 값이 있으면 있는거, 없으면 초기값 1
             let uid = "test1";
             //리스트 조회
@@ -469,7 +506,21 @@
               .done((result) => {
                 // 리스트가 들어있는 변수
                 console.log(result.list);
+                console.log(result.list.length);
+
+                // let visitInput = document.querySelector('input[name="visit"]');
+                // let firstVisitDiv = document.getElementById("firstVisit");
+                // let sdiv = document.getElementById("secondVisit");
+                // if (result.list.length > 0) {
+                //   visitInput.value = "second";
+                //   firstVisitDiv.style.display = "none";
+                // } else {
+                //   visitInput.value = "first";
+                //   //sidvs.style.display = "none";
+                // }
+
                 let fname = [
+                  "rn",
                   "clinicDate",
                   "clinicSymptom",
                   "specificity",
@@ -477,27 +528,19 @@
                 ];
 
                 let list = result.list;
-                let table = document.getElementById("clist");
-                let counter = 1;
-
+                let ctbody = table.children[1];
                 // 리스트의 각 객체를 기반으로 테이블 본문 생성
                 list.forEach((obj) => {
                   let tr = document.createElement("tr");
-
-                  // 첫 번째 열에 번호 표시
-                  let tdCounter = document.createElement("td");
-                  tdCounter.textContent = counter++;
-                  tr.appendChild(tdCounter);
-
                   // fname 배열에 있는 필드명에 해당하는 데이터 표시
                   fname.forEach((fieldName) => {
                     let td = document.createElement("td");
                     td.textContent = obj[fieldName];
                     tr.appendChild(td);
                   });
-
-                  table.appendChild(tr);
+                  ctbody.appendChild(tr);
                 });
+
                 makePaging(result.dto);
               }) //done
               .fail((err) => console.log(err));
@@ -521,9 +564,8 @@
               aTag.setAttribute("href", i); //<a href="1">1</a>
               aTag.innerHTML = i;
               //active녹색 주는거
-              if (i == 1) {
+              if (i == page) {
                 aTag.className = "active";
-                s;
               }
               document.querySelector(".pagination").append(aTag);
             } //포

@@ -67,12 +67,12 @@ public class PatientController {
 	@ResponseBody
 	public Map<String, Object> clinicList(String page, String uid) {
 
+		System.out.println(page + uid);
 		PatientVO vo = new PatientVO();
-		page = page == null ? "1" : page;
 
 		vo.setUserId(uid);
 		vo.setHospitalId("krrlo");
-		
+
 		// 리스트 전체갯수 가져오기
 		int total = patientService.totalList(vo);
 		System.out.println("토탈" + total);
@@ -81,16 +81,14 @@ public class PatientController {
 		int cpage = Integer.parseInt(page);
 		System.out.println("선택된페이지" + cpage);
 
-		
 		// 페이지네이션(currentpage, total)
 		PageDTO dto = new PageDTO(cpage, total);
-		System.out.println("dtd 객체 " +dto);
-
-		vo.setUserId(uid);
-		vo.setHospitalId("krrlo"); // 세션에서 받아올 것
+		System.out.println("dtd 객체 " + dto);
 
 		// 진료기록리스트
 		List<PatientVO> clinicList = patientService.getClinicList(cpage, vo);
+
+		System.out.println(clinicList.size());
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("list", clinicList); // 댓글리스트 넘기고

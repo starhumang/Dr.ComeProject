@@ -155,7 +155,6 @@
 
 
 	<!-- 페이지네이션 + 진료기록리스트 -->
-
 	<select id="clinicList"
 		resultType="com.drcome.project.doctor.service.PatientVO">
   <![CDATA[

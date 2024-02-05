@@ -9,7 +9,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
@@ -36,24 +38,33 @@ public class PharmacyController {
 	}
 
 	@GetMapping("/pharmacy/status")
-	public String pharmacyList(String date, String pharmacyId, Model model) {
+	public String pharmacyprint(String date, String pharmacyId, Model model) {
 		pharmacyId = "pharmacy1";
-		List<Map<String, Object>> plist = pservice.selectPrescriptionList(date, pharmacyId);
-		model.addAttribute("plist", plist);
+		/*
+		 * List<Map<String, Object>> plist = pservice.selectPrescriptionList(date,
+		 * pharmacyId); model.addAttribute("plist", plist);
+		 */
 		return "pharmacy/perscriptionStatus";
 	}
 
-	/*
-	 * @GetMapping("/pharmacy/status/{date}")
-	 * 
-	 * @ResponseBody public List<Map<String, Object>> pharmacyList(String date,
-	 * String pharmacyId, Model model) { pharmacyId = "pharmacy1";
-	 * 
-	 * List<Map<String, Object>> plist = pservice.selectPrescriptionList(date,
-	 * pharmacyId); model.addAttribute("plist", plist);
-	 * 
-	 * return pservice.selectPrescriptionList(date, pharmacyId); }
-	 */
+	
+
+	@GetMapping("/pharmacy/status/{date}")
+	@ResponseBody
+	public List<Map<String, Object>> pharmacyList(@PathVariable String date, String pharmacyId, Model model) {
+		pharmacyId = "pharmacy1";
+		List<Map<String, Object>> plist = pservice.selectPrescriptionList(date, pharmacyId);
+		model.addAttribute("plist", plist);
+		return pservice.selectPrescriptionList(date, pharmacyId);
+	}
+
+	@PostMapping("/pharmacy/rejection")
+	@ResponseBody
+	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, PharmacySelectVO pharmacyselectVO) {
+		System.out.println(pharmacyselectVO);
+		pharmacyselectVO.setPharmacyId(id);
+		return pservice.updaterejection(pharmacyselectVO);
+	}
 
 	@ModelAttribute("pharmacy")
 	public PharmacyVO getServer() {

@@ -1,6 +1,5 @@
 package com.drcome.project.pharmacy.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -21,4 +20,7 @@ public interface PharmacyService {
 	
 	/* 환자 처방전 조회 */ 
 	public List<PharmacySelectVO> getPerscription(PharmacySelectVO vo);
+	
+	/* 처방전 반환 */
+	public Map<String, Object> updaterejection(PharmacySelectVO pharmacyselectVO);
 }

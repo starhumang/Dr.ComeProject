@@ -3,25 +3,37 @@
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.drcome.project.challenge.mapper.ChallengeMapper">
-	<select id="getAllTodoList" resultType="com.moddk.swagger.vo.TodoVO">
+	<select id="getAllTodoList" resultType="ChallengeVO">
     
-		SELECT * FROM callenge WHERE user_id=#{userId}
+		SELECT * 
+		  FROM challenge 
+		 WHERE user_id = #{userId}
 	</select>
     
-	<select id="getActiveTodoList" resultType="com.drcome.project.challenge.ChallengeVO">
-		SELECT * FROM callenge WHERE user_id=#{userId} AND success='N'
+	<select id="getActiveTodoList" resultType="ChallengeVO">
+		SELECT * 
+		  FROM challenge 
+		 WHERE user_id= #{userId}
+		   AND success = 'N'
 	</select>
     
-	<select id="getCompletedTodoList" resultType="com.drcome.project.challenge.ChallengeVO">
-		SELECT * FROM callenge WHERE user_id=#{userId} AND success='Y'
+	<select id="getCompletedTodoList" resultType="ChallengeVO">
+		SELECT * 
+		  FROM challenge 
+		 WHERE user_id=#{userId} 
+		   AND success='Y'
 	</select>
 	
 	<insert id="addTodoList">
-		INSERT INTO callenge(challenge_content, user_id) VALUES (#{challengeContent}, #{userId})
+		INSERT INTO challenge(challenge_content, user_id) 
+		VALUES (#{challengeContent}, #{userId})
 	</insert>
 	
 	<delete id="deleteTodo">
-		DELETE FROM callenge WHERE idx=#{idx} AND user_id=#{userId}
+		DELETE 
+		  FROM challenge 
+		 WHERE idx = #{idx}
+		   AND user_id= #{userId}
 	</delete>
 	
 	<update id="updateTodoList">

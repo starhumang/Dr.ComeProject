@@ -103,13 +103,10 @@
 		ORDER BY HOSPITAL_NAME
 		</select>
 		
-		<!-- 해당약국에 약 처방 신청 했는지 안 했는지 확인 -->
-		<select id="checkPrescription">
-		SELECT PHARMACY_SELECTNO 
-        FROM PHARMACY_SELECT
-        WHERE CLINIC_NO = #{clinicNo}
-        AND PHARMACY_ID = #{pharmacyId}
-		</select>
-		
+		<!-- 처방받을 약국선택 -->
+		<insert id="insertPhaSelect" >
+		INSERT INTO PHARMACY_SELECT (PHARMACY_SELECTNO, PHARMACY_ID, CLINIC_NO)
+            VALUES (PHARMACY_SELECTNO_SEQUENCE.NEXTVAL,#{pharmacyId},#{clinicNo})
+		</insert>
 		
     </mapper>

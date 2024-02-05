@@ -61,7 +61,7 @@ button:hover {
 			<script th:inline="javascript">
 				function nowLocation(){
 					const loc = window.localStorage.getItem("location");
-					console.log(loc);
+					//console.log(loc);
 					document.querySelector(".loc").innerText='현재 내 위치는 ' + loc + ' 입니다.';
 					
 				}
@@ -71,30 +71,29 @@ button:hover {
 
 			<!-- 약국리스트 -->
 			<div style="margin-bottom: 200px;">
-				<h6 style="text-align:left;" th:text="|현재 진료코드 : ${clinic}(병원이름)|"></h6>
+				<h6 style="text-align:left;" th:text="|현재 진료 번호 :|"></h6><h6 class="clinic" th:text="${clinic}"></h6>
 				<table class="table">
 					<thead>
 						<tr>
-							<th><button>약 처방 신청하기</button></th>
+							<th><button type="button" onclick="insertPhaSelect()" >약 처방 신청하기</button></th>
 							<th>약국명</th>
 							<th>전화번호</th>
 							<th>운영시간</th>
 							<th style="width: 330px;">주소</th>
 							<th class="lo">거리</th>
-							<th>신청상태</th>
 						</tr>
 					</thead>
 					<tbody class="here">
 						<th:block th:each="pha : ${phaList}">
-							<tr th:if="${#lists.size(phaList) > 0}" class="ho hospitalItem">
-								<td><input type="checkbox" /></td>
+							<tr th:if="${#lists.size(phaList) > 0}" class="ho hospitalItem" th:data="${pha.pharmacyId}">
+								<td><input type="checkbox" class="checkbox" /></td>
 								<td th:text="${pha.pharmacyName}" th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"></td>
 								<td th:text="${pha.pharmacyPhone}"></td>
 								<td th:text="|${pha.opentime} ~ ${pha.closetime}|"></td>
 								<td th:text="${pha.address}" th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"></td>
 								<td style="font-weight: bold;" class="address"
 									th:text="${pha.address}"></td>
-<!-- 								<td th:if="${checkHistory(clinic, pha.pharmacyId)}" th:text="신청완료"></td> -->
+							
 							</tr>
 						</th:block>
 						<tr th:unless="${#lists.size(phaList) > 0}">
@@ -111,7 +110,7 @@ button:hover {
 	         function switchLocation(){
 	                new daum.Postcode({
 	                    oncomplete: function(data) {
-	                       console.log(data.address);
+	                       //console.log(data.address);
 	                       document.querySelector(".loc").innerText='현재 내 위치는 ' + data.address + ' 입니다.';
 	                       //로컬스토리지에 정보 덮어씀
 	                       window.localStorage.setItem('location',data.address);
@@ -123,8 +122,8 @@ button:hover {
 	                           if (status === kakao.maps.services.Status.OK) {
 	                              let newLat = result[0].address.y;
 	                              let newLon = result[0].address.x;
-	                              console.log('바뀐주소Lat = ',result[0].address.y);
-	                               console.log('바뀐주소Lon = ',result[0].address.x);
+	                              //console.log('바뀐주소Lat = ',result[0].address.y);
+	                               //console.log('바뀐주소Lon = ',result[0].address.x);
 	                               //로컬스토리지에 정보 덮어씀
 	                               window.localStorage.setItem('lat',result[0].address.y);
 	                           window.localStorage.setItem('lon',result[0].address.x);
@@ -149,9 +148,9 @@ button:hover {
 		   	 //병원
 		   	 let address = document.querySelectorAll('.address');
 
-		   	 console.log("address=",address);
+		   	 //console.log("address=",address);
 		   	 if(!address){
-		   		 console.log("강제종료");
+		   		 //console.log("강제종료");
 		   		 return;
 		   	 }
 		   	 
@@ -159,26 +158,26 @@ button:hover {
 		   	 let hospitalList = [];
 		        
 		    	 function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
-		    		console.log("item= ",item);
+		    		//console.log("item= ",item);
 		    		 return new Promise((resolve)=>{
 		    			 geocoder.addressSearch(item.innerHTML, (result, status)=>{ //item.innerHTML= 주소 그 자체
 		    				if (status === kakao.maps.services.Status.OK) {
-		    					console.log("카카오맵에서 찾았음")
+		    					//console.log("카카오맵에서 찾았음")
 		                       //병원 좌표
 		                       let hosLat = result[0].address.y;
 		                       let hosLon = result[0].address.x;
-		                       console.log('병원Lat = ',result[0].address.y);
-		                       console.log('병원Lon = ',result[0].address.x);
+		                       //console.log('병원Lat = ',result[0].address.y);
+		                       //console.log('병원Lon = ',result[0].address.x);
 		                       
 		                     	//현재위치 좌표
 		                       let curLat = window.localStorage.getItem('lat');
 		                       let curLon = window.localStorage.getItem('lon');
-		                       console.log('세션Lat = ',curLat);
-		                       console.log('세션Lon = ',curLon);
+		                       //console.log('세션Lat = ',curLat);
+		                       //console.log('세션Lon = ',curLon);
 		                       
 		                       //거리계산된 값
 		                       let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
-		                       console.log("총 거리 =", dist);
+		                       //console.log("총 거리 =", dist);
 		                       item.innerText = dist + 'km';
 		                       
 		                       if((item.closest('.hospitalItem')) != null){
@@ -197,7 +196,7 @@ button:hover {
 		                       resolve(); //여기까지 도달하면 성공했다는 뜻
 		                       
 		    			 	}else{
-		    			 		console.log("restart함수실행안됨");
+		    			 		//console.log("restart함수실행안됨");
 		    			 		reject()
 		    			 	}         				
 		    		 	});
@@ -208,18 +207,18 @@ button:hover {
 		    	 //그 새로운 배열map은 promiseFn함수에 address배열에 있는 
 		    	 //item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
 		        const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
-		        console.log("promises=",promises)
+		        //console.log("promises=",promises)
 		        await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
 				 
 		        //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
 		        //parseFloat()=문자열을 실수로 변경
 		        hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-		        console.log("hospitalList=", hospitalList);
+		        //console.log("hospitalList=", hospitalList);
 		        
 		        //hospitalItem클래스를 가진 div전체(하위요소 포함)
 		        const hospitalListBox = document.querySelector('.here');
 		        
-		        console.log("hospitalListBox=", hospitalListBox); 
+		        //console.log("hospitalListBox=", hospitalListBox); 
 		        
 		        //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된)를 넣어줌
 		        hospitalList.forEach(({parent_node}) =>{
@@ -247,52 +246,38 @@ button:hover {
 		      function distance(curLat, curLon, hosLat, hosLon){ //현재좌표 - 병원좌표
 		          const earth_r = 6371 // 지구의 반지름(km)
 		          const lat = radian( hosLat - curLat ) //위도끼리 뺀 값
-		          console.log("위도 뺀 값=", lat)
+		          //console.log("위도 뺀 값=", lat)
 		          const lon = radian( hosLon - curLon ) // 경도끼리 뺀 값
-		          console.log("경도 뺀 값=", lon)
+		          //console.log("경도 뺀 값=", lon)
 		          
 		          const a = Math.sin(lat/2) * Math.sin(lat/2) + //위도
 		          Math.cos(radian(curLat)) * Math.cos(radian(hosLat)) * // cos
 		          Math.sin(lon/2) * Math.sin(lon/2); //경도
-		          console.log("a =", a);
+		          //console.log("a =", a);
 		
 		          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-		          console.log("c 2개의 각도 =", c);
+		          //console.log("c 2개의 각도 =", c);
 		          const distance = earth_r * c // 반지름 x 2개의 각도값
 		
 		          return distance;
 		      }
 		      restart();
 		      
-		      
-		       function checkHistory(clinicNo, pharmacyId){
-		    	   console.log("실행됨");
-		    	   console.log("clinicNo=", clinicNo);
-		    	   console.log("pharmacyId=", pharmacyId);
-		    	   let objData = {
-		    			   clinic : clinicNo,
-		    			   pharmacy : pharmacyId
-		    	   };
-		    	   
-// 		    	   return new Promise((resolve, reject)=>{
-// 		    		   fetch('recommendPharmacy',{
-// 			    		   method: 'post',
-// 			    		   headers : {'content-type' : 'application/json'},
-// 			    		   body : JSON.stringify(objData)
-// 			    	   })
-// 			    	   .then(response=>response.json())
-// 			    	   .then(result=>{
-// 			    		   console.log('JSON =', result);
-// 			    		   resolve(result === true ? 1: 0);
-// 			    	   })
-// 			    	   .catch(err=>{
-// 			    		   console.error('error', err);
-// 			    		   reject(err);
-// 			    	   });
-		    	  	
-// 		    	   });
-					return true;
-		       }
+		      function insertPhaSelect(e){
+		    	let checkboxes =  document.querySelectorAll(".checkbox");
+		    	let clinicNo = document.querySelector(".clinic").innerText;
+		    	console.log("checkboxes=",checkboxes);
+		    	let pharmacyId = [];
+		    	checkboxes.forEach((ele)=>{
+		    		if(ele.checked == true){
+		    			let tr = ele.closest('tr');
+		    			pharmacyId.push(tr.getAttribute('data'));
+		    		}
+		    	});
+		    	console.log("pharmacyId=",pharmacyId);
+	    		console.log("clinicNo=", clinicNo);
+		      }
+		
 			  
 		</script>
 		</div>

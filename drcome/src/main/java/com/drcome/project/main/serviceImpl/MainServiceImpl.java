@@ -54,16 +54,17 @@ public class MainServiceImpl implements MainService {
 	}
 
 	@Override
-	public Map<String, Object> checkPrescription(int clinicNo, String pharmacyId) {
-		Map<String, Object>map = new HashMap<>();
-		boolean success = false;
-		int result = mainMapper.checkPrescription(clinicNo, pharmacyId);
+	public int insertPhaSelect(String pharmacyId, int clinicNo) {
+		int result = mainMapper.insertPhaSelect(pharmacyId, clinicNo);
 		if(result == 1) {
-			success = true;
+			return 1;
+		}else {
+			return 0;
 		}
-		map.put("result",success );
-		return map;
+		
 	}
+	
+
 
 
 

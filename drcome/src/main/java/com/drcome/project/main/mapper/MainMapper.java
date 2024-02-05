@@ -31,7 +31,6 @@ public interface MainMapper {
 	//병원진료과목 검색
 	public List<HospitalVO> searchSubjectHos(String mainSubject);
 	
-	//약국에 약 처방 신청 했는지 안 했는지 확인
-	public int checkPrescription(@Param("clinicNo") int clinicNo, @Param("pharmacyId") String pharmacyId );
-	
+	//처방받을 약국 선택(insert)
+	public int insertPhaSelect(@Param("pharmacyId")String pharmacyId, @Param("clinicNo")int clinicNo);
 }

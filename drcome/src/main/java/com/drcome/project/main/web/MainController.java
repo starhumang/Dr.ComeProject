@@ -95,10 +95,15 @@ public class MainController {
 	}
 	
 	@PostMapping("/recommendPharmacy")
-	@ResponseBody
-	public Map<String, Object> checkscript(@RequestBody int clinicNo,@RequestBody String pharmacyId){
-		return mainService.checkPrescription(clinicNo, pharmacyId);
+	public boolean insertPhaSelect(String pharmacyId,int clinicNo) {
+		int result = mainService.insertPhaSelect(pharmacyId, clinicNo);
+		if(result == 1) { //insert되면 true
+			return true;
+		}else { //insert 안되면 false
+			return false;
+		}
 	}
+	
 	
 	/*@Override 중간때 검색 참고용
 	public void execute(HttpServletRequest req, HttpServletResponse resp) {

@@ -30,6 +30,7 @@ public class PatientServiceImpl implements PatientService {
 	// 처방전조회
 	@Override
 	public List<PatientVO> getPerscription(PatientVO vo) {
+		System.out.println("처방전" + mapper.perscription(vo));
 		return mapper.perscription(vo);
 	}
 
@@ -37,6 +38,32 @@ public class PatientServiceImpl implements PatientService {
 	@Override
 	public List<PatientVO> getmnameList(PatientVO vo) {
 		return mapper.mnameList(vo);
+	}
+
+	// 재진-환자번호조회
+	@Override
+	public int getPno(PatientVO vo) {
+		// System.out.println("서비스" + mapper.searchPno(vo));
+		return mapper.searchPno(vo);
+	}
+
+	// 진료기록 인서트 후 생성된 clinicNo 가져오기
+	@Override
+	public int insertClinic(PatientVO vo) {
+		mapper.insertClinic(vo);
+		return vo.getClinicNo();
+	}
+
+	// 처방전 인서트
+	@Override
+	public int insertPer(PatientVO vo) {
+		return mapper.insertPer(vo);
+	}
+
+	// 신규환자등록
+	@Override
+	public int patientInsert(PatientVO vo) {
+		return mapper.patientInsert(vo);
 	}
 
 }

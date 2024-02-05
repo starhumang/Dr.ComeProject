@@ -62,10 +62,12 @@
 							<div class="right" style="text-align:center;">
 								<h3 th:text="| [  ${hos.hospitalName} ] |" class="font-weight-bold text-secondary" style="margin-bottom:30px; margin-top:20px;"></h3>
 								<table class="table" style="text-align:center;">
-									<tr >
-										<th style="text-align:left; width:200px; padding-left:30px;" >- 대표진료과목</th>
-										<td th:text="${hos.mainSubject}" ></td>
-									</tr>
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<tr th:if="${detailCode.detailCode} == ${hos.mainSubject}">
+											<th style="text-align:left; width:200px; padding-left:30px;" >- 대표진료과목</th>
+											<td th:text="${detailCode.codeName}" ></td>
+										</tr>
+									</th:block>
 									<tr>
 										<th style="text-align:left;padding-left:30px;" >- 대표자이름</th>
 										<td th:text="${hos.directorName}"></td>
@@ -74,9 +76,12 @@
 										<th style="text-align:left;padding-left:30px;" >- 전화번호</th>
 										<td th:text="${hos.phone}"></td>
 									</tr>
-									<tr>
-										<th style="text-align:left;padding-left:30px;" >- 휴무일</th>
-										<td th:text="${hos.holiday}"></td>
+									<tr class="holiday">
+										<th style="text-align:left;padding-left:30px;" >- 휴무일</th>	
+										<th:block th:each="detailCode : ${application.detailCode_i}">
+											<td th:if="${detailCode.detailCode == hos.holiday}"  th:text="${detailCode.codeName}"></td>
+											<td th:if="${detailCode.detailCode != hos.holiday and #strings.length(hos.holiday) > 3}" th:text="${hos.holiday}" class="day" style="display:none;"></td>
+										</th:block>
 									</tr>
 									<tr>
 										<th style="text-align:left;padding-left:30px;" >- 운영시간</th>
@@ -93,6 +98,27 @@
 						</div>
 	
 					</div>
+					<script th:inline="javascript">
+						function dayday(){
+							let day = document.querySelector('.day').innerText;
+							console.log(day);//i1,i2,i3
+							let days = day.split(',');
+							let realdays = ''; //월화수
+							//console.log(days.length);
+							let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
+							//console.log("dayList=",dayList["i2"])
+							days.forEach((ele, index)=>{
+								console.log(dayList[ele]);
+								realdays += dayList[ele] + ' ';
+							})
+							console.log("realdays=",realdays);
+							var tdElement = document.createElement("td");
+							tdElement.textContent = realdays;
+							document.querySelector('.holiday').append(tdElement);
+						}
+						dayday();
+						
+					</script>
 				</div>
 				
 				<!-- 병원위치 -->

@@ -13,7 +13,7 @@ public interface MainMapper {
 	public List<HospitalVO> selectHosList();
 	
 	//약국리스트
-	public List<PharmacyVO> selectPhaList();
+	public List<PharmacyVO> selectPhaList(@Param("num") int num);
 	
 	//병원상세정보
 	public HospitalVO selectHos(String hospitalId);
@@ -30,5 +30,8 @@ public interface MainMapper {
 	
 	//병원진료과목 검색
 	public List<HospitalVO> searchSubjectHos(String mainSubject);
+	
+	//약국에 약 처방 신청 했는지 안 했는지 확인
+	public int checkPrescription(@Param("clinicNo") int clinicNo, @Param("pharmacyId") String pharmacyId );
 	
 }

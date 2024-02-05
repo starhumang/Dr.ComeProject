@@ -1,6 +1,8 @@
 package com.drcome.project.main.serviceImpl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,8 +24,8 @@ public class MainServiceImpl implements MainService {
 	}
 
 	@Override
-	public List<PharmacyVO> getPhaList() {
-		return mainMapper.selectPhaList();
+	public List<PharmacyVO> getPhaList(int num) {
+		return mainMapper.selectPhaList(num);
 	}
 	
 	@Override
@@ -50,5 +52,19 @@ public class MainServiceImpl implements MainService {
 	public List<HospitalVO> searchSubjectHos(String mainSubject) {
 		return mainMapper.searchSubjectHos(mainSubject);
 	}
+
+	@Override
+	public Map<String, Object> checkPrescription(int clinicNo, String pharmacyId) {
+		Map<String, Object>map = new HashMap<>();
+		boolean success = false;
+		int result = mainMapper.checkPrescription(clinicNo, pharmacyId);
+		if(result == 1) {
+			success = true;
+		}
+		map.put("result",success );
+		return map;
+	}
+
+
 
 }

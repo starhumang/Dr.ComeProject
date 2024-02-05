@@ -8,6 +8,9 @@
 <title>Search</title>
 <script type="text/javascript"
 	th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
+<script
+	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
 <style>
 .head_info {
 	display: flex;
@@ -21,19 +24,21 @@
 	margin-bottom: 40px;
 }
 
-.ho:hover {
-	background-color: #B0E0E6;
-	cursor: pointer;
-}
-
 button {
 	border: none;
 	font-weight: bold;
 	font-size: 18px;
+	background-color:#06BBCC;
+	color:white;
 }
 
 button:hover {
-	color: #06BBCC;
+	color: black;
+}
+
+.ho:hover {
+	background-color: #B0E0E6;
+	cursor: pointer;
 }
 </style>
 </head>
@@ -44,13 +49,13 @@ button:hover {
 			<div class="head"
 				style="display: flex; justify-content: center; margin-bottom: 130px;">
 				<div style="width: 600px;">
-					<th:block th:each="detailCode : ${application.detailCode_h}">
-					<h2 th:if="${detailCode.detailCode} == ${mainSubject}" th:text="|Result : ${detailCode.codeName}|"
-						style="margin-bottom: 20px; color: #363636;"></h2>
-					</th:block>
+					<h2
+						style="margin-bottom: 20px; color: #363636;">내 근처 추천 약국</h2>
 					<hr>
 					<hr>
 					<h5 class="loc" style="color: gray;">현재위치들어가는 곳</h5>
+					<button class="btn btn-warning rounded-pill px-3" type="button"
+						onclick="switchLocation()">현재위치변경</button>
 				</div>
 			</div>
 			<script th:inline="javascript">
@@ -58,68 +63,92 @@ button:hover {
 					const loc = window.localStorage.getItem("location");
 					console.log(loc);
 					document.querySelector(".loc").innerText='현재 내 위치는 ' + loc + ' 입니다.';
+					
 				}
 				nowLocation();
 			</script>
 
 
-			<!-- 병원리스트 -->
+			<!-- 약국리스트 -->
 			<div style="margin-bottom: 200px;">
-				<div style="display: flex; justify-content: right;">
-					<button class="na" onclick="restart()">거리순</button>
-					|
-					<button style="color: #06BBCC;" onclick="changeSort()" class="ga">가나다순</button>
-				</div>
-				<h3 style="color: gray; margin-bottom: 50px;">- 병원목록 -</h3>
+				<h6 style="text-align:left;" th:text="|현재 진료코드 : ${clinic}(병원이름)|"></h6>
 				<table class="table">
 					<thead>
 						<tr>
-							<th>병원명</th>
+							<th><button>약 처방 신청하기</button></th>
+							<th>약국명</th>
 							<th>전화번호</th>
 							<th>운영시간</th>
-							<th style="width: 400px;">주소</th>
+							<th style="width: 330px;">주소</th>
 							<th class="lo">거리</th>
+							<th>신청상태</th>
 						</tr>
 					</thead>
 					<tbody class="here">
-						<th:block th:each="hos : ${subject}">
-							<tr th:if="${#lists.size(subject) > 0}" class="ho hospitalItem"
-								th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
-								<td th:text="${hos.hospitalName}"></td>
-								<td th:text="${hos.phone}"></td>
-								<td th:text="|${hos.opentime} ~ ${hos.closetime}|"></td>
-								<td th:text="${hos.address}"></td>
+						<th:block th:each="pha : ${phaList}">
+							<tr th:if="${#lists.size(phaList) > 0}" class="ho hospitalItem">
+								<td><input type="checkbox" /></td>
+								<td th:text="${pha.pharmacyName}" th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"></td>
+								<td th:text="${pha.pharmacyPhone}"></td>
+								<td th:text="|${pha.opentime} ~ ${pha.closetime}|"></td>
+								<td th:text="${pha.address}" th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"></td>
 								<td style="font-weight: bold;" class="address"
-									th:text="${hos.address}"></td>
+									th:text="${pha.address}"></td>
+<!-- 								<td th:if="${checkHistory(clinic, pha.pharmacyId)}" th:text="신청완료"></td> -->
 							</tr>
 						</th:block>
-						<tr th:unless="${#lists.size(subject) > 0}">
+						<tr th:unless="${#lists.size(phaList) > 0}">
 							<td colspan="5"
 								style="color: gray; height: 100px; vertical-align: middle;">검색
-								조건에 맞는 병원이 없습니다.</td>
+								조건에 맞는 약국이 없습니다.</td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 
 			<script th:inline="javascript">
-		//현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
+			// 내 현재 주소를 daum 주소api로 바꾸기(daum주소 api)
+	         function switchLocation(){
+	                new daum.Postcode({
+	                    oncomplete: function(data) {
+	                       console.log(data.address);
+	                       document.querySelector(".loc").innerText='현재 내 위치는 ' + data.address + ' 입니다.';
+	                       //로컬스토리지에 정보 덮어씀
+	                       window.localStorage.setItem('location',data.address);
+	                       
+	                       <!--4. 바뀐 내 주소로 새 좌표찾기(kakao지도 api라이브러리) -->
+	                       var geocoder = new kakao.maps.services.Geocoder();
+	      
+	                       var callback = function(result, status) {
+	                           if (status === kakao.maps.services.Status.OK) {
+	                              let newLat = result[0].address.y;
+	                              let newLon = result[0].address.x;
+	                              console.log('바뀐주소Lat = ',result[0].address.y);
+	                               console.log('바뀐주소Lon = ',result[0].address.x);
+	                               //로컬스토리지에 정보 덮어씀
+	                               window.localStorage.setItem('lat',result[0].address.y);
+	                           window.localStorage.setItem('lon',result[0].address.x);
+	                           window.location.reload();
+	                           }     
+	                       };
+	                       geocoder.addressSearch(data.address, callback);
+	                    }
+	                }).open(); 
+	             
+	         }
+			
+			
+			//현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
 	    //5. 병원주소를 좌표로 바꿈
 	    async function restart(){
-	    	document.querySelector(".na").style.color='#06BBCC';
-	  	  	document.querySelector(".ga").style.color='black';
 		   	 var geocoder = new kakao.maps.services.Geocoder();
 		   	 
 		   	let locs = document.querySelectorAll('.lo');
-	    	  locs.forEach((loc)=>{
-	    		  loc.style.display = "block";
-	    	  });
+
 		   	 
 		   	 //병원
 		   	 let address = document.querySelectorAll('.address');
-			   	address.forEach((add)=>{
-			   		add.style.display = "block";
-		    	  });
+
 		   	 console.log("address=",address);
 		   	 if(!address){
 		   		 console.log("강제종료");
@@ -233,30 +262,37 @@ button:hover {
 		
 		          return distance;
 		      }
-		      //restart();
+		      restart();
 		      
-		      //가나다순
-		      window.onload = function(){
-		    	  let ga = document.querySelector(".ga");
-		    	  let addresses = document.querySelectorAll('.address');
-		    	  addresses.forEach((address)=>{
-		    		  address.style.display = "none";
-		    	  });
-		    	  
-		    	  let locs = document.querySelectorAll('.lo')
-		    	  locs.forEach((loc)=>{
-		    		  loc.style.display = "none";
-		    	  });
-		    	  
-		    	  ga.style.color='#06BBCC';
-			  	  document.querySelector(".na").style.color='black';
-			  	  
-		    	  function changeSort(){
-				  	  window.location.reload();
-		      	  }
-		    	  ga.onclick = changeSort;
-		    	  
-		      } 
+		      
+		       function checkHistory(clinicNo, pharmacyId){
+		    	   console.log("실행됨");
+		    	   console.log("clinicNo=", clinicNo);
+		    	   console.log("pharmacyId=", pharmacyId);
+		    	   let objData = {
+		    			   clinic : clinicNo,
+		    			   pharmacy : pharmacyId
+		    	   };
+		    	   
+// 		    	   return new Promise((resolve, reject)=>{
+// 		    		   fetch('recommendPharmacy',{
+// 			    		   method: 'post',
+// 			    		   headers : {'content-type' : 'application/json'},
+// 			    		   body : JSON.stringify(objData)
+// 			    	   })
+// 			    	   .then(response=>response.json())
+// 			    	   .then(result=>{
+// 			    		   console.log('JSON =', result);
+// 			    		   resolve(result === true ? 1: 0);
+// 			    	   })
+// 			    	   .catch(err=>{
+// 			    		   console.error('error', err);
+// 			    		   reject(err);
+// 			    	   });
+		    	  	
+// 		    	   });
+					return true;
+		       }
 			  
 		</script>
 		</div>

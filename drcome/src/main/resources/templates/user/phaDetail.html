@@ -64,10 +64,12 @@
 										<th style="text-align:left;padding-left:30px;">- 팩스번호</th>
 										<td th:text="${pha.pharmacyFax}"></td>
 									</tr>
-									<tr>
-										<th style="text-align:left;padding-left:30px;">- 휴무일</th>
-										<td th:text="${pha.holiday}"></td>
-									</tr>
+									<th:block th:each="detailCode : ${application.detailCode_i}">
+										<tr th:if="${detailCode.detailCode} == ${pha.holiday}">
+											<th style="text-align:left;padding-left:30px;" >- 휴무일</th>
+											<td th:text="${detailCode.codeName}"></td>
+										</tr>
+									</th:block>
 									<tr>
 										<th style="text-align:left;padding-left:30px;">- 운영시간</th>
 										<td th:text="|${pha.opentime} ~ ${pha.closetime}|"></td>

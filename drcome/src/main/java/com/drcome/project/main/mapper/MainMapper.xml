@@ -16,6 +16,8 @@
 	             MAIN_SUBJECT,
 	             HOLIDAY
 			FROM HOSPITAL
+			<![CDATA[WHERE ROWNUM <= 5]]>
+			
     	</select> <!-- 자료 다 들어오고 붙이기 WHERE HOSPITAL_STATUS = 'b2' -->
     	
     	<!-- 약국리스트 --> 
@@ -25,9 +27,11 @@
 		            PHARMACY_NAME,
 		            PHARMACY_IMG,
 		            ADDRESS,
+		            OPENTIME,
 		            CLOSETIME,
 		            HOLIDAY
 			FROM PHARMACY
+			<![CDATA[WHERE ROWNUM <= #{num}]]>
 		</select> <!-- WHERE PHARMACY_STATUS = 'b2' -->
 		
 		<!-- 병원상세 -->
@@ -99,9 +103,13 @@
 		ORDER BY HOSPITAL_NAME
 		</select>
 		
-		
-		
-		
+		<!-- 해당약국에 약 처방 신청 했는지 안 했는지 확인 -->
+		<select id="checkPrescription">
+		SELECT PHARMACY_SELECTNO 
+        FROM PHARMACY_SELECT
+        WHERE CLINIC_NO = #{clinicNo}
+        AND PHARMACY_ID = #{pharmacyId}
+		</select>
 		
 		
     </mapper>

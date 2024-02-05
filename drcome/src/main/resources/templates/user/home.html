@@ -281,8 +281,8 @@
 			</div>
 
 		<!-- Team Start -->
-		<div class="container-xxl py-5" style="padding-top: 10px;">
-			<div class="container">
+		<div class="container-xxl py-5" style="padding-top: 10px;max-width:1430px;">
+			<div class="container" style="text-align:center; max-width:1430px;">
 				<div style="text-align: center; margin-bottom: 50px;">
 					<h5 class="mb-5"
 						style="color: gray; display: inline; margin-right: 20px;"
@@ -297,7 +297,7 @@
 						주변</h6>
 					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
 				</div>
-				<div class="row g-4 here">
+				<div class="row g-4 here" style="">
 					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6 hospitalItem"
 						style="width: 280px; height: 380px;"
 						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
@@ -343,8 +343,8 @@
 
 
 		<!-- Testimonial Start -->
-		<div class="container-xxl py-5" style="padding-top: 10px;">
-			<div class="container">
+		<div class="container-xxl py-5" style="padding-top: 10px;max-width:1430px;">
+			<div class="container" style="text-align:center; max-width:1430px;">
 				<div style="text-align: center; margin-bottom: 50px;">
 					<!-- 약국시작 -->
 					<h6 class="section-title bg-white text-center text-primary px-3">내
@@ -622,7 +622,7 @@
               let closeDay2 = document.querySelectorAll(".closeDay2");
               
               //병원 및 약국리스트의 요일을 배열에 넣음
-              let day = {"일":0,"월":1,"화":2,"수":3,"목":4,"금":5,"토":6}
+              let day = {"i1":1,"i2":2,"i3":3,"i4":4,"i5":5,"i6":6,"i7":0}
               
               //병원
               let closeWeek = []; 

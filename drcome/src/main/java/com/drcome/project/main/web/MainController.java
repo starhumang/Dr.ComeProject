@@ -1,12 +1,15 @@
 package com.drcome.project.main.web;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.main.service.MainService;
 import com.drcome.project.medical.service.DoctorVO;
@@ -23,12 +26,12 @@ public class MainController {
 	@Autowired
 	HospitalService hospitalService;
 	
-	//병원목록
+	//병원&약국 목록
 	@GetMapping(value ={"/", "/home"})//주소
 	public String getHosList(Model model) {
 		List<HospitalVO> hosList = mainService.getHosList();
 		model.addAttribute("hosList", hosList);
-		List<PharmacyVO> phaList = mainService.getPhaList();
+		List<PharmacyVO> phaList = mainService.getPhaList(5);
 		model.addAttribute("phaList", phaList);
 		//System.out.println(phaList);
 		return "user/home";//폴더밑에 html 이름
@@ -82,7 +85,20 @@ public class MainController {
 		return "user/searchSubject";
 	}
 	
+	//진료 완료 후, 내 근처 추천약국 리스트
+	@GetMapping("/recommendPharmacy")
+	public String PhaList(Model model) {
+		List<PharmacyVO> phaList = mainService.getPhaList(10);
+		model.addAttribute("clinic","20");
+		model.addAttribute("phaList", phaList);
+		return "user/recommendPha";
+	}
 	
+	@PostMapping("/recommendPharmacy")
+	@ResponseBody
+	public Map<String, Object> checkscript(@RequestBody int clinicNo,@RequestBody String pharmacyId){
+		return mainService.checkPrescription(clinicNo, pharmacyId);
+	}
 	
 	/*@Override 중간때 검색 참고용
 	public void execute(HttpServletRequest req, HttpServletResponse resp) {

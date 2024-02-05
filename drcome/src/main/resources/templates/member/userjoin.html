@@ -202,17 +202,17 @@
 				})
 					.done((resp) => {
 						if (resp == 1) {
-							alert('이미 사용중인 아이디입니다.');
-							// errAlert('이미 사용중인 아이디입니다.');
+							//alert('이미 사용중인 아이디입니다.');
+							errAlert('이미 사용중인 아이디입니다.');
 							return true;
 						} else {
-							alert('사용가능한 아이디입니다.');
-							// scsAlert('사용가능한 아이디입니다.');
+							//alert('사용가능한 아이디입니다.');
+							scsAlert('사용가능한 아이디입니다.');
 							return false;
 						}
 					})
 					.fail((err) => {
-						alert('오류 발생');
+						errAlert('오류 발생');
 						console.log(err);
 						return false;
 					});
@@ -282,11 +282,15 @@
 					type: 'get',
 				})
 					.done((resp) => {
-						alert('인증번호 발송');
 						console.log(resp);
 						console.log(resp.checkNum);
-						verificationCode = resp.checkNum;
-						document.getElementById('verification-section').style.display = 'flex';
+						if (resp.checkNum != '중복') {
+							scsAlert('인증번호 발송');
+							verificationCode = resp.checkNum;
+							document.getElementById('verification-section').style.display = 'flex';
+						} else {
+							errAlert('이미 등록된 전화번호입니다.');
+						}
 					})
 					.fail((err) => {
 						console.log(err);
@@ -297,10 +301,10 @@
 				let enteredCode = document.getElementById('checkPhoneNum').value;
 
 				if (enteredCode == verificationCode) {
-					alert('인증 완료');
+					scsAlert('인증 완료');
 					return true;
 				} else {
-					alert('인증 번호가 일치하지 않습니다.');
+					errAlert('인증 번호가 일치하지 않습니다.');
 					return false;
 				}
 			}
@@ -373,12 +377,44 @@
 					}
 				});
 			}
+
+			function submitForm(event) {
+				event.preventDefault();
+
+				const formData = new FormData(document.getElementById('userForm'));
+
+				$.ajax({
+					url: '/userjoin',
+					type: 'post',
+					processData: false,
+					contentType: false,
+					data: formData,
+					success: function (resp) {
+						console.log(resp);
+						if (resp.result) {
+							Swal.fire({
+								icon: 'success',
+								text: resp.msg,
+							}).then(function () {
+								location.href = '/userlogin';
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								text: resp.msg,
+							}).then(function () {
+								location.reload();
+							});
+						}
+					},
+				});
+			}
 		</script>
 	</head>
 
 	<body>
 		<div layout:fragment="content">
-			<form id="userForm" th:action="@{/userjoin}" enctype="multipart/form-data" method="post">
+			<form id="userForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
 				<div class="container">
 					<h3>사용자 회원가입</h3>
 					<br />

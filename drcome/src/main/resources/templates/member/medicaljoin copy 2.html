@@ -66,11 +66,27 @@
 				align-items: center;
 				justify-content: center;
 			}
+
+			#verification-section {
+				display: none;
+				align-items: center;
+				margin-bottom: 15px;
+			}
+
+			#verification-section input,
+			#verification-section button {
+				height: 30px;
+			}
+
+			#verification-section button {
+				width: 150px;
+			}
 		</style>
 
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
 		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 		<script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 		<script type="text/javascript">
 			document.addEventListener('DOMContentLoaded', function () {
@@ -83,7 +99,7 @@
 				});
 				handleFilePreview();
 
-				let fileInput = document.getElementById('himg');
+				let fileInput = document.getElementById('mimg');
 
 				fileInput.addEventListener('change', function () {
 					const file = this.files[0];
@@ -133,9 +149,9 @@
 			}
 
 			function checkId() {
-				let userId = document.getElementById('hid').value;
+				let userId = document.getElementById('mid').value;
 				let idErrorMessage = document.getElementById('idErrorMessage');
-				let checkDupliIdBtn = document.getElementById('checkDupliIdBtn');
+				let checkDupliIdBtn = document.getElementById('midcheck');
 
 				if (userId === '') {
 					idErrorMessage.innerHTML = '아이디를 입력하세요.';
@@ -158,7 +174,7 @@
 			}
 
 			function checkDupliId() {
-				let checkId = $('#hid').val();
+				let checkId = $('#mid').val();
 				console.log(checkId);
 				let url = '/auth/checkId?userId=' + checkId;
 				$.ajax({
@@ -167,21 +183,22 @@
 				})
 					.done((resp) => {
 						if (resp == 1) {
-							alert('이미 사용중인 아이디입니다.');
-							// errAlert('이미 사용중인 아이디입니다.');
+							// alert('이미 사용중인 아이디입니다.');
+							errAlert('이미 사용중인 아이디입니다.');
 						} else {
-							alert('사용가능한 아이디입니다.');
-							// scsAlert('사용가능한 아이디입니다.');
+							// alert('사용가능한 아이디입니다.');
+							scsAlert('사용가능한 아이디입니다.');
 						}
 					})
 					.fail((err) => {
-						alert('오류 발생');
+						// alert('오류 발생');
+						errAlert('오류 발생');
 						console.log(err);
 					});
 			}
 
 			function checkPassword() {
-				let password = document.getElementById('hpw').value;
+				let password = document.getElementById('mpw').value;
 				let passwordErrorMessage = document.getElementById('pwErrorMessage');
 
 				if (password === '') {
@@ -203,8 +220,8 @@
 			}
 
 			function checkPasswordMatch() {
-				let password = document.getElementById('hpw').value;
-				let rePassword = document.getElementById('hpwcheck').value;
+				let password = document.getElementById('mpw').value;
+				let rePassword = document.getElementById('mpwcheck').value;
 				let rePasswordErrorMessage = document.getElementById('rePasswordErrorMessage');
 
 				if (password !== rePassword) {
@@ -218,7 +235,7 @@
 			}
 
 			function checkName() {
-				let name = document.getElementById('hname').value;
+				let name = document.getElementById('mname').value;
 				let nameErrorMessage = document.getElementById('nameErrorMessage');
 
 				if (name === '') {
@@ -232,7 +249,7 @@
 			}
 
 			function searchAdd() {
-				let address = document.getElementById('hadd');
+				let address = document.getElementById('madd');
 				new daum.Postcode({
 					oncomplete: function (data) {
 						address.value = data.address;
@@ -250,9 +267,45 @@
 				target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{3})(\d{2})(\d{5})$/, `$1-$2-$3`);
 			};
 
+			function checkPhone() {
+				let phone = $('#mceophone').val().replace(/-/g, '');
+				console.log(phone);
+				let url = '/auth/checkPhone?phoneNum=' + phone;
+				$.ajax({
+					url: url,
+					type: 'get',
+				})
+					.done((resp) => {
+						console.log(resp);
+						console.log(resp.checkNum);
+						if (resp.checkNum != '중복') {
+							scsAlert('인증번호 발송');
+							verificationCode = resp.checkNum;
+							document.getElementById('verification-section').style.display = 'flex';
+						} else {
+							errAlert('이미 등록된 전화번호입니다.');
+						}
+					})
+					.fail((err) => {
+						console.log(err);
+					});
+			}
+
+			function checkPhoneNumber() {
+				let enteredCode = document.getElementById('checkPhoneNum').value;
+
+				if (enteredCode == verificationCode) {
+					scsAlert('인증 완료');
+					return true;
+				} else {
+					errAlert('인증 번호가 일치하지 않습니다.');
+					return false;
+				}
+			}
+
 			function uploadImg() {
 				let formData = new FormData();
-				let inputFile = document.querySelector('#himg').files[0];
+				let inputFile = document.querySelector('#mimg').files[0];
 				for (var i = 0; i < inputFile.length; i++) {
 					console.log(inputFile[i]);
 					formData.append('uploadFiles', files[i]);
@@ -260,7 +313,7 @@
 			}
 
 			function checkLicense() {
-				let registrationNumber = $('#hceolicense').val().replace(/-/g, '');
+				let registrationNumber = $('#mceolicense').val().replace(/-/g, '');
 				let url =
 					'https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=xzADYrvAUisAVDob8yaz4gaeTvaJVrxJG5M93Ihkj5IDQgqmpN%2FejAdm26cz1BsmATLApRLmj7HWYVfgqvwnKw%3D%3D';
 
@@ -320,7 +373,7 @@
 			}
 
 			function handleFilePreview() {
-				let fileInput = document.getElementById('himg');
+				let fileInput = document.getElementById('mimg');
 				let filePreview = document.getElementById('filePreview');
 
 				fileInput.addEventListener('change', function () {
@@ -340,29 +393,60 @@
 					}
 				});
 			}
+
+			function submitForm(event) {
+				event.preventDefault();
+
+				const formData = new FormData(document.getElementById('medicalForm'));
+
+				$.ajax({
+					url: '/medicaljoin',
+					type: 'post',
+					processData: false,
+					contentType: false,
+					data: formData,
+					success: function (resp) {
+						console.log(resp);
+						if (resp.result) {
+							Swal.fire({
+								icon: 'success',
+								text: resp.msg,
+							}).then(function () {
+								location.href = '/userlogin';
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								text: resp.msg,
+							}).then(function () {
+								location.reload();
+							});
+						}
+					},
+				});
+			}
 		</script>
 	</head>
 
 	<body>
 		<div layout:fragment="content">
-			<form id="medicalForm" th:action="@{/medicaljoin}" enctype="multipart/form-data" method="post">
+			<form id="medicalForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
 				<div class="container">
 					<h3>의료기관 회원가입</h3>
 					<br />
 					<p>병원가입</p>
-					<p>약국가입</p>
 					<br />
 					<div class="input-group">
 						<label>아이디</label>
 						<input
 							type="text"
 							name="hospitalId"
-							id="hid"
+							id="mid"
 							placeholder="아이디를 입력하세요"
 							required
 							oninput="checkId()"
 						/>
-						<button type="button" id="hidcheck" onclick="checkDupliId()">중복 확인</button>
+						<button type="button" id="midcheck" onclick="checkDupliId()" disabled>중복 확인</button>
 						<span id="idErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
@@ -371,7 +455,7 @@
 						<input
 							type="password"
 							name="hospitalPw"
-							id="hpw"
+							id="mpw"
 							placeholder="비밀번호를 입력하세요"
 							required
 							oninput="checkPassword()"
@@ -383,7 +467,7 @@
 						<label>비밀번호 확인</label>
 						<input
 							type="password"
-							id="hpwcheck"
+							id="mpwcheck"
 							placeholder="비밀번호를 다시 입력하세요"
 							required
 							oninput="checkPasswordMatch()"
@@ -396,7 +480,7 @@
 						<input
 							type="text"
 							name="hospitalName"
-							id="hname"
+							id="mname"
 							placeholder="이름을 입력하세요"
 							required
 							oninput="checkName()"
@@ -406,10 +490,10 @@
 
 					<div class="input-group">
 						<label>병원 주소</label>
-						<input type="text" name="address" id="hadd" required />
+						<input type="text" name="address" id="madd" required />
 						<input
 							type="button"
-							id="haddcheck"
+							id="maddcheck"
 							class="btn btn-warning"
 							value="주소검색"
 							onclick="searchAdd()"
@@ -421,22 +505,23 @@
 						<input
 							type="tel"
 							name="phone"
-							id="hphone"
+							id="mphone"
 							placeholder="전화번호를 입력하세요"
 							required
+							maxlength="10"
 							oninput="autoHyphen(this)"
 						/>
 					</div>
 
 					<div class="input-group">
 						<label>대표 사진</label>
-						<input type="file" name="uploadFiles" id="himg" />
+						<input type="file" name="uploadFiles" id="mimg" />
 						<img id="filePreview" alt="File Preview" />
 					</div>
 
 					<div class="input-group">
 						<label>대표 진료 과목</label>
-						<select name="mainSubject" id="hsub">
+						<select name="mainSubject">
 							<option selected>선택하세요</option>
 							<th:block th:each="detailCode : ${application.detailCode_h}">
 								<option th:value="${detailCode.detailCode}" th:text="${detailCode.codeName}"></option>
@@ -475,20 +560,20 @@
 
 					<div class="input-group">
 						<label>오픈 시간</label>
-						<select name="opentime" id="hotime">
+						<select name="opentime">
 							<option selected>선택하세요</option>
 							<th:block th:each="detailCode : ${application.detailCode_k}">
-								<option th:value="${detailCode.detailCode}" th:text="${detailCode.codeName}"></option>
+								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
 							</th:block>
 						</select>
 					</div>
 
 					<div class="input-group">
 						<label>마감 시간</label>
-						<select name="closetime" id="hctime">
+						<select name="closetime">
 							<option selected>선택하세요</option>
 							<th:block th:each="detailCode : ${application.detailCode_k}">
-								<option th:value="${detailCode.detailCode}" th:text="${detailCode.codeName}"></option>
+								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
 							</th:block>
 						</select>
 					</div>
@@ -497,7 +582,7 @@
 
 					<div class="input-group">
 						<label>병원장 이름</label>
-						<input type="text" name="directorName" id="hceoname" placeholder="이름을 입력하세요" required />
+						<input type="text" name="directorName" id="mceoname" placeholder="이름을 입력하세요" required />
 					</div>
 
 					<div class="input-group">
@@ -505,11 +590,20 @@
 						<input
 							type="tel"
 							name="directorPhone"
-							id="hceophone"
+							id="mceophone"
 							placeholder="전화번호를 입력하세요"
 							required
+							maxlength="13"
 							oninput="autoHyphen(this)"
 						/>
+						<button type="button" id="checkPhoneBtn" onclick="checkPhone()">인증번호발송</button>
+						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group" id="verification-section">
+						<label>인증번호</label>
+						<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
+						<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
 					</div>
 
 					<div class="input-group">
@@ -517,9 +611,213 @@
 						<input
 							type="text"
 							name="directorLicense"
-							id="hceolicense"
+							id="mceolicense"
 							placeholder="사업자등록번호를 입력하세요"
 							required
+							maxlength="12"
+							oninput="autoHyphenNum(this)"
+						/>
+						<button type="button" id="hlicensecheck" onclick="checkLicense()">인증하기</button>
+					</div>
+
+					<div>
+						<input type="checkbox" id="invalidCheck" required />
+						동의항목<label class="form-check-label" onclick="openModal()"> [상세보기]</label>
+					</div>
+
+					<br />
+					<input type="submit" value="회원가입" class="btn btn-danger" />
+				</div>
+			</form>
+
+			<form id="medicalForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
+				<div class="container">
+					<h3>의료기관 회원가입</h3>
+					<br />
+					<p>약국가입</p>
+					<br />
+					<div class="input-group">
+						<label>아이디</label>
+						<input
+							type="text"
+							name="pharmacyId"
+							id="mid"
+							placeholder="아이디를 입력하세요"
+							required
+							oninput="checkId()"
+						/>
+						<button type="button" id="midcheck" onclick="checkDupliId()" disabled>중복 확인</button>
+						<span id="idErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group">
+						<label>비밀번호</label>
+						<input
+							type="password"
+							name="pharmacyPw"
+							id="mpw"
+							placeholder="비밀번호를 입력하세요"
+							required
+							oninput="checkPassword()"
+						/>
+						<span id="pwErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group">
+						<label>비밀번호 확인</label>
+						<input
+							type="password"
+							id="mpwcheck"
+							placeholder="비밀번호를 다시 입력하세요"
+							required
+							oninput="checkPasswordMatch()"
+						/>
+						<span id="rePasswordErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group">
+						<label>약국 이름</label>
+						<input
+							type="text"
+							name="pharmacyName"
+							id="mname"
+							placeholder="이름을 입력하세요"
+							required
+							oninput="checkName()"
+						/>
+						<span id="nameErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group">
+						<label>약국 주소</label>
+						<input type="text" name="address" id="madd" required />
+						<input
+							type="button"
+							id="maddcheck"
+							class="btn btn-warning"
+							value="주소검색"
+							onclick="searchAdd()"
+						/>
+					</div>
+
+					<div class="input-group">
+						<label>전화번호</label>
+						<input
+							type="tel"
+							name="pharmacyPhone"
+							id="mphone"
+							placeholder="전화번호를 입력하세요"
+							required
+							maxlength="10"
+							oninput="autoHyphen(this)"
+						/>
+					</div>
+
+					<div class="input-group">
+						<label>팩스번호</label>
+						<input
+							type="tel"
+							name="pharmacyFax"
+							id="mfax"
+							placeholder="전화번호를 입력하세요"
+							required
+							maxlength="10"
+							oninput="autoHyphen(this)"
+						/>
+					</div>
+
+					<div class="input-group">
+						<label>대표 사진</label>
+						<input type="file" name="uploadFiles" id="mimg" />
+						<img id="filePreview" alt="File Preview" />
+					</div>
+
+					<div class="input-group">
+						<label>휴무일</label>
+						<th:block th:each="detailCode : ${application.detailCode_i}">
+							<input
+								type="checkbox"
+								name="holiday"
+								th:value="${detailCode.detailCode}"
+								style="
+									width: 20px;
+									height: 20px;
+									border: 2px solid #3498db;
+									border-radius: 5px;
+									margin-right: 10px;
+									cursor: pointer;
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									transition: background-color 0.3s;
+								"
+							/>
+							<label
+								th:for="${'hday' + detailCode.detailCode}"
+								th:text="${detailCode.codeName}"
+								style="width: 50px"
+							></label>
+							<br />
+						</th:block>
+					</div>
+
+					<div class="input-group">
+						<label>오픈 시간</label>
+						<select name="opentime">
+							<option selected>선택하세요</option>
+							<th:block th:each="detailCode : ${application.detailCode_k}">
+								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
+							</th:block>
+						</select>
+					</div>
+
+					<div class="input-group">
+						<label>마감 시간</label>
+						<select name="closetime">
+							<option selected>선택하세요</option>
+							<th:block th:each="detailCode : ${application.detailCode_k}">
+								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
+							</th:block>
+						</select>
+					</div>
+
+					<hr />
+
+					<div class="input-group">
+						<label>대표자 이름</label>
+						<input type="text" name="ceoName" id="mceoname" placeholder="이름을 입력하세요" required />
+					</div>
+
+					<div class="input-group">
+						<label>대표자 전화번호</label>
+						<input
+							type="tel"
+							name="ceoPhone"
+							id="mceophone"
+							placeholder="전화번호를 입력하세요"
+							required
+							maxlength="13"
+							oninput="autoHyphen(this)"
+						/>
+						<button type="button" id="checkPhoneBtn" onclick="checkPhone()">인증번호발송</button>
+						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group" id="verification-section">
+						<label>인증번호</label>
+						<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
+						<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
+					</div>
+
+					<div class="input-group">
+						<label>사업자등록번호</label>
+						<input
+							type="text"
+							name="ceoLicense"
+							id="mceolicense"
+							placeholder="사업자등록번호를 입력하세요"
+							required
+							maxlength="12"
 							oninput="autoHyphenNum(this)"
 						/>
 						<button type="button" id="hlicensecheck" onclick="checkLicense()">인증하기</button>

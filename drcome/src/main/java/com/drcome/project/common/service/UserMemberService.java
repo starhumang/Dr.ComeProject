@@ -16,9 +16,13 @@ public interface UserMemberService {
 	
 	int checkId(String id);
 	
+	int checkPhone(String phone);
+	
 	public Map<String,Object> sendNumber(String phoneNum);
 
 	String findId(String userName, String phone);
 	
 	int updatePw(MemVO vo);
+	
+	int updateUserInfo(UserMemberVO vo);
 }

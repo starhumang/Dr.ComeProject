@@ -13,7 +13,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,154 +37,211 @@ public class UserMemberController {
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
-	
+
 	@Autowired
-    private FileUploadService fileUploadService;
-	
+	private FileUploadService fileUploadService;
+
+	private static String formatPhoneNumber(String phoneNumber) {
+		// 숫자만 남기고 나머지 문자 제거
+		String cleanedNumber = phoneNumber.replaceAll("[^0-9]", "");
+
+		// 전화번호 형식으로 변환
+		String formattedNumber = cleanedNumber.replaceFirst("(\\d{3})(\\d{4})(\\d+)", "$1-$2-$3");
+
+		return formattedNumber;
+	}
+
 	@GetMapping("/userlogin")
 	public String userLogin() {
 		return "/member/memlogin";
 	}
-	
+
 	@GetMapping("findAccount")
 	public String findAccount() {
 		return "/member/findAccount";
 	}
-	
+
 	@GetMapping("/auth/findId")
 	@ResponseBody
 	public String findId(@RequestParam String userName, @RequestParam String phone) {
-	    System.out.println("이름: " + userName + "전화번호: " + phone);
+		System.out.println("이름: " + userName + "전화번호: " + phone);
 
-	    String userId = userMemService.findId(userName, phone);
-	    
-	    System.out.println("값: " + userId);
-	    
-	    if (userId == null) {
-	    	userId = "no name";
-	    }
-	    
-	    return userId;
+		String userId = userMemService.findId(userName, phone);
+
+		System.out.println("값: " + userId);
+
+		if (userId == null) {
+			userId = "no name";
+		}
+
+		return userId;
 	}
-	
+
 	@GetMapping("/auth/findPw")
 	@ResponseBody
 	public int findPw(@RequestParam String userId, @RequestParam String password) {
 		MemVO vo = userMemService.getMember(userId);
 		password = bCryptPasswordEncoder.encode(password);
 		vo.setUserPw(password);
-		
+
 		int result = userMemService.updatePw(vo);
-				
+
 		return result;
 	}
-	
-	
+
+	@GetMapping("/userupdate")
+	public String userUpdateForm(@SessionAttribute(name = "userId", required = false) String id, Model model) {
+		UserMemberVO userInfo = memMapper.selectMem(id);
+		model.addAttribute("userInfo", userInfo); 
+		return "/member/userupdate";
+	}
+
+	@PostMapping("/userupdate")
+	@ResponseBody
+	public Map<String, Object> userUpdate(UserMemberVO mVO) {
+		Map<String, Object> response = new HashMap<>();
+		String password = mVO.getUserPw();
+		password = bCryptPasswordEncoder.encode(password);
+		mVO.setUserPw(password);
+
+		try {
+			int cnt = userMemService.updateUserInfo(mVO);
+			if (cnt > 0) {
+				response.put("result", true);
+				response.put("msg", "정상적으로 수정되었습니다.");
+			} else {
+				response.put("result", false);
+				response.put("msg", "수정에 실패했습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("result", false);
+			response.put("msg", "에러 발생");
+		}
+		return response;
+	}
+
 	@GetMapping("/userjoin")
 	public String userJoinForm() {
 		return "/member/userjoin";
 	}
 
 	@PostMapping("/userjoin")
-	public void userJoin(UserMemberVO mVO, HttpServletResponse resp) {
+	@ResponseBody
+	public Map<String, Object> userJoin(UserMemberVO mVO, HttpServletResponse resp) {
+		Map<String, Object> response = new HashMap<>();
 		String userPw = mVO.getUserPw();
 		userPw = bCryptPasswordEncoder.encode(userPw);
 		mVO.setUserPw(userPw);
-		
-		System.out.println(mVO);
-		
-		resp.setContentType("text/html; charset=UTF-8");
-		
-		List<String> imageList = fileUploadService.uploadFiles(mVO.getUploadFiles());
-		
-		String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
-        mVO.setIdentification(uploadedFileName);
 
-        System.out.println(mVO);
-        
-		int cnt = userMemService.insertUserMember(mVO);
+		System.out.println(mVO);
+
+		List<String> imageList = fileUploadService.uploadFiles(mVO.getUploadFiles());
+
+		String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
+		mVO.setIdentification(uploadedFileName);
+
+		System.out.println(mVO);
+
 		try {
+			int cnt = userMemService.insertUserMember(mVO);
 			if (cnt > 0) {
-				PrintWriter out = resp.getWriter();
-				out.println("<script language='javascript'>");
-				out.println("alert('[회원가입성공] " + mVO.getUserName() + "님 환영합니다'); location.href='/';");
-				out.println("</script>");
-				out.flush();
+				response.put("result", true);
+				response.put("msg", "회원가입이 성공적으로 완료되었습니다.");
 			} else {
-				PrintWriter out = resp.getWriter();
-				out.println("<script language='javascript'>");
-				out.println("alert('[회원가입실패] 다시 시도해주세요 :('); location.href='/';");
-				out.println("</script>");
-				out.flush();
+				response.put("result", false);
+				response.put("msg", "회원가입에 실패했습니다.");
 			}
-		} catch (IOException e) {
-			e.printStackTrace(); // 예외 처리 추가
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("result", false);
+			response.put("msg", "에러 발생");
 		}
+
+		return response;
 	}
-	
+
 	@GetMapping("/medicaljoin")
 	public String medicalJoinForm() {
 		return "/member/medicaljoin";
 	}
-	
+
 	@PostMapping("/medicaljoin")
-	public void medicalJoin(HospitalVO hVO, PharmacyVO pVO, HttpServletResponse resp) {
+	@ResponseBody
+	public Map<String, Object> medicalJoin(HospitalVO hVO, PharmacyVO pVO) {
+		Map<String, Object> response = new HashMap<>();
 		String hospitalPw = hVO.getHospitalPw();
 		hospitalPw = bCryptPasswordEncoder.encode(hospitalPw);
 		hVO.setHospitalPw(hospitalPw);
-		
-		resp.setContentType("text/html; charset=UTF-8");
-		
+
 		List<String> imageList = fileUploadService.uploadFiles(hVO.getUploadFiles());
-		
+
 		String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
 		hVO.setHospitalImg(uploadedFileName);
 
-        System.out.println(hVO);
+		System.out.println(hVO);
 
-		int cnt = userMemService.insertHosMember(hVO);
 		try {
+			int cnt = userMemService.insertHosMember(hVO);
 			if (cnt > 0) {
-				PrintWriter out = resp.getWriter();
-				out.println("<script language='javascript'>");
-				out.println("alert('[회원가입성공] " + hVO.getHospitalName() + "병원님 환영합니다'); location.href='/hospital';");
-				out.println("</script>");
-				out.flush();
+				response.put("result", true);
+				response.put("msg", "회원가입이 성공적으로 완료되었습니다.");
 			} else {
-				PrintWriter out = resp.getWriter();
-				out.println("<script language='javascript'>");
-				out.println("alert('[회원가입실패] 다시 시도해주세요 :('); location.href='/userlogin';");
-				out.println("</script>");
-				out.flush();
+				response.put("result", false);
+				response.put("msg", "회원가입에 실패했습니다.");
 			}
-		} catch (IOException e) {
-			e.printStackTrace(); // 예외 처리 추가
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("result", false);
+			response.put("msg", "에러 발생");
 		}
+
+		return response;
 	}
-	
+
 	@GetMapping("/mypage")
 	public String myPage(@SessionAttribute(name = "userId", required = false) String id, Model model) {
 		UserMemberVO myprofile = memMapper.selectMem(id);
 		model.addAttribute("profile", myprofile);
+
 		return "/member/userpage";
 	}
-	
+
 	@GetMapping("/auth/checkId")
 	@ResponseBody
 	public int checkDupliId(@RequestParam String userId) {
-	    System.out.println("중복체크할 아이디: " + userId);
+		System.out.println("중복체크할 아이디: " + userId);
+		int cnt = userMemService.checkId(userId);
+		System.out.println("값: " + cnt);
 
-	    int cnt = userMemService.checkId(userId);
-	    
-	    System.out.println("값: " + cnt);
-	    
-	    return cnt;
+		return cnt;
 	}
-	
+
 	@GetMapping("/auth/checkPhone")
 	@ResponseBody
 	public Map<String, Object> sendNumber(@RequestParam String phoneNum) {
-		return userMemService.sendNumber(phoneNum);
+		Map<String, Object> response = new HashMap<>();
+		System.out.println(phoneNum);
+		System.out.println(formatPhoneNumber(phoneNum));
+		int cnt = userMemService.checkPhone(formatPhoneNumber(phoneNum));
+		System.out.println(cnt);
+		if (cnt == 0) {
+			response = userMemService.sendNumber(phoneNum);
+		} else {
+			response.put("checkNum", "중복");
+		}
+		System.out.println(response);
+		
+		return response;
+	}
+	
+	@GetMapping("/auth/checkAuthPhone")
+	@ResponseBody
+	public Map<String, Object> sendAuthNumber(@RequestParam String phoneNum) {
+		Map<String, Object> response = new HashMap<>();
+		response = userMemService.sendNumber(phoneNum);
+
+		return response;
 	}
 
 }

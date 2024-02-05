@@ -75,6 +75,11 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 	}
 	
 	@Override
+	public int checkPhone(String phone) {
+		return mapper.checkPhone(phone);
+	}
+	
+	@Override
 	public String findId(String userName, String phone) {
 		return mapper.findId(userName, phone);
 	}
@@ -85,9 +90,14 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 	}
 	
 	@Override
+	public int updateUserInfo(UserMemberVO vo) {
+		return mapper.updateUserInfo(vo);
+	}
+	
+	@Override
 	public Map<String, Object> sendNumber(String phoneNum) {
-		int checkNum = (int) (Math.random() * 9000) + 1000;
 		Map<String,Object> result = new HashMap<String,Object>();
+		int checkNum = (int) (Math.random() * 9000) + 1000;
 		
 		result.put("checkNum", checkNum);
 		

@@ -17,6 +17,7 @@ import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
+
 @Controller
 public class MainController {
 	
@@ -94,13 +95,26 @@ public class MainController {
 		return "user/recommendPha";
 	}
 	
+	//약국추천리스트 중 약국선택테이블에 insert
 	@PostMapping("/recommendPharmacy")
-	public boolean insertPhaSelect(String pharmacyId,int clinicNo) {
-		int result = mainService.insertPhaSelect(pharmacyId, clinicNo);
-		if(result == 1) { //insert되면 true
-			return true;
-		}else { //insert 안되면 false
+	@ResponseBody
+	public boolean insertPhaSelect(@RequestBody Map<String, Object> data) {
+		Object pharmacyIdList = data.get("pharmacyId");
+		 List<Object> pharmacyIdListAsList = (List<Object>) pharmacyIdList;
+		    
+		    // List를 String 배열로 변환
+		String[] pharmacyIdArray = pharmacyIdListAsList.toArray(new String[0]);
+		int clinicNo = Integer.parseInt((String) data.get("clinicNo"));
+		int result = 0;
+		System.out.println("pharmacyIdArray="+pharmacyIdArray);
+		for(int i=0; i < pharmacyIdArray.length; i++) {
+			result += mainService.insertPhaSelect(pharmacyIdArray[i], clinicNo);
+		}
+		System.out.println("result=" + result);
+		if(result == 0) { //insert되면 true
 			return false;
+		}else { //insert 안되면 false
+			return true;
 		}
 	}
 	

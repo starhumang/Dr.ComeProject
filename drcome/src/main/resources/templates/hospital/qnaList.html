@@ -22,7 +22,8 @@
 input[type="radio"] {
 	display: none;
 }
-input[type="radio"]:checked + label {
+
+input[type="radio"]:checked+label {
 	background-color: #5a5c69;
 	color: #fff;
 }
@@ -69,11 +70,13 @@ input[type="radio"]:checked + label {
 
 			<!-- 카테고리 선택 -->
 			<div class="btn-group" role="group"
-				aria-label="Basic radio toggle button group" style="margin-bottom: 20px;">
+				aria-label="Basic radio toggle button group"
+				style="margin-bottom: 20px;">
 				<input type="radio" class="btn-check" name="btnradio" id="btnradio1"
 					autocomplete="off" checked> <label
-					class="btn btn-outline-dark" for="btnradio1"  style="border-top-left-radius: 0.35rem; border-bottom-left-radius: 0.35rem;">전체보기</label> <input
-					type="radio" class="btn-check" name="btnradio" id="btnradio2"
+					class="btn btn-outline-dark" for="btnradio1"
+					style="border-top-left-radius: 0.35rem; border-bottom-left-radius: 0.35rem;">전체보기</label>
+				<input type="radio" class="btn-check" name="btnradio" id="btnradio2"
 					autocomplete="off"> <label class="btn btn-outline-dark"
 					for="btnradio2">진료문의</label> <input type="radio" class="btn-check"
 					name="btnradio" id="btnradio3" autocomplete="off"> <label
@@ -83,9 +86,9 @@ input[type="radio"]:checked + label {
 					for="btnradio4">기타문의</label>
 			</div>
 
-			<!-- 환자리스트 -->
+			<!-- QnA 리스트 -->
 			<div>
-				<table class="table">
+				<table class="table table-hover">
 					<thead>
 						<tr>
 							<th>No.</th>
@@ -98,23 +101,32 @@ input[type="radio"]:checked + label {
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="qlist : ${qnaAllList}">
+						<tr th:each="qlist : ${qnaAllList}" th:onclick="'window.location.href=' + @{/hospital/qnaList/qnaDetail(qnaNo=${qlist.qnaNo})}" style="cursor: pointer;">
 							<td th:text="${qlist.qnaNo}"></td>
-							<td th:text="${qlist.title}"></td>
 							<td th:text="${qlist.userId}"></td>
+							<td th:text="${qlist.title}"></td>
 							<td th:text="${qlist.categoryStatus}"></td>
 							<td th:text="${#dates.format(qlist.wDate, 'yyyy-MM-dd')}"></td>
-<!-- 							<td th:if="${qlist.uDate 1= ''}">.</td> -->
-<!-- 							<td th:if="${not #strings.isEmpty(qlist.uDate)}" th:text="${qlist.uDate}}">.</td> -->
-<!-- 							<td th:if="${qlist.uDate != null}" th:text="${qlist.uDate}">.</td> -->
-<!-- 								<td th:if="${#lists.contains(qlist, uDate) != null}" th:text="${qlist.uDate}">.</td> -->
-<!-- 								<td th:if="${#qlist.isEmpty(uDate)}" th:text="${qlist.uDate}">.</td> -->
+							<td th:if="${qlist['uDate'] == null}">-</td>
+							<td th:unless="${qlist['uDate'] == null}">
+							[[${#dates.format(qlist['uDate'], 'yyyy-MM-dd')}]]]</td>
 							<td th:text="${qlist.ansStatus}"></td>
 						</tr>
 					</tbody>
 				</table>
 			</div>
 		</div>
+		<script th:inline="javascript">
+			document.addEventListener( "DOMContentLoaded", function() {
+				var rows = document.querySelectorAll("tbody tr");
+				rows.forEach(function(row) {
+					row.addEventListener("click", function() {
+						var qnaNo = this.querySelector("td:first-child").innerText;
+						window.location.href = '/hospital/qnaList/qnaDetail?qnaNo='+ qnaNo;
+					});
+				});
+			});
+		</script>
 	</div>
 </body>
 </html>

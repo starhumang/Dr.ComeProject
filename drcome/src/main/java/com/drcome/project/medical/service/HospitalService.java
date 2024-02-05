@@ -1,5 +1,6 @@
 package com.drcome.project.medical.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,6 +21,16 @@ public interface HospitalService {
 	/* QnA */
 	//QnA 전체
 	public List<Map<String, Object>> getQnaList(String hospitalId);
+	
+	//QnA 단건상세
+	public List<Map<String, Object>> getQnaInfo(String hospitalId, Integer qnaNo);
+	
+	/* 공지사항 */
+	//공지사항 전체	
+	public List<Map<String, Object>> getNoticeList(String hospitalId);
+	
+	//공지사항 단건상세
+	public List<Map<String, Object>> getNoticeDetail(String hospitalId, Integer noticeNo);
 	
 	/* 병원프로필 */
 	//병원 단건조회(id로)

@@ -1,5 +1,6 @@
 package com.drcome.project.medical.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,6 +50,28 @@ public class HospitalServiceImpl implements HospitalService{
 		return listQnaAll;
 	}
 	
+	//QnA 단건상세
+	@Override
+	public List<Map<String, Object>> getQnaInfo(String hospitalId, Integer qnaNo) {
+		List<Map<String, Object>> qnaInfo = hospitalMapper.selectQnaInfo(hospitalId, qnaNo);
+		return qnaInfo;
+	}
+	
+	/* 공지사항 */
+	//공지사항 전체
+	@Override
+	public List<Map<String, Object>> getNoticeList(String hospitalId) {
+		List<Map<String, Object>> listNoticeAll = hospitalMapper.selectNoticeList(hospitalId);
+		return listNoticeAll;
+	}
+	
+	//공지사항 단건상세
+	@Override
+	public List<Map<String, Object>> getNoticeDetail(String hospitalId, Integer noticeNo) {
+		List<Map<String, Object>> noticeInfo = hospitalMapper.selectNoticeInfo(hospitalId, noticeNo);
+		return noticeInfo;
+	}
+	
 	/* 병원프로필 */
 	//병원 단건조회(id로)
 	@Override
@@ -77,12 +100,4 @@ public class HospitalServiceImpl implements HospitalService{
 		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
 		return listPaDe;
 	}
-
-
-
-
-	
-	
-	
-	
 }

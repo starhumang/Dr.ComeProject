@@ -73,8 +73,58 @@
 		  FROM qna
 		 WHERE hospital_id = #{hospitalId} AND ANS_STATUS IS NOT NULL
 		 ORDER BY qna_no DESC
-	</select>	
+	</select>
+	
+	<!-- QnA 상세 -->
+	<select id ="selectQnaInfo" resultType="Map">
+		SELECT qna_no "qnaNo",
+		       title "title",
+		       user_id "userId",
+		       category_status "categoryStatus",
+		       content "content",
+		       wdate "wDate",
+		       udate "uDate",
+		       ans_status "ansStatus"
+		  FROM qna
+		 WHERE hospital_id = #{hospitalId} AND qna_no = #{qnaNo} AND ANS_STATUS IS NOT NULL
+		 ORDER BY qna_no DESC
+	</select>
 
+	<!-- 공지사항 -->
+	<!-- 공지사항 전체 -->
+	<select id ="selectNoticeList" resultType="Map">
+		SELECT notice_no "noticeNo",
+		       title "title",
+		       content "content",
+		       wdate "wDate",
+		       udate "uDate"
+		  FROM notice
+		  WHERE hospital_id = #{hospitalId}
+		  ORDER BY notice_no DESC
+	</select>
+	
+	<!-- 공지사항 상세 -->
+	<select id="selectNoticeInfo" resultType="Map">
+		SELECT notice_no "noticeNo",
+		       wdate "wDate",
+		       title "title",
+		       content "content"
+		  FROM notice
+		 WHERE hospital_id = #{hospitalId} AND notice_no = ${noticeNo}
+	</select>
+	
+	<!-- 공지사항 등록 -->
+	<insert id="insertNoticeInfo" parameterType="Map">
+		INSERT INTO notice (notice_no "noticeNo",
+								title "title",
+								content "content",
+								hospital_id "hospitalId")
+		VALUES (notice_seq.NEXTVAL,
+				#{title},
+				#{content},
+				#{hospitalId})
+	</insert>
+	
 	<!-- MyProfile -->
 	<!-- 병원-의사-시간 조회 -->
 	<resultMap id="drResult" type="DoctorVO">

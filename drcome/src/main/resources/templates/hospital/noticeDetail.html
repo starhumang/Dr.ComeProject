@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}">
+
+<head>
+<meta charset="UTF-8">
+<title>patientList</title>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.info-box {
+	display: flex;
+	justify-content: center;
+}
+
+#p-info {
+	text-align: center;
+	margin-bottom: 30px;
+	background-color: #DEE0E3;
+}
+.noticeBtn {
+	display: flex;
+	justify-content: space-between;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info">
+				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+			<p>notice Detail</p>
+
+			<!-- 공지사항 단건 -->
+			<div>
+				<table class="table table-bordered">
+					<th:block th:each="nif : ${noticeInfo}">
+						<thead>
+							<tr>
+								<th class="text-center table-light">번호</th>
+								<td th:text="${nif.noticeNo}" class="text-center"></td>
+								<th class="text-center table-light">작성일</th>
+								<td th:text="${#dates.format(nif.wDate, 'yyyy-MM-dd')}"
+									class="text-center"></td>
+								<th class="text-center table-light">수정일</th>
+								<td th:if="${nif['uDate'] != null}"
+									th:text="${#dates.format(nif['uDate'], 'yyyy-MM-dd')}"></td>
+								<td th:if="${nif['uDate'] == null}">-</td>
+								<th class="text-center table-light">조회수</th>
+								<td class="text-center">5</td>
+							</tr>
+
+							<tr>
+								<th class="text-center table-light">제목</th>
+								<td th:text="${nif.title}" colspan="5"></td>
+								<th class="text-center table-light">첨부파일</th>
+								<td class="text-center">이미지.jpeg</td>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td th:text="${nif.content}" colspan="8" class="text-left"
+									valign="top" height="200"><pre
+										style="white-space: pre-wrap; border: none;">
+								</pre></td>
+							</tr>
+							<tr>
+								<td colspan="8" class="text-center">
+									<div class="noticeBtn">
+										<!-- 목록버튼 -->
+										<div style="text-align: center;">
+											<a th:href="@{/hospital/noticeList}" class="btn btn-dark">목록으로</a>
+										</div>
+										<div class="leftBtn">
+											<button class="btn btn-xs btn-info">수정</button>
+											<button class="btn btn-xs btn-warning">삭제</button>
+										</div>
+									</div>
+								</td>
+							</tr>
+						</tbody>
+					</th:block>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</body>
+</html>

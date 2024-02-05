@@ -21,6 +21,19 @@ public interface HospitalMapper {
 	//QnA 전체
 	public List<Map<String, Object>> selectQnaList(String hospitalId);
 	
+	//QnA 단건상세
+	public List<Map<String, Object>> selectQnaInfo(String hospitalId, Integer qnaNo);
+	
+	/* 공지사항 */
+	//공지사항 전체
+	public List<Map<String, Object>> selectNoticeList(String hospitalId);
+	
+	//공지사항 단건상세
+	public List<Map<String, Object>> selectNoticeInfo(String hospitalId, Integer noticeNo);
+	
+	//공지사항 등록
+	public int insertNotice();
+	
 	/* 병원프로필 */
 	//병원-의사 조회
 	public List<DoctorVO> selectDrList(String hospitalId);

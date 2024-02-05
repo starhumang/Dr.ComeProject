@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}">
+<head>
+<meta charset="UTF-8" />
+<title>noticeList</title>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.search {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 40px;
+}
+
+input[type="radio"] {
+	display: none;
+}
+
+input[type="radio"]:checked+label {
+	background-color: #5a5c69;
+	color: #fff;
+}
+
+#short {
+ 	max-width: 400px;
+/* 	display: inline-block; */
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info">
+				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+			<p>notice</p>
+			<div class="search">
+				<!-- drop -->
+				<div style="margin-right: 5px">
+					<select class="custom-select" aria-label="Default select example">
+						<option selected>검색유형</option>
+						<option value="1">제목</option>
+						<option value="2">내용</option>
+					</select>
+				</div>
+
+				<!-- 검색 -->
+				<div>
+					<div class="input-group">
+						<button class="btn btn-info" type="button"
+							style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+							<i class="fas fa-search fa-sm"></i>
+						</button>
+						<input type="text" class="form-control bg-light border-1 small"
+							placeholder="검색어를 입력하세요." aria-label="Search"
+							aria-describedby="basic-addon2" />
+						<div class="input-group-append">
+							<button class="btn btn-info" type="button">검색하기</button>
+						</div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="noticeUp" style="text-align: right; margin: 15px 0;">
+				<a href="#" class="btn btn-primary">글등록하기</a>
+			</div>
+			<div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>No.</th>
+							<th>제목</th>
+							<th>내용</th>
+							<th>작성일자</th>
+							<th>수정일자</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="nlist : ${noticeAllList}" style="cursor: pointer;"
+							th:onclick="'window.location.href=' + @{/hospital/noticeList/noticeDetail(noticeNo=${nlist.noticeNo})}">
+							<td th:text="${nlist.noticeNo}"></td>
+							<td th:text="${nlist.title}"></td>
+							<td id="short" th:text="${nlist.content}"></td>
+							<td th:text="${#dates.format(nlist.wDate, 'yyyy-MM-dd')}"></td>
+							<td th:if="${nlist['uDate'] != null}"
+								th:text="${#dates.format(nlist['uDate'], 'yyyy-MM-dd')}"></td>
+							<td th:if="${nlist['uDate'] == null}">-</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script th:inline="javascript">
+			document
+					.addEventListener(
+							"DOMContentLoaded",
+							function() {
+								var rows = document
+										.querySelectorAll("tbody tr");
+								rows
+										.forEach(function(row) {
+											row
+													.addEventListener(
+															"click",
+															function() {
+																var noticeNo = this
+																		.querySelector("td:first-child").innerText;
+																window.location.href = '/hospital/noticeList/noticeDetail?noticeNo='
+																		+ noticeNo;
+															});
+										});
+							});
+		</script>
+	</div>
+</body>
+</html>

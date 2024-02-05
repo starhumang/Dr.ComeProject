@@ -95,4 +95,53 @@ public class HospitalController {
 		model.addAttribute("qnaAllList", qnaAllList);
 		return "hospital/qnaList";
 	}
+	//QnA 단건상세
+	@GetMapping("/hospital/qnaList/qnaDetail")
+	public String qnaInfo(Principal principal, String hospitalId, Integer qnaNo, Model model) {
+		hospitalId = principal.getName();
+		List<Map<String, Object>> qnaInfo = hospitalService.getQnaInfo(hospitalId, qnaNo);
+		model.addAttribute("qnaInfo", qnaInfo);
+		model.addAttribute("qnaNo", qnaNo);
+		return "hospital/qnaDetail";
+	}
+	
+	/* 공지사항 */
+	//공지사항 전체
+	@GetMapping("/hospital/noticeList")
+	public String noticeList(Principal principal, String hospitalId, Model model) {
+		hospitalId = principal.getName();
+		List<Map<String, Object>> noticeAllList = hospitalService.getNoticeList(hospitalId);
+		model.addAttribute("noticeAllList", noticeAllList);
+		return "hospital/noticeList";
+	}
+	
+	//공지사항 단건상세
+	@GetMapping("/hospital/noticeList/noticeDetail")
+	public String noticeDetail(Principal principal, String hospitalId, Integer noticeNo, Model model) {
+		hospitalId = principal.getName();
+		List<Map<String, Object>> noticeInfo = hospitalService.getNoticeDetail(hospitalId, noticeNo);
+		model.addAttribute("noticeNo", noticeNo);
+		model.addAttribute("noticeInfo", noticeInfo);
+		return "hospital/noticeDetail";
+	}
+	
+//	//공지사항 등록 - form
+//	@GetMapping("/hospital/noticeForm")
+//	public String insertEmpInfoForm() {
+//		return "hospital/noticeForm";
+//	}
+//	
+//	//공지사항 등록 - PROCESS
+//	@PostMapping("/hospital/noticeForm")
+//	public String insertNoticeInfoProcess(EmpVO empVO) {
+//		int hospitalId = hospitalService.insertNoticeInfo(empVO);
+//		
+//		String path = null;
+//		if(hospitalId > -1) {
+//			path = "redirect:noticeInfo?hospitalId="+hospitalId;
+//		} else {
+//			path = "redirect:noticeList";
+//		}
+//		return path;
+//	}
 }

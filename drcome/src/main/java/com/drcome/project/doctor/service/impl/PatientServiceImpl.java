@@ -2,6 +2,8 @@ package com.drcome.project.doctor.service.impl;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +25,16 @@ public class PatientServiceImpl implements PatientService {
 
 	// 환자 진료기록 조회
 	@Override
-	public List<PatientVO> getClinicList(String hid, String uid) {
-		return mapper.clinicList(hid, uid);
+	public List<PatientVO> getClinicList(int page, PatientVO vo) {
+		
+		return mapper.clinicList(page, vo);
+	}
+
+	
+	//진료기록 totalList
+	@Override
+	public int totalList(PatientVO vo) {
+		return mapper.cntList(vo);
 	}
 
 	// 처방전조회
@@ -40,30 +50,44 @@ public class PatientServiceImpl implements PatientService {
 		return mapper.mnameList(vo);
 	}
 
-	// 재진-환자번호조회
+	// 진료기록 인서트
 	@Override
-	public int getPno(PatientVO vo) {
-		// System.out.println("서비스" + mapper.searchPno(vo));
-		return mapper.searchPno(vo);
-	}
-
-	// 진료기록 인서트 후 생성된 clinicNo 가져오기
-	@Override
+	@Transactional
 	public int insertClinic(PatientVO vo) {
-		mapper.insertClinic(vo);
-		return vo.getClinicNo();
+
+		int result = 0;
+
+		List<PatientVO> plist = vo.getPerary();
+
+		// 초진이면 //환자테이블 인서트
+		if (vo.getVisit().equals("first")) {
+			mapper.patientInsert(vo);
+		}
+		// 재진이면
+		// 최근 진료 날짜 업데이트
+		mapper.updateDate(vo);
+		// 환자번호 select
+		int pno = mapper.searchPno(vo);
+		// vo에 set
+		vo.setPatientNo(pno);
+		// 진료기록 insert
+		result = mapper.insertClinic(vo);
+		// 부여된 cno가져와서
+		int cno = vo.getClinicNo();
+		// 처방전이있다면
+		if (vo.getPerscriptionYn() == null) {
+			for (PatientVO obj : plist) {
+				obj.setClinicNo(cno);
+				// System.out.println("야약약약" + obj);
+				result = mapper.insertPer(obj);
+			}
+		}
+
+		//System.out.println(result);
+		return result;
 	}
 
-	// 처방전 인서트
-	@Override
-	public int insertPer(PatientVO vo) {
-		return mapper.insertPer(vo);
-	}
 
-	// 신규환자등록
-	@Override
-	public int patientInsert(PatientVO vo) {
-		return mapper.patientInsert(vo);
-	}
+	
 
 }

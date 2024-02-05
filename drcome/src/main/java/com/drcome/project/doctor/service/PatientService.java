@@ -8,7 +8,10 @@ public interface PatientService {
 	public PatientVO getPatientInfo(PatientVO vo);
 
 	// 환자 진료내역 조회
-	public List<PatientVO> getClinicList(String hid, String uid);
+	public List<PatientVO> getClinicList(int page, PatientVO vo);
+	
+	//진료 리스트 total 
+	public int totalList(PatientVO vo);
 
 	// 환자 처방전 조회
 	public List<PatientVO> getPerscription(PatientVO vo);
@@ -16,16 +19,10 @@ public interface PatientService {
 	// 약검색
 	public List<PatientVO> getmnameList(PatientVO vo);
 
-	// 재진-환자번호조회
-	public int getPno(PatientVO vo);
-
 	// 진료기록 insert
 	public int insertClinic(PatientVO vo);
 
-	// 처방전 insert
-	public int insertPer(PatientVO vo);
 
-	// 신규환자 insert
-	public int patientInsert(PatientVO vo);
+
 
 }

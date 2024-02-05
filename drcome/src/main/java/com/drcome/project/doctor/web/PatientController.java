@@ -1,6 +1,8 @@
 package com.drcome.project.doctor.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.admin.domain.Hospital;
+import com.drcome.project.doctor.service.PageDTO;
 import com.drcome.project.doctor.service.PatientService;
 import com.drcome.project.doctor.service.PatientVO;
 import com.drcome.project.medical.service.HospitalService;
@@ -24,6 +27,9 @@ public class PatientController {
 //	HospitalRepository repo;
 	HospitalService hospitalService;
 
+	@Autowired
+	PatientService patientService;
+
 	// 공통 병원 정보 따로 빼기
 	@ModelAttribute("hospitalSel")
 	public Hospital getServerTime() {
@@ -32,24 +38,65 @@ public class PatientController {
 		return hosSel;
 	}
 
-	@Autowired
-	PatientService patientService;
-
-	// 비대면진료페이지
+	// 비대면진료페이지//reserve no 받아옴 /hid (세션) /uid (pinfo안) 받아와야함
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
 
-		// 기본정보 // 입장버튼 눌렀을때 reserve no 받아오기
+		System.out.println("너뭐야 " + vo); // 아무것도없음
+
+		// 기본정보
 		vo.setReserveNo(4);
+		// System.out.println("너는뭐야 "+ vo); //reserveno만 4로 찍힘
+
 		PatientVO findVO = patientService.getPatientInfo(vo);
-		// System.out.println(findVO);
+		// System.out.println("findvo" + findVO);
+		// (reserveNo=4, userName=이주은, gender=F, birthday=Wed Sep 07 00:00:00 KST 1994,
+		// symptom=배가아픔, clinicNo=0, clinicSymptom=null, specificity=null, payYn=null,
+		// paymentNo=0, perscriptionYn=null, clinicDate=null, hospitalId=null,
+		// patientNo=0, perscriptionNo=0, dosage=0, doseCnt=0, doseDay=0,
+		// perscriptionDate=null, medicineName=null, medicineNo=0, userId=user1,
+		// currentDate=null, visit=null, perary=null, page=null)
 		model.addAttribute("pInfo", findVO);
 
-		// 진료기록리스트 //입장버튼 눌렀을때 hid uid 받아오기
-		List<PatientVO> clinicList = patientService.getClinicList("krrlo", "test3");
-		model.addAttribute("clist", clinicList);
-		// System.out.println(clinicList);
 		return "doctor/untactClinic";
+
+	}
+
+	// 진료기록 불러오기
+	@GetMapping("clist")
+	@ResponseBody
+	public Map<String, Object> clinicList(String page, String uid) {
+
+		PatientVO vo = new PatientVO();
+		page = page == null ? "1" : page;
+
+		vo.setUserId(uid);
+		vo.setHospitalId("krrlo");
+		
+		// 리스트 전체갯수 가져오기
+		int total = patientService.totalList(vo);
+		System.out.println("토탈" + total);
+
+		// 선택된 페이지 인트로 변환
+		int cpage = Integer.parseInt(page);
+		System.out.println("선택된페이지" + cpage);
+
+		
+		// 페이지네이션(currentpage, total)
+		PageDTO dto = new PageDTO(cpage, total);
+		System.out.println("dtd 객체 " +dto);
+
+		vo.setUserId(uid);
+		vo.setHospitalId("krrlo"); // 세션에서 받아올 것
+
+		// 진료기록리스트
+		List<PatientVO> clinicList = patientService.getClinicList(cpage, vo);
+
+		Map<String, Object> map = new HashMap<>();
+		map.put("list", clinicList); // 댓글리스트 넘기고
+		map.put("dto", dto); // 페이지 정보담긴 애도 보냄
+
+		return map;
 
 	}
 
@@ -85,47 +132,8 @@ public class PatientController {
 	// 진료기록 저장
 	@PostMapping("saveClinic")
 	@ResponseBody
-	public String saveInfo(@RequestBody PatientVO vo) {
-
-		// System.out.println(vo);
-
-		List<PatientVO> plist = vo.getPerary();
-
-		// 재진이면
-		if (vo.getVisit().equals("second")) {
-			// 환자번호 select
-			int pno = patientService.getPno(vo);
-			// vo에 set
-			vo.setPatientNo(pno);
-			// 진료기록 insert 한후 insertid 받아오기
-			int cno = patientService.insertClinic(vo);
-			// 처방전이있다면
-			if (vo.getPerscriptionYn() == null) {
-				for (PatientVO obj : plist) {
-					obj.setClinicNo(cno);
-					patientService.insertPer(obj);
-
-				}
-			}
-		} else {
-			// 초진이면 신규환자등록
-			patientService.patientInsert(vo);
-			// 환자번호 select
-			int pno = patientService.getPno(vo);
-			// vo에 set
-			vo.setPatientNo(pno);
-			// 진료기록 insert 한후 insertid 받아오기
-			int cno = patientService.insertClinic(vo);
-			// 처방전이있다면
-			if (vo.getPerscriptionYn() == null) {
-				for (PatientVO obj : plist) {
-					obj.setClinicNo(cno);
-					patientService.insertPer(obj);
-				}
-			}
-		} // else
-
-		return "ddd";
+	public int saveInfo(@RequestBody PatientVO vo) {
+		return patientService.insertClinic(vo);
 	}
 
 }// end class

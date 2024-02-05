@@ -44,5 +44,7 @@ public class PatientVO {
 	private String visit;
 
 	private List<PatientVO> perary;
+	
+	private String page;
 
 }

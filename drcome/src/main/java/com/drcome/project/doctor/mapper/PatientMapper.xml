@@ -9,7 +9,9 @@
 	<!-- 기본정보 -->
 	<select id="selectPatientInfo"
 		resultType="com.drcome.project.doctor.service.PatientVO">
-		select user_name
+		select reserve_no
+		,u.user_id
+		,user_name
 		,gender
 		,birthday
 		,symptom
@@ -21,25 +23,6 @@
 	</select>
 
 
-	<!-- 진료내역 -->
-	<select id="clinicList"
-		resultType="com.drcome.project.doctor.service.PatientVO">
-		select clinic_no
-		,clinic_date
-		,clinic_symptom
-		,specificity
-		,perscription_yn
-		from clinic
-		where patient_no
-		= (select
-		patient_no
-		from
-		patient
-		where user_id=#{uid} and
-		hospital_id=#{hid})
-		order by clinic_date
-		desc
-	</select>
 
 	<!-- 처방전가져오기 -->
 	<select id="perscription"
@@ -71,6 +54,16 @@
 		from patient
 		where user_id=#{userId} and hospital_id=#{hospitalId}
 	</select>
+
+
+	<!-- 재진 -최근 진료 날짜로 업데이트 -->
+	<update id="updateDate" parameterType="PatientVO">
+		update patient set
+		current_date =SYSDATE
+		where hospital_id = #{hospitalId} and
+		user_id=
+		#{userId}
+	</update>
 
 
 	<!-- 진료기록저장 -->
@@ -142,8 +135,8 @@
 		)
 
 	</insert>
-	
-	
+
+
 	<!-- 신규환자등록 -->
 	<insert id="patientInsert" parameterType="PatientVO">
 
@@ -159,5 +152,56 @@
 		)
 
 	</insert>
-	
+
+
+	<!-- 페이지네이션 + 진료기록리스트 -->
+
+	<select id="clinicList"
+		resultType="com.drcome.project.doctor.service.PatientVO">
+  <![CDATA[
+		SELECT *
+		FROM (
+		SELECT clinic_no,
+		clinic_date,
+		clinic_symptom,
+		specificity,
+		perscription_yn,
+		ROWNUM AS rn
+		FROM (
+		SELECT clinic_no,
+		clinic_date,
+		clinic_symptom,
+		specificity,
+		perscription_yn
+		FROM clinic
+		WHERE patient_no = (SELECT patient_no
+		FROM patient
+		WHERE user_id = #{id.userId} AND hospital_id = #{id.hospitalId})
+		)
+		WHERE ROWNUM <= #{page} * 5
+		)
+		WHERE rn > (#{page} - 1) * 5
+  ]]>
+	</select>
+
+
+	<!-- 총 리스트 갯수 -->
+	<select id="cntList" resultType="int">
+
+		select count(*)
+		from clinic
+		where
+		patient_no
+		= (select
+		patient_no
+		from
+		patient
+		where user_id=#{userId} and
+		hospital_id=#{hospitalId})
+
+	</select>
+
+
+
+
 </mapper>

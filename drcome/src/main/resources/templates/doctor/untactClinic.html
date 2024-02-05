@@ -38,9 +38,11 @@
       .select {
         padding: 20px 10px;
       }
+
       .select input[type="radio"] {
         display: none;
       }
+
       .select input[type="radio"] + label {
         display: inline-block;
         cursor: pointer;
@@ -53,10 +55,12 @@
         /* font-weight: bold; */
         font-size: 13px;
       }
+
       .select input[type="radio"] + label {
         background-color: #ffffff;
         color: #858796;
       }
+
       .select input[type="radio"]:checked + label {
         background-color: #4e73df;
         color: #fff;
@@ -65,6 +69,7 @@
       input[type="checkbox"] {
         zoom: 1.4;
       }
+
       #myButton {
         float: right;
       }
@@ -123,16 +128,18 @@
             </div>
             <!--비디오-->
 
-            <!--진료기록-->
+            <!--진료기록초진 재진여부 조건 달아야함 -->
             <div
               id="clinic"
               style="width: 100%; justify-content: center; margin-top: 20%"
             >
-              <th:block th:if="${#lists.size(clist)<1}">
+              <!--초진-->
+              <th:block>
                 <div>초진입니다</div>
               </th:block>
 
-              <th:block th:if="${#lists.size(clist)>0}">
+              <!--재진-->
+              <th:block>
                 <div>
                   <div style="margin-bottom: 15px">
                     <i class="bi bi-clipboard-data fa-lg"></i>
@@ -151,7 +158,8 @@
                       </h5>
                     </span>
                   </div>
-                  <table class="table">
+
+                  <table id="clist" class="table">
                     <tr>
                       <th>no</th>
                       <th>진료일자</th>
@@ -159,28 +167,9 @@
                       <th>기타특이사항</th>
                       <th>처방전</th>
                     </tr>
-
-                    <tr th:each="c,status : ${clist}">
-                      <td th:text="${status.count}"></td>
-                      <td
-                        th:text="${#dates.format(c.clinicDate, 'yyyy-MM-dd')}"
-                      ></td>
-                      <td th:text="${c.clinicSymptom}"></td>
-                      <td th:text="${c.specificity}"></td>
-                      <td>
-                        <button
-                          id="viewper"
-                          th:onclick="viewPer([[${c.clinicNo}]])"
-                          type="button"
-                          class="btn btn-info"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModalCenter"
-                        >
-                          처방전보기
-                        </button>
-                      </td>
-                    </tr>
                   </table>
+
+                  <div class="pagination"></div>
                 </div>
               </th:block>
             </div>
@@ -258,14 +247,14 @@
                   name="hospitalId"
                   th:value="${session.userId}"
                 />
-                <!-- 초진/재진-->
+                <!-- 초진/재진여부 수정해야함 -->
                 <input
                   type="hidden"
                   name="visit"
-                  th:value="${#lists.size(clist) > 0 ? 'second' : 'first'}"
+                  value="1 > 0 ? 'second' : 'first'"
                 />
                 <!--유저아이디-->
-                <input type="hidden" name="userId" value="test3" />
+                <input type="hidden" name="userId" value="test1" />
                 <!--필수-->
                 <div style="margin-bottom: 20px">
                   <label style="color: #858796; font-size: 1rem">
@@ -315,7 +304,6 @@
                   id="check_btn"
                   style="margin-right: 5px"
                   name="perscriptionYn"
-                  value="Y"
                 /><label for="check_btn" style="color: #858796; font-size: 1rem"
                   >처방전 없음</label
                 >
@@ -463,13 +451,103 @@
             </div>
           </div>
         </div>
-        <!-- -->
+        <!--모달 -->
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
         <script src="/js/socket.js"></script>
 
         <script>
+          //진료기록목록
+          showList();
+
+          function showList(pg = 1) {
+            //페이지 값이 있으면 있는거, 없으면 초기값 1
+            let uid = "test1";
+            //리스트 조회
+            $.ajax(`/clist?page=${pg}&uid=${uid}`)
+              .done((result) => {
+                // 리스트가 들어있는 변수
+                console.log(result.list);
+                let fname = [
+                  "clinicDate",
+                  "clinicSymptom",
+                  "specificity",
+                  "perscriptionYn",
+                ];
+
+                let list = result.list;
+                let table = document.getElementById("clist");
+                let counter = 1;
+
+                // 리스트의 각 객체를 기반으로 테이블 본문 생성
+                list.forEach((obj) => {
+                  let tr = document.createElement("tr");
+
+                  // 첫 번째 열에 번호 표시
+                  let tdCounter = document.createElement("td");
+                  tdCounter.textContent = counter++;
+                  tr.appendChild(tdCounter);
+
+                  // fname 배열에 있는 필드명에 해당하는 데이터 표시
+                  fname.forEach((fieldName) => {
+                    let td = document.createElement("td");
+                    td.textContent = obj[fieldName];
+                    tr.appendChild(td);
+                  });
+
+                  table.appendChild(tr);
+                });
+                makePaging(result.dto);
+              }) //done
+              .fail((err) => console.log(err));
+          } //showList()함수
+
+          //페이지네이션
+          function makePaging(dto = {}) {
+            document.querySelector(".pagination").innerHTML = ""; //초기화
+            console.log(dto);
+            //이전페이지가 있으면
+            if (dto.prev) {
+              let aTag = document.createElement("a");
+              aTag.setAttribute("href", dto.startPage - 1); //11페이지에서 <<누르면 10페이지로 가게끔
+              aTag.innerHTML = "&laquo";
+              document.querySelector(".pagination").append(aTag);
+            }
+
+            //페이지 10개씩 보여주기
+            for (let i = dto.startPage; i <= dto.endPage; i++) {
+              let aTag = document.createElement("a");
+              aTag.setAttribute("href", i); //<a href="1">1</a>
+              aTag.innerHTML = i;
+              //active녹색 주는거
+              if (i == 1) {
+                aTag.className = "active";
+                s;
+              }
+              document.querySelector(".pagination").append(aTag);
+            } //포
+
+            //이후페이지가 있으면
+            if (dto.next) {
+              let aTag = document.createElement("a");
+              aTag.setAttribute("href", dto.endPage + 1);
+              aTag.innerHTML = "&raquo";
+              document.querySelector(".pagination").append(aTag);
+            }
+
+            //a 페이지 숫자 태그에 클릭이벤트 만들기
+            document.querySelectorAll(".pagination a").forEach((ele) => {
+              //페이지네이션클래스의 모든 a태그들을 가져옴   //배열 메소드 forEach씀
+              ele.addEventListener("click", function (e) {
+                //각각의 e에 이벤트를 단다
+                e.preventDefault(); //기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 //페이지안넘어가게
+                page = ele.getAttribute("href"); //href의 값 = page
+                showList(page); //그 페이지를 보여줌
+              }); //클릭이벤트
+            }); //포이치
+          } //makePage end
+
           //진료기록저장
           $("form[name='clinicForm']").on("submit", function (e) {
             e.preventDefault();
@@ -484,12 +562,17 @@
             $.ajax("saveClinic", {
               type: "post",
               data: JSON.stringify(cobj),
-              traditional: true, //배열및 리스트로 값 넘기기위해.. 적으래
+              traditional: true,
               dataType: "json",
               contentType: "application/json",
             })
               .done((result) => {
-                console.log("돌아와", result);
+                console.log("돌아와", typeof result);
+                if (result == 1) {
+                  alert("진료기록이 저장되었습니다.");
+                } else {
+                  console.log("????????");
+                }
               })
               .fail((err) => console.log(err));
           });

@@ -114,15 +114,26 @@
 	</select>
 	
 	<!-- 공지사항 등록 -->
-	<insert id="insertNoticeInfo" parameterType="Map">
-		INSERT INTO notice (notice_no "noticeNo",
-								title "title",
-								content "content",
-								hospital_id "hospitalId")
-		VALUES (notice_seq.NEXTVAL,
+	<!-- 첨부파일 같이 등록 -->
+	<insert id="insertNotice" parameterType="NoticeVO">
+	<selectKey keyProperty="noticeNo" order="BEFORE" resultType="int">
+	  select notice_seq.NEXTVAL 
+	  from   dual
+	</selectKey>
+		INSERT INTO notice (notice_no,
+								title,
+								content,
+								hospital_id)
+		VALUES (#{noticeNo},
 				#{title},
 				#{content},
 				#{hospitalId})
+	</insert>
+	<insert id="insertAttach" parameterType="NoticeVO">
+		INSERT INTO attachment (file_no, file_name, notice_no)
+		VALUES (attachment_seq.NEXTVAL,
+				#{fileName},
+				#{noticeNo})
 	</insert>
 	
 	<!-- MyProfile -->

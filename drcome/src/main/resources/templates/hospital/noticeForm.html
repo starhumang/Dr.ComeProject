@@ -13,19 +13,27 @@
 	margin-top: 30px;
 }
 
-.info-box {
+.inBtn {
 	display: flex;
 	justify-content: center;
 }
-
-#p-info {
-	text-align: center;
-	margin-bottom: 30px;
-	background-color: #DEE0E3;
+#file-upload-button {
+	margin-bottom: 5px;
 }
-.noticeBtn {
-	display: flex;
-	justify-content: space-between;
+.form-control {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 8px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #6e707e;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #d1d3e2;
+  border-radius: 0.35rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 </style>
 </head>
@@ -40,56 +48,39 @@
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>notice Detail</p>
+			<p>notice Upload</p>
 
-			<!-- 공지사항 단건 -->
+			<!-- 공지사항 form -->
 			<div>
-				<table class="table table-bordered">
-						<thead>
-							<tr>
-								<th class="text-center table-light">번호</th>
-								<td th:text="${nif.noticeNo}" class="text-center"></td>
-								<th class="text-center table-light">작성일</th>
-								<td th:text="${#dates.format(nif.wDate, 'yyyy-MM-dd')}"
-									class="text-center"></td>
-								<th class="text-center table-light">수정일</th>
-								<td th:if="${nif['uDate'] != null}"
-									th:text="${#dates.format(nif['uDate'], 'yyyy-MM-dd')}"></td>
-								<td th:if="${nif['uDate'] == null}">-</td>
-								<th class="text-center table-light">조회수</th>
-								<td class="text-center">5</td>
-							</tr>
-
-							<tr>
-								<th class="text-center table-light">제목</th>
-								<td th:text="${nif.title}" colspan="5"></td>
-								<th class="text-center table-light">첨부파일</th>
-								<td class="text-center">이미지.jpeg</td>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td th:text="${nif.content}" colspan="8" class="text-left"
-									valign="top" height="200"><pre
-										style="white-space: pre-wrap; border: none;">
-								</pre></td>
-							</tr>
-							<tr>
-								<td colspan="8" class="text-center">
-									<div class="noticeBtn">
-										<!-- 목록버튼 -->
-										<div style="text-align: center;">
-											<a th:href="@{/hospital/noticeList}" class="btn btn-dark">목록으로</a>
-										</div>
-										<div class="leftBtn">
-											<button class="btn btn-xs btn-info">수정</button>
-											<button class="btn btn-xs btn-warning">삭제</button>
-										</div>
-									</div>
-								</td>
-							</tr>
-						</tbody>
-				</table>
+				<div class="p-5">
+					<div class="text-center">
+						<h1 class="h4 text-gray-900 mb-4">공지사항 등록</h1>
+					</div>
+					<form class="user" th:action="@{/hospital/noticeForm}" method="post" enctype="multipart/form-data">
+						<div class="mb-3">
+							<label for="exampleFormControlInput1" class="form-label">제목</label>
+							<input type="text" name="title" class="form-control"
+								id="exampleFormControlInput1" placeholder="제목을 입력하세요.">
+						</div>
+						<div class="mb-3">
+							<label for="exampleFormControlTextarea1" class="form-label">내용</label>
+							<textarea class="form-control" name="content" id="exampleFormControlTextarea1"
+								rows="10"></textarea>
+						</div>
+						<div class="mb-3">
+							<label for="formFileMultiple" class="form-label">첨부파일
+								</label> <input class="form-control" type="file" name="uploadFiles"
+								id="formFileMultiple" multiple>
+						</div>
+						<hr>
+						<div class="inBtn">
+							<button type="submit" class="btn btn-info"> 등록 </button>
+							<a href="index.html" class="btn btn-success" style="margin: 0 5px;">초기화</a>
+							<a href="index.html" class="btn btn-warning"> 취소</a>
+						</div>
+					</form>
+					<hr>
+				</div>
 			</div>
 
 		</div>

@@ -32,6 +32,10 @@ public interface HospitalService {
 	//공지사항 단건상세
 	public List<Map<String, Object>> getNoticeDetail(String hospitalId, Integer noticeNo);
 	
+	//공지사항 등록
+	public int insertNoticeInfo(NoticeVO vo);
+	public int insertAttach(NoticeVO vo);
+	
 	/* 병원프로필 */
 	//병원 단건조회(id로)
 	public Hospital findByhospitalId(String hospitalId);
@@ -45,4 +49,6 @@ public interface HospitalService {
 	
 	//환자 상세 진료내역 조회
 	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo);
+
+
 }

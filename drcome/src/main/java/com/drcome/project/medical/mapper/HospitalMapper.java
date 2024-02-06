@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.drcome.project.medical.service.DoctorVO;
+import com.drcome.project.medical.service.NoticeVO;
 
 public interface HospitalMapper {
 	
@@ -31,8 +32,9 @@ public interface HospitalMapper {
 	//공지사항 단건상세
 	public List<Map<String, Object>> selectNoticeInfo(String hospitalId, Integer noticeNo);
 	
-	//공지사항 등록
-	public int insertNotice();
+	//공지사항 등록 + 첨부파일 등록
+	public int insertNotice(NoticeVO vo);
+	public int insertAttach(NoticeVO vo);
 	
 	/* 병원프로필 */
 	//병원-의사 조회

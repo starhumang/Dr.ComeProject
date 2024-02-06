@@ -28,8 +28,8 @@ input[type="radio"]:checked+label {
 }
 
 #short {
- 	max-width: 400px;
-/* 	display: inline-block; */
+	max-width: 400px;
+	/* 	display: inline-block; */
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
@@ -74,9 +74,9 @@ input[type="radio"]:checked+label {
 					</div>
 				</div>
 			</div>
-			
+
 			<div class="noticeUp" style="text-align: right; margin: 15px 0;">
-				<a href="#" class="btn btn-primary">글등록하기</a>
+				<a th:href="@{/hospital/noticeForm}" class="btn btn-primary">글등록하기</a>
 			</div>
 			<div>
 				<table class="table table-hover">
@@ -105,25 +105,15 @@ input[type="radio"]:checked+label {
 			</div>
 		</div>
 		<script th:inline="javascript">
-			document
-					.addEventListener(
-							"DOMContentLoaded",
-							function() {
-								var rows = document
-										.querySelectorAll("tbody tr");
-								rows
-										.forEach(function(row) {
-											row
-													.addEventListener(
-															"click",
-															function() {
-																var noticeNo = this
-																		.querySelector("td:first-child").innerText;
-																window.location.href = '/hospital/noticeList/noticeDetail?noticeNo='
-																		+ noticeNo;
-															});
-										});
+			document.addEventListener("DOMContentLoaded",function() {
+					var rows = document.querySelectorAll("tbody tr");
+					rows.forEach(function(row) {
+						row.addEventListener("click",function() {
+							var noticeNo = this.querySelector("td:first-child").innerText;
+							window.location.href = '/hospital/noticeList/noticeDetail?noticeNo='+ noticeNo;
 							});
+					});
+			});
 		</script>
 	</div>
 </body>

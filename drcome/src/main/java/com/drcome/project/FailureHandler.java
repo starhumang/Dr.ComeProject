@@ -23,7 +23,7 @@ public class FailureHandler implements AuthenticationFailureHandler {
 		response.setContentType("text/html; charset=UTF-8");
 		PrintWriter out = response.getWriter();
 
-		String message = "오류";
+		String message = "";
 
 		// 아이디 x
 		if (exception instanceof UsernameNotFoundException) {

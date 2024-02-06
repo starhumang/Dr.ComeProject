@@ -41,13 +41,12 @@ public class PatientController {
 	// 비대면진료페이지
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
-		//System.out.println("너뭐야 " + vo); // 아무것도없음
-		
+
+		// System.out.println("너뭐야????????????????????? " + vo); //예약번호, 유저아이디 들어옴
 		// 기본정보
-		vo.setReserveNo(4);
 		PatientVO findVO = patientService.getPatientInfo(vo);
 		model.addAttribute("pInfo", findVO);
-	
+		System.out.println(findVO);
 		return "doctor/untactClinic";
 
 	}

@@ -1,4 +1,4 @@
-package com.drcome.project.doctor.service;
+package com.drcome.project.common.service;
 
 import java.io.Serializable;
 

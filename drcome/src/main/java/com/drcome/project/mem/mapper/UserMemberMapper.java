@@ -1,8 +1,8 @@
-package com.drcome.project.common.mapper;
+package com.drcome.project.mem.mapper;
 
-import com.drcome.project.common.service.MemVO;
-import com.drcome.project.common.service.UserMemberVO;
 import com.drcome.project.medical.service.HospitalVO;
+import com.drcome.project.mem.service.MemVO;
+import com.drcome.project.mem.service.UserMemberVO;
 
 public interface UserMemberMapper {
 

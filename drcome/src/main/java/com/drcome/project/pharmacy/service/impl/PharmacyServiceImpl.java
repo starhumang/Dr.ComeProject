@@ -29,7 +29,7 @@ public class PharmacyServiceImpl implements PharmacyService{
 	
 	/* 약국별 처방 현황(현재 날짜) */
 	@Override
-	public List<Map<String, Object>> selectPrescriptionList(String date, String pharmacyId) {
+	public List<Map<String, Object>> selectPrescriptionList(int page, String date, String pharmacyId) {
 		
 		List<Map<String, Object>> listmap = null;
 		Date currentDate = new Date();
@@ -39,10 +39,10 @@ public class PharmacyServiceImpl implements PharmacyService{
         System.out.println(perdate);
 		
 		if(date.equals(perdate)) {
-			listmap = mapper.selectPrescriptionList(date, pharmacyId);
+			listmap = mapper.selectPrescriptionList(page, date, pharmacyId);
 		} 
 		else {
-			listmap = mapper.selectLastPerList(date, pharmacyId);
+			listmap = mapper.selectLastPerList(page, date, pharmacyId);
 		}
 		return listmap;
 	}
@@ -74,6 +74,26 @@ public class PharmacyServiceImpl implements PharmacyService{
 		map.put("target", pharmacyselectVO);
 		
 		return map;
+	}
+
+	@Override
+	public int percount(Map<String, Object> parameters, String date) {
+		
+		Date currentDate = new Date();
+		System.out.println(currentDate);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String perdate = dateFormat.format(currentDate);
+        System.out.println(perdate);
+		
+        int result = 0;
+		if(date.equals(perdate)) {
+			result = mapper.percount(parameters);
+		} 
+		else {
+			result = mapper.perLastcount(parameters);
+		}
+		
+		return result;
 	}
 
 	/*

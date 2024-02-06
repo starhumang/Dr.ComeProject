@@ -15,10 +15,10 @@ public interface PharmacyMapper {
 	public PharmacyVO selectPharmacyInfo(PharmacyVO pharmacyVO);
 	
 	/* 약국별 처방 현황 */
-	public List<Map<String, Object>> selectPrescriptionList(@Param("date") String date, @Param("pharmacyId") String pharmacyId);
+	public List<Map<String, Object>> selectPrescriptionList(@Param("page") int page, @Param("date") String date, @Param("pharmacyId") String pharmacyId);
 	
 	/* 약국별 지난 처방 내역 */
-	public List<Map<String, Object>> selectLastPerList(@Param("date") String date, @Param("pharmacyId") String pharmacyId);
+	public List<Map<String, Object>> selectLastPerList(@Param("page") int page, @Param("date") String date, @Param("pharmacyId") String pharmacyId);
 	
 	/* 약 주성분 검색 */
 	public List<MedicineVO> searchMedicine(String keyword);
@@ -29,13 +29,11 @@ public interface PharmacyMapper {
 	/*처방전 미리보기*/
 	public int updaterejection(PharmacySelectVO vo);
 	
-	//------------------- 페이징
+	//-----Total Count-----
 	
 	/* 약국별 처방 현황 페이징 */
-	public int percount();
-	public List<Map<String, Object>> perListpage(@Param("offset") int offset, @Param("limit") int limit);
+	public int percount(Map<String, Object> parameters);
 	
 	/* 약국별 처방 내역 페이징 */
-	public int perLastcount();
-	public List<Map<String, Object>> perLastListpage(@Param("offset") int offset, @Param("limit") int limit);
+	public int perLastcount(Map<String, Object> parameters);
 }

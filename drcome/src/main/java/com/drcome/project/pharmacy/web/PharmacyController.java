@@ -1,5 +1,6 @@
 package com.drcome.project.pharmacy.web;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.drcome.project.common.service.PageDTO;
 import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 import com.drcome.project.pharmacy.service.PharmacyService;
@@ -51,11 +53,34 @@ public class PharmacyController {
 
 	@GetMapping("/pharmacy/status/{date}")
 	@ResponseBody
-	public List<Map<String, Object>> pharmacyList(@PathVariable String date, String pharmacyId, Model model) {
+	public List<Map<String, Object>> pharmacyList(String page, @PathVariable String date, String pharmacyId, Model model) {
 		pharmacyId = "pharmacy1";
-		List<Map<String, Object>> plist = pservice.selectPrescriptionList(date, pharmacyId);
+		
+		Map<String, Object> map = new HashMap();
+		
+		// 리스트 전체갯수 가져오기
+		int total = pservice.percount(map, date);
+		System.out.println("토탈" + total);
+
+		// 선택된 페이지 인트로 변환
+		int cpage = Integer.parseInt(page);
+		System.out.println("선택된페이지" + cpage);
+
+		// 페이지네이션(currentpage, total)
+		PageDTO dto = new PageDTO(cpage, total);
+		System.out.println("dtd 객체 " + dto);
+		
+		List<Map<String, Object>> plist = pservice.selectPrescriptionList(cpage, date, pharmacyId);
+		
+		System.out.println(plist.size());
+		
 		model.addAttribute("plist", plist);
-		return pservice.selectPrescriptionList(date, pharmacyId);
+		model.addAttribute("dto", dto);
+		
+		map.put("list", plist); 
+		map.put("dto", dto); 
+		
+		return pservice.selectPrescriptionList(cpage, date, pharmacyId);
 	}
 
 	@PostMapping("/pharmacy/rejection")

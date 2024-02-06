@@ -9,7 +9,7 @@ public class MemVO {
 	
 	private String userId;
 	private String userPw;
-	private String userName;	
+	private String userName;
 	private String grade;	
 	
 }

@@ -44,6 +44,14 @@ public class HospitalServiceImpl implements HospitalService {
 		return listQnAX;
 	}
 
+	/* 예약내역 - clinic */
+	//Main
+	@Override
+	public List<Map<String, Object>> getRerveList(String hospitalId) {
+		List<Map<String, Object>> listReserveAll = hospitalMapper.selectReserveMain(hospitalId);
+		return listReserveAll;
+	}
+	
 	/* QnA */
 	// QnA 전체
 	@Override
@@ -69,8 +77,8 @@ public class HospitalServiceImpl implements HospitalService {
 
 	// 공지사항 단건상세
 	@Override
-	public List<Map<String, Object>> getNoticeDetail(String hospitalId, Integer noticeNo) {
-		List<Map<String, Object>> noticeInfo = hospitalMapper.selectNoticeInfo(hospitalId, noticeNo);
+	public List<NoticeVO> getNoticeDetail(String hospitalId, Integer noticeNo) {
+		List<NoticeVO> noticeInfo = hospitalMapper.selectNoList(hospitalId, noticeNo);
 		return noticeInfo;
 	}
 
@@ -112,5 +120,6 @@ public class HospitalServiceImpl implements HospitalService {
 		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
 		return listPaDe;
 	}
+
 
 }

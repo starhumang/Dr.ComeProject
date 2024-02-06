@@ -18,6 +18,10 @@ public interface HospitalMapper {
 	//QnA답변X
 	public List<Map<String, Object>> selectQnAX(String hospitalId);
 	
+	/* 예약내역 - clinic */
+	//Main
+	public List<Map<String, Object>> selectReserveMain(String hospitalId);
+	
 	/* QnA */
 	//QnA 전체
 	public List<Map<String, Object>> selectQnaList(String hospitalId);
@@ -30,7 +34,7 @@ public interface HospitalMapper {
 	public List<Map<String, Object>> selectNoticeList(String hospitalId);
 	
 	//공지사항 단건상세
-	public List<Map<String, Object>> selectNoticeInfo(String hospitalId, Integer noticeNo);
+	public List<NoticeVO> selectNoList(String hospitalId, Integer noticeNo);
 	
 	//공지사항 등록 + 첨부파일 등록
 	public int insertNotice(NoticeVO vo);

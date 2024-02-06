@@ -18,6 +18,10 @@ public interface HospitalService {
 	//QnA답변X
 	public List<Map<String, Object>> getQnAX(String hospitalId);
 	
+	/* 예약내역 - clinic */
+	//Main
+	public List<Map<String, Object>> getRerveList(String hospitalId);
+	
 	/* QnA */
 	//QnA 전체
 	public List<Map<String, Object>> getQnaList(String hospitalId);
@@ -30,7 +34,7 @@ public interface HospitalService {
 	public List<Map<String, Object>> getNoticeList(String hospitalId);
 	
 	//공지사항 단건상세
-	public List<Map<String, Object>> getNoticeDetail(String hospitalId, Integer noticeNo);
+	public List<NoticeVO> getNoticeDetail(String hospitalId, Integer noticeNo);
 	
 	//공지사항 등록
 	public int insertNoticeInfo(NoticeVO vo);

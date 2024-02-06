@@ -1,5 +1,8 @@
 package com.drcome.project.medical.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.web.multipart.MultipartFile;
 
 import lombok.Data;
@@ -21,5 +24,9 @@ public class NoticeVO {
 	private String fileName;
 	private Integer noticeNo;
 	private String hospitalId;
+	private Date wdate;
+	private Date udate;
+	
+	List<NoticeAttachVO> files;
 
 }

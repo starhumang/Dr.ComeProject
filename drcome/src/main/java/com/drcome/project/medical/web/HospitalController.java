@@ -56,10 +56,13 @@ public class HospitalController {
 		return "hospital/home";
 	}
 
-	/* 진료및예약 */
-	// 메인
+	/* 예약내역 - clinic */
+	//Main
 	@GetMapping("/hospital/clinicMain")
-	public String clinicReserve() {
+	public String clinicReserve(Principal principal, String hospitalId, Model model) {
+		hospitalId = principal.getName();
+		List<Map<String, Object>> reserveList = hospitalService.getRerveList(hospitalId);
+		model.addAttribute("reserveList", reserveList);
 		return "hospital/clinicMain";
 	}
 
@@ -73,6 +76,19 @@ public class HospitalController {
 		model.addAttribute("docList", docList);
 		return "hospital/myProfile";
 	}
+	
+	// 공지사항 단건상세
+	@GetMapping("/hospital/noticeList/noticeDetail")
+	public String noticeDetail(Principal principal, String hospitalId, Integer noticeNo, Model model) {
+		hospitalId = principal.getName();
+		List<NoticeVO> noticeList = hospitalService.getNoticeDetail(hospitalId, noticeNo);
+//		List<Map<String, Object>> noticeInfo = hospitalService.getNoticeDetail(hospitalId, noticeNo);
+		model.addAttribute("noticeNo", noticeNo);
+		model.addAttribute("noticeList", noticeList);
+		return "hospital/noticeDetail";
+	}
+	
+	
 
 	/* 환자리스트 */
 	// 병원 환자 전체 조회
@@ -128,15 +144,7 @@ public class HospitalController {
 		return "hospital/noticeList";
 	}
 
-	// 공지사항 단건상세
-	@GetMapping("/hospital/noticeList/noticeDetail")
-	public String noticeDetail(Principal principal, String hospitalId, Integer noticeNo, Model model) {
-		hospitalId = principal.getName();
-		List<Map<String, Object>> noticeInfo = hospitalService.getNoticeDetail(hospitalId, noticeNo);
-		model.addAttribute("noticeNo", noticeNo);
-		model.addAttribute("noticeInfo", noticeInfo);
-		return "hospital/noticeDetail";
-	}
+
 
 	// 공지사항 등록 - FORM
 	@GetMapping("/hospital/noticeForm")

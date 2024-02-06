@@ -18,16 +18,18 @@ public class WebSockChatHandler extends TextWebSocketHandler {
     List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
     String payload = "";
     
+    //서버접속시 호출 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+    	
         sessions.add(session);
-        
-        // HttpSession에서 userId 가져와서 WebSocketSession 속성에 설정
+    
         String userId = (String) session.getAttributes().get("userId");
         System.out.println("User ID: " + userId);
         System.out.println("긴 ID: " + session.getId());
     }
     
+    //메세지 보냈을때 호출 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
         

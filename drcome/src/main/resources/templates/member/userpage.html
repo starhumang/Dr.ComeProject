@@ -44,7 +44,7 @@
 					console.log(userId);
 					try {
 						// WebSocket 연결
-						socket = new WebSocket('ws://localhost:8080/echo');
+						socket = new WebSocket('ws://localhost:80/echo');
 
 						// 연결이 열리면 호출되는 이벤트 핸들러
 						socket.onopen = function (event) {

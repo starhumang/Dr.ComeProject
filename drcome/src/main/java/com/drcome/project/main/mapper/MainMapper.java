@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
-import com.drcome.project.main.service.ClinicVO;
+import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
@@ -38,5 +38,11 @@ public interface MainMapper {
 	
 	//예약전 초진기록 확인(예약버튼활성화)
 	public int checkClinicHistory(@Param("userId")String userId, @Param("hospitalId")String hospitalId);
-
+	
+	//예약전 해당병원에 금일 예약내역이 있는지 보고 아직 예약시간이 안 지났으면 지날때까지 해당병원 예약금지 시키기
+	public int checkReservationHistory(@Param("userId")String userId, @Param("hospitalId")String hospitalId);
+	
+	//방문예약 (insert)
+	public int insertContactReservation(ReservationVO reservationVo);
+	
 }

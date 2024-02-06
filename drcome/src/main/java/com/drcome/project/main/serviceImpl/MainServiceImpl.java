@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.drcome.project.main.mapper.MainMapper;
 import com.drcome.project.main.service.ClinicVO;
 import com.drcome.project.main.service.MainService;
+import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
@@ -62,6 +63,18 @@ public class MainServiceImpl implements MainService {
 		int clinicHistory = mainMapper.checkClinicHistory(userId, hospitalId);
 		//System.out.println("clinicHistory="+ clinicHistory);
 		return clinicHistory;
+	}
+
+	@Override
+	public int checkReservationHistory(String userId, String hospitalId) {
+		int reservationHistory = mainMapper.checkReservationHistory(userId, hospitalId);
+		return reservationHistory;
+	}
+
+	@Override
+	public int insertContactReservation(ReservationVO reservationVo) {
+		int result = mainMapper.insertContactReservation(reservationVo);
+		return result;
 	}
 
 

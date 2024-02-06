@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.main.service.ClinicVO;
 import com.drcome.project.main.service.MainService;
+import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
@@ -59,15 +60,20 @@ public class MainController {
 		model.addAttribute("docList", docList);
 		//System.out.println("docList="+docList);
 		
-		//세션값
+		//받아온 세션값
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute("userId");
 		//System.out.println("userId="+userId);
-		int clinicHistory = mainService.checkClinicHistory(userId, hospitalId);//예약전 초진기록 확인
+		
+		//예약전 초진기록 확인
+		int clinicHistory = mainService.checkClinicHistory(userId, hospitalId);
 		model.addAttribute("clinicHistory", clinicHistory);
 		//System.out.println("clinicHistory="+clinicHistory);
-		//System.out.println("hospitalId="+hospitalId);
-		//System.out.println("userId="+userId);
+		
+		//동일병원 당일 예약(진료받기전까지/ 예약한거 진료받고나면 예약ok)중복방지
+		int reservationHistory = mainService.checkReservationHistory(userId, hospitalId);
+		model.addAttribute("reservationHistory", reservationHistory);
+		System.out.println("reservationHistory="+reservationHistory);
 		return "user/hosDetail";
 	}
 		
@@ -80,8 +86,6 @@ public class MainController {
 		model.addAttribute("phaInfo", phaInfo);
 		return "user/phaDetail";
 	}
-	
-
 	
 	//병원 및 약국검색(리스트 2개 같이 보여줄거임)
 	@GetMapping("/search")
@@ -151,14 +155,36 @@ public class MainController {
 			result += mainService.insertPhaSelect(pharmacyIdArray[i], clinicNo);
 		}
 		System.out.println("result=" + result);
-		if(result == 0) { //insert되면 true
+		if(result == 0) { //insert 안되면 false
 			return false;
-		}else { //insert 안되면 false
+		}else { //insert되면 true
 			return true;
 		}
 	}
 	
+	//방문예약페이지(select)
+	@GetMapping("/contactReserve")
+	public String contactReservationPage(HttpServletRequest request, String hospitalId, Model model) {
+		//병원정보
+		model.addAttribute("hospitalId", hospitalId);
+		//병원의 의사정보
+		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
+		model.addAttribute("docList", docList);
+		//System.out.println("docList="+docList);
+		return "user/contactReserve";
+	}
 	
+	//방문예약페이지(insert)
+	@PostMapping("/contactReserve")
+	@ResponseBody
+	public boolean insertReservation(@RequestBody ReservationVO reservationVo) {
+		int result = mainService.insertContactReservation(reservationVo);
+		if(result == 0) { //insert 안되면 false
+			return false;
+		}else { //insert되면 true
+			return true;
+		}
+	}
 	
 	
 }

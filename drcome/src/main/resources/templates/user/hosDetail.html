@@ -7,6 +7,8 @@
 <meta charset="UTF-8" />
 <title>병원 상세페이지</title>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 <style>
 .head_info {
 	display: flex;
@@ -40,9 +42,11 @@
 	<div layout:fragment="content">
 		<h1 style="text-align:center; margin-bottom:50px; margin-top:50px; color:gray;">- Detail Info -</h1>
 		<div class="container-fluid" style="margin-bottom:150px;">
-		
 			<th:block th:each="hos : ${hosInfo}">
+			
+			
 				<!-- 병원정보 -->
+				<p style="display:none;" class="hosId" th:text="${hos.hospitalId}"></p>
 				<div class="container" style="margin-bottom:50px;">
 					<div class="card shadow mb-4">
 						<div class="card-header py-3"
@@ -55,7 +59,7 @@
 						<div class="card-body"
 							style="display: flex; justify-content: center; align-items: center;">
 							<div class="left">
-								<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  --> 
+								
 								<img th:if="${hos.hospitalImg}" th:src="@{/images/} + ${hos.hospitalImg}" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
 								<img th:unless="${hos.hospitalImg}" th:src="@{/images/} + hospital.png" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
 							</div>
@@ -85,13 +89,13 @@
 									</tr>
 									<tr>
 										<th style="text-align:left;padding-left:30px;" >- 운영시간</th>
-										<td th:text="|${hos.opentime} ~ ${hos.closetime}|"></td>
+										<td th:text="|${hos.opentime} ~ ${hos.closetime}|" class="closeTime"></td>
 									</tr>
 								</table>
 								<div class="butt">
-									<button type="button" class="bb btn btn-primary ">방문예약하기</button>
-									<button type="button" class="bb btn btn-primary " th:onclick="check( [[${clinicHistory}]] )">비대면예약하기</button>
-									<button type="button" class="bb btn btn-primary ">실시간 비대면 진료 <br/>접수하기</button>
+									<button type="button" class="bb btn btn-primary " th:onclick="contactCheck([[${reservationHistory}]])">방문예약하기</button>
+									<button type="button" class="bb btn btn-primary " th:onclick="check( [[${clinicHistory}]],'later',[[${reservationHistory}]] )">비대면예약하기</button>
+									<button type="button" class="bb btn btn-primary now" th:onclick="check( [[${clinicHistory}]],'now',[[${reservationHistory}]] )">실시간 비대면 진료 <br/>접수하기</button>
 									<button type="button" class="bb btn btn-primary ">문의하기</button>
 								</div>
 							</div>
@@ -99,6 +103,7 @@
 	
 					</div>
 					<script th:inline="javascript">
+						//휴무일이 여러개일때 변환함수
 						function dayday(){
 							let holiday = document.querySelector('.holiday');
 							//console.log("holiday", holiday);
@@ -126,10 +131,38 @@
 						}
 						dayday();
 						
-						function check(clinicHistory){
+						//예약버튼 예외사항함수
+						function check(clinicHistory, word, reservationHistory){
+							//1. 예약이 이미 있음
+							if(reservationHistory){
+								Swal.fire({
+						            title: "오늘 해당병원에 예약하신 내역이 있습니다",
+						            html: '동일한 병원은 진료받은 후 재예약이 가능합니다 <br/> <a href="/mypage">마이페이지</a>에서 예약내역을 확인해주세요',
+						            icon: "warning",
+						            showCancelButton: false,
+						            confirmButtonColor: "#3085d6",
+						            confirmButtonText: "yes"
+						        }).then((result) => {
+						            if (result.isConfirmed) {
+						            	return;
+						            }
+						        });
+								return;
+							}
+							
+							//2. 비대면 예약됨
 							if(clinicHistory){
-								console.log("clinicHistory=",clinicHistory);
-								//window.location.href="/untactReserve";
+								//console.log("clinicHistory=",clinicHistory);
+								//console.log("word=",word);
+								if(word == 'later'){ //비대면 예약
+									alert("비대면 예약");
+									//window.location.href="/untactReserve";
+								}else if(word == 'now'){//비대면 실시간 접수
+									alert("비대면 실시간 접수");
+									//window.location.href="/untactAccept";
+								}
+								
+							//3. 해당병원에 초진기록이 없음(방문예약으로 안내)
 							}else{
 								Swal.fire({
 						            title: "해당병원에 초진 기록이 없습니다",
@@ -139,13 +172,56 @@
 						            confirmButtonColor: "#3085d6",
 						            confirmButtonText: "yes"
 						        }).then((result) => {
-						            if (result.isConfirmed) {
-						                //window.location.href = "/contactReserve";
+						            if (result.isConfirmed) {//방문예약 페이지
+						            	//방문예약페이지로 슝
+										let hospitalId = document.querySelector('.hosId').innerText;
+										window.location.href = "/contactReserve?hospitalId="+hospitalId;
+						                
 						            }
 						        });
 							}
 						}
 						
+						//방문예약은 초진기록 없이도 가능해서 함수 따로 분류해둠
+						//이미 방문예약을 잡았을 시.
+						function contactCheck(reservationHistory){
+							if(reservationHistory){
+								Swal.fire({
+						            title: "오늘 해당병원에 예약하신 내역이 있습니다",
+						            html: '동일한 병원은 진료받은 후 재예약이 가능합니다 <br/> <a href="/mypage">마이페이지</a>에서 예약내역을 확인해주세요',
+						            icon: "warning",
+						            showCancelButton: false,
+						            confirmButtonColor: "#3085d6",
+						            confirmButtonText: "yes"
+						        }).then((result) => {
+						            if (result.isConfirmed) {
+						            	return;
+						            }
+						        });
+								return;
+							}else{
+								//방문예약페이지로 슝
+								let hospitalId = document.querySelector('.hosId').innerText;
+								window.location.href = "/contactReserve?hospitalId="+hospitalId;
+							}
+						}
+						
+						//영업시간 끝나면 실시간 접수 버튼 못누르게하는 함수(오픈시간은 생략)
+						function closetime(){
+							let findCloseBtn = document.querySelector('.now')
+							let findCloseTime = document.querySelector('.closeTime').innerText;
+							let closeTime = findCloseTime.substr(8,2);
+							let today = new Date();
+				            let curHour = today.getHours();
+							console.log("closeTime=",closeTime);
+							console.log("curHour=",curHour);
+							if(closeTime <= curHour){
+								findCloseBtn.disabled = true;
+							}else{
+								findCloseBtn.disabled = false;
+							}
+						}
+						closetime();
 						
 					</script>
 				</div>

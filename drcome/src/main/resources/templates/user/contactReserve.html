@@ -2,9 +2,46 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>방문예약</title>
 </head>
 <body>
-
+<!-- 의사정보 -->
+	<div class="container" style="margin-bottom:50px;">
+		<div class="card shadow mb-4">
+			<div class="card-header py-3"
+				style="display: flex; justify-content: space-between; align-items: center; ">
+				<h5 class="m-0 font-weight-bold text-secondary">
+					<i class="fas fa-fw fa-user-nurse"></i>의사정보
+				</h5>
+			</div>
+			<div class="card-body" style="text-align:center; ">
+				<table class="table">
+					<thead>
+						<tr>
+							<th>의사이름</th>
+							<th>진료과목</th>
+							<th>휴진일</th>
+							<th>진료일 / 진료시간</th>
+						</tr>
+					</thead>
+					<tbody style="vertical-align:middle;">
+						<th:block th:each="doc : ${docList}">
+							<tr th:if="${#lists.size(docList) > 0}">
+								<td th:text="${doc.doctorName}"></td>
+								<td th:text="${doc.subject}"></td>
+								<td th:text="${doc.holiday}"></td>
+								<td>
+									<div th:each="drTime : ${doc.times}">
+										[[${drTime.day}]]&nbsp&nbsp
+										[[${drTime.minTime}]] : 00 ~ [[${drTime.maxTime}]] : 00
+									</div>
+								</td>
+							</tr>
+						</th:block>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
 </body>
 </html>

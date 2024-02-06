@@ -36,7 +36,8 @@
 		
 		<!-- 병원상세 -->
 	    <select id="selectHos" resultType="HospitalVO">
-	    	SELECT HOSPITAL_NAME,
+	    	SELECT HOSPITAL_ID,
+	    		  HOSPITAL_NAME,
 	              ADDRESS,
 	              PHONE,
 	              HOSPITAL_IMG, 
@@ -116,4 +117,33 @@
         WHERE PATIENT_NO = (SELECT PATIENT_NO FROM PATIENT WHERE USER_ID= #{userId})
         AND HOSPITAL_ID = #{hospitalId}
     	</select>
+    	
+    	<!-- 당일 해당 병원에 예약기록이 있는지 확인하기(같은병원 같은시간 예약중복 방지) -->
+    	<select id="checkReservationHistory" resultType="int">
+    	SELECT COUNT(RESERVE_NO)
+        FROM RESERVATION
+        WHERE USER_ID =#{userId}
+        AND HOSPITAL_ID=#{hospitalId}
+        AND RESERVE_YEAR || RESERVE_MONTH || RESERVE_DAY = TO_CHAR(SYSDATE, 'yyyyMMdd')
+        AND RESERVE_TIME > TO_CHAR(SYSDATE, 'HH24')
+        AND RESERVE_STATUS ='e1'
+    	</select>
+    	
+    	<!-- 방문(대면)예약 insert -->
+    	<insert id="insertContactReservation" parameterType="ReservationVO">
+    	INSERT INTO RESERVATION VALUES(RESERVE_NO_SEQUENCE.NEXTVAL,
+                                       #{reserveYear},
+                                       #{reserveTime},
+                                       SYSDATE,
+                                       #{doctorNo},
+                                       #{reserveMonth},
+                                       #{reserveDay},
+                                       #{symptom},
+                                       'c1',
+                                       'e1',
+                                       #{userId},
+                                       #{hospitalId}
+                                       )
+    	</insert>
+    	
     </mapper>

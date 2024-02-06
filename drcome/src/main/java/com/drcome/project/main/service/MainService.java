@@ -38,5 +38,10 @@ public interface MainService {
 	
 	//예약전 초진기록 확인(예약버튼활성화)
 	public int checkClinicHistory(String userId, String hospitalId);
-
+	
+	//예약전 해당병원에 금일 예약내역이 있는지 보고 아직 예약시간이 안 지났으면 지날때까지 해당병원 예약금지 시키기
+	public int checkReservationHistory(String userId, String hospitalId);
+	
+	//방문예약 (insert)
+	public int insertContactReservation(ReservationVO reservationVo);
 }

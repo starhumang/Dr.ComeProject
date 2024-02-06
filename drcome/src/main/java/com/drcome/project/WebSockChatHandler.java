@@ -33,7 +33,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
         
 //        System.out.println("전체 " + session);
     	payload = message.getPayload();
-                
+    	System.out.println(payload);
 //        String userId = payload;
 //        System.out.println("실제 아이디: " + session.getId());
 //        System.out.println("받은 아이디: " + userId);

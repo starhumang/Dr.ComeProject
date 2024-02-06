@@ -22,6 +22,6 @@ public class WebSockChatHandler extends TextWebSocketHandler {
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         session.sendMessage(new TextMessage("welcome!!! green house! :)"));
-        //TODO: session 에서 token으로 사용자 가져오기.
+       
     }
 }

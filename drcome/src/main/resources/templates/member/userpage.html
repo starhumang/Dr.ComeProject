@@ -9,6 +9,7 @@
 
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
 		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+
 		<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 
 		<script type="text/javascript">
@@ -24,7 +25,7 @@
 		<div layout:fragment="content">
 			<p>마아아이이이페에에에이이이지이이이</p>
 			<!-- <p th:text="${profile}"></p> -->
-			<p th:text="${session.userId}"></p>
+			<p id="userId" th:text="${session.userId}"></p>
 			<!-- <div><img th:src="@{/img/{img}(img= ${profile.identification})}" width="300px" height="300px" /></div> -->
 			<p>전체코드</p>
 			<!-- <p th:text="${application.detailCode}"></p> -->
@@ -38,8 +39,9 @@
 
 			<script>
 				let socket;
-
+				let userId = document.querySelector('#userId').innerHTML;
 				function connectWebSocket() {
+					console.log(userId);
 					try {
 						// WebSocket 연결
 						socket = new WebSocket('ws://localhost:8080/echo');
@@ -48,7 +50,7 @@
 						socket.onopen = function (event) {
 							console.log('WebSocket 연결이 열렸습니다.');
 							// /topic/messages 토픽을 구독합니다.
-							socket.send('Hello, Server!'); // Change this line
+							socket.send('연결 시작'); // Change this line
 						};
 
 						// 메시지를 받았을 때 호출되는 이벤트 핸들러
@@ -75,7 +77,7 @@
 					try {
 						if (socket && socket.readyState === WebSocket.OPEN) {
 							// 서버로 메시지 전송
-							const message = 'Hello, Server!';
+							const message = '문자 전송';
 							socket.send(message);
 							console.log('보낸 메시지: ' + message);
 						} else {

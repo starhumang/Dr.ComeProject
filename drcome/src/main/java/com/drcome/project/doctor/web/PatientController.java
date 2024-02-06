@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.admin.domain.Hospital;
-import com.drcome.project.doctor.service.PageDTO;
+import com.drcome.project.common.service.PageDTO;
 import com.drcome.project.doctor.service.PatientService;
 import com.drcome.project.doctor.service.PatientVO;
 import com.drcome.project.medical.service.HospitalService;

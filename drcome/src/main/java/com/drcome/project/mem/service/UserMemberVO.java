@@ -1,4 +1,4 @@
-package com.drcome.project.common.service;
+package com.drcome.project.mem.service;
 
 import java.util.Date;
 

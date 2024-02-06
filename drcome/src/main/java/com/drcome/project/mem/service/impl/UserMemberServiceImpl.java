@@ -1,4 +1,4 @@
-package com.drcome.project.common.service.impl;
+package com.drcome.project.mem.service.impl;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +12,12 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.drcome.project.common.mapper.UserMemberMapper;
-import com.drcome.project.common.service.MemVO;
-import com.drcome.project.common.service.UserDetailVO;
-import com.drcome.project.common.service.UserMemberService;
-import com.drcome.project.common.service.UserMemberVO;
 import com.drcome.project.medical.service.HospitalVO;
+import com.drcome.project.mem.mapper.UserMemberMapper;
+import com.drcome.project.mem.service.MemVO;
+import com.drcome.project.mem.service.UserDetailVO;
+import com.drcome.project.mem.service.UserMemberService;
+import com.drcome.project.mem.service.UserMemberVO;
 
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;

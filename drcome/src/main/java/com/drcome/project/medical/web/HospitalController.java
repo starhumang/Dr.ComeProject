@@ -65,6 +65,16 @@ public class HospitalController {
 		model.addAttribute("reserveList", reserveList);
 		return "hospital/clinicMain";
 	}
+	
+	//Dr
+	@GetMapping("/hospital/clinicDr")
+	public String clinicReserveDr(Principal principal, String hospitalId, Integer doctorNo, Model model) {
+		hospitalId = principal.getName();
+		doctorNo = 123;
+		List<Map<String, Object>> reserveDrList = hospitalService.getReserveDrList(hospitalId, doctorNo);
+		model.addAttribute("reserveDrList", reserveDrList);
+		return "hospital/clinicDr";
+	}
 
 	/* 병원프로필 */
 	// 병원 단건조회(id로) + 병원-의사 조회

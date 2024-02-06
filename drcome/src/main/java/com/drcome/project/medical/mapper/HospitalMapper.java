@@ -22,6 +22,9 @@ public interface HospitalMapper {
 	//Main
 	public List<Map<String, Object>> selectReserveMain(String hospitalId);
 	
+	//Dr
+	public List<Map<String, Object>> selectReserveDr(String hospitalId, Integer doctorNo);
+	
 	/* QnA */
 	//QnA 전체
 	public List<Map<String, Object>> selectQnaList(String hospitalId);

@@ -22,6 +22,9 @@ public interface HospitalService {
 	//Main
 	public List<Map<String, Object>> getRerveList(String hospitalId);
 	
+	//Dr
+	public List<Map<String, Object>> getReserveDrList(String hospitalId, Integer doctorNo);
+	
 	/* QnA */
 	//QnA 전체
 	public List<Map<String, Object>> getQnaList(String hospitalId);

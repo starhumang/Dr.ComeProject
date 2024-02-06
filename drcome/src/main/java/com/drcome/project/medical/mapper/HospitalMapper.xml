@@ -92,6 +92,79 @@
 		  ORDER BY r.reserve_time, c.clinic_no
 	</select>
 	
+	<!-- 진료실 -->
+	<select id="selectReserveDr" resultType="Map">
+         SELECT r.RESERVE_NO "reserveNo"
+			 , u.birthday "userBirthday"
+			 , u.gender "gender"
+			 , u.phone "userPhone" 
+			 , u.user_name "userName"
+			 , r.reserve_time "reserveTime"
+			 , d.doctor_name "doctorName"
+			 , r.reserve_kindstatus "reserveKindstatus"
+		  FROM reservation r
+		  JOIN doctor d ON r.doctor_no = d.doctor_no AND r.hospital_id = d.hospital_id
+		  JOIN usertable u ON u.user_id = r.user_id
+		  WHERE r.hospital_id = #{hospitalId}
+		  AND r.reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
+		  AND d.doctor_No = #{doctorNo}
+		  GROUP BY r.RESERVE_NO
+			 , u.birthday
+			 , u.gender
+			 , u.phone
+			 , u.user_name
+			 , r.reserve_time
+			 , d.doctor_name
+			 , r.reserve_kindstatus
+		  ORDER BY r.reserve_time, r.reserve_no
+	</select>
+	
+	<!-- 진료 pagination -->
+	<select id="noticeList" resultType="noticeVO">
+		<![CDATA[
+			SELECT *
+			FROM (
+				SELECT clinic_no,
+					   TO_CHAR(clinic_date, 'YYYY-MM-DD') AS clinic_date,
+				       clinic_symptom,
+				       specificity,
+				       perscription_yn,
+				       ROW_NUMBER() OVER (ORDER BY clinic_date DESC) AS rn
+				FROM (
+					SELECT clinic_no,
+					       clinic_date,
+			               clinic_symptom,
+						   specificity,
+						   perscription_yn
+			        FROM clinic
+			        WHERE patient_no = (SELECT patient_no
+			                            FROM patient
+			                            WHERE user_id = #{id.userId} AND hospital_id = #{id.hospitalId}
+			                            )
+				    ORDER BY clinic_date DESC
+						)  
+				WHERE ROWNUM <= #{page} * 5
+			  )
+			WHERE rn > (#{page} - 1) * 5
+		]]>
+	</select>
+
+	<!-- 총 리스트 갯수 -->
+	<select id="NoticeCntList" resultType="int">
+
+		select count(*)
+		from clinic
+		where
+		patient_no
+		= (select
+		patient_no
+		from
+		patient
+		where user_id=#{userId} and
+		hospital_id=#{hospitalId})
+
+	</select>
+	
 	<!-- QnA -->
 	<!-- QnA 전체 -->
 	<select id ="selectQnaList" resultType="Map">
@@ -196,53 +269,6 @@
 				#{fileName},
 				#{noticeNo})
 	</insert>
-	
-	<!-- 공지사항 pagination -->
-		<!-- 페이지네이션 + 진료기록리스트 -->
-	<select id="clinicList" resultType="com.drcome.project.doctor.service.PatientVO">
-		<![CDATA[
-			SELECT *
-			FROM (
-				SELECT clinic_no,
-					   TO_CHAR(clinic_date, 'YYYY-MM-DD') AS clinic_date,
-				       clinic_symptom,
-				       specificity,
-				       perscription_yn,
-				       ROW_NUMBER() OVER (ORDER BY clinic_date DESC) AS rn
-				FROM (
-					SELECT clinic_no,
-					       clinic_date,
-			               clinic_symptom,
-						   specificity,
-						   perscription_yn
-			        FROM clinic
-			        WHERE patient_no = (SELECT patient_no
-			                            FROM patient
-			                            WHERE user_id = #{id.userId} AND hospital_id = #{id.hospitalId}
-			                            )
-				    ORDER BY clinic_date DESC
-						)  
-				WHERE ROWNUM <= #{page} * 5
-			  )
-			WHERE rn > (#{page} - 1) * 5
-		]]>
-	</select>
-
-	<!-- 총 리스트 갯수 -->
-	<select id="cntList" resultType="int">
-
-		select count(*)
-		from clinic
-		where
-		patient_no
-		= (select
-		patient_no
-		from
-		patient
-		where user_id=#{userId} and
-		hospital_id=#{hospitalId})
-
-	</select>
 	
 	<!-- MyProfile -->
 	<!-- 병원-의사-시간 조회 -->

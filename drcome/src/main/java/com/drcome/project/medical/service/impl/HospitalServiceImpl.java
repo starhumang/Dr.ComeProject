@@ -51,6 +51,13 @@ public class HospitalServiceImpl implements HospitalService {
 		List<Map<String, Object>> listReserveAll = hospitalMapper.selectReserveMain(hospitalId);
 		return listReserveAll;
 	}
+
+	//Dr
+	@Override
+	public List<Map<String, Object>> getReserveDrList(String hospitalId, Integer doctorNo) {
+		List<Map<String, Object>> listReserveDr = hospitalMapper.selectReserveDr(hospitalId, doctorNo);
+		return listReserveDr;
+	}
 	
 	/* QnA */
 	// QnA 전체
@@ -120,6 +127,7 @@ public class HospitalServiceImpl implements HospitalService {
 		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
 		return listPaDe;
 	}
+
 
 
 }

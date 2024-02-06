@@ -13,6 +13,31 @@
     />
 
     <style>
+      #clist tr {
+        height: 50px;
+        /* 원하는 고정 높이를 지정합니다. */
+      }
+
+      .pagination a {
+        display: inline-block;
+        padding: 5px 10px;
+        margin: 0 2px;
+        border: 1px solid #ccc;
+        background-color: #fff;
+        color: #333;
+        text-decoration: none;
+      }
+
+      .pagination a.active {
+        background-color: #4e73df;
+        color: #fff;
+        /* border: 1px solid #4e73df; */
+      }
+
+      .pagination a:hover {
+        background-color: #bfc5d8;
+      }
+
       .title {
         display: flex;
         justify-content: space-between;
@@ -38,9 +63,11 @@
       .select {
         padding: 20px 10px;
       }
+
       .select input[type="radio"] {
         display: none;
       }
+
       .select input[type="radio"] + label {
         display: inline-block;
         cursor: pointer;
@@ -53,10 +80,12 @@
         /* font-weight: bold; */
         font-size: 13px;
       }
+
       .select input[type="radio"] + label {
         background-color: #ffffff;
         color: #858796;
       }
+
       .select input[type="radio"]:checked + label {
         background-color: #4e73df;
         color: #fff;
@@ -65,6 +94,7 @@
       input[type="checkbox"] {
         zoom: 1.4;
       }
+
       #myButton {
         float: right;
       }
@@ -96,7 +126,7 @@
           <!--title-right-->
           <div class="title-right">
             <p style="margin-right: 15px">
-              <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+              <i class="fas fa-fw fa-calendar"></i> 현재날짜:
               <span
                 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
               ></span>
@@ -123,66 +153,57 @@
             </div>
             <!--비디오-->
 
-            <!--진료기록-->
+            <!--진료기록초진 재진여부 조건 달아야함 -->
             <div
               id="clinic"
               style="width: 100%; justify-content: center; margin-top: 20%"
             >
-              <th:block th:if="${#lists.size(clist)<1}">
-                <div>초진입니다</div>
-              </th:block>
+              <!--초진
+              <div id="firstV">초진입니다</div>-->
 
-              <th:block th:if="${#lists.size(clist)>0}">
-                <div>
-                  <div style="margin-bottom: 15px">
-                    <i class="bi bi-clipboard-data fa-lg"></i>
-                    <span>
-                      <h5
-                        style="
-                          display: inline-block;
-                          vertical-align: middle;
-                          margin-left: 10px;
-                          margin-bottom: 0;
-                          width: 200px;
-                          color: #858796;
-                        "
-                      >
-                        진료 기록
-                      </h5>
-                    </span>
-                  </div>
-                  <table class="table">
-                    <tr>
-                      <th>no</th>
-                      <th>진료일자</th>
-                      <th>증상</th>
-                      <th>기타특이사항</th>
-                      <th>처방전</th>
-                    </tr>
-
-                    <tr th:each="c,status : ${clist}">
-                      <td th:text="${status.count}"></td>
-                      <td
-                        th:text="${#dates.format(c.clinicDate, 'yyyy-MM-dd')}"
-                      ></td>
-                      <td th:text="${c.clinicSymptom}"></td>
-                      <td th:text="${c.specificity}"></td>
-                      <td>
-                        <button
-                          id="viewper"
-                          th:onclick="viewPer([[${c.clinicNo}]])"
-                          type="button"
-                          class="btn btn-info"
-                          data-bs-toggle="modal"
-                          data-bs-target="#exampleModalCenter"
-                        >
-                          처방전보기
-                        </button>
-                      </td>
-                    </tr>
+              <!--재진-->
+              <div id="secondV">
+                <!--제목-->
+                <div style="margin-bottom: 15px">
+                  <i class="bi bi-clipboard-data fa-lg"></i>
+                  <span>
+                    <h5
+                      style="
+                        display: inline-block;
+                        vertical-align: middle;
+                        margin-left: 10px;
+                        margin-bottom: 0;
+                        width: 200px;
+                        color: #858796;
+                      "
+                    >
+                      진료 기록
+                    </h5>
+                  </span>
+                </div>
+                <!--제목-->
+                <!--table pagination-->
+                <div style="min-height: 350px">
+                  <table id="clist" class="table" style="text-align: center">
+                    <thead>
+                      <tr>
+                        <th>NO</th>
+                        <th>진료일자</th>
+                        <th>증상</th>
+                        <th>기타특이사항</th>
+                        <th>처방전</th>
+                      </tr>
+                    </thead>
+                    <tbody></tbody>
                   </table>
                 </div>
-              </th:block>
+                <div
+                  class="pagination"
+                  style="display: flex; justify-content: center"
+                ></div>
+                <!--table pagination-->
+              </div>
+              <!--재진-->
             </div>
             <!--진료기록-->
           </div>
@@ -209,13 +230,15 @@
                   </h5>
                 </span>
               </div>
-              <table class="table">
-                <tr>
-                  <th>이름</th>
-                  <th>성별</th>
-                  <th>생년월일</th>
-                  <th>증상</th>
-                </tr>
+              <table class="table" style="text-align: center">
+                <thead>
+                  <tr>
+                    <th>이름</th>
+                    <th>성별</th>
+                    <th>생년월일</th>
+                    <th>증상</th>
+                  </tr>
+                </thead>
 
                 <tr>
                   <td th:text="${pInfo.userName}"></td>
@@ -248,7 +271,20 @@
                   </h5>
                 </span>
               </div>
-              <form action="saveClinic" method="post">
+
+              <form name="clinicForm">
+                <!--예약번호 받아와야함-->
+                <input type="hidden" name="reserveNo" value="4" />
+                <!--병원아이디-->
+                <input
+                  type="hidden"
+                  name="hospitalId"
+                  th:value="${session.userId}"
+                />
+                <!-- 초진/재진여부 수정 했을껄  -->
+                <input type="hidden" name="visit" />
+                <!--유저아이디 값 받아와야함 수정수정 -->
+                <input type="hidden" name="userId" value="user1" />
                 <!--필수-->
                 <div style="margin-bottom: 20px">
                   <label style="color: #858796; font-size: 1rem">
@@ -284,9 +320,9 @@
                       margin-bottom: 3%;
                     "
                   >
-                    <input type="radio" id="select" name="pay" />
+                    <input type="radio" id="select" name="payYn" value="Y" />
                     <label for="select" style="margin-right: 10%">급여</label>
-                    <input type="radio" id="select2" name="pay" />
+                    <input type="radio" id="select2" name="payYn" value="N" />
                     <label for="select2">비급여</label>
                   </div>
                   <!--급여여부-->
@@ -297,6 +333,7 @@
                   type="checkbox"
                   id="check_btn"
                   style="margin-right: 5px"
+                  name="perscriptionYn"
                 /><label for="check_btn" style="color: #858796; font-size: 1rem"
                   >처방전 없음</label
                 >
@@ -371,6 +408,7 @@
                   <table id="perscription" class="table" style="margin-top: 5%">
                     <thead>
                       <tr>
+                        <th>약품번호</th>
                         <th>약품명</th>
                         <th>투약량</th>
                         <th>횟수</th>
@@ -386,7 +424,7 @@
                 <br />
 
                 <div style="text-align: center">
-                  <button class="btn btn-info" type="submit">
+                  <button class="btn btn-info" id="saveBtn">
                     진료기록저장
                   </button>
                 </div>
@@ -428,7 +466,11 @@
                 </h5>
               </div>
               <div class="modal-body">
-                <table id="modalTable"></table>
+                <table
+                  id="modalTable"
+                  class="table"
+                  style="text-align: center"
+                ></table>
               </div>
 
               <div class="modal-footer">
@@ -443,50 +485,263 @@
             </div>
           </div>
         </div>
-        <!-- -->
+        <!--모달 -->
+
+        <i class="bi bi-clipboard-plus"></i>
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
         <script src="/js/socket.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+        <link
+          href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
+          rel="stylesheet"
+        />
 
         <script>
-          //체크하면 약 폼 숨기기
-          const cb = document.querySelector("#check_btn");
+          //진료기록목록
+          let page = 1;
+          showList();
+          function showList(pg = 1) {
+            //초기화
+            let table = document.getElementById("clist");
+            let tbody = table.querySelector("tbody");
+            let trList = tbody.querySelectorAll("tr");
+            // 각 tr 요소를 순회하면서 삭제합니다.
+            trList.forEach((tr) => {
+              tr.remove();
+            });
+            //값 담아와야한다..
+            let uid = "user1";
+            //리스트 조회
+            $.ajax(`/clist?page=${pg}&uid=${uid}`)
+              .done((result) => {
+                // 리스트가 들어있는 변수
+                console.log(result.list);
+                console.log(result.list.length);
+
+                let visitInput = document.querySelector('input[name="visit"]');
+
+                // let fDiv = document.getElementById("firstV");
+                // let sDiv = document.getElementById("secondV");
+
+                if (result.list.length > 0) {
+                  visitInput.value = "second";
+                  // fDiv.style.display = "none";
+                } else {
+                  visitInput.value = "first";
+                  // sDiv.style.display = "none";
+                }
+
+                let fname = [
+                  "rn",
+                  "clinicDate",
+                  "clinicSymptom",
+                  "specificity",
+                  "perscriptionYn",
+                ];
+
+                let list = result.list;
+                let ctbody = table.children[1];
+                // 리스트의 각 객체를 기반으로 테이블 본문 생성
+                list.forEach((obj) => {
+                  let tr = document.createElement("tr");
+                  fname.forEach((fieldName) => {
+                    let td = document.createElement("td");
+                    if (
+                      fieldName == "perscriptionYn" &&
+                      obj[fieldName] == "Y"
+                    ) {
+                      let icon = document.createElement("i");
+                      icon.classList.add("bi", "bi-clipboard-plus");
+                      icon.style.cursor = "pointer"; // 커서를 포인터로 변경하여 클릭 가능한 것처럼 보이도록 설정
+                      icon.setAttribute("role", "button");
+                      icon.setAttribute("aria-label", "Copy prescription");
+                      icon.setAttribute("data-bs-toggle", "modal"); // 모달 토글 속성 추가
+                      icon.setAttribute(
+                        "data-bs-target",
+                        "#exampleModalCenter"
+                      );
+                      icon.onclick = function () {
+                        viewPer(obj.clinicNo);
+                      };
+                      td.appendChild(icon);
+                    } else {
+                      td.textContent = obj[fieldName];
+                    }
+                    tr.appendChild(td);
+                  });
+                  ctbody.appendChild(tr);
+                });
+                makePaging(result.dto);
+              }) //done
+              .fail((err) => console.log(err));
+          } //showList()함수
+
+          //페이지네이션
+          function makePaging(dto = {}) {
+            document.querySelector(".pagination").innerHTML = ""; //초기화
+            console.log(dto);
+            //이전페이지가 있으면
+            if (dto.prev) {
+              let aTag = document.createElement("a");
+              aTag.setAttribute("href", dto.startPage - 1); //11페이지에서 <<누르면 10페이지로 가게끔
+              aTag.innerHTML = "&laquo";
+              document.querySelector(".pagination").append(aTag);
+            }
+
+            for (let i = dto.startPage; i <= dto.endPage; i++) {
+              let aTag = document.createElement("a");
+              aTag.setAttribute("href", i); //<a href="1">1</a>
+              aTag.innerHTML = i;
+              //active녹색 주는거
+              if (i == page) {
+                aTag.className = "active";
+              }
+              document.querySelector(".pagination").append(aTag);
+            } //포
+
+            //이후페이지가 있으면
+            if (dto.next) {
+              let aTag = document.createElement("a");
+              aTag.setAttribute("href", dto.endPage + 1);
+              aTag.innerHTML = "&raquo";
+              document.querySelector(".pagination").append(aTag);
+            }
+
+            //a 페이지 숫자 태그에 클릭이벤트 만들기
+            document.querySelectorAll(".pagination a").forEach((ele) => {
+              //페이지네이션클래스의 모든 a태그들을 가져옴   //배열 메소드 forEach씀
+              ele.addEventListener("click", function (e) {
+                //각각의 e에 이벤트를 단다
+                e.preventDefault(); //기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 //페이지안넘어가게
+                page = ele.getAttribute("href"); //href의 값 = page
+                showList(page); //그 페이지를 보여줌
+              }); //클릭이벤트
+            }); //포이치
+          } //makePage end
+
+          //진료기록저장
+          $("form[name='clinicForm']").on("submit", function (e) {
+            e.preventDefault();
+            //console.log("ddd");
+            let cobj = objClinic(); //진료기록
+            let parr = objPer(); //약 배열
+
+            //진료기록객체에 약 배열 추가
+            cobj["perary"] = parr;
+            //console.log(cobj);
+
+            $.ajax("saveClinic", {
+              type: "post",
+              data: JSON.stringify(cobj),
+              traditional: true,
+              dataType: "json",
+              contentType: "application/json",
+            })
+              .done((result) => {
+                console.log("돌아와", typeof result);
+                if (result == 1) {
+                  Swal.fire({
+                    title: "진료기록이 저장되었습니다.",
+                    icon: "success",
+                  });
+                } else {
+                  Swal.fire({
+                    title: "진료기록저장에 실패하였습니다.",
+                    icon: "error",
+                  });
+                }
+              })
+              .fail((err) => console.log(err));
+          });
+
+          //진료기록 객체 만들기
+          function objClinic() {
+            let formAry = $('form[name="clinicForm"]').serializeArray();
+            //console.log("Dddddddd", formAry);
+
+            let formObj = {};
+            $(formAry).each((idx, tag) => {
+              formObj[tag.name] = tag.value;
+            });
+            console.log(formObj);
+            let rno = formObj.reserveNo;
+            console.log(typeof rno);
+            rno = parseInt(rno);
+            console.log(typeof rno);
+            formObj.reserveNo = rno;
+            console.log(formObj);
+            return formObj;
+          }
+
+          //처방전 객체 만들기
+          function objPer() {
+            let fname = ["dosage", "doseCnt", "doseDay"];
+            let pary = [];
+            // 테이블에서 모든 tr을 가져옴
+            let rows = document.querySelectorAll("#perscription tr");
+
+            // 첫 번째 tr은 제외하고 반복
+            for (let i = 1; i < rows.length; i++) {
+              let rowData = {};
+              //tr의 모든 td가져옴
+              let cells = rows[i].querySelectorAll("td");
+              // console.log(cells);
+
+              // 0번째 td의 텍스트 값을 medicineNo로 설정
+              rowData["medicineNo"] = parseInt(cells[0].textContent.trim());
+
+              // 234 td의 input 요소의 value 값을 fname 배열에 따라 설정
+              for (let j = 2; j < cells.length; j++) {
+                let input = cells[j].querySelector("input");
+                rowData[fname[j - 2]] = parseInt(input.value.trim());
+              }
+              // 현재 행의 데이터를 pary 배열에 추가
+              pary.push(rowData);
+            } //for
+
+            return pary;
+          }
+
+          //처방전 유무 체크
+          let cb = document.querySelector("#check_btn");
           cb.addEventListener("change", (event) => {
-            const value = event.target.checked;
-            console.log(value);
-            if (value == true) {
+            const checked = event.target.checked;
+            if (checked) {
               let pform = document.getElementById("pform");
               pform.style.display = "none";
+              event.target.value = "N";
             } else {
               pform.style.display = "block";
             }
           });
 
-          //처방전상세보기
+          //처방전상세보기 진료 no받아와야함
           function viewPer(no) {
             console.log(no);
             const modalTable = $("#modalTable");
             $.ajax(`/perscription/${no}`) //fetch
               .done((result) => {
+                console.log(result);
                 modalTable.empty();
                 modalTable.append(
                   `<tr>
-                        <th>약품명</th>
-                        <th>투약량</th>
-                        <th>횟수</th>
-                        <th>일수</th>
-                    </tr>`
+                              <th>약품명</th>
+                              <th>투약량</th>
+                              <th>횟수</th>
+                              <th>일수</th>
+                          </tr>`
                 );
 
                 for (let i of result) {
                   modalTable.append(
                     `<tr>
-                        <td>${i.medicineName}</td>
-                        <td>${i.dosage}</td>
-                        <td>${i.doseCnt}</td>
-                        <td>${i.doseDay}</td>
-                    </tr>`
+                              <td>${i.medicineName}</td>
+                              <td>${i.dosage}</td>
+                              <td>${i.doseCnt}</td>
+                              <td>${i.doseDay}</td>
+                          </tr>`
                   );
                 }
               })
@@ -497,15 +752,25 @@
           function searchMedicine() {
             let mname = document.getElementById("search").value;
             //console.log(mname);
+
+            if (mname == "") {
+              Swal.fire({
+                title: "약 이름을 입력해주세요.",
+                icon: "warning",
+              });
+              document.getElementById("search").focus();
+              return;
+            }
+
             const xhtp = new XMLHttpRequest();
             xhtp.open("get", `/medicine?medicineName=${mname}`);
             xhtp.send();
 
             xhtp.onload = function () {
-              console.log(xhtp.responseText);
+              // console.log(xhtp.responseText);
               //검색된 약 리스트
               let array = JSON.parse(xhtp.responseText);
-              console.log(array);
+              //console.log(array);
 
               let table = (document.getElementById("msearch").innerHTML = "");
 
@@ -520,6 +785,7 @@
                 let btn = document.createElement("button");
                 btn.textContent = "추가";
                 btn.classList.add("btn", "btn-primary", "py-2");
+                btn.dataset.medicineNo = i.medicineNo;
                 btn.setAttribute("id", "myButton");
                 tr.appendChild(btn); //추가버튼
                 table.appendChild(tr);
@@ -528,13 +794,12 @@
                 btn.addEventListener("click", function () {
                   document.getElementById("search").value = "";
 
+                  //console.log("약번호", this.dataset.medicineNo);
                   event.preventDefault();
-                  console.log(
-                    event.target.parentNode.firstElementChild.innerHTML
-                  );
-
-                  let selectm =
-                    event.target.parentNode.firstElementChild.innerHTML;
+                  // console.log(
+                  //   event.target.parentNode.firstElementChild.innerHTML
+                  // );
+                  //console.log(event.target.parentNode);
 
                   //선택된애 지우고
                   event.target.parentNode.remove();
@@ -543,11 +808,20 @@
                   let ptable = document.getElementById("perscription");
                   ptable.style.display = "block";
 
+                  //약번호
+                  let selectno = this.dataset.medicineNo;
                   let tr = document.createElement("tr");
                   let mtd = document.createElement("td");
-                  mtd.innerHTML = selectm;
-                  mtd.setAttribute("style", "width: 200px;");
+                  mtd.innerHTML = selectno;
                   tr.appendChild(mtd);
+
+                  //약이름
+                  let selectm =
+                    event.target.parentNode.firstElementChild.innerHTML;
+                  mtd = document.createElement("td");
+                  mtd.innerHTML = selectm;
+                  tr.appendChild(mtd);
+
                   //input태그생성
                   for (let i = 0; i < 3; i++) {
                     let td = document.createElement("td");
@@ -584,5 +858,6 @@
       </div>
       <!--container-fluid-->
     </div>
+    <!--<div layout:fragment="content">-->
   </body>
 </html>

@@ -9,31 +9,31 @@
 	<!-- 오늘 진료 및 예약 리스트 -->
 	<select id="selectTodayReserve" resultType="Map">
 		<![CDATA[
-			SELECT c.clinic_no "clinicNo"
+	         SELECT r.RESERVE_NO "reserveNo"
 				 , u.birthday "userBirthday"
 				 , u.gender "gender"
 				 , u.phone "userPhone" 
 				 , u.user_name "userName"
+	 			 , u.user_id "userId"
 				 , r.reserve_time "reserveTime"
 				 , d.doctor_name "doctorName"
 				 , r.reserve_kindstatus "reserveKindstatus"
-			  FROM clinic c 
-			  JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
-			  JOIN doctor d ON r.doctor_no = d.doctor_no
-			  JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
-			  JOIN usertable u ON u.user_id = a.user_id
-			  WHERE a.hospital_id = #{hospitalId} 
-			  AND reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
+			  FROM reservation r
+			  JOIN doctor d ON r.doctor_no = d.doctor_no AND r.hospital_id = d.hospital_id
+			  JOIN usertable u ON u.user_id = r.user_id
+			  WHERE r.hospital_id = #{hospitalId}
+			  AND r.reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
 			  AND ROWNUM <= 5
-			  GROUP BY c.clinic_no
-					 , u.birthday
-					 , u.gender
-					 , u.phone
-					 , u.user_name
-					 , r.reserve_time
-					 , d.doctor_name
-					 , r.reserve_kindstatus
-			  ORDER BY r.reserve_time, c.clinic_no
+			  GROUP BY r.RESERVE_NO
+				 , u.birthday
+				 , u.gender
+				 , u.phone
+				 , u.user_name
+			 	 , u.user_id
+				 , r.reserve_time
+				 , d.doctor_name
+				 , r.reserve_kindstatus
+			  ORDER BY r.reserve_time, r.reserve_no
 		]]>
 	</select>
 	<!-- QnA 리스트(답변/노답변) -->
@@ -66,30 +66,30 @@
 	<!-- 예약내역 -->
 	<!-- 메인 -->
 	<select id="selectReserveMain" resultType="Map">
-		SELECT c.clinic_no "clinicNo"
+         SELECT r.RESERVE_NO "reserveNo"
 			 , u.birthday "userBirthday"
 			 , u.gender "gender"
 			 , u.phone "userPhone" 
 			 , u.user_name "userName"
+			 , u.user_id "userId"
 			 , r.reserve_time "reserveTime"
 			 , d.doctor_name "doctorName"
 			 , r.reserve_kindstatus "reserveKindstatus"
-		  FROM clinic c 
-		  JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
-		  JOIN doctor d ON r.doctor_no = d.doctor_no
-		  JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
-		  JOIN usertable u ON u.user_id = a.user_id
-		  WHERE a.hospital_id = #{hospitalId} 
-		  AND reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
-		  GROUP BY c.clinic_no
-				 , u.birthday
-				 , u.gender
-				 , u.phone
-				 , u.user_name
-				 , r.reserve_time
-				 , d.doctor_name
-				 , r.reserve_kindstatus
-		  ORDER BY r.reserve_time, c.clinic_no
+		  FROM reservation r
+		  JOIN doctor d ON r.doctor_no = d.doctor_no AND r.hospital_id = d.hospital_id
+		  JOIN usertable u ON u.user_id = r.user_id
+		  WHERE r.hospital_id = #{hospitalId}
+		  AND r.reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
+		  GROUP BY r.RESERVE_NO
+			 , u.birthday
+			 , u.gender
+			 , u.phone
+			 , u.user_name
+			 , u.user_id
+			 , r.reserve_time
+			 , d.doctor_name
+			 , r.reserve_kindstatus
+		  ORDER BY r.reserve_time, r.reserve_no
 	</select>
 	
 	<!-- 진료실 -->
@@ -99,6 +99,7 @@
 			 , u.gender "gender"
 			 , u.phone "userPhone" 
 			 , u.user_name "userName"
+			 , u.user_id "userId"
 			 , r.reserve_time "reserveTime"
 			 , d.doctor_name "doctorName"
 			 , r.reserve_kindstatus "reserveKindstatus"
@@ -113,6 +114,7 @@
 			 , u.gender
 			 , u.phone
 			 , u.user_name
+			 , u.user_id
 			 , r.reserve_time
 			 , d.doctor_name
 			 , r.reserve_kindstatus

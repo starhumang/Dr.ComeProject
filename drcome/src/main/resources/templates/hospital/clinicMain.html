@@ -103,7 +103,7 @@ input[type="radio"]:checked+label {
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<th>진료코드</th>
+							<th>예약코드</th>
 							<th>환자이름</th>
 							<th>생년월일</th>
 							<th>성별</th>
@@ -112,12 +112,12 @@ input[type="radio"]:checked+label {
 							<th>담당의</th>
 							<th>구분</th>
 							<th>진료상태</th>
-							<th>약처방</th>
+							<th>처방전</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="rl : ${reserveList}">
-							<td th:text="${rl.clinicNo}"></td>
+							<td th:text="${rl.reserveNo}"></td>
 							<td th:text="${rl.userName}"></td>
 							<td th:text="${#dates.format(rl.userBirthday, 'yyyy-MM-dd')}"></td>
 							<td th:text="${rl.gender}"></td>
@@ -136,8 +136,15 @@ input[type="radio"]:checked+label {
 			</div>
 		</div>
 		<script th:inline="javascript">
+			//오늘 날짜를 디폴트로 화면에 일단 출력
 			document.getElementById('date').value = new Date()
 					.toISOString().substring(0, 10);
+			
+			//날짜 선택하면 날짜 값 받아오기
+	        $('#date').change(function (){
+	            var date = $('#date').val();
+	            console.log(date);
+	        });
 		</script>
 	</div>
 </body>

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.ibatis.annotations.Param;
 
+import com.drcome.project.main.service.ClinicVO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
@@ -17,6 +18,7 @@ public interface MainMapper {
 	
 	//병원상세정보
 	public HospitalVO selectHos(String hospitalId);
+	
 	
 	//약국상세정보
 	public PharmacyVO selectPha(String pharmacyId);
@@ -33,4 +35,8 @@ public interface MainMapper {
 	
 	//처방받을 약국 선택(insert)
 	public int insertPhaSelect(@Param("pharmacyId")String pharmacyId, @Param("clinicNo")int clinicNo);
+	
+	//예약전 초진기록 확인(예약버튼활성화)
+	public int checkClinicHistory(@Param("userId")String userId, @Param("hospitalId")String hospitalId);
+
 }

@@ -108,5 +108,12 @@
 		INSERT INTO PHARMACY_SELECT (PHARMACY_SELECTNO, PHARMACY_ID, CLINIC_NO)
             VALUES (PHARMACY_SELECTNO_SEQUENCE.NEXTVAL,#{pharmacyId},#{clinicNo})
 		</insert>
-		
+	
+		<!-- 예약 전, 초진기록이 있는지 없는지 확인 -->
+		<select id="checkClinicHistory" resultType="int">
+    	SELECT COUNT(CLINIC_NO) 
+        FROM CLINIC
+        WHERE PATIENT_NO = (SELECT PATIENT_NO FROM PATIENT WHERE USER_ID= #{userId})
+        AND HOSPITAL_ID = #{hospitalId}
+    	</select>
     </mapper>

@@ -3,6 +3,9 @@ package com.drcome.project.main.web;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.drcome.project.main.service.ClinicVO;
 import com.drcome.project.main.service.MainService;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
@@ -27,6 +31,9 @@ public class MainController {
 	@Autowired
 	HospitalService hospitalService;
 	
+	
+	
+	
 	//병원&약국 목록
 	@GetMapping(value ={"/", "/home"})//주소
 	public String getHosList(Model model) {
@@ -39,15 +46,28 @@ public class MainController {
 	}
 	
 	
-	//병원 상세페이지
+	//병원 상세페이지 //java로 세션값 받아오는 법도 있음(HttpServletRequest request)
 	@GetMapping("/hospitalDetail")
-	public String hosInformation(String hospitalId, Model model) { //String hospitalId 이게 get으로 링크에서 받은 값
+	public String hosInformation(HttpServletRequest request, String hospitalId, Model model) { //String hospitalId 이게 get으로 링크에서 받은 값
+		//병원정보
 		HospitalVO hosInfo = mainService.getHos(hospitalId);
 		//System.out.println("hosInfo"+ hosInfo);
 		model.addAttribute("hosInfo", hosInfo);
-		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); //의사정보가져오는거
-		//System.out.println(docList);
+		
+		//병원의 의사정보
+		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
 		model.addAttribute("docList", docList);
+		//System.out.println("docList="+docList);
+		
+		//세션값
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		//System.out.println("userId="+userId);
+		int clinicHistory = mainService.checkClinicHistory(userId, hospitalId);//예약전 초진기록 확인
+		model.addAttribute("clinicHistory", clinicHistory);
+		//System.out.println("clinicHistory="+clinicHistory);
+		//System.out.println("hospitalId="+hospitalId);
+		//System.out.println("userId="+userId);
 		return "user/hosDetail";
 	}
 		
@@ -61,6 +81,7 @@ public class MainController {
 		return "user/phaDetail";
 	}
 	
+
 	
 	//병원 및 약국검색(리스트 2개 같이 보여줄거임)
 	@GetMapping("/search")
@@ -74,6 +95,25 @@ public class MainController {
 		model.addAttribute("word", word);
 		return "user/search";
 	}
+	
+	/*@Override 중간때 검색 참고용
+	public void execute(HttpServletRequest req, HttpServletResponse resp) {
+		String path = "restaurant/restaurantSearch.tiles";
+		
+		String word = req.getParameter("word");
+		
+		RestaurantService svc = new RestaurantServiceImpl();
+		List<RestaurantVO> list = svc.selectSearchList(word);
+		
+		req.setAttribute("searchWord", word);
+		req.setAttribute("mlist", list);
+		
+		try {
+			req.getRequestDispatcher(path).forward(req, resp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}*/
 	
 	//진료과목별 병원검색
 	@GetMapping("/searchSubject")
@@ -119,22 +159,6 @@ public class MainController {
 	}
 	
 	
-	/*@Override 중간때 검색 참고용
-	public void execute(HttpServletRequest req, HttpServletResponse resp) {
-		String path = "restaurant/restaurantSearch.tiles";
-		
-		String word = req.getParameter("word");
-		
-		RestaurantService svc = new RestaurantServiceImpl();
-		List<RestaurantVO> list = svc.selectSearchList(word);
-		
-		req.setAttribute("searchWord", word);
-		req.setAttribute("mlist", list);
-		
-		try {
-			req.getRequestDispatcher(path).forward(req, resp);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
+	
+	
 }

@@ -34,5 +34,9 @@ public interface MainService {
 	public List<HospitalVO> searchSubjectHos(String mainSubject);
 	
 	//처방받을 약국 선택(insert)
-	public int insertPhaSelect(@Param("pharmacyId")String pharmacyId, @Param("clinicNo")int clinicNo);
+	public int insertPhaSelect(String pharmacyId, int clinicNo);
+	
+	//예약전 초진기록 확인(예약버튼활성화)
+	public int checkClinicHistory(String userId, String hospitalId);
+
 }

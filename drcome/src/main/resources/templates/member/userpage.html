@@ -9,6 +9,7 @@
 
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
 		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+		<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 
 		<script type="text/javascript">
 			function errAlert(content) {
@@ -17,47 +18,82 @@
 					text: content,
 				});
 			}
-			function checkDupliId() {
-				let checkId = $('#userid').val();
-				console.log(checkId);
-				let url = '/checkId?userId=' + checkId;
-				$.ajax({
-					url: url,
-					type: 'get',
-				})
-					.done((resp) => {
-						if (resp == 1) {
-							alert('중복');
-						} else {
-							alert('사용가능');
-						}
-						console.log(resp);
-					})
-					.fail((err) => {
-						console.log(err);
-					});
-			}
 		</script>
 	</head>
 	<body>
 		<div layout:fragment="content">
 			<p>마아아이이이페에에에이이이지이이이</p>
-			<p th:text="${profile}"></p>
+			<!-- <p th:text="${profile}"></p> -->
 			<p th:text="${session.userId}"></p>
-
-			[[${session.userId}]]
 			<!-- <div><img th:src="@{/img/{img}(img= ${profile.identification})}" width="300px" height="300px" /></div> -->
 			<p>전체코드</p>
 			<!-- <p th:text="${application.detailCode}"></p> -->
 			<p>개별코드</p>
 			<!-- [[${application.detailCode_a}]] -->
 
-			<div class="col-md-12">
-				아이디
-				<input type="text" id="userid" />
-			</div>
+			<h1>WebSocket Test</h1>
+			<button onclick="connectWebSocket()">Connect WebSocket</button>
+			<button onclick="sendMessage()">Send Message</button>
+			<div id="messages"></div>
 
-			<a class="btn btn-warning" onclick="checkDupliId()">중복확인</a>
+			<script>
+				let socket;
+
+				function connectWebSocket() {
+					try {
+						// WebSocket 연결
+						socket = new WebSocket('ws://localhost:8080/echo');
+
+						// 연결이 열리면 호출되는 이벤트 핸들러
+						socket.onopen = function (event) {
+							console.log('WebSocket 연결이 열렸습니다.');
+							// /topic/messages 토픽을 구독합니다.
+							socket.send('Hello, Server!'); // Change this line
+						};
+
+						// 메시지를 받았을 때 호출되는 이벤트 핸들러
+						socket.onmessage = function (event) {
+							console.log('받은 메시지: ' + event.data);
+							displayMessage(event.data);
+						};
+
+						// 연결이 닫혔을 때 호출되는 이벤트 핸들러
+						socket.onclose = function (event) {
+							console.log('WebSocket 연결이 닫혔습니다.');
+						};
+
+						// 에러가 발생했을 때 호출되는 이벤트 핸들러
+						socket.onerror = function (error) {
+							console.error('WebSocket 연결 에러:', error);
+						};
+					} catch (error) {
+						console.error('WebSocket 연결 에러:', error);
+					}
+				}
+
+				function sendMessage() {
+					try {
+						if (socket && socket.readyState === WebSocket.OPEN) {
+							// 서버로 메시지 전송
+							const message = 'Hello, Server!';
+							socket.send(message);
+							console.log('보낸 메시지: ' + message);
+						} else {
+							console.error('WebSocket 연결이 열려있지 않습니다.');
+						}
+					} catch (error) {
+						console.error('WebSocket 메시지 전송 에러:', error);
+					}
+				}
+
+				function displayMessage(message) {
+					// 받은 메시지를 화면에 표시
+					const messagesDiv = document.getElementById('messages');
+					const messageDiv = document.createElement('div');
+					messageDiv.textContent = message;
+					messagesDiv.appendChild(messageDiv);
+				}
+			</script>
 		</div>
 	</body>
 </html>

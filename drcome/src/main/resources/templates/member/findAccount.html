@@ -8,6 +8,25 @@
 		<meta charset="UTF-8" />
 		<title>내 정보 찾기</title>
 		<style>
+			.registered-customers {
+				margin: 0 auto;
+				width: 60%;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.blog-section-title {
+				color: #333;
+				border-left: 2px solid #06bbcc;
+				padding-left: 10px;
+			}
+
+			form {
+				margin-top: 20px;
+			}
+
 			label {
 				display: inline-block;
 				width: 200px;
@@ -207,8 +226,8 @@
 	<body>
 		<div layout:fragment="content">
 			<div class="container">
-				<div class="registered-customers" style="width: 40%; margin: 0 auto">
-					<h4 class="blog-section-title border-left mb-30" id="pageTtl">내 정보 찾기</h4>
+				<div class="registered-customers">
+					<h3 class="blog-section-title border-left mb-30">내 정보 찾기</h3>
 					<span onclick="showFindIdForm()">아이디 찾기</span>
 					<span>|</span>
 					<span onclick="showFindPwForm()">비밀번호 찾기</span>
@@ -229,7 +248,7 @@
 								oninput="autoHyphen(this)"
 							/>
 						</div>
-						<button type="button" class="btn-danger" onclick="findId()">아이디 찾기</button>
+						<button type="button" onclick="findId()">아이디 찾기</button>
 					</div>
 
 					<div id="findPwForm" style="display: none">
@@ -254,9 +273,7 @@
 							<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
 							<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
 						</div>
-						<button id="findPwBtn" type="button" class="btn-danger" onclick="findPw()" disabled>
-							비밀번호 찾기
-						</button>
+						<button id="findPwBtn" type="button" onclick="findPw()" disabled>비밀번호 찾기</button>
 					</div>
 				</div>
 			</div>

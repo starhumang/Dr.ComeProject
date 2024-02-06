@@ -9,7 +9,7 @@
 		<style>
 			.registered-customers {
 				margin: 0 auto;
-				width: 300px;
+				width: 350px;
 				background-color: #fff;
 				padding: 20px;
 				border-radius: 8px;
@@ -32,7 +32,7 @@
 			}
 
 			input {
-				width: 100%;
+				width: 80%;
 				padding: 10px;
 				margin-bottom: 10px;
 				border: 1px solid #ccc;
@@ -41,7 +41,7 @@
 			}
 
 			button {
-				width: 100%;
+				width: 80%;
 				padding: 10px;
 				color: #fff;
 				background-color: #06bbcc;
@@ -68,19 +68,22 @@
 			a:hover {
 				text-decoration: underline;
 			}
+
+			.jointext {
+				color: #051fb4;
+			}
 		</style>
 	</head>
 	<body>
 		<div layout:fragment="content">
-			<div class="registered-customers" style="margin: 0px auto; width: 300px">
-				<h3 class="blog-section-title border-left mb-30" id="pageTtl">로그인</h3>
-				<form th:action="@{/userlogin}" method="post">
+			<div class="registered-customers">
+				<h3 class="blog-section-title border-left mb-30">Dr.Come</h3>
+				<form th:action="@{/userlogin}" style="text-align: center" method="post">
 					<div class="login-account p-30 box-shadow">
 						<p>아이디</p>
 						<input type="text" name="username" />
 						<p>비밀번호</p>
 						<input type="password" name="password" />
-						<!-- 						<div class="mb-10"><input class="form-check-input" type="checkbox" id="remember" /> 로그인 상태 유지</div> -->
 						<div class="mb-40" style="text-align: center">
 							<button type="submit">로그인</button>
 							<br />
@@ -89,16 +92,17 @@
 									<small><a href="/findAccount">아이디/비밀번호 찾기</a></small>
 								</p>
 							</div>
-							<div class="mb-40">
-								<p>
-									<small><a href="/userjoin">일반 사용자 회원가입</a></small>
-									<br />
-									<small><a href="/medicaljoin">의료기관 사용자 회원가입</a></small>
-								</p>
-							</div>
 						</div>
 					</div>
 				</form>
+				<br />
+				<div class="mb-40">
+					<p>
+						<small><a class="jointext" href="/userjoin">일반 사용자 회원가입</a></small>
+						&emsp;&emsp;&emsp;
+						<small><a class="jointext" href="/medicaljoin">의료기관 회원가입</a></small>
+					</p>
+				</div>
 			</div>
 		</div>
 	</body>

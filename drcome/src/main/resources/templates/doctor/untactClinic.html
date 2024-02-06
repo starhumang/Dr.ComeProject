@@ -275,12 +275,8 @@
               <form name="clinicForm">
                 <!--예약번호 받아와야함-->
                 <input type="hidden" name="reserveNo" value="4" />
-                <!--병원아이디-->
-                <input
-                  type="hidden"
-                  name="hospitalId"
-                  th:value="${session.userId}"
-                />
+                <!--병원아이디 th:value="${session.userId}" 수정해야함 -->
+                <input type="hidden" name="hospitalId" th:value="krrlo" />
                 <!-- 초진/재진여부 수정 했을껄  -->
                 <input type="hidden" name="visit" />
                 <!--유저아이디 값 받아와야함 수정수정 -->

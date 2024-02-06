@@ -40,8 +40,8 @@ public class UserSecurityConfig {
 		
 		http.csrf().disable();
 		http.authorizeHttpRequests((requests) -> requests
-				//.antMatchers("/**").permitAll()
-				.antMatchers("/", "/home", "/userjoin", "/medicaljoin").permitAll() // 나중에 이걸로 바꿔야함
+				.antMatchers("/**").permitAll()
+//				.antMatchers("/", "/home", "/userjoin", "/medicaljoin", "/findAccount", "/auth/**").permitAll() // 나중에 이걸로 바꿔야함
 				.antMatchers("/admin/**").hasAnyRole("ADMIN") // 얘도
 				.antMatchers("/hospital/**").hasAnyRole("HOSPITAL") // 얘도				
 				.antMatchers("/pharmacy/**").hasAnyRole("PHARMACY") // 얘도

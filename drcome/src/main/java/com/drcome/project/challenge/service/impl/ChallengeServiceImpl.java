@@ -11,34 +11,38 @@ import com.drcome.project.challenge.service.ChallengeService;
 
 @Service
 public class ChallengeServiceImpl implements ChallengeService {
-	
+
 	@Autowired
 	ChallengeMapper cmapper;
 
 	@Override
-	public List<ChallengeVO> getTodoList(int searchType, String userId) {
-		if(searchType == 0) {
-			return cmapper.getAllTodoList(userId);
-		} else if(searchType == 1) {
-			return cmapper.getActiveTodoList(userId);
-		} else {
-			return cmapper.getCompletedTodoList(userId);
-		}
+	public List<ChallengeVO> getTodoList(String userId) {
+		return cmapper.getAllTodoList(userId);
 	}
 
 	@Override
-	public int addTodoList(String challengeContent, String userId) {
-		return cmapper.addTodoList(challengeContent, userId);
+	public List<ChallengeVO> clearToDo(String userId) {
+		return cmapper.getCompletedTodoList(userId);
 	}
 
 	@Override
-	public int updateTodoList(int idx) {
-		return cmapper.updateTodoList(idx);
+	public int addTodoList(String ChallengeContent, String userId) {
+		return cmapper.addTodoList(ChallengeContent, userId);
 	}
 
 	@Override
-	public int deleteTodo(int idx, String userId) {
-		return cmapper.deleteTodo(idx, userId);
+	public int updateTodoList(String userId, int challengeNo) {
+		return cmapper.updateTodoList(challengeNo, userId);
 	}
 
+	@Override
+	public int cancleupdateTodo(String userId, int challengeNo) {
+		return cmapper.updatecancleTodoList(challengeNo, userId);
+	}
+
+	@Override
+	public boolean deleteTodo(int challengeNo, String userId) {
+		int result = cmapper.deleteTodo(challengeNo, userId);
+		return result == 1 ? true : false;
+	}
 }

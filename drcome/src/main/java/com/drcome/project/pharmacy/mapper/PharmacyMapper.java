@@ -28,4 +28,14 @@ public interface PharmacyMapper {
 	
 	/*처방전 미리보기*/
 	public int updaterejection(PharmacySelectVO vo);
+	
+	//------------------- 페이징
+	
+	/* 약국별 처방 현황 페이징 */
+	public int percount();
+	public List<Map<String, Object>> perListpage(@Param("offset") int offset, @Param("limit") int limit);
+	
+	/* 약국별 처방 내역 페이징 */
+	public int perLastcount();
+	public List<Map<String, Object>> perLastListpage(@Param("offset") int offset, @Param("limit") int limit);
 }

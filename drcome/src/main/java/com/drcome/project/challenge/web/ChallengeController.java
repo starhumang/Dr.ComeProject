@@ -1,70 +1,89 @@
 package com.drcome.project.challenge.web;
 
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.drcome.project.challenge.ChallengeVO;
+import com.drcome.project.challenge.service.ChallengeService;
 
 @Controller
 public class ChallengeController {
 
-/*	@Autowired
+	@Autowired
 	ChallengeService cservice;
 
 	@GetMapping("/challenge")
 	public String home() {
 		return "challenge/calendar";
 	}
-	
+
 	@GetMapping("/todolist")
-	@ResponseBody
-	public Map<String, Object> getTodoList(int searchType) {
+	public String getTodoList(Principal principal, String userId, Model model) {
+		userId = principal.getName();
+
+		List<ChallengeVO> todoList = cservice.getTodoList(userId);
+		List<ChallengeVO> ctodoList = cservice.clearToDo(userId);
 		
-		System.out.println("searchType " + searchType);
-		
-		List<ChallengeVO> todoList = cservice.getTodoList(searchType, userId);
-		
-		Map<String, Object> todolist = new Map();
-		todolist.put("todoList", todoList);
-		
-		return data;
+		model.addAttribute("todolist", todoList);
+		System.out.println(todoList);
+		model.addAttribute("completetodo", ctodoList);
+		System.out.println("com" + ctodoList);
+
+		return "challenge/todolist";
 	}
 	
-	@PostMapping("/todolist/insert")
+	/* 등록 페이지 */
+	/*
+	 * @GetMapping("/todoinsert") public String insertToDoList() { return
+	 * "challenge/todolist"; }
+	 */
+
+	/* 등록 process */
+	@PostMapping("/todoinsert")
 	@ResponseBody
-	public Map<String, Object> addTodoList(String challengeContent, int searchType) {
-		
-		int isSuccess = cservice.addTodoList(challengeContent, userId);
-		System.out.println(isSuccess > 0 ? "성공" : "실패");
-		
-		Map<String, Object> data = new Map<>();
-		data.put("isSuccess", isSuccess);
-		data.put("todoList", cservice.getTodoList(searchType, userId));
-	
-		return data;
+	public Map<String, Object> addTodoList(Principal principal, String challengeContent, String userId) {
+		userId = principal.getName();
+
+		Map<String, Object> addTodoList = new HashMap();
+		System.out.println("challenge" + challengeContent);
+		addTodoList.put("result", challengeContent);
+
+		cservice.addTodoList(challengeContent, userId);
+
+		return addTodoList;
 	}
 
-	@GetMapping("/todolist/update")
+	@PostMapping("/todoupdate/{challengeNo}")
 	@ResponseBody
-	public Map<String, Object> updateComYnOfTodoList(int searchType, int idx) {
-		
-		int result = cservice.updateTodoList(idx);
-		System.out.println(result);
-		
-		Map<String, Object> data = new Map<>();
-		data.put("todoList", cservice.getTodoList(searchType, userId));
-		 
-		return data;
+	public String updateTodoList(Principal principal, String userId, @PathVariable Integer challengeNo) {
+		userId = principal.getName();
+		cservice.updateTodoList(userId, challengeNo);
+		return "challenge/todolist";
 	}
 	
-	@PostMapping("/todolist/delete")
+	@PostMapping("/todoupdatecancle/{challengeNo}")
 	@ResponseBody
-	public Map<String, Object> deleteTodo(int idx, int searchType) {
-		
-		cservice.deleteTodo(idx, userId);
+	public String updateCancleTodo(Principal principal, String userId, @PathVariable Integer challengeNo) {
+		userId = principal.getName();
+		cservice.cancleupdateTodo(userId, challengeNo);
+		return "challenge/todolist";
+	}
 
-		List<ChallengeVO> todoList = cservice.getTodoList(searchType, userId);
-		
-		Map<String, Object> data = new Map<String, Object>();
-		data.put("todoList", todoList);
-		
-		return data;
-	}*/
+	@GetMapping("/tododelete/{challengeNo}")
+	public String deleteTodo(Principal principal, String userId, @PathVariable Integer challengeNo) {
+		userId = principal.getName();
+		cservice.deleteTodo(challengeNo, userId);
+		return "redirect:todolist";
+	}
+
 }

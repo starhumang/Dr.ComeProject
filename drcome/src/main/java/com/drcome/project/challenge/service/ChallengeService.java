@@ -5,16 +5,22 @@ import java.util.List;
 import com.drcome.project.challenge.ChallengeVO;
 
 public interface ChallengeService {
-	
+
 	/* TodoList */
-	public List<ChallengeVO> getTodoList(int searchType, String userId);
-		
-	/* TodoList 추가*/
-	public int addTodoList(String challengeContent, String userId);
+	public List<ChallengeVO> getTodoList(String userId);
 	
-	/* Todo 수정*/
-	public int updateTodoList(int idx);
+	/* 완료된 TodoList */
+	public List<ChallengeVO> clearToDo(String userId);
+
+	/* TodoList 추가 */ 
+	public int addTodoList(String ChallengeContent, String userId);
 	
-	/* Todo 삭제*/
-	public int deleteTodo(int idx, String userId);
+	/* Todo 수정 */ 
+	public int updateTodoList(String userId, int challengeNo);
+	
+	/* Todo 수정 취소 */ 
+	public int cancleupdateTodo(String userId, int challengeNo);
+	
+	/* Todo 삭제 */ 
+	public boolean deleteTodo(int challengeNo, String userId);
 }

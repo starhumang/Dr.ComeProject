@@ -76,4 +76,26 @@ public class PharmacyServiceImpl implements PharmacyService{
 		return map;
 	}
 
+	/*
+	 * @Override public List<Map<String, Object>> getperPage(int pageNo, int
+	 * pageSize) { // 페이지 번호와 페이지 크기를 이용하여 offset을 계산 int offset = (pageNo - 1) *
+	 * pageSize; int limit = pageSize;
+	 * 
+	 * // 전체 레코드 수 조회 int totalCount = mapper.percount();
+	 * 
+	 * // 페이징된 결과 조회 List<Map<String, Object>> pagedData =
+	 * mapper.perListpage(offset, limit);
+	 * 
+	 * // 페이징된 결과와 전체 레코드 수를 반환합니다. return pagedData; }
+	 * 
+	 * @Override public List<Map<String, Object>> getperLastPage(int pageNo, int
+	 * pageSize) { int offset = (pageNo - 1) * pageSize; int limit = pageSize;
+	 * 
+	 * int totalCountL = mapper.perLastcount();
+	 * 
+	 * List<Map<String, Object>> pagedDataL = mapper.perLastListpage(offset, limit);
+	 * 
+	 * return pagedDataL; }
+	 */
+
 }

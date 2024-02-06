@@ -20,18 +20,18 @@ public class PatientServiceImpl implements PatientService {
 	// 환자 기본정보 조회
 	@Override
 	public PatientVO getPatientInfo(PatientVO vo) {
+
 		return mapper.selectPatientInfo(vo);
 	}
 
 	// 환자 진료기록 조회
 	@Override
 	public List<PatientVO> getClinicList(int page, PatientVO vo) {
-		
+
 		return mapper.clinicList(page, vo);
 	}
 
-	
-	//진료기록 totalList
+	// 진료기록 totalList
 	@Override
 	public int totalList(PatientVO vo) {
 		return mapper.cntList(vo);
@@ -40,13 +40,14 @@ public class PatientServiceImpl implements PatientService {
 	// 처방전조회
 	@Override
 	public List<PatientVO> getPerscription(PatientVO vo) {
-		System.out.println("처방전" + mapper.perscription(vo));
+		// System.out.println("처방전" + mapper.perscription(vo));
 		return mapper.perscription(vo);
 	}
 
 	// 약검색
 	@Override
 	public List<PatientVO> getmnameList(PatientVO vo) {
+
 		return mapper.mnameList(vo);
 	}
 
@@ -58,6 +59,8 @@ public class PatientServiceImpl implements PatientService {
 		int result = 0;
 
 		List<PatientVO> plist = vo.getPerary();
+
+		System.out.println("진료기록에 저장될 vo " + vo);
 
 		// 초진이면 //환자테이블 인서트
 		if (vo.getVisit().equals("first")) {
@@ -78,16 +81,11 @@ public class PatientServiceImpl implements PatientService {
 		if (vo.getPerscriptionYn() == null) {
 			for (PatientVO obj : plist) {
 				obj.setClinicNo(cno);
-				// System.out.println("야약약약" + obj);
 				result = mapper.insertPer(obj);
 			}
 		}
 
-		//System.out.println(result);
 		return result;
 	}
-
-
-	
 
 }

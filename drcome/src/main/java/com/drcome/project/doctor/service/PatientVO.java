@@ -23,7 +23,7 @@ public class PatientVO {
 	private int paymentNo;
 	// reserveNo는위에
 	private String perscriptionYn;
-	private Date clinicDate;
+	private String clinicDate;
 	private String hospitalId;
 	private int patientNo;
 

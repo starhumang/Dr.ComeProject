@@ -22,8 +22,8 @@ public class PageDTO  implements Serializable{
 		
 	    
 		this.total = total;
-		this.endPage=(int)(Math.ceil(currentPage/5.0)) * 5;
-		this.startPage = this.endPage -4;
+		this.endPage=(int)(Math.ceil(currentPage/3.0)) * 3;
+		this.startPage = this.endPage -2;
 		
 		int realEnd = (int)Math.ceil(total/5.0);
 		

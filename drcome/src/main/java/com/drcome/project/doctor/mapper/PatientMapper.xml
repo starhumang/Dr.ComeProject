@@ -160,25 +160,27 @@
   <![CDATA[
 		SELECT *
 		FROM (
-		SELECT clinic_no,
-		clinic_date,
-		clinic_symptom,
-		specificity,
-		perscription_yn,
-		ROWNUM AS rn
-		FROM (
-		SELECT clinic_no,
-		clinic_date,
-		clinic_symptom,
-		specificity,
-		perscription_yn
-		FROM clinic
-		WHERE patient_no = (SELECT patient_no
-		FROM patient
-		WHERE user_id = #{id.userId} AND hospital_id = #{id.hospitalId})
-		)
-		WHERE ROWNUM <= #{page} * 5
-		)
+			SELECT clinic_no,
+				   TO_CHAR(clinic_date, 'YYYY-MM-DD') AS clinic_date,
+			       clinic_symptom,
+			       specificity,
+			       perscription_yn,
+			       ROW_NUMBER() OVER (ORDER BY clinic_date DESC) AS rn
+			FROM (
+				SELECT clinic_no,
+				       clinic_date,
+		               clinic_symptom,
+					   specificity,
+					   perscription_yn
+		        FROM clinic
+		        WHERE patient_no = (SELECT patient_no
+		                            FROM patient
+		                            WHERE user_id = #{id.userId} AND hospital_id = #{id.hospitalId}
+		                            )
+			    ORDER BY clinic_date DESC
+					)  
+			WHERE ROWNUM <= #{page} * 5
+		  )
 		WHERE rn > (#{page} - 1) * 5
   ]]>
 	</select>

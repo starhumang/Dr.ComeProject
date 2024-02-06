@@ -38,26 +38,16 @@ public class PatientController {
 		return hosSel;
 	}
 
-	// 비대면진료페이지//reserve no 받아옴 /hid (세션) /uid (pinfo안) 받아와야함
+	// 비대면진료페이지
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
-
-		System.out.println("너뭐야 " + vo); // 아무것도없음
-
+		//System.out.println("너뭐야 " + vo); // 아무것도없음
+		
 		// 기본정보
 		vo.setReserveNo(4);
-		// System.out.println("너는뭐야 "+ vo); //reserveno만 4로 찍힘
-
 		PatientVO findVO = patientService.getPatientInfo(vo);
-		// System.out.println("findvo" + findVO);
-		// (reserveNo=4, userName=이주은, gender=F, birthday=Wed Sep 07 00:00:00 KST 1994,
-		// symptom=배가아픔, clinicNo=0, clinicSymptom=null, specificity=null, payYn=null,
-		// paymentNo=0, perscriptionYn=null, clinicDate=null, hospitalId=null,
-		// patientNo=0, perscriptionNo=0, dosage=0, doseCnt=0, doseDay=0,
-		// perscriptionDate=null, medicineName=null, medicineNo=0, userId=user1,
-		// currentDate=null, visit=null, perary=null, page=null)
 		model.addAttribute("pInfo", findVO);
-
+	
 		return "doctor/untactClinic";
 
 	}

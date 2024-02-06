@@ -1,4 +1,4 @@
-package com.drcome.project.common.web;
+package com.drcome.project.mem.web;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,11 +17,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.drcome.project.FileUploadService;
-import com.drcome.project.common.mapper.UserMemberMapper;
-import com.drcome.project.common.service.MemVO;
-import com.drcome.project.common.service.UserMemberService;
-import com.drcome.project.common.service.UserMemberVO;
 import com.drcome.project.medical.service.HospitalVO;
+import com.drcome.project.mem.mapper.UserMemberMapper;
+import com.drcome.project.mem.service.MemVO;
+import com.drcome.project.mem.service.UserMemberService;
+import com.drcome.project.mem.service.UserMemberVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
 @Controller

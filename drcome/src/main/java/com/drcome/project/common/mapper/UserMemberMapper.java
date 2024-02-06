@@ -13,4 +13,14 @@ public interface UserMemberMapper {
 	public MemVO getMember(String id);
 	
 	public UserMemberVO selectMem(String id);
+	
+	int checkId(String id);
+	
+	int checkPhone(String phone);
+
+	String findId(String userName, String phone);
+	
+	int updatePw(MemVO vo);
+	
+	int updateUserInfo(UserMemberVO vo);
 }

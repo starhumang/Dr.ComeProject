@@ -89,17 +89,14 @@
 		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
 		<script type="text/javascript">
-			document.addEventListener('DOMContentLoaded', function () {
-				const medicalForm = document.getElementById('medicalForm');
+			let verificationCode = '';
 
-				medicalForm.addEventListener('keydown', function (e) {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-					}
-				});
+			document.addEventListener('DOMContentLoaded', function () {
+				showHospitalForm();
+
 				handleFilePreview();
 
-				let fileInput = document.getElementById('himg');
+				let fileInput = document.getElementById('mimg');
 
 				fileInput.addEventListener('change', function () {
 					const file = this.files[0];
@@ -134,6 +131,16 @@
 				});
 			});
 
+			function showHospitalForm() {
+				document.getElementById('hospitalForm').style.display = 'block';
+				document.getElementById('pharmacyForm').style.display = 'none';
+			}
+
+			function showPharmacyForm() {
+				document.getElementById('pharmacyForm').style.display = 'block';
+				document.getElementById('hospitalForm').style.display = 'none';
+			}
+
 			function scsAlert(content) {
 				Swal.fire({
 					icon: 'success',
@@ -148,10 +155,10 @@
 				});
 			}
 
-			function checkId() {
-				let userId = document.getElementById('hid').value;
-				let idErrorMessage = document.getElementById('idErrorMessage');
-				let checkDupliIdBtn = document.getElementById('hidcheck');
+			function checkId(id, errorMessageId, checkButtonId, checkUrl) {
+				let userId = document.getElementById(id).value;
+				let idErrorMessage = document.getElementById(errorMessageId);
+				let checkDupliIdBtn = document.getElementById(checkButtonId);
 
 				if (userId === '') {
 					idErrorMessage.innerHTML = '아이디를 입력하세요.';
@@ -173,33 +180,27 @@
 				return true;
 			}
 
-			function checkDupliId() {
-				let checkId = $('#hid').val();
-				console.log(checkId);
-				let url = '/auth/checkId?userId=' + checkId;
+			function checkDupliId(id, checkUrl) {
+				let checkId = $('#' + id).val();
 				$.ajax({
-					url: url,
+					url: checkUrl,
 					type: 'get',
 				})
 					.done((resp) => {
 						if (resp == 1) {
-							// alert('이미 사용중인 아이디입니다.');
 							errAlert('이미 사용중인 아이디입니다.');
 						} else {
-							// alert('사용가능한 아이디입니다.');
 							scsAlert('사용가능한 아이디입니다.');
 						}
 					})
 					.fail((err) => {
-						// alert('오류 발생');
 						errAlert('오류 발생');
 						console.log(err);
 					});
 			}
 
-			function checkPassword() {
-				let password = document.getElementById('hpw').value;
-				let passwordErrorMessage = document.getElementById('pwErrorMessage');
+			function validatePassword(password, errorMessageId) {
+				let passwordErrorMessage = document.getElementById(errorMessageId);
 
 				if (password === '') {
 					passwordErrorMessage.innerHTML = '비밀번호를 입력하세요.';
@@ -219,10 +220,8 @@
 				return true;
 			}
 
-			function checkPasswordMatch() {
-				let password = document.getElementById('hpw').value;
-				let rePassword = document.getElementById('hpwcheck').value;
-				let rePasswordErrorMessage = document.getElementById('rePasswordErrorMessage');
+			function matchPasswords(password, rePassword, errorMessageId) {
+				let rePasswordErrorMessage = document.getElementById(errorMessageId);
 
 				if (password !== rePassword) {
 					rePasswordErrorMessage.innerHTML = '비밀번호가 일치하지 않습니다.';
@@ -234,9 +233,8 @@
 				return true;
 			}
 
-			function checkName() {
-				let name = document.getElementById('hname').value;
-				let nameErrorMessage = document.getElementById('nameErrorMessage');
+			function validateName(name, errorMessageId) {
+				let nameErrorMessage = document.getElementById(errorMessageId);
 
 				if (name === '') {
 					nameErrorMessage.innerHTML = '이름을 입력하세요.';
@@ -248,12 +246,11 @@
 				return true;
 			}
 
-			function searchAdd() {
-				let address = document.getElementById('hadd');
+			function searchAddress(addressElementId) {
+				let address = document.getElementById(addressElementId);
 				new daum.Postcode({
 					oncomplete: function (data) {
 						address.value = data.address;
-
 						console.log(data.address);
 					},
 				}).open();
@@ -267,17 +264,17 @@
 				target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{3})(\d{2})(\d{5})$/, `$1-$2-$3`);
 			};
 
-			function checkPhone() {
-				let phone = $('#hceophone').val().replace(/-/g, '');
-				console.log(phone);
-				let url = '/auth/checkPhone?phoneNum=' + phone;
+			function sendVerificationCode(phoneElementId, checkUrl) {
+				let phone = $('#' + phoneElementId)
+					.val()
+					.replace(/-/g, '');
+				let url = checkUrl + '?phoneNum=' + phone;
+
 				$.ajax({
 					url: url,
 					type: 'get',
 				})
 					.done((resp) => {
-						console.log(resp);
-						console.log(resp.checkNum);
 						if (resp.checkNum != '중복') {
 							scsAlert('인증번호 발송');
 							verificationCode = resp.checkNum;
@@ -291,9 +288,7 @@
 					});
 			}
 
-			function checkPhoneNumber() {
-				let enteredCode = document.getElementById('checkPhoneNum').value;
-
+			function checkPhoneNumber(enteredCode) {
 				if (enteredCode == verificationCode) {
 					scsAlert('인증 완료');
 					return true;
@@ -303,17 +298,87 @@
 				}
 			}
 
+			function checkPhoneAndSendVerification(phoneElementId, checkUrl) {
+				let isValidPhone = validatePhoneNumber(phoneElementId);
+				if (isValidPhone) {
+					sendVerificationCode(phoneElementId, checkUrl);
+				}
+			}
+
+			function validatePhoneNumber(phoneElementId) {
+				let phone = $('#' + phoneElementId).val();
+				let phoneErrorMessage = document.getElementById('phoneErrorMessage');
+
+				if (phone === '') {
+					phoneErrorMessage.innerHTML = '전화번호를 입력하세요.';
+					phoneErrorMessage.style.color = 'red';
+					return false;
+				}
+				phoneErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkHospitalId() {
+				return checkId('hospitalId', 'idErrorMessageHospital', 'idcheckHospital', '/auth/checkId?userId=');
+			}
+
+			function checkDupliHospitalId() {
+				checkDupliId('hospitalId', '/auth/checkId?userId=');
+			}
+
+			function checkHospitalPassword() {
+				let password = document.getElementById('pwHospital').value;
+				return validatePassword(password, 'pwErrorMessageHospital');
+			}
+
+			function checkHospitalPasswordMatch() {
+				let password = document.getElementById('pwHospital').value;
+				let rePassword = document.getElementById('pwHospitalcheck').value;
+				return matchPasswords(password, rePassword, 'rePasswordErrorMessageHospital');
+			}
+
+			function checkHospitalName() {
+				let name = document.getElementById('hospitalName').value;
+				return validateName(name, 'nameErrorMessageHospital');
+			}
+
+			function searchHospitalAddress() {
+				searchAddress('hospitalAdd');
+			}
+
 			function uploadImg() {
 				let formData = new FormData();
-				let inputFile = document.querySelector('#himg').files[0];
+				let inputFile = document.querySelector('#mimg').files[0];
 				for (var i = 0; i < inputFile.length; i++) {
 					console.log(inputFile[i]);
 					formData.append('uploadFiles', files[i]);
 				}
 			}
 
+			function handleFilePreview() {
+				let fileInput = document.getElementById('mimg');
+				let filePreview = document.getElementById('filePreview');
+
+				fileInput.addEventListener('change', function () {
+					const file = this.files[0];
+
+					if (file) {
+						const reader = new FileReader();
+
+						reader.onload = function (e) {
+							filePreview.src = e.target.result;
+							filePreview.style.display = 'block';
+						};
+
+						reader.readAsDataURL(file);
+					} else {
+						filePreview.style.display = 'none';
+					}
+				});
+			}
+
 			function checkLicense() {
-				let registrationNumber = $('#hceolicense').val().replace(/-/g, '');
+				let registrationNumber = $('#mceolicense').val().replace(/-/g, '');
 				let url =
 					'https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=xzADYrvAUisAVDob8yaz4gaeTvaJVrxJG5M93Ihkj5IDQgqmpN%2FejAdm26cz1BsmATLApRLmj7HWYVfgqvwnKw%3D%3D';
 
@@ -321,7 +386,9 @@
 					url: url,
 					type: 'POST',
 					contentType: 'application/json',
-					data: JSON.stringify({ b_no: [registrationNumber] }),
+					data: JSON.stringify({
+						b_no: [registrationNumber],
+					}),
 					success: function (response) {
 						// console.log(response.data);
 						console.log(response.data[0]);
@@ -372,28 +439,6 @@
 				myModal.show();
 			}
 
-			function handleFilePreview() {
-				let fileInput = document.getElementById('himg');
-				let filePreview = document.getElementById('filePreview');
-
-				fileInput.addEventListener('change', function () {
-					const file = this.files[0];
-
-					if (file) {
-						const reader = new FileReader();
-
-						reader.onload = function (e) {
-							filePreview.src = e.target.result;
-							filePreview.style.display = 'block';
-						};
-
-						reader.readAsDataURL(file);
-					} else {
-						filePreview.style.display = 'none';
-					}
-				});
-			}
-
 			function submitForm(event) {
 				event.preventDefault();
 
@@ -430,25 +475,37 @@
 
 	<body>
 		<div layout:fragment="content">
-			<form id="medicalForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
-				<div class="container">
-					<h3>의료기관 회원가입</h3>
-					<br />
-					<p>병원가입</p>
-					<p>약국가입</p>
+			<div class="container">
+				<h3>의료기관 회원가입</h3>
+				<ul class="nav nav-tabs">
+					<li class="nav-item">
+						<a class="nav-link active" href="#" onclick="showHospitalForm()">병원</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link" href="#" onclick="showPharmacyForm()">약국</a>
+					</li>
+				</ul>
+				<form
+					id="hospitalForm"
+					onsubmit="submitForm(event, 'hospitalForm')"
+					enctype="multipart/form-data"
+					method="post"
+				>
 					<br />
 					<div class="input-group">
 						<label>아이디</label>
 						<input
 							type="text"
 							name="hospitalId"
-							id="hid"
+							id="hospitalId"
 							placeholder="아이디를 입력하세요"
 							required
-							oninput="checkId()"
+							oninput="checkHospitalId()"
 						/>
-						<button type="button" id="hidcheck" onclick="checkDupliId()" disabled>중복 확인</button>
-						<span id="idErrorMessage" class="error-message" style="display: block"></span>
+						<button type="button" id="idcheckHospital" onclick="checkDupliHospitalId()" disabled>
+							중복 확인
+						</button>
+						<span id="idErrorMessageHospital" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group">
@@ -456,24 +513,24 @@
 						<input
 							type="password"
 							name="hospitalPw"
-							id="hpw"
+							id="pwHospital"
 							placeholder="비밀번호를 입력하세요"
 							required
-							oninput="checkPassword()"
+							oninput="checkHospitalPassword()"
 						/>
-						<span id="pwErrorMessage" class="error-message" style="display: block"></span>
+						<span id="pwErrorMessageHospital" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group">
 						<label>비밀번호 확인</label>
 						<input
 							type="password"
-							id="hpwcheck"
+							id="pwHospitalcheck"
 							placeholder="비밀번호를 다시 입력하세요"
 							required
-							oninput="checkPasswordMatch()"
+							oninput="checkHospitalPasswordMatch()"
 						/>
-						<span id="rePasswordErrorMessage" class="error-message" style="display: block"></span>
+						<span id="rePasswordErrorMessageHospital" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group">
@@ -481,23 +538,23 @@
 						<input
 							type="text"
 							name="hospitalName"
-							id="hname"
+							id="hospitalName"
 							placeholder="이름을 입력하세요"
 							required
-							oninput="checkName()"
+							oninput="checkHospitalName()"
 						/>
-						<span id="nameErrorMessage" class="error-message" style="display: block"></span>
+						<span id="nameErrorMessageHospital" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group">
 						<label>병원 주소</label>
-						<input type="text" name="address" id="hadd" required />
+						<input type="text" name="address" id="hospitalAdd" required />
 						<input
 							type="button"
-							id="haddcheck"
+							id="maddcheck"
 							class="btn btn-warning"
 							value="주소검색"
-							onclick="searchAdd()"
+							onclick="searchHospitalAddress()"
 						/>
 					</div>
 
@@ -506,7 +563,7 @@
 						<input
 							type="tel"
 							name="phone"
-							id="hphone"
+							id="mphone"
 							placeholder="전화번호를 입력하세요"
 							required
 							maxlength="10"
@@ -516,13 +573,13 @@
 
 					<div class="input-group">
 						<label>대표 사진</label>
-						<input type="file" name="uploadFiles" id="himg" />
+						<input type="file" name="uploadFiles" id="mimg" />
 						<img id="filePreview" alt="File Preview" />
 					</div>
 
 					<div class="input-group">
 						<label>대표 진료 과목</label>
-						<select name="mainSubject" id="hsub">
+						<select name="mainSubject">
 							<option selected>선택하세요</option>
 							<th:block th:each="detailCode : ${application.detailCode_h}">
 								<option th:value="${detailCode.detailCode}" th:text="${detailCode.codeName}"></option>
@@ -561,7 +618,7 @@
 
 					<div class="input-group">
 						<label>오픈 시간</label>
-						<select name="opentime" id="hotime">
+						<select name="opentime">
 							<option selected>선택하세요</option>
 							<th:block th:each="detailCode : ${application.detailCode_k}">
 								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
@@ -571,7 +628,7 @@
 
 					<div class="input-group">
 						<label>마감 시간</label>
-						<select name="closetime" id="hctime">
+						<select name="closetime">
 							<option selected>선택하세요</option>
 							<th:block th:each="detailCode : ${application.detailCode_k}">
 								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
@@ -583,7 +640,7 @@
 
 					<div class="input-group">
 						<label>병원장 이름</label>
-						<input type="text" name="directorName" id="hceoname" placeholder="이름을 입력하세요" required />
+						<input type="text" name="directorName" id="mceoname" placeholder="이름을 입력하세요" required />
 					</div>
 
 					<div class="input-group">
@@ -591,7 +648,219 @@
 						<input
 							type="tel"
 							name="directorPhone"
-							id="hceophone"
+							id="directorPhone"
+							placeholder="전화번호를 입력하세요"
+							required
+							maxlength="13"
+							oninput="autoHyphen(this)"
+						/>
+						<button
+							type="button"
+							id="checkPhoneBtn"
+							onclick="checkPhoneAndSendVerification('directorPhone', '/auth/checkPhone')"
+						>
+							인증번호발송
+						</button>
+
+						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group" id="verification-section">
+						<label>인증번호</label>
+						<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
+						<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
+					</div>
+
+					<div class="input-group">
+						<label>사업자등록번호</label>
+						<input
+							type="text"
+							name="directorLicense"
+							id="mceolicense"
+							placeholder="사업자등록번호를 입력하세요"
+							required
+							maxlength="12"
+							oninput="autoHyphenNum(this)"
+						/>
+						<button type="button" id="hlicensecheck" onclick="checkLicense()">인증하기</button>
+					</div>
+
+					<div>
+						<input type="checkbox" id="invalidCheck" required />
+						동의항목<label class="form-check-label" onclick="openModal()"> [상세보기]</label>
+					</div>
+
+					<br />
+					<input type="submit" value="회원가입" class="btn btn-danger" />
+				</form>
+
+				<br />
+
+				<form
+					id="pharmacyForm"
+					style="display: none"
+					onsubmit="submitForm(event, 'pharmacyForm')"
+					enctype="multipart/form-data"
+					method="post"
+				>
+					<div class="input-group">
+						<label>아이디</label>
+						<input
+							type="text"
+							name="pharmacyId"
+							id="mid"
+							placeholder="아이디를 입력하세요"
+							required
+							oninput="checkId()"
+						/>
+						<button type="button" id="midcheck" onclick="checkDupliId()" disabled>중복 확인</button>
+						<span id="idErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group">
+						<label>비밀번호</label>
+						<input
+							type="password"
+							name="pharmacyPw"
+							id="mpw"
+							placeholder="비밀번호를 입력하세요"
+							required
+							oninput="checkPassword()"
+						/>
+						<span id="pwErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group">
+						<label>비밀번호 확인</label>
+						<input
+							type="password"
+							id="mpwcheck"
+							placeholder="비밀번호를 다시 입력하세요"
+							required
+							oninput="checkPasswordMatch()"
+						/>
+						<span id="rePasswordErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group">
+						<label>약국 이름</label>
+						<input
+							type="text"
+							name="pharmacyName"
+							id="mname"
+							placeholder="이름을 입력하세요"
+							required
+							oninput="checkName()"
+						/>
+						<span id="nameErrorMessage" class="error-message" style="display: block"></span>
+					</div>
+
+					<div class="input-group">
+						<label>약국 주소</label>
+						<input type="text" name="address" id="madd" required />
+						<input
+							type="button"
+							id="maddcheck"
+							class="btn btn-warning"
+							value="주소검색"
+							onclick="searchAdd()"
+						/>
+					</div>
+
+					<div class="input-group">
+						<label>전화번호</label>
+						<input
+							type="tel"
+							name="pharmacyPhone"
+							id="mphone"
+							placeholder="전화번호를 입력하세요"
+							required
+							maxlength="10"
+							oninput="autoHyphen(this)"
+						/>
+					</div>
+
+					<div class="input-group">
+						<label>팩스번호</label>
+						<input
+							type="tel"
+							name="pharmacyFax"
+							id="mfax"
+							placeholder="전화번호를 입력하세요"
+							required
+							maxlength="10"
+							oninput="autoHyphen(this)"
+						/>
+					</div>
+
+					<div class="input-group">
+						<label>대표 사진</label>
+						<input type="file" name="uploadFiles" id="mimg" />
+						<img id="filePreview" alt="File Preview" />
+					</div>
+
+					<div class="input-group">
+						<label>휴무일</label>
+						<th:block th:each="detailCode : ${application.detailCode_i}">
+							<input
+								type="checkbox"
+								name="holiday"
+								th:value="${detailCode.detailCode}"
+								style="
+									width: 20px;
+									height: 20px;
+									border: 2px solid #3498db;
+									border-radius: 5px;
+									margin-right: 10px;
+									cursor: pointer;
+									display: flex;
+									align-items: center;
+									justify-content: center;
+									transition: background-color 0.3s;
+								"
+							/>
+							<label
+								th:for="${'hday' + detailCode.detailCode}"
+								th:text="${detailCode.codeName}"
+								style="width: 50px"
+							></label>
+							<br />
+						</th:block>
+					</div>
+
+					<div class="input-group">
+						<label>오픈 시간</label>
+						<select name="opentime">
+							<option selected>선택하세요</option>
+							<th:block th:each="detailCode : ${application.detailCode_k}">
+								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
+							</th:block>
+						</select>
+					</div>
+
+					<div class="input-group">
+						<label>마감 시간</label>
+						<select name="closetime">
+							<option selected>선택하세요</option>
+							<th:block th:each="detailCode : ${application.detailCode_k}">
+								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
+							</th:block>
+						</select>
+					</div>
+
+					<hr />
+
+					<div class="input-group">
+						<label>대표자 이름</label>
+						<input type="text" name="ceoName" id="mceoname" placeholder="이름을 입력하세요" required />
+					</div>
+
+					<div class="input-group">
+						<label>대표자 전화번호</label>
+						<input
+							type="tel"
+							name="ceoPhone"
+							id="mceophone"
 							placeholder="전화번호를 입력하세요"
 							required
 							maxlength="13"
@@ -611,8 +880,8 @@
 						<label>사업자등록번호</label>
 						<input
 							type="text"
-							name="directorLicense"
-							id="hceolicense"
+							name="ceoLicense"
+							id="mceolicense"
 							placeholder="사업자등록번호를 입력하세요"
 							required
 							maxlength="12"
@@ -628,8 +897,8 @@
 
 					<br />
 					<input type="submit" value="회원가입" class="btn btn-danger" />
-				</div>
-			</form>
+				</form>
+			</div>
 
 			<!-- Modal -->
 			<div class="modal" tabindex="-1" id="exampleModal">

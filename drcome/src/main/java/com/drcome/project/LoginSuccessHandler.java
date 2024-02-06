@@ -49,17 +49,6 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 			page = "/";
 			response.sendRedirect(page);
 		}
-
-		// alert + location
-//		try {
-//			PrintWriter out = response.getWriter();
-//			out.println("<script language='javascript'>");
-//			out.println("alert('" + userDetailVO.getUserName() + "님 반갑습니다.');");
-//			out.println("</script>");
-//			out.flush();
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		}
 		
 	}
 

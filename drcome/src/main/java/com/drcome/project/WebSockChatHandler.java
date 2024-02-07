@@ -33,12 +33,18 @@ public class WebSockChatHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
         
-//        System.out.println("전체 " + session);
+    	//의사가 보낸 메세지 
     	payload = message.getPayload();
     	System.out.println(payload);
-//        String userId = payload;
-//        System.out.println("실제 아이디: " + session.getId());
-//        System.out.println("받은 아이디: " + userId);
+        //String userId = payload;
+
+    		//payload 아이디로 db 조회 해서 
+    		//아직 알람이 체크가 되지 않았고 
+    		//페이로드 안에있는 id ==  for문(세션아이디)가 같으면 
+    	
+    
+    	//send mes 
+    	
     }
 
 }

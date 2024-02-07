@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.admin.domain.Hospital;
+import com.drcome.project.common.service.AlarmDao;
+import com.drcome.project.common.service.AlarmService;
 import com.drcome.project.common.service.PageDTO;
 import com.drcome.project.doctor.service.PatientService;
 import com.drcome.project.doctor.service.PatientVO;
@@ -29,6 +31,9 @@ public class PatientController {
 
 	@Autowired
 	PatientService patientService;
+	
+	@Autowired
+	AlarmService alarmService;
 
 	// 공통 병원 정보 따로 빼기
 	@ModelAttribute("hospitalSel")
@@ -50,6 +55,15 @@ public class PatientController {
 		return "doctor/untactClinic";
 
 	}
+	
+	//알람 테이블 인서트 
+	@PostMapping("saveAlarm")
+	@ResponseBody
+	public int saveAlarm(@RequestBody AlarmDao dao) {
+		System.out.println("알람 인서트완료");
+		return alarmService.saveAlarm(dao);
+	}
+	
 
 	// 진료기록 불러오기
 	@GetMapping("clist")

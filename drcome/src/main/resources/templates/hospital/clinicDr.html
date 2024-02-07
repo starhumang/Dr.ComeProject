@@ -169,10 +169,9 @@
 
                 <td th:if="${ rdl.reserveKindstatus == 'c1' }">대면</td>
                 <td th:unless="${ rdl.reserveKindstatus == 'c1' }">비대면</td>
-
                 <td>
                   <button
-                    th:onclick="|location.href='@{/untactClinic(reserveNo=${rdl.reserveNo}, userId=user1)}'|"
+                    th:onclick="enter([[${rdl.reserveNo}]],'user1');"
                     class="btn btn-dark"
                   >
                     입장
@@ -183,10 +182,76 @@
           </table>
         </div>
       </div>
-      <script th:inline="javascript">
+
+      <script>
         document.getElementById("date").value = new Date()
           .toISOString()
           .substring(0, 10);
+
+        function enter(rno, uid) {
+          let obj = {
+            userId: uid,
+            contentCode: "enterRoom",
+            prefix: "진료실에 입장",
+          };
+
+          $.ajax("/saveAlarm", {
+            type: "post",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            contentType: "application/json",
+          })
+            .done((result) => {
+              console.log(result);
+              location.href = `/untactClinic?reserveNo=${rno}&userId=${uid}`;
+            })
+            .fail((err) => console.log(err));
+        } //진료실 입장하기 버튼
+
+        var socket = null;
+        $(document).ready(function () {
+          if ($("#logId").val() != null) {
+            connectWebSocket();
+          }
+        });
+
+        function connectWebSocket() {
+          try {
+            // WebSocket 연결
+            socket = new WebSocket("ws://localhost:80/echo");
+
+            // 소켓 연결, 알림보낼 환자 id 보냄
+            socket.onopen = function (event) {
+              console.log("WebSocket 연결이 열렸습니다.");
+              // /topic/messages 토픽을 구독합니다.
+              socket.send("연결 시작"); // Change this line
+            };
+
+            // // 메시지를 받았을 때 호출되는 이벤트 핸들러
+            // socket.onmessage = function (event) {
+            //   console.log("onmessage" + event.data);
+            //   let $socketAlert = $("div#socketAlert");
+            //   $socketAlert.html(event.data);
+            //   $socketAlert.css("display", "block");
+
+            //   setTimeout(function () {
+            //     $socketAlert.css("display", "none");
+            //   }, 5000);
+            // };
+
+            // 연결이 닫혔을 때 호출되는 이벤트 핸들러
+            socket.onclose = function (event) {
+              console.log("WebSocket 연결이 닫혔습니다.");
+            };
+
+            // 에러가 발생했을 때 호출되는 이벤트 핸들러
+            socket.onerror = function (error) {
+              console.error("WebSocket 연결 에러:", error);
+            };
+          } catch (error) {
+            console.error("WebSocket 연결 에러:", error);
+          }
+        }
       </script>
     </div>
   </body>

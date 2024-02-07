@@ -47,6 +47,7 @@
 			
 				<!-- 병원정보 -->
 				<p style="display:none;" class="hosId" th:text="${hos.hospitalId}"></p>
+				<p style="display:none;" class="Doctor" th:text="${docList}"></p>
 				<div class="container" style="margin-bottom:50px;">
 					<div class="card shadow mb-4">
 						<div class="card-header py-3"
@@ -93,8 +94,8 @@
 									</tr>
 								</table>
 								<div class="butt">
-									<button type="button" class="bb btn btn-primary " th:onclick="contactCheck([[${reservationHistory}]])">방문예약하기</button>
-									<button type="button" class="bb btn btn-primary " th:onclick="check( [[${clinicHistory}]],'later',[[${reservationHistory}]] )">비대면예약하기</button>
+									<button type="button" class="bb btn btn-primary visit" th:onclick="contactCheck([[${reservationHistory}]])">방문예약하기</button>
+									<button type="button" class="bb btn btn-primary later" th:onclick="check( [[${clinicHistory}]],'later',[[${reservationHistory}]] )">비대면예약하기</button>
 									<button type="button" class="bb btn btn-primary now" th:onclick="check( [[${clinicHistory}]],'now',[[${reservationHistory}]] )">실시간 비대면 진료 <br/>접수하기</button>
 									<button type="button" class="bb btn btn-primary ">문의하기</button>
 								</div>
@@ -207,6 +208,7 @@
 						}
 						
 						//영업시간 끝나면 실시간 접수 버튼 못누르게하는 함수(오픈시간은 생략)
+						// + 의사가 없으면 접수버튼 못 누르게하는 함수
 						function closetime(){
 							let findCloseBtn = document.querySelector('.now')
 							let findCloseTime = document.querySelector('.closeTime').innerText;
@@ -219,6 +221,20 @@
 								findCloseBtn.disabled = true;
 							}else{
 								findCloseBtn.disabled = false;
+							}
+							
+							let doctor = document.querySelector('.Doctor').innerText;
+							console.log("doctor=",doctor);
+							let visitBtn = document.querySelector('.visit');
+							let laterBtn = document.querySelector('.later');
+							if(doctor.length <5 ){
+								findCloseBtn.disabled = true;
+								visitBtn.disabled = true;
+								laterBtn.disabled = true;
+							}else{
+								findCloseBtn.disabled = false;
+								visitBtn.disabled = false;
+								laterBtn.disabled = false;
 							}
 						}
 						closetime();
@@ -234,7 +250,7 @@
 							<h5 class="m-0 font-weight-bold text-secondary">
 								<i class="fas fa-fw fa-search-location"></i>병원위치 :
 							</h5>
-							<h5 class="m-0 font-weight-bold text-secondary me" th:text="${hos.address}"> </h5>
+							<h5 class="font-weight-bold text-secondary me" style="margin : 0 0 0 10px;" th:text="${hos.address}"> </h5>
 						</div>
 						<div class="card-body"
 							style="display: flex; justify-content: center; align-items: center;">

@@ -58,34 +58,36 @@
 	display: none;
 }
 
-.ss:hover{
-	background-color:#06BBCC;
+.ss:hover {
+	background-color: #06BBCC;
 }
 
-.ss{
-	color:white;
-	border-color:#FFFFF0; 
-	border-radius:20%; 
-	width:200px;
+.ss {
+	color: white;
+	border-color: #FFFFF0;
+	border-radius: 20%;
+	width: 200px;
 }
-.img-button{
-	width:80px;
-	height:80px;
+
+.img-button {
+	width: 80px;
+	height: 80px;
 	no-repeat;
 }
-.subject> tr> th > button:hover{
-	background-color:#B0E0E6;
-}
-.subject> tr> th > button{
-	margin: 10px 25px 10px 25px;
-	border-radius: 30%;
-	border-color:white;
-	
-}
-.subject > tr> td{
-	margin-top:20px;
+
+.subject>tr>th>button:hover {
+	background-color: #B0E0E6;
 }
 
+.subject>tr>th>button {
+	margin: 10px 25px 10px 25px;
+	border-radius: 30%;
+	border-color: white;
+}
+
+.subject>tr>td {
+	margin-top: 20px;
+}
 </style>
 
 </head>
@@ -93,80 +95,79 @@
 	<div layout:fragment="content">
 		<!-- Header Start -->
 		<div class="container-fluid bg-primary py-5 mb-5 page-header"
-			style="height:480px;">
+			style="height: 480px;">
 			<div class="container py-5">
 				<div class="row justify-content-center">
 					<div class="col-lg-10 text-center" style="padding-top: 40px;">
 						<h1 class="display-3 text-white animated slideInDown"
 							style="font-size: 40px;">어떤 병원을 찾고 계신가요?</h1>
 
-						<div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3"
-							role="search" style="padding-left: 170px; margin-top: 40px;">
+						<div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
+							style="padding-left: 170px; margin-top: 40px;">
 
 							<!-- 검색창 -->
-							<input type="search" id="search" 
+							<input type="search" id="search"
 								class="form-control form-control-dark text-bg-dark search"
 								placeholder="찾으시는 병원이나 약국을 검색해보세요" aria-label="Search"
 								style="width: 78%; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
-							
+
 							<!-- 검색참고용 -->
 							<!-- <form class="d-flex" action="searchList.do" method="POST">
 								<input style="width: 800px;" class="form-control me-sm-2" type="search" placeholder="Search" name="word">
 								<button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
 							</form> -->
-							
+
 							<!-- 돋보기 아이콘 -->
-							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" onclick="searchResult()"
-								fill="rgb(255,255,255)"
+							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
+								onclick="searchResult()" fill="rgb(255,255,255)"
 								style="position: relative; top: -50px; left: 300px; cursor: pointer;"
 								class="bi bi-search" viewBox="0 0 16 16">
-                          		<path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                          		<path
+									d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
                      		</svg>
-                     		
+
 						</div>
-						<button class="ss btn" 
-						data-bs-toggle="modal"
-						data-bs-target="#exampleModal">
-							진료과목으로 찾기
-						</button>
+						<button class="ss btn" data-bs-toggle="modal"
+							data-bs-target="#exampleModal">진료과목으로 찾기</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		
+
 		<!-- Modal -->
-			<div class="modal" tabindex="-1" id="exampleModal">
-				<div class="modal-dialog">
-					<div class="modal-content" style="text-align:center;"><!--  width:700px; height:700px; -->
-						<!-- <div class="modal-header" style="text-align:center;">
+		<div class="modal" tabindex="-1" id="exampleModal">
+			<div class="modal-dialog">
+				<div class="modal-content" style="text-align: center;">
+					<!--  width:700px; height:700px; -->
+					<!-- <div class="modal-header" style="text-align:center;">
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div> -->
-						<div class="modal-body" style="padding:30px 30px 30px 30px;" >
-						<h2 style="margin-bottom:20px;">진료과목을 선택해주세요</h2>
+					<div class="modal-body" style="padding: 30px 30px 30px 30px;">
+						<h2 style="margin-bottom: 20px;">진료과목을 선택해주세요</h2>
 						<hr>
 						<table>
 							<tbody class="subject">
 								<tr>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 002.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h1)}'|">
+											<img class="img-button" th:src="@{/images/} + 002.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h1)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 003.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h2)}'|">
+											<img class="img-button" th:src="@{/images/} + 003.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h2)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 004.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h3)}'|">
+											<img class="img-button" th:src="@{/images/} + 004.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h3)}'|">
 										</button>
 									</th>
 								<tr>
-								<tr style="font-weight:bolder;">
+								<tr style="font-weight: bolder;">
 									<td>가정의학과</td>
 									<td>내과</td>
 									<td>비뇨기과</td>
@@ -174,24 +175,24 @@
 								<tr>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 005.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h4)}'|">
+											<img class="img-button" th:src="@{/images/} + 005.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h4)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 006.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h5)}'|">
+											<img class="img-button" th:src="@{/images/} + 006.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h5)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 007.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h6)}'|">
+											<img class="img-button" th:src="@{/images/} + 007.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h6)}'|">
 										</button>
 									</th>
 								<tr>
-								<tr style="font-weight:bolder;">
+								<tr style="font-weight: bolder;">
 									<td>산부인과</td>
 									<td>성형외과</td>
 									<td>소아과</td>
@@ -199,24 +200,24 @@
 								<tr>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 008.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h7)}'|">
+											<img class="img-button" th:src="@{/images/} + 008.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h7)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 009.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h8)}'|">
+											<img class="img-button" th:src="@{/images/} + 009.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h8)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 010.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h9)}'|">
+											<img class="img-button" th:src="@{/images/} + 010.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h9)}'|">
 										</button>
 									</th>
 								<tr>
-								<tr style="font-weight:bolder;">
+								<tr style="font-weight: bolder;">
 									<td>신경외과</td>
 									<td>안과</td>
 									<td>외과</td>
@@ -224,24 +225,24 @@
 								<tr>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 011.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h10)}'|">
+											<img class="img-button" th:src="@{/images/} + 011.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h10)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 012.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h11)}'|">
+											<img class="img-button" th:src="@{/images/} + 012.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h11)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 013.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h12)}'|">
+											<img class="img-button" th:src="@{/images/} + 013.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h12)}'|">
 										</button>
 									</th>
 								<tr>
-								<tr style="font-weight:bolder;">
+								<tr style="font-weight: bolder;">
 									<td>이비인후과</td>
 									<td>응급의학과</td>
 									<td>정신건강의학과</td>
@@ -249,40 +250,41 @@
 								<tr>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 014.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h13)}'|">
+											<img class="img-button" th:src="@{/images/} + 014.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h13)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 015.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h14)}'|">
+											<img class="img-button" th:src="@{/images/} + 015.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h14)}'|">
 										</button>
 									</th>
 									<th>
 										<button id="ddd" type="button">
-										  <img class="img-button" th:src="@{/images/} + 016.png"
-										  th:onclick="|location.href='@{searchSubject(mainSubject=h15)}'|">
+											<img class="img-button" th:src="@{/images/} + 016.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h15)}'|">
 										</button>
 									</th>
 								<tr>
-								<tr style="font-weight:bolder;">
+								<tr style="font-weight: bolder;">
 									<td>정형외과</td>
 									<td>치과</td>
 									<td>피부과</td>
 								<tr>
 							</tbody>
 						</table>
-						
-							
-						</div>
+
+
 					</div>
 				</div>
 			</div>
+		</div>
 
 		<!-- Team Start -->
-		<div class="container-xxl py-5" style="padding-top: 10px;max-width:1430px;">
-			<div class="container" style="text-align:center; max-width:1430px;">
+		<div class="container-xxl py-5"
+			style="padding-top: 10px; max-width: 1430px;">
+			<div class="container" style="text-align: center; max-width: 1430px;">
 				<div style="text-align: center; margin-bottom: 50px;">
 					<h5 class="mb-5"
 						style="color: gray; display: inline; margin-right: 20px;"
@@ -298,11 +300,12 @@
 					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
 				</div>
 				<div class="row g-4 here" style="">
-					<div th:each="hos: ${hosList}" class="col-lg-3 col-md-6 hospitalItem"
+					<div th:each="hos: ${hosList}"
+						class="col-lg-3 col-md-6 hospitalItem"
 						style="width: 280px; height: 380px;"
 						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
 						<!-- 바로 위는 타임리프로 링크 보내버리는법 -->
-						
+
 						<!-- <p th:text="${hos.phone}"></p>
                   <p th:text="${hos.hospitalId}"></p>
                   <p th:text="${hos.hospitalName}"></p>
@@ -312,9 +315,11 @@
 						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 							<div class="team-item bg-light">
 								<div class="overflow-hidden">
-									<img th:if="${hos.hospitalImg}" th:src="@{/images/} + ${hos.hospitalImg}" alt="image"
-										style="width: 100%; height: 200px;" class="img-fluid" />
-									<img th:unless="${hos.hospitalImg}" th:src="@{/images/} + hospital.png" alt="image"
+									<img th:if="${hos.hospitalImg}"
+										th:src="@{/images/} + ${hos.hospitalImg}" alt="image"
+										style="width: 100%; height: 200px;" class="img-fluid" /> <img
+										th:unless="${hos.hospitalImg}"
+										th:src="@{/images/} + hospital.png" alt="image"
 										style="width: 100%; height: 200px;" class="img-fluid" />
 								</div>
 							</div>
@@ -343,8 +348,9 @@
 
 
 		<!-- Testimonial Start -->
-		<div class="container-xxl py-5" style="padding-top: 10px;max-width:1430px;">
-			<div class="container" style="text-align:center; max-width:1430px;">
+		<div class="container-xxl py-5"
+			style="padding-top: 10px; max-width: 1430px;">
+			<div class="container" style="text-align: center; max-width: 1430px;">
 				<div style="text-align: center; margin-bottom: 50px;">
 					<!-- 약국시작 -->
 					<h6 class="section-title bg-white text-center text-primary px-3">내
@@ -354,25 +360,28 @@
 
 			</div>
 			<div class="row g-4 here2">
-				<div th:each="pha: ${phaList}" class="col-lg-3 col-md-6 pharmacyItem"
+				<div th:each="pha: ${phaList}"
+					class="col-lg-3 col-md-6 pharmacyItem"
 					style="width: 280px; height: 380px;"
 					th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|">
-					
+
 					<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 						<div class="team-item bg-light">
 							<div class="overflow-hidden">
-								<img th:if="${pha.pharmacyImg}" th:src="@{/images/} + ${pha.pharmacyImg}" alt="image"
-									style="width: 100%; height: 200px;" class="img-fluid" />
-								<img th:unless="${pha.pharmacyImg}" th:src="@{/images/} + pharmacy.png" alt="image"
+								<img th:if="${pha.pharmacyImg}"
+									th:src="@{/images/} + ${pha.pharmacyImg}" alt="image"
+									style="width: 100%; height: 200px;" class="img-fluid" /> <img
+									th:unless="${pha.pharmacyImg}"
+									th:src="@{/images/} + pharmacy.png" alt="image"
 									style="width: 100%; height: 200px;" class="img-fluid" />
 							</div>
 						</div>
 
 						<div class="text-center p-4">
 							<h5 class="mb-0" th:text="${pha.pharmacyName}"></h5>
-							<small th:text="${pha.pharmacyPhone}"></small> <br /> 
-							<small th:text="${pha.address}" 
-									style="color: red; font-weight: bold;" class="phAddress"></small>
+							<small th:text="${pha.pharmacyPhone}"></small> <br /> <small
+								th:text="${pha.address}" style="color: red; font-weight: bold;"
+								class="phAddress"></small>
 							<p th:text="${pha.closetime}" style="display: none;"
 								class="closeTime2">
 							<p th:text="${pha.holiday}" style="display: none;"
@@ -626,18 +635,40 @@
               
               //병원
               let closeWeek = []; 
+              //배열에 담긴 휴무일(ex [i1, i2, i3)
               closeDay.forEach((ele, idx)=>{
-                 //console.log("ele",ele.innerText);
-                 closeWeek.push(day[ele.innerText])
+            	  
+            	 if(ele.length <3){//휴무일이 하나면
+            		 closeWeek.push(day[ele.innerText])//화면에 바로 표시할 예정
+            		 
+            	 }else{//휴무일이 여러개면
+            		 let days = ele.innerText.split(',');
+            		 let holiday = ''
+            		 days.forEach((item) =>{//배열에 담긴숫자만큼 돌림
+            			 holiday +=day[item]; //i1 -> 저는 숫자로 변환(요일로 변환해도 됨)
+            			 holiday +=',';
+            		 })
+            		 closeWeek.push(holiday); //화면에 표시
+            	 }
+                 
               })
               //console.log("closeWeek=",closeWeek);
               
               //약국
               let closeWeek2 = []; 
               closeDay2.forEach((ele, idx)=>{
-                  closeWeek2.push(day[ele.innerText])
-               })
-              
+            	 if(ele.length <3){
+            		 closeWeek2.push(day[ele.innerText])
+            	 }else{
+            		 let days = ele.innerText.split(',');
+            		 let holiday = ''
+            		 days.forEach((item) =>{
+            			 holiday +=day[item];
+            			 holiday +=',';
+            		 })
+            		 closeWeek2.push(holiday);
+            	 }
+              })
               
               
               //병원리스트의 시간을 배열에 넣음
@@ -658,7 +689,7 @@
               let curHour = today.getHours();
               let curMinute = today.getMinutes();
               let curDay = today.getDay();
-              console.log("curHour=", curHour);
+              console.log("curDay=", curDay);
               console.log("curMinute=", curMinute);
               
               
@@ -676,14 +707,27 @@
             
                 if (closeHour < curHour || (closeHour === curHour && closeMinute < curMinute)) {
                     // 병원의 영업 종료 시간이 현재 시간보다 이전이면
-                    closeBlocks[i].style.display = "block"; // 또는 다른 스타일을 적용
+                    closeBlocks[i].style.display = "block"; 
                     //console.log('가가');
-                } else if (closeWeek[i] === curDay) {
-                    // 휴진일이 오늘 날짜와 같으면
-                    closeBlocks[i].style.display = "block"; // 또는 다른 스타일을 적용
-                    //console.log('나나');
+                } else if (closeWeek[i].length <3 && closeWeek[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
+                			
+                    closeBlocks[i].style.display = "block"; 
+                    
+                }else if(closeWeek[i].length > 3){ //휴무일이 여러개인데 오늘이 그 요일임
+                	 let days = closeWeek[i].split(',');
+                	 let holicheck = false;
+                	 for(let i=0; i <days.length; i++){
+                		 console.log("days",days[i]);
+                		 if(days[i] == curDay){
+                			 holicheck = true;
+                		 }
+                	 }
+                	 if(holicheck){
+                		 closeBlocks[i].style.display = "block";  
+                	 }
+                	console.log("holicheck",holicheck);
                 }else{
-                   //console.log('다다');
+                	
                 }
             }              
               
@@ -703,16 +747,30 @@
 	              if (closeHour2 < curHour || (closeHour2 === curHour && closeMinute2 < curMinute)) {
 	                  // 병원의 영업 종료 시간이 현재 시간보다 이전이면
 	                  closeBlocks2[i].style.display = "block"; // 또는 다른 스타일을 적용
-	                  console.log('가가');
-	              } else if (closeWeek2[i] === curDay) {
-	                  // 휴진일이 오늘 날짜와 같으면
-	                  closeBlocks2[i].style.display = "block"; // 또는 다른 스타일을 적용
-	                  console.log('나나');
+	                  //console.log('가가');
+	              }else if (closeWeek[i].length <3 && closeWeek[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
+          			
+	                    closeBlocks2[i].style.display = "block"; 
+	                    
+	              }else if(closeWeek2[i].length > 3){ //휴무일이 여러개인데 오늘이 그 요일임
+	                	 let days = closeWeek2[i].split(',');
+	                	 let holicheck = false;
+	                	 for(let i=0; i <days.length; i++){
+	                		 console.log("days",days[i]);
+	                		 if(days[i] == curDay){
+	                			 holicheck = true;
+	                		 }
+	                	 }
+	                	 if(holicheck){
+	                		 closeBlocks2[i].style.display = "block";  
+	                	 }
+	                	console.log("holicheck",holicheck);
 	              }else{
-	                 console.log('다다');
+	                	
 	              }
 	          }     
            }
+           
          changeStyle();
          
        //검색 함수

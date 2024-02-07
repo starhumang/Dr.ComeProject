@@ -1,5 +1,7 @@
 package com.drcome.project.main.web;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -14,7 +16,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.drcome.project.main.service.ClinicVO;
 import com.drcome.project.main.service.MainService;
 import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.DoctorVO;
@@ -166,11 +167,39 @@ public class MainController {
 	@GetMapping("/contactReserve")
 	public String contactReservationPage(HttpServletRequest request, String hospitalId, Model model) {
 		//병원정보
-		model.addAttribute("hospitalId", hospitalId);
+		HospitalVO hosInfo = mainService.getHos(hospitalId);
+		//병원이름
+		model.addAttribute("hosName", hosInfo.getHospitalName());
 		//병원의 의사정보
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
 		model.addAttribute("docList", docList);
 		//System.out.println("docList="+docList);
+		
+		//병원 휴무일 보내기(숫자형태로 전환해서 보내는 중)
+		Map<String, Integer> dayList = new HashMap<>();
+		dayList.put("i1", 1);//월
+		dayList.put("i2", 2);//화
+		dayList.put("i3", 3);//수
+		dayList.put("i4", 4);//목
+		dayList.put("i5", 5);//금
+		dayList.put("i6", 6);//토
+		dayList.put("i7", 0);//일
+		String date = hosInfo.getHoliday();
+		System.out.println("date="+date);
+		//System.out.println(dayList.get("i1"));
+		if(date.length() < 3){
+			Integer newDate = dayList.get(date);
+			System.out.println("newDate요일하나"+newDate);
+			model.addAttribute("newDate", newDate);
+		}else {
+			String[] sliceDate = date.split(",");
+			List<Integer> newDate = new ArrayList<>();
+			for(int i=0; i < sliceDate.length; i++) {
+				newDate.add(dayList.get(sliceDate[i]));
+			}
+			System.out.println("newDate요일여러개="+newDate);
+			model.addAttribute("newDate", newDate);
+		}
 		return "user/contactReserve";
 	}
 	

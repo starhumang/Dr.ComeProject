@@ -1,11 +1,9 @@
 package com.drcome.project.common.service;
 
-import java.io.Serializable;
-
 import lombok.Data;
 
 @Data
-public class PageDTO  implements Serializable{
+public class PageDTO {
 	
 	
 	
@@ -15,6 +13,7 @@ public class PageDTO  implements Serializable{
 	private boolean prev, next;
 	private int total;
 	
+	//기본생성자
 	public PageDTO() {};
 	
 	

@@ -19,4 +19,10 @@ public class AlarmServiceImpl implements AlarmService {
 		return mapper.insertAlarm(dao);
 	}
 
+	//알람조회
+	@Override
+	public int checkAlarm(String uid) {
+		return mapper.selectAlarm(uid);
+		}
+
 }

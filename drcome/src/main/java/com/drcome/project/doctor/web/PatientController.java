@@ -35,6 +35,7 @@ public class PatientController {
 	@Autowired
 	AlarmService alarmService;
 
+	
 	// 공통 병원 정보 따로 빼기
 	@ModelAttribute("hospitalSel")
 	public Hospital getServerTime() {
@@ -43,6 +44,7 @@ public class PatientController {
 		return hosSel;
 	}
 
+	
 	// 비대면진료페이지
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {

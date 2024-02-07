@@ -20,7 +20,7 @@ public interface HospitalService {
 	
 	/* 예약내역 - clinic */
 	//Main
-	public List<Map<String, Object>> getRerveList(String hospitalId);
+	public List<Map<String, Object>> getRerveList(String hospitalId, String date, String reserveKindstatus);
 	
 	//Dr
 	public List<Map<String, Object>> getReserveDrList(String hospitalId, Integer doctorNo);
@@ -34,8 +34,9 @@ public interface HospitalService {
 	
 	/* 공지사항 */
 	//공지사항 전체	
-	public List<Map<String, Object>> getNoticeList(String hospitalId);
+	public List<Map<String, Object>> getNoticeList(int page, String hospitalId);
 	
+	public int noticeCount(String hospitalId);
 	//공지사항 단건상세
 	public List<NoticeVO> getNoticeDetail(String hospitalId, Integer noticeNo);
 	

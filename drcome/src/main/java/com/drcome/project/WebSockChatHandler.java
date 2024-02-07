@@ -27,8 +27,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
         // 연결된 세션을 세션 목록에 추가
         sessions.add(session);
-        
-        // HttpSession에서 userId 가져와서 WebSocketSession 속성에 설정
+    
         String userId = (String) session.getAttributes().get("userId");
         System.out.println("User ID: " + userId);
         System.out.println("긴 ID: " + session.getId());
@@ -53,7 +52,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
         System.out.println(payload);
         System.out.println("보낼 아이디: " + userIdList);
         System.out.println("세션" + session);
-        
+
         for (WebSocketSession sess : sessions) {
         	System.out.println("세션 긴아이디 " + sess.getId());
         	System.out.println("세션 찐아이디 " + sess.getAttributes().get("userId"));

@@ -3,6 +3,7 @@ package com.drcome.project.medical.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.catalina.mapper.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,8 +48,8 @@ public class HospitalServiceImpl implements HospitalService {
 	/* 예약내역 - clinic */
 	//Main
 	@Override
-	public List<Map<String, Object>> getRerveList(String hospitalId) {
-		List<Map<String, Object>> listReserveAll = hospitalMapper.selectReserveMain(hospitalId);
+	public List<Map<String, Object>> getRerveList(String hospitalId, String date, String reserveKindstatus) {
+		List<Map<String, Object>> listReserveAll = hospitalMapper.selectReserveMain(hospitalId, date, reserveKindstatus);
 		return listReserveAll;
 	}
 
@@ -77,9 +78,15 @@ public class HospitalServiceImpl implements HospitalService {
 	/* 공지사항 */
 	// 공지사항 전체
 	@Override
-	public List<Map<String, Object>> getNoticeList(String hospitalId) {
-		List<Map<String, Object>> listNoticeAll = hospitalMapper.selectNoticeList(hospitalId);
+	public List<Map<String, Object>> getNoticeList(int page, String hospitalId) {
+		List<Map<String, Object>> listNoticeAll = hospitalMapper.selectNoticeList(page, hospitalId);
 		return listNoticeAll;
+	}
+
+	// 공지사항 페이징
+	@Override
+	public int noticeCount(String hospitalId) {
+		return hospitalMapper.noticeCount(hospitalId);
 	}
 
 	// 공지사항 단건상세
@@ -127,6 +134,7 @@ public class HospitalServiceImpl implements HospitalService {
 		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
 		return listPaDe;
 	}
+
 
 
 

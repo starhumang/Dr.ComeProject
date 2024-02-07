@@ -58,7 +58,8 @@ public class WebSockChatHandler extends TextWebSocketHandler {
         	System.out.println("세션 긴아이디 " + sess.getId());
         	System.out.println("세션 찐아이디 " + sess.getAttributes().get("userId"));
         	if(sess.getAttributes().get("userId").equals("test3")) {
-        		TextMessage sendMsg = new TextMessage(sess.getAttributes().get("userId") + "야 안녕?");
+//        		TextMessage sendMsg = new TextMessage(sess.getAttributes().get("userId") + "야 안녕?");
+        		TextMessage sendMsg = new TextMessage("입장하세요!!!!!!!!!!!!!!!");
         		sess.sendMessage(sendMsg);
         	}
 //        	sess.sendMessage(new TextMessage("안녕?"));
@@ -70,7 +71,10 @@ public class WebSockChatHandler extends TextWebSocketHandler {
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
         // 세션 목록에서 연결이 종료된 세션을 제거
         sessions.remove(session);
-        // userIdList에서 해당 세션의 userId를 제거
+        for (WebSocketSession sess : sessions) {
+        	sessions.remove(sess);
+        }
+        //userIdList에서 해당 세션의 userId를 제거
         userIdList.remove(session.getAttributes().get("userId"));
         System.out.println("연결이 종료된 세션 ID: " + session.getId());
     }

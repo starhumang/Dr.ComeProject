@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>Clinic Payment</title>
+
+		<style>
+			.pay_what {
+				display: flex;
+				justify-content: center;
+				margin-bottom: 30px;
+			}
+			.pay_list input[type='radio'] {
+				display: none;
+			}
+			.pay_list > .pay > span {
+				width: 140px;
+			}
+			.pay_list > .pay input[type='radio']:checked + span {
+				display: inline-block;
+				padding: 10px 15px;
+				margin: 5px;
+				border: 1px solid #808080;
+				border-radius: 5px;
+				background-color: #f0f0f0;
+				color: gray;
+				text-align: center;
+				cursor: pointer;
+			}
+			.pay_list > .pay input[type='radio'] + span {
+				display: inline-block;
+				padding: 10px 15px;
+				margin: 5px;
+				border-radius: 5px;
+				background-color: #c4e1c3;
+				color: rgb(87, 87, 87);
+				text-align: center;
+				cursor: pointer;
+			}
+			.pay_list > .pay > input[type='radio']:hover + span {
+				background-color: #739171;
+				color: #ffffff;
+			}
+			.payEnd {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			.payEnd > .payEndBtn {
+				width: 40%;
+				height: 50px;
+				background-color: #778899;
+				color: #fff;
+				border: none;
+				border-radius: 10px;
+			}
+			.payEnd > .payEndBtn:hover {
+				width: 40%;
+				height: 50px;
+				background-color: #d1d1d1;
+				border: none;
+				border-radius: 10px;
+			}
+		</style>
+	</head>
+
+	<body>
+		<div layout:fragment="content">
+			<div class="container-fluid">
+				<div class="head_info">
+					<h4 th:text="${hospitalSel.hospitalName}"></h4>
+					<p>
+						<i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+						<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					</p>
+				</div>
+				<p>결제하셈</p>
+				<div class="pay_what">
+					<div class="pay_list">
+						<label class="pay">
+							<input type="radio" name="payMethod" value="credit" />
+							<span>카드결제</span>
+						</label>
+						<label class="pay">
+							<input type="radio" name="payMethod" value="kakao" />
+							<span>카카오페이</span>
+						</label>
+						<label class="pay">
+							<input type="radio" name="payMethod" value="toss" />
+							<span>토스</span>
+						</label>
+						<p>
+							>> 결제수단을 선택해주세요 :
+							<span style="color: #de490f"> {{ selectedPay }}</span>
+						</p>
+					</div>
+				</div>
+				<div class="payEnd">
+					<h6 style="color: gray">주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</h6>
+					<button class="payEndBtn">결제하기</button>
+				</div>
+				<button
+					class="btn btn-dark rounded-pill px-3"
+					style="
+						border-radius: 30%;
+						text-align: center;
+						vertical-align: top;
+						width: 100px;
+						height: 50px;
+						position: fixed;
+						bottom: 80px;
+						right: 80px;
+						font-size: 20px;
+						z-index: 999;
+					"
+				>
+					Top
+				</button>
+			</div>
+		</div>
+	</body>
+</html>

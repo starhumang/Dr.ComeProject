@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>To Do List</title>
+<style>
+#todoplus {
+	border-radius: 50px;
+}
+#todo-form, #todolist {
+	margin: 10px 10px;
+}
+#submitbtn {
+	border-radius: 50px;
+}
+#whattodo {
+	height: 37.6px;
+	width: 428px;
+}
+label {
+	width: 400px;
+}
+</style>
+</head>
+<body>
+<div layout:fragment="content" class="container">
+	<!-- <h3 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}">To Do List</h3> -->
+	<h3>To Do List </h3>
+	<p th:text="${date}" id="dateValue"></p>
+	<button class="btn btn-primary" id="todoplus">todo <i class="fas fa-plus-circle"></i></button>
+	<div class="appendbox" style="display: none;">
+		<form id="todo-form">
+			<input id="whattodo" type = "text" placeholder="할 일을 작성하세요">
+			<button class="btn btn-primary" type="button" id="submitbtn" onclick="insertToDo()">추가</button>
+		</form>
+	</div>
+	<form id="todolist" class ="todo-box">
+		<th:block th:if="${todolist != null and todolist.size() > 0}">
+			<th:block th:each="todo : ${todolist}">
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox"
+						name="flexRadioDefault" id="flexRadioDefault1" th:onchange="updatetodo(this, [[${todo.challengeNo}]])" /> 
+					<label class="form-check-label" for="flexRadioDefault1" th:text="${todo.challengeContent}"></label>
+					<button class="btn btn-success" th:onclick="deleteToDo([[${todo.challengeNo}]])">삭제</button>
+				</div>
+			</th:block>
+		</th:block>
+		<th:block th:if="${completetodo != null and completetodo.size() > 0}">
+			<th:block th:each="ctodo : ${completetodo}">
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox"
+						name="flexRadioDefault" id="flexRadioDefault1" checked th:onchange="updatetodo(this, [[${ctodo.challengeNo}]])" /> 
+					<label class="form-check-label" for="flexRadioDefault1" th:text="${ctodo.challengeContent}" style="text-decoration: line-through;"></label>
+					<button class="btn btn-success" th:onclick="deleteToDo([[${ctodo.challengeNo}]])">삭제</button>
+				</div>
+			</th:block>
+		</th:block>
+	</form>
+</div>
+</body>
+</html>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+<script>
+var value = $("input[id='whattodo']");
+var dateElement = document.getElementById('dateValue');
+var dateValue = dateElement.textContent;
+
+var today = new Date();
+var date = today.toISOString().split('T')[0];
+
+$(document).ready(function () {
+    $("#todoplus").click(function () {
+    	if(dateValue >= date) {
+        	$(".appendbox").toggle();
+    	} else {
+    		Swal.fire({
+    			icon: 'warning',
+    			title: '이전 날짜는 입력할 수 없습니다.',
+    			text: '현재 날짜: ' + date
+    		})
+    	}
+    });
+});
+
+function insertToDo() {
+	
+	let result = value.val()
+	console.log(result);
+	
+	if(result == "") {
+		Swal.fire({
+			icon: 'warning',
+			title: '내용을 추가해주세요.',
+		})
+		return false;
+	}
+	
+	$.ajax("/todoinsert/"+dateValue, {
+          type: "post",
+          data: {
+        	  challengeContent: result
+          },
+          dataType: 'json',
+        }).done((result) => {
+            console.log("ToDoInsert", result);
+            location.reload();
+          })
+          .fail((err) => console.log(err));
+
+	return true;
+}
+
+function deleteToDo(no) {
+
+	$.ajax("/tododelete/" +no, {
+	         type: "get",
+	       }).done((result) => {
+	           console.log("ToDoDelete", result);
+			/* swal.fire({
+				  icon: "success",
+				  title: "To Do가 삭제되었습니다."
+				}); */
+	           //location.reload();
+	         })
+	         .fail((err) => console.log(err));
+	}
+	
+function updatetodo(checkbox, no) {
+	var isChecked = checkbox.checked;
+
+	console.log('is', isChecked);
+
+	if(isChecked == true) {
+		$.ajax("/todoupdate/"+no, {
+				type: "post"
+		}).done((result) => {
+			console.log("success", result);
+			location.reload();
+		}).fail((err) => console.log(err));
+	} else {
+		$.ajax("/todoupdatecancle/"+no, {
+				type: "post"
+		}).done((result) => {
+			console.log("success", result);
+			location.reload();
+		}).fail((err) => console.log(err));
+	}
+}
+</script>

@@ -16,9 +16,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.FileUploadService;
 import com.drcome.project.admin.domain.Hospital;
+import com.drcome.project.common.service.PageDTO;
+import com.drcome.project.common.service.PageDTO2;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.NoticeVO;
@@ -59,9 +63,9 @@ public class HospitalController {
 	/* 예약내역 - clinic */
 	//Main
 	@GetMapping("/hospital/clinicMain")
-	public String clinicReserve(Principal principal, String hospitalId, Model model) {
+	public String clinicReserve(Principal principal, String hospitalId, String date, String reserveKindstatus, Model model) {
 		hospitalId = principal.getName();
-		List<Map<String, Object>> reserveList = hospitalService.getRerveList(hospitalId);
+		List<Map<String, Object>> reserveList = hospitalService.getRerveList(hospitalId, date, reserveKindstatus);
 		model.addAttribute("reserveList", reserveList);
 		return "hospital/clinicMain";
 	}
@@ -86,19 +90,6 @@ public class HospitalController {
 		model.addAttribute("docList", docList);
 		return "hospital/myProfile";
 	}
-	
-	// 공지사항 단건상세
-	@GetMapping("/hospital/noticeList/noticeDetail")
-	public String noticeDetail(Principal principal, String hospitalId, Integer noticeNo, Model model) {
-		hospitalId = principal.getName();
-		List<NoticeVO> noticeList = hospitalService.getNoticeDetail(hospitalId, noticeNo);
-//		List<Map<String, Object>> noticeInfo = hospitalService.getNoticeDetail(hospitalId, noticeNo);
-		model.addAttribute("noticeNo", noticeNo);
-		model.addAttribute("noticeList", noticeList);
-		return "hospital/noticeDetail";
-	}
-	
-	
 
 	/* 환자리스트 */
 	// 병원 환자 전체 조회
@@ -145,16 +136,56 @@ public class HospitalController {
 	}
 
 	/* 공지사항 */
-	// 공지사항 전체
+	// 공지사항 불러오기
 	@GetMapping("/hospital/noticeList")
-	public String noticeList(Principal principal, String hospitalId, Model model) {
+	public String qnaList(Principal principal, String hospitalId) {
 		hospitalId = principal.getName();
-		List<Map<String, Object>> noticeAllList = hospitalService.getNoticeList(hospitalId);
-		model.addAttribute("noticeAllList", noticeAllList);
+		
 		return "hospital/noticeList";
 	}
+	
+	// 공지사항 전체 - 페이징
+	@GetMapping("/hospital/noticeListP")
+	@ResponseBody
+	public Map<String, Object> noticeList(Principal principal,
+							 String hospitalId,
+							 @RequestParam(required = false, defaultValue = "1") String page) {
+		hospitalId = principal.getName();
+		
+		Map<String, Object> map = new HashMap();
+		// 리스트 전체 개수
+		int total = hospitalService.noticeCount(hospitalId);
+		
+		// 선택 페이지 변환
+		int cpage = Integer.parseInt(page);
+		System.out.println("선택된 페이지" + cpage);
+		
+		// 페이지네이션(currentpage, total)
+		PageDTO2 dto = new PageDTO2(cpage, total);
+		System.out.println("dtd 객체" + dto);
+		
+		List<Map<String, Object>> plist = hospitalService.getNoticeList(cpage, hospitalId);
+		
+		System.out.println(plist.size());
+		
+		// ajax는 return으로...
+		
+		map.put("plist", plist);
+		map.put("pagedto", dto);
+		
+		return map;
+	}
 
-
+	// 공지사항 단건상세
+	@GetMapping("/hospital/noticeList/noticeDetail")
+	public String noticeDetail(Principal principal, String hospitalId, Integer noticeNo, Model model) {
+		hospitalId = principal.getName();
+		List<NoticeVO> noticeList = hospitalService.getNoticeDetail(hospitalId, noticeNo);
+//		List<Map<String, Object>> noticeInfo = hospitalService.getNoticeDetail(hospitalId, noticeNo);
+		model.addAttribute("noticeNo", noticeNo);
+		model.addAttribute("noticeList", noticeList);
+		return "hospital/noticeDetail";
+	}
 
 	// 공지사항 등록 - FORM
 	@GetMapping("/hospital/noticeForm")

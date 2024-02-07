@@ -17,7 +17,7 @@
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
-						<th:block th:each="pharmarcy : ${grantlistp}" th:if="${grantlistp} != null">
+						
 							<table class="table table-bordered" id="dataTable" width="100%"
 								cellspacing="0">
 								<thead>
@@ -35,12 +35,15 @@
 									</tr>
 								</thead>
 								<tbody>
+								<th:block th:each="pharmarcy : ${grantlistp}"
+									th:if="${grantlistp} != null">
 									<tr>
 										<td th:text="${pharmarcy.pharmacyId}"></td>
 										<td th:text="${pharmarcy.pharmacyName}"></td>
 										<td th:text="${pharmarcy.address}"></td>
 										<td th:text="${pharmarcy.pharmacyPhone}"></td>
-										<td><img th:src="@{/img/}+${pharmarcy.pharmacyImg}" alt="image" width="50px" /></td>
+										<td><img th:src="@{/images/}+${pharmarcy.pharmacyImg}"
+											alt="image" width="50px" /></td>
 										<td th:text="${pharmarcy.ceoName}"></td>
 										<td th:text="${pharmarcy.ceoPhone}"></td>
 										<td th:if="${pharmarcy.pharmacyStatus == 'b1'}">승인대기</td>
@@ -50,15 +53,15 @@
 										<td><button class="btn btn-warning"
 												th:onclick="pharmarcyupdate([[${pharmarcy.pharmacyId}]])">승인</button></td>
 									</tr>
-								</tbody>
+								</th:block>
+							</tbody>
 							</table>
-						</th:block>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- 페이징 컴포넌트 -->
-        <nav aria-label="Page navigation">
+        <nav aria-label="Page navigation" th:if="${grantlistp.totalPages} > 0">
             <ul class="pagination justify-content-center">
                 <li th:class="${grantlistp.first ? 'page-item disabled' : 'page-item'}">
                     <a class="page-link" th:href="@{/admin/pharmacy(pageNo=0)}" tabindex="-1" aria-disabled="true">Previous</a>

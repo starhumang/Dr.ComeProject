@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ layout:decorate="~{layouts/layout}">
+<head>
+<meta charset="UTF-8">
+<title>Challenge</title>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<!-- <script>
+document.addEventListener('DOMContentLoaded', function() {
+	var calendarEl = document.getElementById('calendar');
+	var calendar = new FullCalendar.Calendar(calendarEl, {
+		initialView: 'dayGridMonth'
+	});
+	calendar.render();
+});
+</script> -->
+<script th:inline="javascript">
+
+document.addEventListener('DOMContentLoaded', function() {
+    var calendarEl = document.getElementById('calendar');
+    var calendar = new FullCalendar.Calendar(calendarEl, {
+    	events:   [[${successToDo}]],
+        initialView: 'dayGridMonth',
+        dateClick: function(info) {
+            var clickedDate = info.dateStr;
+            //info.dayEl.style.backgroundColor = '#f5f5f5'; // 클릭한 날짜에 스타일 적용 예시
+            console.log('선택날짜: ' + clickedDate);
+            /* $.ajax({
+                type: "GET",
+                url: "/todolist/{date}",
+                data: {
+                    date: clickedDate
+                },
+                success: function(response) {
+                    // AJAX 요청이 성공했을 때 수행할 동작
+                    console.log('Ajax 성공');
+                },
+                error: function(error) {
+                    console.error('Ajax 실패', error);
+                }
+            }); */
+            var newURL = "todolist/" + clickedDate;
+            window.location.href = newURL;
+        }
+    });
+    calendar.render();
+});
+</script>
+</head>
+<body>
+	<div layout:fragment="content">
+		<div class="container">
+			<div id='calendar'></div>
+		</div>
+	</div>
+</body>
+</html>

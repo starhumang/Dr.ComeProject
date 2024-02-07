@@ -210,6 +210,7 @@
 						//영업시간 끝나면 실시간 접수 버튼 못누르게하는 함수(오픈시간은 생략)
 						// + 의사가 없으면 접수버튼 못 누르게하는 함수
 						function closetime(){
+							//영업시간
 							let findCloseBtn = document.querySelector('.now')
 							let findCloseTime = document.querySelector('.closeTime').innerText;
 							let closeTime = findCloseTime.substr(8,2);
@@ -217,25 +218,30 @@
 				            let curHour = today.getHours();
 							console.log("closeTime=",closeTime);
 							console.log("curHour=",curHour);
-							if(closeTime <= curHour){
-								findCloseBtn.disabled = true;
-							}else{
-								findCloseBtn.disabled = false;
-							}
 							
+							//의사
 							let doctor = document.querySelector('.Doctor').innerText;
-							console.log("doctor=",doctor);
+							console.log("doctor=",doctor.length);
 							let visitBtn = document.querySelector('.visit');
 							let laterBtn = document.querySelector('.later');
-							if(doctor.length <5 ){
+							
+							
+							if(doctor.length <5 ){ //의사가 없다.(전체 다 못누름)
+								console.log("a");
 								findCloseBtn.disabled = true;
 								visitBtn.disabled = true;
 								laterBtn.disabled = true;
-							}else{
+							}else if(doctor.length > 5 && closeTime > curHour){//의사가 있고 아직 영업종료가 안 되었다.(전체 다 누르기 가능)
+								console.log("b");
 								findCloseBtn.disabled = false;
 								visitBtn.disabled = false;
 								laterBtn.disabled = false;
+							}else { //의사는 있지만 영업종료됐다.(실시간만 못 누름)
+								console.log("c");
+								findCloseBtn.disabled = true;
 							}
+							
+							
 						}
 						closetime();
 						

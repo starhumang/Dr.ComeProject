@@ -639,7 +639,7 @@
               closeDay.forEach((ele, idx)=>{
             	  
             	 if(ele.length <3){//휴무일이 하나면
-            		 closeWeek.push(day[ele.innerText])//화면에 바로 표시할 예정
+            		 closeWeek.push(day[ele.innerText])
             		 
             	 }else{//휴무일이 여러개면
             		 let days = ele.innerText.split(',');
@@ -648,7 +648,7 @@
             			 holiday +=day[item]; //i1 -> 저는 숫자로 변환(요일로 변환해도 됨)
             			 holiday +=',';
             		 })
-            		 closeWeek.push(holiday); //화면에 표시
+            		 closeWeek.push(holiday); 
             	 }
                  
               })

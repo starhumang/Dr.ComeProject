@@ -259,7 +259,7 @@ thead tr:nth-child(3) th {
 						          <div class="card-header bg-dark"  style="text-align:center;">
 						            <div class="mx-0 mb-0 justify-content-sm-center justify-content-start px-1">
 						              <input type="text" id="datePicker" class="datepicker one" placeholder="날짜를 선택해주세요" name="date" readonly>
-						              <span class="fa fa-calendar"></span>
+						              <span class="fa fa-calendar" ></span>
 						            </div>
 						          </div>
 						          	<div class="card-body p-3 p-sm-5">
@@ -305,7 +305,8 @@ thead tr:nth-child(3) th {
 							let docName = null; //이거는 의사선택 전 날짜 못 고르게 하는 장치
 							let hosHoliday = [[${newDate}]]; //병원 쉬는날
 							let docHoliday = null; //의사 쉬는날
-							console.log(docHoliday);
+							let restday = []; //병원 + 의사 쉬는날
+							//console.log(docHoliday);
 							
 							
 							//페이지 열었을때 바로 시작되는 함수
@@ -322,24 +323,40 @@ thead tr:nth-child(3) th {
 								let holiday = tr.querySelector('.docHol').innerText;
 								document.querySelector('.name').innerText=docName; //이름뽑아오기
 								document.querySelector('.one').disabled=false; //날짜선택 disabled걸린거 풀기
+								document.querySelector('.one').value = null;
 								
-								let dayList = {"월": 1 ,"화": 2,"수": 3,"목": 4,"금": 5 ,"토": 6,"일" : 7}
-								//let restday = 
-								console.log("restday",restday);
+								let dayList = {"i1": 1 ,"i2": 2,"i3": 3,"i4": 4,"i5": 5 ,"i6": 6,"i7" : 0}
+								
+								let restday = [];
+								//자르기
+								if(holiday.length > 2){
+									//hosHoliday=''
+									let splitHoliday = holiday.split(',');
+									splitHoliday.forEach((ele)=>{
+									let array = [dayList[ele]];
+									hosHoliday = hosHoliday.concat(array);
+									})
+									//hosHoliday.push(hosHoliday);//병원 쉬는날도 같이
+								}else{
+									let array = [dayList[holiday]];
+									hosHoliday = hosHoliday.concat(array);
+									//hosHoliday.push(hosHoliday);//병원 쉬는날도 같이
+								}
+								
+								
+								console.log("hosHoliday",hosHoliday);
 								
 								
 							}
-							
-							
 							
 						   $('#datePicker')
 						      .datepicker({
 						         format: 'yyyy-mm-dd', //데이터 포맷 형식(yyyy : 년 mm : 월 dd : 일 )
 						         startDate: '1d', //달력에서 선택 할 수 있는 가장 빠른 날짜. 이전으로는 선택 불가능 ( d : 일 m : 달 y : 년 w : 주)
-						         endDate: '+1m', //달력에서 선택 할 수 있는 가장 느린 날짜. 이후로 선택 불가 ( d : 일 m : 달 y : 년 w : 주)
+						         endDate: '+10d', //달력에서 선택 할 수 있는 가장 느린 날짜. 이후로 선택 불가 ( d : 일 m : 달 y : 년 w : 주)
 						         autoclose: true, //사용자가 날짜를 클릭하면 자동 캘린더가 닫히는 옵션
 						         datesDisabled: ['2019-06-24', '2019-06-26'], //선택 불가능한 일 설정 하는 배열 위에 있는 format 과 형식이 같아야함.
-						         daysOfWeekDisabled: [hosHoliday], //선택 불가능한 요일 설정 0 : 일요일 ~ 6 : 토요일
+						         daysOfWeekDisabled: hosHoliday, //선택 불가능한 요일 설정 0 : 일요일 ~ 6 : 토요일
 						         disableTouchKeyboard: false, //모바일에서 플러그인 작동 여부 기본값 false 가 작동 true가 작동 안함.
 						         immediateUpdates: true, //사용자가 보는 화면으로 바로바로 날짜를 변경할지 여부 기본값 :false
 						         multidate: false, //여러 날짜 선택할 수 있게 하는 옵션 기본값 :false

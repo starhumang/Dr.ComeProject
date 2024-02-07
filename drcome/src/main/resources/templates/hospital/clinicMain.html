@@ -103,7 +103,7 @@ input[type="radio"]:checked+label {
 				<table class="table table-hover">
 					<thead>
 						<tr>
-							<th>진료코드</th>
+							<th>예약코드</th>
 							<th>환자이름</th>
 							<th>생년월일</th>
 							<th>성별</th>
@@ -112,12 +112,12 @@ input[type="radio"]:checked+label {
 							<th>담당의</th>
 							<th>구분</th>
 							<th>진료상태</th>
-							<th>약처방</th>
+							<th>처방전</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr th:each="rl : ${reserveList}">
-							<td th:text="${rl.clinicNo}"></td>
+							<td th:text="${rl.reserveNo}"></td>
 							<td th:text="${rl.userName}"></td>
 							<td th:text="${#dates.format(rl.userBirthday, 'yyyy-MM-dd')}"></td>
 							<td th:text="${rl.gender}"></td>
@@ -135,9 +135,22 @@ input[type="radio"]:checked+label {
 				</table>
 			</div>
 		</div>
-		<script th:inline="javascript">
-			document.getElementById('date').value = new Date()
-					.toISOString().substring(0, 10);
+		<script>
+			var finalDay = null;
+			// 페이지 로드 시에 오늘 날짜로 값을 받아오고 화면에 출력
+		    $(document).ready(function() {
+		        var todayDate = new Date().toISOString().substring(0, 10);
+		        var inputToday = $('#date').val(todayDate); // 입력 요소에 오늘 날짜 설정
+		        //console.log(todayDate); // 오늘 날짜 출력
+		        
+		        finalDay = inputToday.val().replace(/-/g, '');
+		        console.log(finalDay);
+		    });
+		
+		    $('#date').change(function (){
+		        finalDay = $('#date').val().replace(/-/g, ''); // '-'를 제외한 값만 가져옴
+		        console.log(finalDay);
+		    });
 		</script>
 	</div>
 </body>

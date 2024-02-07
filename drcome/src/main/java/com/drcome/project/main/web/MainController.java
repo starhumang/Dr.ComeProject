@@ -188,7 +188,8 @@ public class MainController {
 		System.out.println("date="+date);
 		//System.out.println(dayList.get("i1"));
 		if(date.length() < 3){
-			Integer newDate = dayList.get(date);
+			List<Integer> newDate = new ArrayList<>();
+			newDate.add(dayList.get(date));
 			System.out.println("newDate요일하나"+newDate);
 			model.addAttribute("newDate", newDate);
 		}else {

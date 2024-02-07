@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.admin.domain.Hospital;
+import com.drcome.project.common.service.AlarmDao;
+import com.drcome.project.common.service.AlarmService;
 import com.drcome.project.common.service.PageDTO;
 import com.drcome.project.doctor.service.PatientService;
 import com.drcome.project.doctor.service.PatientVO;
@@ -29,7 +31,11 @@ public class PatientController {
 
 	@Autowired
 	PatientService patientService;
+	
+	@Autowired
+	AlarmService alarmService;
 
+	
 	// 공통 병원 정보 따로 빼기
 	@ModelAttribute("hospitalSel")
 	public Hospital getServerTime() {
@@ -38,19 +44,28 @@ public class PatientController {
 		return hosSel;
 	}
 
+	
 	// 비대면진료페이지
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
-		//System.out.println("너뭐야 " + vo); // 아무것도없음
-		
+
+		// System.out.println("너뭐야????????????????????? " + vo); //예약번호, 유저아이디 들어옴
 		// 기본정보
-		vo.setReserveNo(4);
 		PatientVO findVO = patientService.getPatientInfo(vo);
 		model.addAttribute("pInfo", findVO);
-	
+		System.out.println(findVO);
 		return "doctor/untactClinic";
 
 	}
+	
+	//알람 테이블 인서트 
+	@PostMapping("saveAlarm")
+	@ResponseBody
+	public int saveAlarm(@RequestBody AlarmDao dao) {
+		System.out.println("알람 인서트완료");
+		return alarmService.saveAlarm(dao);
+	}
+	
 
 	// 진료기록 불러오기
 	@GetMapping("clist")
@@ -122,6 +137,12 @@ public class PatientController {
 	@ResponseBody
 	public int saveInfo(@RequestBody PatientVO vo) {
 		return patientService.insertClinic(vo);
+	}
+	
+	// 결제
+	@GetMapping("payment")
+	public String payment() {
+		return "doctor/clinicPayment";
 	}
 
 }// end class

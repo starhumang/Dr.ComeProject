@@ -8,30 +8,33 @@
 	<!-- Dashboard -->
 	<!-- 오늘 진료 및 예약 리스트 -->
 	<select id="selectTodayReserve" resultType="Map">
-		SELECT c.clinic_no "clinicNo"
-			 , u.birthday "userBirthday"
-			 , u.gender "gender"
-			 , u.phone "userPhone" 
-			 , u.user_name "userName"
-			 , r.reserve_time "reserveTime"
-			 , d.doctor_name "doctorName"
-			 , r.reserve_kindstatus "reserveKindstatus"
-		  FROM clinic c 
-		  JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
-		  JOIN doctor d ON r.doctor_no = d.doctor_no
-		  JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
-		  JOIN usertable u ON u.user_id = a.user_id
-		  WHERE a.hospital_id = #{hospitalId} 
-		  AND reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
-		  GROUP BY c.clinic_no
-				 , u.birthday
-				 , u.gender
-				 , u.phone
-				 , u.user_name
-				 , r.reserve_time
-				 , d.doctor_name
-				 , r.reserve_kindstatus
-		  ORDER BY r.reserve_time, c.clinic_no
+		<![CDATA[
+			SELECT c.clinic_no "clinicNo"
+				 , u.birthday "userBirthday"
+				 , u.gender "gender"
+				 , u.phone "userPhone" 
+				 , u.user_name "userName"
+				 , r.reserve_time "reserveTime"
+				 , d.doctor_name "doctorName"
+				 , r.reserve_kindstatus "reserveKindstatus"
+			  FROM clinic c 
+			  JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
+			  JOIN doctor d ON r.doctor_no = d.doctor_no
+			  JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
+			  JOIN usertable u ON u.user_id = a.user_id
+			  WHERE a.hospital_id = #{hospitalId} 
+			  AND reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
+			  AND ROWNUM <= 5
+			  GROUP BY c.clinic_no
+					 , u.birthday
+					 , u.gender
+					 , u.phone
+					 , u.user_name
+					 , r.reserve_time
+					 , d.doctor_name
+					 , r.reserve_kindstatus
+			  ORDER BY r.reserve_time, c.clinic_no
+		]]>
 	</select>
 	<!-- QnA 리스트(답변/노답변) -->
 	<!-- 답변O -->
@@ -58,8 +61,215 @@
 			  WHERE hospital_id = #{hospitalId} AND ans_status = 'j1' AND ROWNUM <= 5
 			  ORDER BY wdate
 		]]>
-	</select>	
+	</select>
+	
+	<!-- 예약내역 -->
+	<!-- 메인 -->
+	<select id="selectReserveMain" resultType="Map">
+		SELECT c.clinic_no "clinicNo"
+			 , u.birthday "userBirthday"
+			 , u.gender "gender"
+			 , u.phone "userPhone" 
+			 , u.user_name "userName"
+			 , r.reserve_time "reserveTime"
+			 , d.doctor_name "doctorName"
+			 , r.reserve_kindstatus "reserveKindstatus"
+		  FROM clinic c 
+		  JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
+		  JOIN doctor d ON r.doctor_no = d.doctor_no
+		  JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
+		  JOIN usertable u ON u.user_id = a.user_id
+		  WHERE a.hospital_id = #{hospitalId} 
+		  AND reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
+		  GROUP BY c.clinic_no
+				 , u.birthday
+				 , u.gender
+				 , u.phone
+				 , u.user_name
+				 , r.reserve_time
+				 , d.doctor_name
+				 , r.reserve_kindstatus
+		  ORDER BY r.reserve_time, c.clinic_no
+	</select>
+	
+	<!-- 진료실 -->
+	<select id="selectReserveDr" resultType="Map">
+         SELECT r.RESERVE_NO "reserveNo"
+			 , u.birthday "userBirthday"
+			 , u.gender "gender"
+			 , u.phone "userPhone" 
+			 , u.user_name "userName"
+			 , r.reserve_time "reserveTime"
+			 , d.doctor_name "doctorName"
+			 , r.reserve_kindstatus "reserveKindstatus"
+		  FROM reservation r
+		  JOIN doctor d ON r.doctor_no = d.doctor_no AND r.hospital_id = d.hospital_id
+		  JOIN usertable u ON u.user_id = r.user_id
+		  WHERE r.hospital_id = #{hospitalId}
+		  AND r.reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
+		  AND d.doctor_No = #{doctorNo}
+		  GROUP BY r.RESERVE_NO
+			 , u.birthday
+			 , u.gender
+			 , u.phone
+			 , u.user_name
+			 , r.reserve_time
+			 , d.doctor_name
+			 , r.reserve_kindstatus
+		  ORDER BY r.reserve_time, r.reserve_no
+	</select>
+	
+	<!-- 진료 pagination -->
+	<select id="noticeList" resultType="noticeVO">
+		<![CDATA[
+			SELECT *
+			FROM (
+				SELECT clinic_no,
+					   TO_CHAR(clinic_date, 'YYYY-MM-DD') AS clinic_date,
+				       clinic_symptom,
+				       specificity,
+				       perscription_yn,
+				       ROW_NUMBER() OVER (ORDER BY clinic_date DESC) AS rn
+				FROM (
+					SELECT clinic_no,
+					       clinic_date,
+			               clinic_symptom,
+						   specificity,
+						   perscription_yn
+			        FROM clinic
+			        WHERE patient_no = (SELECT patient_no
+			                            FROM patient
+			                            WHERE user_id = #{id.userId} AND hospital_id = #{id.hospitalId}
+			                            )
+				    ORDER BY clinic_date DESC
+						)  
+				WHERE ROWNUM <= #{page} * 5
+			  )
+			WHERE rn > (#{page} - 1) * 5
+		]]>
+	</select>
 
+	<!-- 총 리스트 갯수 -->
+	<select id="NoticeCntList" resultType="int">
+
+		select count(*)
+		from clinic
+		where
+		patient_no
+		= (select
+		patient_no
+		from
+		patient
+		where user_id=#{userId} and
+		hospital_id=#{hospitalId})
+
+	</select>
+	
+	<!-- QnA -->
+	<!-- QnA 전체 -->
+	<select id ="selectQnaList" resultType="Map">
+		SELECT qna_no "qnaNo",
+			   title "title",
+			   user_id "userId",
+			   category_status "categoryStatus",
+			   wdate "wDate",
+			   udate "uDate",
+			   ans_status "ansStatus"
+		  FROM qna
+		 WHERE hospital_id = #{hospitalId} AND ANS_STATUS IS NOT NULL
+		 ORDER BY qna_no DESC
+	</select>
+	
+	<!-- QnA 상세 -->
+	<select id ="selectQnaInfo" resultType="Map">
+		SELECT qna_no "qnaNo",
+		       title "title",
+		       user_id "userId",
+		       category_status "categoryStatus",
+		       content "content",
+		       wdate "wDate",
+		       udate "uDate",
+		       ans_status "ansStatus"
+		  FROM qna
+		 WHERE hospital_id = #{hospitalId} AND qna_no = #{qnaNo} AND ANS_STATUS IS NOT NULL
+		 ORDER BY qna_no DESC
+	</select>
+
+	<!-- 공지사항 -->
+	<!-- 공지사항 전체 -->
+	<select id ="selectNoticeList" resultType="Map">
+		SELECT notice_no "noticeNo",
+		       title "title",
+		       content "content",
+		       wdate "wDate",
+		       udate "uDate"
+		  FROM notice
+		  WHERE hospital_id = #{hospitalId}
+		  ORDER BY notice_no DESC
+	</select>
+	
+	<!-- 공지사항 상세 -->
+	<select id="selectNoticeInfo" resultType="Map">
+		SELECT n.notice_no "noticeNo",
+		       n.wdate "wDate",
+		       n.title "title",
+		       n.content "content",
+		       a.file_name "fileName"
+		  FROM notice n
+		  JOIN attachment a ON n.notice_no = a.notice_no
+		 WHERE n.hospital_id = #{hospitalId} AND n.notice_no = #{noticeNo}
+	</select>
+	
+	<!-- 공지사항 상세 collection -->
+	<resultMap id="atResult" type="NoticeVO">
+		<id column="notice_no" property="noticeNo"/>
+		<collection property="files" javaType="ArrayList"
+			column="notice_no" ofType="NoticeAttachVO" select="selectNoAttachList"/>
+	</resultMap>
+	
+	<select id="selectNoList" resultMap="atResult">
+		select notice_no,
+		       title,
+		       wdate,
+		       content,
+		       hospital_id,
+		       udate
+		from notice
+		where notice_no = #{noticeNo}
+		AND hospital_id = #{hospitalId}
+	</select>
+	<select id="selectNoAttachList" resultType="NoticeAttachVO">
+		select file_no,
+		       file_name,
+		       notice_no,
+		       qna_no
+		from attachment
+		where notice_no = #{noticeNo}
+	</select>
+	
+	<!-- 공지사항 등록 -->
+	<!-- 첨부파일 같이 등록 -->
+	<insert id="insertNotice" parameterType="NoticeVO">
+	<selectKey keyProperty="noticeNo" order="BEFORE" resultType="int">
+	  select notice_seq.NEXTVAL 
+	  from   dual
+	</selectKey>
+		INSERT INTO notice (notice_no,
+								title,
+								content,
+								hospital_id)
+		VALUES (#{noticeNo},
+				#{title},
+				#{content},
+				#{hospitalId})
+	</insert>
+	<insert id="insertAttach" parameterType="NoticeVO">
+		INSERT INTO attachment (file_no, file_name, notice_no)
+		VALUES (attachment_seq.NEXTVAL,
+				#{fileName},
+				#{noticeNo})
+	</insert>
+	
 	<!-- MyProfile -->
 	<!-- 병원-의사-시간 조회 -->
 	<resultMap id="drResult" type="DoctorVO">

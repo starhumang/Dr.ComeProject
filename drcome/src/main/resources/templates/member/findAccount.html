@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>내 정보 찾기</title>
+		<style>
+			.registered-customers {
+				margin: 0 auto;
+				width: 60%;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.blog-section-title {
+				color: #333;
+				border-left: 2px solid #06bbcc;
+				padding-left: 10px;
+			}
+
+			form {
+				margin-top: 20px;
+			}
+
+			label {
+				display: inline-block;
+				width: 200px;
+				margin-bottom: 5px;
+			}
+
+			.input-group {
+				align-items: center;
+				margin-bottom: 15px;
+			}
+
+			.input-group input,
+			.input-group button {
+				height: 30px;
+			}
+
+			.input-group input {
+				width: 400px;
+				margin-right: 10px;
+				height: 32px;
+				border: 0;
+				outline: none;
+				padding-left: 10px;
+				background-color: rgb(233, 233, 233);
+			}
+			#verification-section {
+				display: none;
+				align-items: center;
+				margin-bottom: 15px;
+			}
+
+			#verification-section input,
+			#verification-section button {
+				height: 30px;
+			}
+
+			#verification-section button {
+				width: 150px;
+			}
+		</style>
+
+		<script type="text/javascript">
+			function showFindIdForm() {
+				clearForms();
+				document.getElementById('findIdForm').style.display = 'block';
+				document.getElementById('findPwForm').style.display = 'none';
+			}
+
+			function showFindPwForm() {
+				clearForms();
+				document.getElementById('findIdForm').style.display = 'none';
+				document.getElementById('findPwForm').style.display = 'block';
+			}
+
+			function clearForms() {
+				document.getElementById('findIdForm').style.display = 'none';
+				document.getElementById('findPwForm').style.display = 'none';
+				document.getElementById('verification-section').style.display = 'none';
+
+				document.getElementById('nameId').value = '';
+				document.getElementById('phoneId').value = '';
+				document.getElementById('idPw').value = '';
+				document.getElementById('phonePw').value = '';
+				document.getElementById('checkPhoneNum').value = '';
+
+				document.getElementById('findPwBtn').disabled = true;
+			}
+
+			const autoHyphen = (target) => {
+				target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+			};
+
+			function findId() {
+				let userName = $('#nameId').val();
+				let phone = $('#phoneId').val();
+
+				console.log(userName, phone);
+
+				$.ajax({
+					type: 'GET',
+					url: '/auth/findId',
+					data: { userName: userName, phone: phone },
+				})
+					.done((resp) => {
+						console.log(resp);
+						if (resp != 'no name') {
+							Swal.fire({
+								icon: 'success',
+								text: `[${userName}]님의 아이디는 ${resp}입니다.`,
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								text: '아이디가 존재하지 않습니다.',
+							});
+						}
+					})
+					.fail((err) => console.log(err));
+			}
+
+			function checkPhonePw() {
+				let phone = $('#phonePw').val().replace(/-/g, '');
+				console.log(phone);
+				let url = '/auth/checkAuthPhone?phoneNum=' + phone;
+				$.ajax({
+					url: url,
+					type: 'get',
+				})
+					.done((resp) => {
+						// alert('인증번호 발송');
+						Swal.fire({
+							icon: 'success',
+							text: '인증번호가 발송되었습니다.',
+						});
+						console.log(resp);
+						console.log(resp.checkNum);
+						verificationCode = resp.checkNum;
+						document.getElementById('verification-section').style.display = 'flex';
+					})
+					.fail((err) => {
+						console.log(err);
+					});
+			}
+
+			function checkPhoneNumber() {
+				let enteredCode = document.getElementById('checkPhoneNum').value;
+
+				if (enteredCode == verificationCode) {
+					// alert('인증 완료');
+					Swal.fire({
+						icon: 'success',
+						text: '인증되었습니다.',
+					});
+					document.getElementById('findPwBtn').disabled = false;
+				} else {
+					// alert('인증 번호가 일치하지 않습니다.');
+					Swal.fire({
+						icon: 'error',
+						text: '인증 번호가 일치하지 않습니다.',
+					});
+				}
+			}
+
+			function findPw() {
+				Swal.fire({
+					title: '변경할 비밀번호',
+					html: `
+			     <input type="password" id="newPw" class="swal2-input" autocapitalize="off" placeholder="비밀번호">
+			     <input type="password" id="newPwc" class="swal2-input" autocapitalize="off" placeholder="비밀번호 확인">
+			 `,
+					showCancelButton: true,
+					confirmButtonColor: '#DD6B55',
+					confirmButtonText: '확인',
+					cancelButtonText: '취소',
+					preConfirm: () => {
+						const userId = document.getElementById('idPw').value;
+						const newPw = document.getElementById('newPw').value;
+
+						console.log('아이디:', userId);
+						console.log('변경번호:', newPw);
+
+						let url = '/auth/findPw?userId=' + userId + '&password=' + newPw;
+						$.ajax({
+							url: url,
+							type: 'get',
+						})
+							.done((resp) => {
+								if (resp == 1) {
+									Swal.fire({
+										icon: 'success',
+										text: '변경된 비밀번호로 다시 로그인해주세요.',
+									}).then(function () {
+										location.href = '/userlogin';
+									});
+								} else {
+									Swal.fire({
+										icon: 'error',
+										text: '변경에 실패했습니다.',
+									});
+								}
+							})
+							.fail((err) => {
+								Swal.fire({
+									icon: 'error',
+									text: '오류가 발생했습니다.',
+								});
+							});
+					},
+				});
+			}
+		</script>
+	</head>
+
+	<body>
+		<div layout:fragment="content">
+			<div class="container">
+				<div class="registered-customers">
+					<h3 class="blog-section-title border-left mb-30">내 정보 찾기</h3>
+					<br />
+					<span onclick="showFindIdForm()">아이디 찾기</span>
+					<span>|</span>
+					<span onclick="showFindPwForm()">비밀번호 찾기</span>
+					<br />
+					<br />
+
+					<div id="findIdForm" style="display: block">
+						<div class="input-group">
+							<label>이름</label>
+							<input type="text" id="nameId" placeholder="이름을 입력하세요" required />
+						</div>
+						<div class="input-group">
+							<label>전화번호</label>
+							<input
+								type="tel"
+								id="phoneId"
+								placeholder="전화번호를 입력하세요"
+								required
+								maxlength="13"
+								oninput="autoHyphen(this)"
+							/>
+						</div>
+						<button type="button" onclick="findId()">아이디 찾기</button>
+					</div>
+
+					<div id="findPwForm" style="display: none">
+						<div class="input-group">
+							<label>아이디</label>
+							<input type="text" id="idPw" placeholder="아이디를 입력하세요" required />
+						</div>
+						<div class="input-group">
+							<label>전화번호</label>
+							<input
+								type="tel"
+								id="phonePw"
+								placeholder="전화번호를 입력하세요"
+								required
+								maxlength="13"
+								oninput="autoHyphen(this)"
+							/>
+							<button type="button" id="checkPhoneBtnPw" onclick="checkPhonePw()">인증번호발송</button>
+						</div>
+						<div class="input-group" id="verification-section">
+							<label>인증번호</label>
+							<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
+							<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
+						</div>
+						<button id="findPwBtn" type="button" onclick="findPw()" disabled>비밀번호 찾기</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

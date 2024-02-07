@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}">
+<head>
+<meta charset="UTF-8" />
+<title>noticeList</title>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.search {
+	display: flex;
+	justify-content: flex-end;
+	margin-bottom: 40px;
+}
+
+.catCal {
+	display: flex;
+	justify-content: space-between;
+	margin: 15px 0;
+}
+
+input[type="radio"] {
+	display: none;
+}
+
+input[type="radio"]:checked+label {
+	background-color: #5a5c69;
+	color: #fff;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info">
+				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+			<p>Reservation</p>
+			<div class="search">
+				<!-- drop -->
+				<div style="margin-right: 5px">
+					<select class="custom-select" aria-label="Default select example">
+						<option selected>검색유형</option>
+						<option value="1">제목</option>
+						<option value="2">내용</option>
+					</select>
+				</div>
+
+				<!-- 검색 -->
+				<div>
+					<div class="input-group">
+						<button class="btn btn-info" type="button"
+							style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+							<i class="fas fa-search fa-sm"></i>
+						</button>
+						<input type="text" class="form-control bg-light border-1 small"
+							placeholder="검색어를 입력하세요." aria-label="Search"
+							aria-describedby="basic-addon2" />
+						<div class="input-group-append">
+							<button class="btn btn-info" type="button">검색하기</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- 카테고리 & 달력선택 -->
+			<div class="catCal">
+				<div class="btn-group" role="group"
+					aria-label="Basic radio toggle button group"
+					style="margin-bottom: 20px;">
+					<input type="radio" class="btn-check" name="btnradio"
+						id="btnradio1" autocomplete="off" checked> <label
+						class="btn btn-outline-dark" for="btnradio1"
+						style="border-top-left-radius: 0.35rem; border-bottom-left-radius: 0.35rem;">전체내역</label>
+					<input type="radio" class="btn-check" name="btnradio"
+						id="btnradio2" autocomplete="off"> <label
+						class="btn btn-outline-dark" for="btnradio2">비대면진료</label> <input
+						type="radio" class="btn-check" name="btnradio" id="btnradio4"
+						autocomplete="off"> <label class="btn btn-outline-dark"
+						for="btnradio4">대면진료</label>
+				</div>
+
+				<div class="calSel">
+					<label for="date">날짜를 선택하세요 : <input type="date" id="date"
+						value="">
+					</label>
+				</div>
+			</div>
+
+
+			<div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>예약코드</th>
+							<th>환자이름</th>
+							<th>생년월일</th>
+							<th>성별</th>
+							<th>환자Tel</th>
+							<th>예약시간</th>
+							<th>담당의</th>
+							<th>구분</th>
+							<th>진료상태</th>
+							<th>처방전</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="rl : ${reserveList}">
+							<td th:text="${rl.reserveNo}"></td>
+							<td th:text="${rl.userName}"></td>
+							<td th:text="${#dates.format(rl.userBirthday, 'yyyy-MM-dd')}"></td>
+							<td th:text="${rl.gender}"></td>
+							<td th:text="${rl.userPhone}"></td>
+							<td th:text="|${rl.reserveTime} : 00|"></td>
+							<td th:text="${rl.doctorName}"></td>
+
+							<td th:if="${ rl.reserveKindstatus == 'c1' }">대면</td>
+							<td th:unless="${ rl.reserveKindstatus == 'c1' }">비대면</td>
+
+							<td><button class="btn btn-dark">진료대기</button></td>
+							<td><button class="btn btn-light">처방전</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<script>
+			var finalDay = null;
+			// 페이지 로드 시에 오늘 날짜로 값을 받아오고 화면에 출력
+		    $(document).ready(function() {
+		        var todayDate = new Date().toISOString().substring(0, 10);
+		        var inputToday = $('#date').val(todayDate); // 입력 요소에 오늘 날짜 설정
+		        //console.log(todayDate); // 오늘 날짜 출력
+		        
+		        finalDay = inputToday.val().replace(/-/g, '');
+		        console.log(finalDay);
+		    });
+		
+		    $('#date').change(function (){
+		        finalDay = $('#date').val().replace(/-/g, ''); // '-'를 제외한 값만 가져옴
+		        console.log(finalDay);
+		    });
+		</script>
+	</div>
+</body>
+</html>

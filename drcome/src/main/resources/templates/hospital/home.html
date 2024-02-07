@@ -15,11 +15,13 @@
 .qnaTitle {
 	margin-bottom: 20px;
 }
-
 </style>
 </head>
 <body>
 	<div layout:fragment="content">
+		<div class="user-logout-link">
+			<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
+		</div>
 		<div class="container-fluid">
 			<!-- 날짜 및 병원 정보 헤더 -->
 			<div class="head_info">
@@ -129,39 +131,41 @@
 					style="display: flex; justify-content: space-between; align-items: center;">
 					<h5 class="m-0 font-weight-bold text-secondary">진료예약현황</h5>
 					<div class="btn1">
-						<button class="btn btn-sm btn-dark shadow-sm">더보기</button>
+						<a th:href="@{/hospital/clinicMain}"
+							class="btn btn-sm btn-dark shadow-sm">더보기</a>
 					</div>
 				</div>
 				<div class="card-body">
 					<table class="table">
 						<thead>
 							<tr>
-								<th>진료코드</th>
-								<th>환자이름</th>
-								<th>생년월일</th>
-								<th>환자Tel</th>
-								<th>성별</th>
-								<th>예약시간</th>
-								<th>담당의</th>
-								<th>구분</th>
+							<th>예약코드</th>
+							<th>환자이름</th>
+							<th>생년월일</th>
+							<th>성별</th>
+							<th>환자Tel</th>
+							<th>예약시간</th>
+							<th>담당의</th>
+							<th>구분</th>
 							</tr>
 						</thead>
 						<tbody>
-							<tr>
-								<td>111111</td>
-								<td>김길동</td>
-								<td>1995-01-01</td>
-								<td>010-1111-2222</td>
-								<td>남</td>
-								<td>15:00</td>
-								<td>라의사</td>
-								<td>비대면</td>
+							<tr th:each="to : ${tolist}">
+								<td th:text="${to.reserveNo}"></td>
+								<td th:text="${to.userName}"></td>
+								<td th:text="${#dates.format(to.userBirthday, 'yyyy-MM-dd')}"></td>
+								<td th:text="${to.gender}"></td>
+								<td th:text="${to.userPhone}"></td>
+								<td th:text="|${to.reserveTime} : 00|"></td>
+								<td th:text="${to.doctorName}"></td>
+
+								<td th:if="${ to.reserveKindstatus == 'c1' }">대면</td>
+								<td th:unless="${ to.reserveKindstatus == 'c1' }">비대면</td>
 							</tr>
 						</tbody>
 					</table>
 				</div>
 			</div>
-
 			<!-- Q&A -->
 			<div class="card shadow mb-4">
 				<div class="card-header py-3"
@@ -178,15 +182,11 @@
 						</div>
 						<table class="table table-hover">
 							<tbody>
-								<tr>
-									<td>111111</td>
-									<td>김길동</td>
-									<td>1995-01-01</td>
-									<td>010-1111-2222</td>
-									<td>남</td>
-									<td>15:00</td>
-									<td>라의사</td>
-									<td>비대면</td>
+								<tr th:each="qnax : ${QnAX}">
+									<td th:text="${qnax.userId}"></td>
+									<td th:text="${qnax.categoryStatus}"></td>
+									<td th:text="${qnax.title}"></td>
+									<td th:text="${qnax.ansStatus}"></td>
 								</tr>
 							</tbody>
 						</table>
@@ -199,15 +199,11 @@
 						</div>
 						<table class="table table-hover">
 							<tbody>
-								<tr>
-									<td>111111</td>
-									<td>김길동</td>
-									<td>1995-01-01</td>
-									<td>010-1111-2222</td>
-									<td>남</td>
-									<td>15:00</td>
-									<td>라의사</td>
-									<td>비대면</td>
+								<tr th:each="qnao : ${QnAO}">
+									<td th:text="${qnao.userId}"></td>
+									<td th:text="${qnao.categoryStatus}"></td>
+									<td th:text="${qnao.title}"></td>
+									<td th:text="${qnao.ansStatus}"></td>
 								</tr>
 							</tbody>
 						</table>

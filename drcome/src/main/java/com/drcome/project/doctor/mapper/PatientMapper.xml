@@ -6,37 +6,25 @@
 	namespace="com.drcome.project.doctor.mapper.PatientMapper">
 
 
-
+	<!-- 기본정보 -->
 	<select id="selectPatientInfo"
 		resultType="com.drcome.project.doctor.service.PatientVO">
-		select user_name
+		select reserve_no
+		,u.user_id
+		,user_name
 		,gender
 		,birthday
 		,symptom
 		from usertable u
 		join reservation r
 		on(u.user_id = r.user_id)
-		where r.reserve_no=1
+		where
+		r.reserve_no=#{reserveNo}
 	</select>
 
 
-	<select id="clinicList"
-		resultType="com.drcome.project.doctor.service.PatientVO">
-		select clinic_no 
-		,clinic_date
-		,clinic_symptom
-		,specificity
-		,perscription_yn
-		from clinic
-		where patient_no = (select
-		patient_no
-		from
-		patient
-		where user_id='user1')
-		order by clinic_date desc
-	</select>
 
-
+	<!-- 처방전가져오기 -->
 	<select id="perscription"
 		resultType="com.drcome.project.doctor.service.PatientVO">
 		select medicine_name
@@ -46,8 +34,174 @@
 		from
 		perscription p join medicine d
 		on (p.medicine_no = d.medicine_no)
-		where clinic_no =#{clinicNo}
+		where
+		clinic_no =#{clinicNo}
 	</select>
+
+
+	<!-- 약검색 -->
+	<select id="mnameList"
+		resultType="com.drcome.project.doctor.service.PatientVO">
+		select * from medicine
+		where medicine_name LIKE
+		#{medicineName}||'%'
+	</select>
+
+
+	<!-- 재진 -환자번호조회 -->
+	<select id="searchPno" resultType="int">
+		select patient_no
+		from patient
+		where user_id=#{userId} and hospital_id=#{hospitalId}
+	</select>
+
+
+	<!-- 재진 -최근 진료 날짜로 업데이트 -->
+	<update id="updateDate" parameterType="PatientVO">
+		update patient set
+		current_date =SYSDATE
+		where hospital_id = #{hospitalId} and
+		user_id=
+		#{userId}
+	</update>
+
+
+	<!-- 진료기록저장 -->
+	<insert id="insertClinic" parameterType="PatientVO">
+
+		<selectKey keyProperty="clinicNo" resultType="int"
+			order="BEFORE">
+			select nvl(max(clinic_no), 0)+1
+			from clinic
+		</selectKey>
+
+
+		insert into
+		clinic(
+		clinic_no
+		,clinic_symptom
+		,specificity
+		,pay_yn
+		,reserve_no
+		,perscription_yn
+		,hospital_id
+		,patient_no
+		)
+
+		values (
+		#{clinicNo}
+		,#{clinicSymptom}
+		,#{specificity}
+		,#{payYn}
+		,#{reserveNo}
+		,
+		<choose>
+			<when test="perscriptionYn == null or perscriptionYn == ''"> 'Y' </when>
+			<otherwise> #{perscriptionYn} </otherwise>
+		</choose>
+		,#{hospitalId}
+		,#{patientNo}
+		)
+
+	</insert>
+
+	<!-- 처방전 저장 -->
+	<insert id="insertPer" parameterType="PatientVO">
+
+		<selectKey keyProperty="perscriptionNo" resultType="int"
+			order="BEFORE">
+			select nvl(max(perscription_no), 0)+1
+			from perscription
+		</selectKey>
+
+
+		insert into
+		perscription(
+		perscription_no
+		,dosage
+		,dose_cnt
+		,dose_day
+		,clinic_no
+		,medicine_no
+		)
+
+		values (
+		#{perscriptionNo}
+		,#{dosage}
+		,#{doseCnt}
+		,#{doseDay}
+		,#{clinicNo}
+		,#{medicineNo}
+		)
+
+	</insert>
+
+
+	<!-- 신규환자등록 -->
+	<insert id="patientInsert" parameterType="PatientVO">
+
+		insert into
+		patient(
+		user_id
+		,hospital_id
+		)
+
+		values (
+		#{userId}
+		,#{hospitalId}
+		)
+
+	</insert>
+
+
+	<!-- 페이지네이션 + 진료기록리스트 -->
+	<select id="clinicList"
+		resultType="com.drcome.project.doctor.service.PatientVO">
+  <![CDATA[
+		SELECT *
+		FROM (
+			SELECT clinic_no,
+				   TO_CHAR(clinic_date, 'YYYY-MM-DD') AS clinic_date,
+			       clinic_symptom,
+			       specificity,
+			       perscription_yn,
+			       ROW_NUMBER() OVER (ORDER BY clinic_date DESC) AS rn
+			FROM (
+				SELECT clinic_no,
+				       clinic_date,
+		               clinic_symptom,
+					   specificity,
+					   perscription_yn
+		        FROM clinic
+		        WHERE patient_no = (SELECT patient_no
+		                            FROM patient
+		                            WHERE user_id = #{id.userId} AND hospital_id = #{id.hospitalId}
+		                            )
+			    ORDER BY clinic_date DESC
+					)  
+			WHERE ROWNUM <= #{page} * 5
+		  )
+		WHERE rn > (#{page} - 1) * 5
+  ]]>
+	</select>
+
+
+	<!-- 총 리스트 갯수 -->
+	<select id="cntList" resultType="int">
+
+		select count(*)
+		from clinic
+		where
+		patient_no
+		= (select
+		patient_no
+		from
+		patient
+		where user_id=#{userId} and
+		hospital_id=#{hospitalId})
+
+	</select>
+
 
 
 

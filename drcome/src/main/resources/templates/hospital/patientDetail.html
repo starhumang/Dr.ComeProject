@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}">
+
+<head>
+<meta charset="UTF-8">
+<title>patientList</title>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.info-box {
+	display: flex;
+	justify-content: center;
+}
+
+#p-info {
+	text-align: center;
+	margin-bottom: 30px;
+	background-color: #DEE0E3;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info">
+				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+			<p>Patient Detail</p>
+
+			<!-- 환자 정보 -->
+			<div class="card shadow h-100 py-2" id="p-info">
+				<div class="card-body">
+					<h5 class="m-0 font-weight-bold text-secondary">
+						<i class="fas fa-fw fa-user"></i> &emsp;
+						[[${detailPList[0].userName}]] &emsp; | &emsp;
+						[[${#dates.format(detailPList[0].userBirthday, 'yyyy-MM-dd')}]]
+						&emsp; | &emsp; [[${detailPList[0].userPhone}]] &emsp; | &emsp;
+						[[${detailPList[0].gender}]]
+					</h5>
+				</div>
+			</div>
+			<!-- 상세 환자리스트 -->
+			<div>
+				<table class="table table-hover">
+					<thead>
+						<tr>
+							<th>진료코드</th>
+							<th>급여/비급여</th>
+							<th>진료일</th>
+							<th>진료내용</th>
+							<th>특이사항</th>
+							<th>처방전</th>
+							<th>구분</th>
+							<th>상태</th>
+							<th>상세보기</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr th:each="pdl : ${detailPList}">
+							<td th:text="${pdl.clinicNo}"></td>
+
+							<td th:if="${ pdl.payYn == 'Y' }">급여</td>
+							<td th:unless="${ pdl.payYn == 'Y' }">비급여</td>
+							
+							<td th:text="${#dates.format(pdl.clinicDate, 'yyyy-MM-dd')}"></td>
+							<td th:text="${pdl.clinicSymptom}"></td>
+							<td th:text="${pdl.specificity}"></td>
+							<td th:text="${pdl.perscriptionYn}"></td>
+							
+							<td th:if="${ pdl.reserveKindstatus == 'c1' }">대면</td>
+							<td th:unless="${ pdl.reserveKindstatus == 'c1' }">비대면</td>
+							
+							<td th:if="${ pdl.reserveStatus == 'e1' }">진료대기</td>
+							<td th:if="${ pdl.reserveStatus == 'e2' }">예약취소</td>
+							<td th:if="${ pdl.reserveStatus == 'e3' }">진료완료</td>
+							
+							
+							<td><button class="btn btn-sm btn-outline-warning">진료내역</button></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<!-- 목록버튼 -->
+			<div style="text-align: right;">
+				<a th:href="@{/hospital/patientList}" class="btn btn-dark">목록으로</a>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

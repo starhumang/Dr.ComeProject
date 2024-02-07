@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}">
+
+<head>
+<meta charset="UTF-8" />
+<title>myProfile</title>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.left {
+	display: flex;
+	flex-direction: column;
+	padding-right: 40px;
+}
+
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info">
+				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+
+			<p>Profile</p>
+			<div class="card shadow mb-4">
+				<div class="card-header py-3"
+					style="display: flex; justify-content: space-between; align-items: center;">
+					<h5 class="m-0 font-weight-bold text-secondary">
+						<i class="fas fa-fw fa-hospital"></i>병원정보
+					</h5>
+					<div class="btn1">
+						<button class="btn btn-sm btn-warning shadow-sm">탈퇴하기</button>
+						<button class="btn btn-sm btn-info shadow-sm">수정하기</button>
+					</div>
+				</div>
+				<div class="card-body"
+					style="display: flex; justify-content: center; align-items: center;">
+					<div class="left">
+						<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  -->
+						<img th:src="@{/images/} + ${hospitalSel.hospitalImg}" alt="image"
+							width="200px" height="200px" />
+						<button class="btn btn-sm btn-secondary shadow-sm" id="modalBtn"
+							data-bs-toggle="modal" data-bs-target="#exampleModal">크게보기</button>
+					</div>
+					<div class="right">
+						<table class="table">
+							<tr>
+								<th>병원이름</th>
+								<td th:text="${hospitalSel.hospitalName}"></td>
+								<th>병원주소</th>
+								<td th:text="${hospitalSel.address}"></td>
+								<th>전화번호</th>
+								<td th:text="${hospitalSel.phone}"></td>
+							</tr>
+							<tr>
+								<th>대표진료과목</th>
+								<td th:text="${hospitalSel.mainSubject}"></td>
+								<th>대표자이름</th>
+								<td th:text="${hospitalSel.directorName}"></td>
+								<th>대표자번호</th>
+								<td th:text="${hospitalSel.directorPhone}"></td>
+							</tr>
+							<tr>
+								<th>사업자번호</th>
+								<td th:text="${hospitalSel.directorLicense}"></td>
+								<th>상태</th>
+								<td th:if="${ hospitalSel.hospitalStatus == 'b1' }">승인대기</td>
+								<td th:if="${ hospitalSel.hospitalStatus == 'b2' }">영업중</td>
+								<th>휴무일</th>
+								<td th:text="${hospitalSel.holiday}"></td>
+							</tr>
+							<tr>
+								<th>오픈시간</th>
+								<td th:text="${hospitalSel.opentime}"></td>
+								<th>마감시간</th>
+								<td th:text="${hospitalSel.closetime}"></td>
+								<th>가입일자</th>
+								<td
+									th:text="${#dates.format(hospitalSel.joindate, 'yyyy-MM-dd')}"></td>
+							</tr>
+						</table>
+
+					</div>
+				</div>
+
+			</div>
+
+			<div class="card shadow mb-4">
+				<div class="card-header py-3"
+					style="display: flex; justify-content: space-between; align-items: center;">
+					<h5 class="m-0 font-weight-bold text-secondary">
+						<i class="fas fa-fw fa-user-nurse"></i>의사정보
+					</h5>
+					<div class="btn1">
+						<button class="btn btn-sm btn-warning shadow-sm">등록하기</button>
+						<button class="btn btn-sm btn-info shadow-sm">수정하기</button>
+					</div>
+				</div>
+				<div class="card-body">
+					<table class="table">
+						<thead>
+							<tr>
+								<th>의사번호</th>
+								<th>진료과목</th>
+								<th>의사이름</th>
+								<th>휴진일</th>
+								<th>진료일 / 진료시간</th>
+								<th>면허증</th>
+							</tr>
+						</thead>
+						<tbody>
+							<th:block th:each="doc : ${docList}">
+								<tr>
+									<td th:text="${doc.doctorNo}"></td>
+									<td th:text="${doc.subject}"></td>
+									<td th:text="${doc.doctorName}"></td>
+									<td th:text="${doc.holiday}"></td>
+									<td>
+										<div th:each="drTime : ${doc.times}">
+											[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
+											[[${drTime.maxTime}]] : 00</div>
+									</td>
+									<td th:text="${doc.doctorLicense}"></td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- 모달띄우기 -->
+			<div class="modal fade" id="exampleModal" tabindex="-1"
+				aria-labelledby="exampleModalLabel" aria-hidden="true">
+				<div class="modal-dialog modal-dialog-centered">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">hospital
+								Image</h5>
+							<button type="button" class="btn btn-light"
+								data-bs-dismiss="modal" aria-label="Close">X</button>
+						</div>
+						<div class="modal-body">
+							<img th:src="@{/images/} + ${hospitalSel.hospitalImg}" alt="image"
+								width="100%; overflow:hidden;" />
+						</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary"
+								data-bs-dismiss="modal">Close</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

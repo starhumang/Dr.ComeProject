@@ -21,19 +21,15 @@
 		<div class="container-fluid">
 			<div class="head_info"  th:each="pinfo : ${pinfo}">
 				<h4 th:text="${pinfo.pharmacyName}"></h4>
-				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : 
-					<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
-				</p>
 			</div>
 
 			<p>pharmacy Profile</p>
 			<div class="card shadow mb-4">
 				<div class="card-header py-3"
 					style="display: flex; justify-content: space-between; align-items: center;">
-					<h5 class="m-0 font-weight-bold text-secondary">
-						<i class="fas fa-fw fa-capsules"></i>약국 정보
-					</h5>
+					<h6 class="m-0 font-weight-bold text-secondary">
+						<i class="fas fa-fw fa-capsules"></i> 약국 정보
+					</h6>
 				</div>
 			   <!--  <div class="card shadow mb-4">
 				<div class="card-header py-3" style="margin-top: 20px;">
@@ -44,7 +40,7 @@
 				<div class="card-body"
 					style="display: flex; justify-content: center; align-items: center;">
 					<div class="left">
-						<img th:src="@{/img/} + ${pinfo.pharmacyImg}" alt="image"
+						<img th:src="@{/images/} + ${pinfo.pharmacyImg}" alt="image"
 							width="300px" style="margin-right: 50px;" />
 					</div>
 					<div class="right">

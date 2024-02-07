@@ -3,16 +3,44 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{pharmacy/pharmacyLayout}">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>Pharmacy Status</title>
 <style>
 #btn {
 	margin-bottom: 20px;
 }
+
 .head_info {
 	display: flex;
 	justify-content: space-between;
 	margin-top: 30px;
+}
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 0 2px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #4e73df;
+  color: #fff;
+  /* border: 1px solid #4e73df; */
+}
+
+.pagination a:hover {
+  background-color: #bfc5d8;
 }
 </style>
 </head>
@@ -22,8 +50,12 @@
 			<div class="head_info">
 				<h4>처방현황</h4>
 				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : 
-					<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					<!-- <i class="fas fa-fw fa-calendar" data-toggle="modal"
+						data-target="#calendarModal"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+						id="datepicker" th:name="datepicker"></span> -->
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 <input type="text"
+						id="datepicker" />
 				</p>
 			</div>
 
@@ -32,42 +64,137 @@
 				<div class="card-header py-3"
 					style="display: flex; justify-content: space-between; align-items: center;">
 					<h5 class="m-0 font-weight-bold text-secondary">
-						<i class="fas fa-fw fa-capsules"></i> 
+						<i class="fas fa-fw fa-capsules"></i>
 					</h5>
 				</div>
 				<div class="card-body"
-					style="display: flex; justify-content: center; align-items: center;">
-		<!--/* 			<div class="left">
-						<img th:src="@{/img/} + ${pinfo.pharmacyImg}" alt="image"
-							width="300px" style="margin-right: 50px;" />
-					</div> */-->
-					<div class="right">
-						<table class="table">
+					style="display: flex; justify-content: center; align-items: center">
+					<table class="table">
+              <!-- <tr>
+                <th>No</th>
+                <th>환자성명</th>
+                <th>생년월일</th>
+                <th>환자Tel</th>
+                <th>병원명</th>
+                <th>병원Tel</th>
+                <th>담당의</th>
+                <th>처방일자</th>
+                <th>처방전</th>
+                <th>출력</th>
+                <th>반환</th>
+              </tr> -->
+					<!--/*
+              <tr th:each="plist, pstart : ${plist}">
+                <td th:text="${pstart.count}"></td>
+                <td th:text="${plist.userName}"></td>
+                <td
+                  th:text="${#dates.format(plist.userBirthday, 'yyyy-MM-dd')}"
+                ></td>
+                <td th:text="${plist.userPhone}"></td>
+                <td th:text="${plist.hospitalName}"></td>
+                <td th:text="${plist.hospitalPhone}"></td>
+                <td th:text="${plist.doctorName}"></td>
+                <td
+                  th:text="${#dates.format(plist.perscriptionDate, 'yyyy-MM-dd')}"
+                ></td>
+                <td>
+                  <button
+                    id="viewper"
+                    th:onclick="viewPer([[${plist.clinicNo}]])"
+                    type="button"
+                    class="btn btn-info"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModalCenter"
+                  >
+                    미리보기
+                  </button>
+                </td>
+                <td><button>출력하기</button></td>
+                <td>
+                  <button
+                    id="returnbtn"
+                    data-bs-toggle="modal"
+                    data-bs-target="#returnModal"
+                  >
+                    반환
+                  </button>
+                </td>
+              </tr>
+              */-->
+					</table>
+				</div>
+				<div class="pagination"></div>
+			</div>
+		</div>
+		<!-- 반환 modal -->
+		<div class="modal fade" id="returnModal" tabindex="-1"
+			aria-labelledby="exampleModalLabel" aria-hidden="true">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLabel">반환 사유</h5>
+						<button type="button" class="btn-close" data-bs-dismiss="modal"
+							aria-label="Close"></button>
+					</div>
+					<div class="modal-body container">
+						<form id="returnform">
+							<div class="form-check">
+								<input class="form-check-input" type="radio"
+									name="flexRadioDefault" id="flexRadioDefault1" checked/> <label
+									class="form-check-label" for="flexRadioDefault1">약 재고가 부족하여 조제가 취소되었습니다. </label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio"
+									name="flexRadioDefault" id="flexRadioDefault2"  /> <label
+									class="form-check-label" for="flexRadioDefault2">약국 사정상 조제가 어려워 취소되었습니다. </label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio"
+									name="flexRadioDefault" id="flexRadioDefault3"  /> <label
+									class="form-check-label" for="flexRadioDefault3">약국 영업 시간이 아닙니다. </label>
+							</div>
+							<div class="form-check">
+								<input class="form-check-input" type="radio"
+									name="flexRadioDefault" id="flexRadioDefault4"  /> <label
+									for="message-text" class="col-form-label">기타</label>
+								<!-- <div>
+									<textarea class="form-control" id="message-text"></textarea>
+								</div> -->
+							</div>
+						</form>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary"
+								data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-primary" id="reperscript">반환</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+    <!-- 반환 modal 끝 -->
+		<!-- 처방전 미리보기 모달 -->
+		<div class="modal fade" id="exampleModalCenter" tabindex="-1"
+			role="dialog" aria-labelledby="exampleModalCenterTitle"
+			aria-hidden="false">
+			<div class="modal-dialog modal-dialog-centered" role="document">
+				<div class="modal-content">
+					<div class="modal-header">
+						<h5 class="modal-title" id="exampleModalLongTitle">처방전 상세보기</h5>
+					</div>
+					<div class="modal-body">
+						<table id="modalTable">
 							<tr>
-								<th>환자성명</th>
-								<th>생년월일</th>
-								<th>환자Tel</th>
-								<th>병원명</th>
-								<th>병원Tel</th>
-								<th>담당의</th>
-								<th>처방일자</th>
-								<th>처방전</th>
-								<th>출력</th>
-								<th>반환</th>
-							</tr>
-							<tr th:each="plist : ${plist}">
-								<td th:text="${plist.userName}"></td>
-								<td th:text="${plist.userBirthday}"></td>
-								<td th:text="${plist.userPhone}"></td>
-								<td th:text="${plist.hospitalName}"></td>
-								<td th:text="${plist.hospitalPhone}"></td>
-								<td th:text="${plist.doctorName}"></td>
-								<td th:text="${#dates.format(plist.perscriptionDate, 'yyyy-MM-dd')}"></td>
-								<td>이미지</td>
-								<td><button>출력하기</button></td>
-								<td><button>반환</button></td>
+								<th>약품명</th>
+								<th>투약량</th>
+								<th>횟수</th>
+								<th>일수</th>
 							</tr>
 						</table>
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary"
+							data-bs-dismiss="modal">Close</button>
 					</div>
 				</div>
 			</div>
@@ -75,3 +202,323 @@
 	</div>
 </body>
 </html>
+<script>
+var clinicNo = 0;
+var dateValue = 0;
+  $(function () {
+    //input을 datepicker로 선언
+    $("#datepicker").datepicker({
+      dateFormat: "yy-mm-dd", //달력 날짜 형태
+      showOtherMonths: true, //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+      showMonthAfterYear: true, // 월- 년 순서가아닌 년도 - 월 순서
+      changeYear: true, //option값 년 선택 가능
+      changeMonth: true, //option값  월 선택 가능
+      yearSuffix: "년", //달력의 년도 부분 뒤 텍스트
+      monthNamesShort: [
+        "1월",
+        "2월",
+        "3월",
+        "4월",
+        "5월",
+        "6월",
+        "7월",
+        "8월",
+        "9월",
+        "10월",
+        "11월",
+        "12월",
+      ], //달력의 월 부분 텍스트
+      monthNames: [
+        "1월",
+        "2월",
+        "3월",
+        "4월",
+        "5월",
+        "6월",
+        "7월",
+        "8월",
+        "9월",
+        "10월",
+        "11월",
+        "12월",
+      ], //달력의 월 부분 Tooltip
+      dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"], //달력의 요일 텍스트
+      dayNames: [
+        "일요일",
+        "월요일",
+        "화요일",
+        "수요일",
+        "목요일",
+        "금요일",
+        "토요일",
+      ], //달력의 요일 Tooltip
+      minDate: "-5Y", //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+      maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)
+    });
+
+    //초기값을 오늘 날짜로 설정해줘야 합니다.
+    $("#datepicker").datepicker("setDate", "today", {
+      dateFormat: "yyyy-MM-dd",
+    }); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
+    
+/*     $("#datepicker").on("change", function () {
+        // 선택된 날짜를 콘솔에 출력
+        console.log("선택된 날짜:", $(this).val());
+      }); */
+
+      // 페이지 로드 시 현재 날짜를 콘솔에 출력
+      console.log("현재 날짜:", $("#datepicker").val());
+  });
+
+function viewPer(no) {
+    console.log(no);
+    const modalTable = $("#modalTable");
+    $.ajax(`/perscription/${no}`) //fetch
+      .done((result) => {
+        modalTable.empty();
+        modalTable.append(
+          `<tr>
+                <th>약품명</th>
+                <th>투약량</th>
+                <th>횟수</th>
+                <th>일수</th>
+            </tr>`
+        );
+
+        for (let i of result) {
+          modalTable.append(
+            `<tr>
+                <td>${i.medicineName}</td>
+                <td>${i.dosage}</td>
+                <td>${i.doseCnt}</td>
+                <td>${i.doseDay}</td>
+            </tr>`
+          );
+        }
+      })
+      .fail((err) => console.log(err)); //catch
+}
+
+function viewreturn(no) {
+	clinicNo = no;
+}
+
+function sendDate(page) {
+    dateValue = $("#datepicker").val();
+    var currentDate = new Date();
+    var perdate = currentDate.toISOString().split('T')[0];
+	
+    $.ajax({
+        type: "GET", 
+        url: `/pharmacy/status/${dateValue}`, // 백엔드 엔드포인트로 교체
+        data: {
+          page: page,
+        },
+        success: function (response) {
+            console.log("Ajax 요청 성공");
+            /* console.log("Ajax 요청 성공", response);
+            console.log("일", response.plist);
+            console.log("이", response.pagedto); */
+            if(dateValue === perdate) {
+            	createTable(response.plist);
+            } else {
+            	createTable2(response.plist);
+            }
+            // 페이지 번호 생성
+            makePaging(response.pagedto);
+        },
+        error: function (error) {
+            console.error("Ajax 요청 실패:", error);
+        }
+    });
+}
+
+$("#datepicker").on("change", function () {
+    console.log("선택된 날짜:", $(this).val());
+    dateValue = $(this).val();
+    sendDate();
+  });
+
+$(document).ready(function() {
+    sendDate(); 
+});
+
+function createTable(plist) {
+    // 동적으로 테이블 생성
+    $(".table").empty();
+    var table = document.querySelector('.table');
+    var thead = $("<thead>").appendTo(table);
+    var tbody = $("<tbody>").appendTo(table);
+    
+    // 테이블 헤더 생성
+    var headerRow = $("<tr>").appendTo(thead);
+    var headers = ["No", "환자성명", "생년월일", "환자Tel", "병원명", "병원Tel", "담당의", "처방일자", "처방전", "출력", "반환"];
+
+	 $.each(headers, function(index, text) {
+	     $("<th>").text(text).appendTo(headerRow);
+	 });
+
+    // 테이블 내용 생성
+	 for (let i of plist) {
+	        var row = $("<tr>").appendTo(tbody);
+	        row.append(`<td>${i.clinicNo}</td>`);
+	        row.append(`<td>${i.userName}</td>`);
+	        row.append(`<td>${formatDate(new Date(i.userBirthday))}</td>`);
+	        row.append(`<td>${i.userPhone}</td>`);
+	        row.append(`<td>${i.hospitalName}</td>`);
+	        row.append(`<td>${i.hospitalPhone}</td>`);
+	        row.append(`<td>${i.doctorName}</td>`);
+	        row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
+	        row.append(`<td><button
+                    id="viewper"
+                    onclick="viewPer(${i.clinicNo})"
+                    type="button"
+                    class="btn btn-info"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModalCenter"
+                  >
+                    미리보기
+                  </button></td>`);
+	        row.append(`<td><button class="btn btn-warning">출력</button></td>`);
+	        row.append(`<td><button
+                    id="returnbtn"
+                    class="btn btn-danger"
+                    data-bs-toggle="modal"
+                    data-bs-target="#returnModal"
+                    onclick="viewreturn(${i.clinicNo})"
+                  >
+                    반환
+                  </button></td>`);
+	    }
+};
+
+function createTable2(plist) {
+    // 동적으로 테이블 생성
+    $(".table").empty();
+    var table = document.querySelector('.table');
+    var thead = $("<thead>").appendTo(table);
+    var tbody = $("<tbody>").appendTo(table);
+    
+    // 테이블 헤더 생성
+    var headerRow = $("<tr>").appendTo(thead);
+    var headers = ["No", "환자성명", "생년월일", "환자Tel", "병원명", "병원Tel", "담당의", "처방일자", "처방전"];
+
+	 $.each(headers, function(index, text) {
+	     $("<th>").text(text).appendTo(headerRow);
+	 });
+
+    // 테이블 내용 생성
+	 for (let i of plist) {
+	        var row = $("<tr>").appendTo(tbody);
+	        row.append(`<td>${i.clinicNo}</td>`);
+	        row.append(`<td>${i.userName}</td>`);
+	        row.append(`<td>${formatDate(new Date(i.userBirthday))}</td>`);
+	        row.append(`<td>${i.userPhone}</td>`);
+	        row.append(`<td>${i.hospitalName}</td>`);
+	        row.append(`<td>${i.hospitalPhone}</td>`);
+	        row.append(`<td>${i.doctorName}</td>`);
+	        row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
+	        row.append(`<td><button
+                    id="viewper"
+                    onclick="viewPer(${i.clinicNo})"
+                    type="button"
+                    class="btn btn-info"
+                    data-bs-toggle="modal"
+                    data-bs-target="#exampleModalCenter"
+                  >
+                    미리보기
+                  </button></td>`);
+	    }
+};
+
+/* 날짜 변환 */
+function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    
+    return `${year}-${month}-${day}`;
+}
+
+let page = 1;
+
+function makePaging(dto = {}) {
+    document.querySelector(".pagination").innerHTML = ""; //초기화
+    console.log(dto);
+    //이전페이지가 있으면
+    if (dto.prev) {
+      let aTag = document.createElement("a");
+      aTag.setAttribute("href", dto.startPage - 1); //11페이지에서 <<누르면 10페이지로 가게끔
+      aTag.innerHTML = "&laquo";
+      document.querySelector(".pagination").append(aTag);
+    }
+
+    for (let i = dto.startPage; i <= dto.endPage; i++) {
+      let aTag = document.createElement("a");
+      aTag.setAttribute("href", i); //<a href="1">1</a>
+      aTag.innerHTML = i;
+      //active녹색 주는거
+      if (i == page) {
+        aTag.className = "active";
+      }
+      document.querySelector(".pagination").append(aTag);
+    } //포
+
+    //이후페이지가 있으면
+    if (dto.next) {
+      let aTag = document.createElement("a");
+      aTag.setAttribute("href", dto.endPage + 1);
+      aTag.innerHTML = "&raquo";
+      document.querySelector(".pagination").append(aTag);
+    }
+
+    //a 페이지 숫자 태그에 클릭이벤트 만들기
+    document.querySelectorAll(".pagination a").forEach((ele) => {
+      //페이지네이션클래스의 모든 a태그들을 가져옴   //배열 메소드 forEach씀
+      ele.addEventListener("click", function (e) {
+        e.preventDefault(); //기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 //페이지안넘어가게
+        page = ele.getAttribute("href"); //href의 값 = page
+        sendDate(page); // 페이지번호에 해당하는 데이터를 불러오는 함수 호출
+      }); //클릭이벤트
+    }); //포이치
+  } 
+
+/* 처방전 반환 사유 선택값 확인 */
+$("input[name='flexRadioDefault']").on("change", function () {
+    // 선택된 input 박스의 id 값을 가져와 label의 값을 출력
+    var checkedValue = $("input[name='flexRadioDefault']:checked");
+    var checkedId = checkedValue.attr('id');
+    var checkedLabel = $("label[for='" + checkedId + "']").text();
+    console.log("반환 사유:", checkedLabel);
+    console.log('진료번호', clinicNo);
+
+});
+/* 처방전 반환 시 동작 */
+$("#reperscript").on("click", function () {
+    var checkedValue = $("input[name='flexRadioDefault']:checked");
+    var checkedId = checkedValue.attr('id');
+    var checkedLabel = $("label[for='" + checkedId + "']").text();
+    console.log('반환사유: ', checkedLabel);
+    console.log('진료번호ddd', clinicNo);
+
+    // AJAX 요청을 통해 서버 엔드포인트로 데이터 전송
+    $.ajax({
+        type: "POST",
+        url: "/pharmacy/rejection",
+        data: {
+            rejection: checkedLabel,
+            clinicNo: clinicNo
+        },
+        dataType: 'json',
+        success: function (response) {
+            console.log("반환 성공", response);
+            $("#returnModal").modal("hide");
+            location.reload();
+        },
+        error: function (error) {
+            console.error("반환 실패", error);
+        }
+    });
+});
+
+</script>

@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
+
+<head>
+<meta charset="UTF-8" />
+<title>병원 상세페이지</title>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.left {
+	display: flex;
+	flex-direction: column;
+	padding-right: 50px;
+}
+
+.bb{
+	display:inline;
+	width:200px;
+	height:60px;
+	margin:10px 10px 10px 10px;
+}
+.right{
+	width: 60%;
+	
+}
+.butt{
+	display:flex;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<h1 style="text-align:center; margin-bottom:50px; margin-top:50px; color:gray;">- Detail Info -</h1>
+		<div class="container-fluid" style="margin-bottom:150px;">
+			<th:block th:each="hos : ${hosInfo}">
+			
+			
+				<!-- 병원정보 -->
+				<p style="display:none;" class="hosId" th:text="${hos.hospitalId}"></p>
+				<p style="display:none;" class="Doctor" th:text="${docList}"></p>
+				<div class="container" style="margin-bottom:50px;">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3"
+							style="display: flex; justify-content: space-between; align-items: center;">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-hospital"></i>병원정보
+							</h5>
+						</div>
+						
+						<div class="card-body"
+							style="display: flex; justify-content: center; align-items: center;">
+							<div class="left">
+								
+								<img th:if="${hos.hospitalImg}" th:src="@{/images/} + ${hos.hospitalImg}" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
+								<img th:unless="${hos.hospitalImg}" th:src="@{/images/} + hospital.png" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
+							</div>
+							<div class="right" style="text-align:center;">
+								<h3 th:text="| [  ${hos.hospitalName} ] |" class="font-weight-bold text-secondary" style="margin-bottom:30px; margin-top:20px;"></h3>
+								<table class="table" style="text-align:center;">
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<tr th:if="${detailCode.detailCode} == ${hos.mainSubject}">
+											<th style="text-align:left; width:200px; padding-left:30px;" >- 대표진료과목</th>
+											<td th:text="${detailCode.codeName}" ></td>
+										</tr>
+									</th:block>
+									<tr>
+										<th style="text-align:left;padding-left:30px;" >- 대표자이름</th>
+										<td th:text="${hos.directorName}"></td>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;" >- 전화번호</th>
+										<td th:text="${hos.phone}"></td>
+									</tr>
+									<tr class="holiday">
+										<th style="text-align:left;padding-left:30px;" >- 휴무일</th>	
+										<th:block th:each="detailCode : ${application.detailCode_i}">
+											<td th:if="${detailCode.detailCode == hos.holiday and #strings.length(hos.holiday) < 3}"  th:text="${detailCode.codeName}" class="oneday"></td>
+											<td th:unless="${detailCode.detailCode == hos.holiday and #strings.length(hos.holiday) < 3}" th:text="${hos.holiday}" class="moreday" style="display:none;"></td>
+										</th:block>
+									</tr>
+									<tr>
+										<th style="text-align:left;padding-left:30px;" >- 운영시간</th>
+										<td th:text="|${hos.opentime} ~ ${hos.closetime}|" class="closeTime"></td>
+									</tr>
+								</table>
+								<div class="butt">
+									<button type="button" class="bb btn btn-primary visit" th:onclick="contactCheck([[${reservationHistory}]])">방문예약하기</button>
+									<button type="button" class="bb btn btn-primary later" th:onclick="check( [[${clinicHistory}]],'later',[[${reservationHistory}]] )">비대면예약하기</button>
+									<button type="button" class="bb btn btn-primary now" th:onclick="check( [[${clinicHistory}]],'now',[[${reservationHistory}]] )">실시간 비대면 진료 <br/>접수하기</button>
+									<button type="button" class="bb btn btn-primary ">문의하기</button>
+								</div>
+							</div>
+						</div>
+	
+					</div>
+					<script th:inline="javascript">
+						//휴무일이 여러개일때 변환함수
+						function dayday(){
+							let holiday = document.querySelector('.holiday');
+							//console.log("holiday", holiday);
+							
+							//요일이 여러개일때의 작업
+							//클래스가 oneday인 td가 없으면 코드를 잘라서 요일로 변환 후 td를 새로 생성해서 append 해주는 작업
+							if(!holiday.querySelector('.oneday')){
+							let day = document.querySelector('.moreday').innerText;
+							console.log(day);//i1,i2,i3
+							let days = day.split(',');
+							let realdays = ''; //월화수
+							//console.log(days.length);
+							let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
+							//console.log("dayList=",dayList["i2"])
+							days.forEach((ele, index)=>{
+								console.log(dayList[ele]);
+								realdays += dayList[ele] + ' ';
+							})
+							//console.log("realdays=",realdays);
+							var tdElement = document.createElement("td");
+							tdElement.textContent = realdays;
+							holiday.append(tdElement);
+							}
+							
+						}
+						dayday();
+						
+						//예약버튼 예외사항함수
+						function check(clinicHistory, word, reservationHistory){
+							//1. 예약이 이미 있음
+							if(reservationHistory){
+								Swal.fire({
+						            title: "오늘 해당병원에 예약하신 내역이 있습니다",
+						            html: '동일한 병원은 진료받은 후 재예약이 가능합니다 <br/> <a href="/mypage">마이페이지</a>에서 예약내역을 확인해주세요',
+						            icon: "warning",
+						            showCancelButton: false,
+						            confirmButtonColor: "#3085d6",
+						            confirmButtonText: "yes"
+						        }).then((result) => {
+						            if (result.isConfirmed) {
+						            	return;
+						            }
+						        });
+								return;
+							}
+							
+							//2. 비대면 예약됨
+							if(clinicHistory){
+								//console.log("clinicHistory=",clinicHistory);
+								//console.log("word=",word);
+								if(word == 'later'){ //비대면 예약
+									alert("비대면 예약");
+									//window.location.href="/untactReserve";
+								}else if(word == 'now'){//비대면 실시간 접수
+									alert("비대면 실시간 접수");
+									//window.location.href="/untactAccept";
+								}
+								
+							//3. 해당병원에 초진기록이 없음(방문예약으로 안내)
+							}else{
+								Swal.fire({
+						            title: "해당병원에 초진 기록이 없습니다",
+						            html: "방문예약 페이지로 안내하겠습니다!~ ",
+						            icon: "warning",
+						            showCancelButton: false,
+						            confirmButtonColor: "#3085d6",
+						            confirmButtonText: "yes"
+						        }).then((result) => {
+						            if (result.isConfirmed) {//방문예약 페이지
+						            	//방문예약페이지로 슝
+										let hospitalId = document.querySelector('.hosId').innerText;
+										window.location.href = "/contactReserve?hospitalId="+hospitalId;
+						                
+						            }
+						        });
+							}
+						}
+						
+						//방문예약은 초진기록 없이도 가능해서 함수 따로 분류해둠
+						//이미 방문예약을 잡았을 시.
+						function contactCheck(reservationHistory){
+							if(reservationHistory){
+								Swal.fire({
+						            title: "오늘 해당병원에 예약하신 내역이 있습니다",
+						            html: '동일한 병원은 진료받은 후 재예약이 가능합니다 <br/> <a href="/mypage">마이페이지</a>에서 예약내역을 확인해주세요',
+						            icon: "warning",
+						            showCancelButton: false,
+						            confirmButtonColor: "#3085d6",
+						            confirmButtonText: "yes"
+						        }).then((result) => {
+						            if (result.isConfirmed) {
+						            	return;
+						            }
+						        });
+								return;
+							}else{
+								//방문예약페이지로 슝
+								let hospitalId = document.querySelector('.hosId').innerText;
+								window.location.href = "/contactReserve?hospitalId="+hospitalId;
+							}
+						}
+						
+						//영업시간 끝나면 실시간 접수 버튼 못누르게하는 함수(오픈시간은 생략)
+						// + 의사가 없으면 접수버튼 못 누르게하는 함수
+						function closetime(){
+							let findCloseBtn = document.querySelector('.now')
+							let findCloseTime = document.querySelector('.closeTime').innerText;
+							let closeTime = findCloseTime.substr(8,2);
+							let today = new Date();
+				            let curHour = today.getHours();
+							console.log("closeTime=",closeTime);
+							console.log("curHour=",curHour);
+							if(closeTime <= curHour){
+								findCloseBtn.disabled = true;
+							}else{
+								findCloseBtn.disabled = false;
+							}
+							
+							let doctor = document.querySelector('.Doctor').innerText;
+							console.log("doctor=",doctor);
+							let visitBtn = document.querySelector('.visit');
+							let laterBtn = document.querySelector('.later');
+							if(doctor.length <5 ){
+								findCloseBtn.disabled = true;
+								visitBtn.disabled = true;
+								laterBtn.disabled = true;
+							}else{
+								findCloseBtn.disabled = false;
+								visitBtn.disabled = false;
+								laterBtn.disabled = false;
+							}
+						}
+						closetime();
+						
+					</script>
+				</div>
+				
+				<!-- 병원위치 -->
+				<div class="container" style="margin-bottom:50px;">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3"
+							style="display: flex; align-items: center;">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-search-location"></i>병원위치 :
+							</h5>
+							<h5 class="font-weight-bold text-secondary me" style="margin : 0 0 0 10px;" th:text="${hos.address}"> </h5>
+						</div>
+						<div class="card-body"
+							style="display: flex; justify-content: center; align-items: center;">
+							
+							<div id="map" style="width:100%;height:400px;">
+							<script type="text/javascript">
+							
+								var mapContainer = document.getElementById('map'), // 지도를 표시할 div 
+								mapOption = {
+								    center: new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
+								    level: 3 // 지도의 확대 레벨
+								};  
+								
+								//지도를 생성합니다    
+								var map = new kakao.maps.Map(mapContainer, mapOption); 
+								
+								//주소-좌표 변환 객체를 생성합니다
+								var geocoder = new kakao.maps.services.Geocoder();
+								
+								//주소로 좌표를 검색합니다
+								let hospitalAdd = document.querySelector(".me").innerText;
+								console.log(hospitalAdd);
+								geocoder.addressSearch(hospitalAdd, function(result, status) {
+								
+								// 정상적으로 검색이 완료됐으면 
+								 if (status === kakao.maps.services.Status.OK) {
+								
+								    var coords = new kakao.maps.LatLng(result[0].y, result[0].x);
+								
+								    // 결과값으로 받은 위치를 마커로 표시합니다
+								    var marker = new kakao.maps.Marker({
+								        map: map,
+								        position: coords
+								    });
+								
+								    // 지도의 중심을 결과값으로 받은 위치로 이동시킵니다
+								    map.setCenter(coords);
+								} 
+								});    
+							</script>
+							
+							</div>   
+							
+						</div>
+					</div>
+				</div>
+			</th:block>
+				<!-- 의사정보 -->
+				<div class="container" style="margin-bottom:50px;">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3"
+							style="display: flex; justify-content: space-between; align-items: center; ">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-user-nurse"></i>의사정보
+							</h5>
+						</div>
+						<div class="card-body" style="text-align:center; ">
+							<table class="table">
+								<thead>
+									<tr>
+										<th>의사이름</th>
+										<th>진료과목</th>
+										<th>휴진일</th>
+										<th>진료일 / 진료시간</th>
+									</tr>
+								</thead>
+								<tbody style="vertical-align:middle;">
+									<th:block th:each="doc : ${docList}">
+										<tr th:if="${#lists.size(docList) > 0}">
+											<td th:text="${doc.doctorName}"></td>
+											<td th:text="${doc.subject}"></td>
+											<td th:text="${doc.holiday}"></td>
+											<td>
+												<div th:each="drTime : ${doc.times}">
+													[[${drTime.day}]]&nbsp&nbsp
+													[[${drTime.minTime}]] : 00 ~ [[${drTime.maxTime}]] : 00
+												</div>
+											</td>
+										</tr>
+									</th:block>
+									<tr th:unless="${#lists.size(docList) > 0}">
+										<td colspan="5"
+											style="color: gray; height: 100px; vertical-align: middle;">
+											아직 등록된 의사가 없습니다.</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
+					</div>
+				</div>
+		</div>
+
+
+	</div>
+</body>
+
+</html>

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{hospital/hospitalLayout}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>noticeList</title>
+    <style>
+      .head_info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
+
+      .search {
+        display: flex;
+        justify-content: flex-end;
+        margin-bottom: 40px;
+      }
+
+      .catCal {
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0;
+      }
+
+      input[type="radio"] {
+        display: none;
+      }
+
+      input[type="radio"]:checked + label {
+        background-color: #5a5c69;
+        color: #fff;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div layout:fragment="content">
+      <div class="container-fluid">
+        <div class="head_info">
+          <h4 th:text="${hospitalSel.hospitalName}"></h4>
+          <p>
+            <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+            <span
+              th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+            ></span>
+          </p>
+        </div>
+        <p>Reservation Dr</p>
+        <div class="search">
+          <!-- drop -->
+          <div style="margin-right: 5px">
+            <select class="custom-select" aria-label="Default select example">
+              <option selected>검색유형</option>
+              <option value="1">제목</option>
+              <option value="2">내용</option>
+            </select>
+          </div>
+
+          <!-- 검색 -->
+          <div>
+            <div class="input-group">
+              <button
+                class="btn btn-info"
+                type="button"
+                style="
+                  border-top-right-radius: 0;
+                  border-bottom-right-radius: 0;
+                "
+              >
+                <i class="fas fa-search fa-sm"></i>
+              </button>
+              <input
+                type="text"
+                class="form-control bg-light border-1 small"
+                placeholder="검색어를 입력하세요."
+                aria-label="Search"
+                aria-describedby="basic-addon2"
+              />
+              <div class="input-group-append">
+                <button class="btn btn-info" type="button">검색하기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 카테고리 & 달력선택 -->
+        <div class="catCal">
+          <div
+            class="btn-group"
+            role="group"
+            aria-label="Basic radio toggle button group"
+            style="margin-bottom: 20px"
+          >
+            <input
+              type="radio"
+              class="btn-check"
+              name="btnradio"
+              id="btnradio1"
+              autocomplete="off"
+              checked
+            />
+            <label
+              class="btn btn-outline-dark"
+              for="btnradio1"
+              style="
+                border-top-left-radius: 0.35rem;
+                border-bottom-left-radius: 0.35rem;
+              "
+              >전체내역</label
+            >
+            <input
+              type="radio"
+              class="btn-check"
+              name="btnradio"
+              id="btnradio2"
+              autocomplete="off"
+            />
+            <label class="btn btn-outline-dark" for="btnradio2"
+              >비대면진료</label
+            >
+            <input
+              type="radio"
+              class="btn-check"
+              name="btnradio"
+              id="btnradio4"
+              autocomplete="off"
+            />
+            <label class="btn btn-outline-dark" for="btnradio4">대면진료</label>
+          </div>
+
+          <div class="calSel">
+            <label for="date"
+              >날짜를 선택하세요 : <input type="date" id="date" value="" />
+            </label>
+          </div>
+        </div>
+
+        <p>으사이름 : [[${reserveDrList[0].doctorName}]]</p>
+        <div>
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>예약코드</th>
+                <th>환자이름</th>
+                <th>생년월일</th>
+                <th>성별</th>
+                <th>환자Tel</th>
+                <th>예약시간</th>
+                <th>담당의</th>
+                <th>구분</th>
+                <th>진료상태</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="rdl : ${reserveDrList}">
+                <td th:text="${rdl.reserveNo}"></td>
+                <td th:text="${rdl.userName}"></td>
+                <td
+                  th:text="${#dates.format(rdl.userBirthday, 'yyyy-MM-dd')}"
+                ></td>
+                <td th:text="${rdl.gender}"></td>
+                <td th:text="${rdl.userPhone}"></td>
+                <td th:text="|${rdl.reserveTime} : 00|"></td>
+                <td th:text="${rdl.doctorName}"></td>
+
+                <td th:if="${ rdl.reserveKindstatus == 'c1' }">대면</td>
+                <td th:unless="${ rdl.reserveKindstatus == 'c1' }">비대면</td>
+                <td>
+                  <button
+                    th:onclick="enter([[${rdl.reserveNo}]],'user2');"
+                    class="btn btn-dark"
+                  >
+                    입장
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <script>
+        document.getElementById("date").value = new Date()
+          .toISOString()
+          .substring(0, 10);
+
+        function enter(rno, uid) {
+          let obj = {
+            userId: uid,
+            contentCode: "enterRoom",
+            prefix: "진료실에 입장",
+          };
+
+          $.ajax("/saveAlarm", {
+            type: "post",
+            data: JSON.stringify(obj),
+            dataType: "json",
+            contentType: "application/json",
+          })
+            .done((result) => {
+              console.log(result); //알람테이블 인서트 성공했으면//페이지 이동
+              location.href = `/untactClinic?reserveNo=${rno}&userId=${uid}`;
+            }) //.done
+            .fail((err) => console.log(err));
+        } //진료실 입장하기 버튼
+      </script>
+    </div>
+  </body>
+</html>

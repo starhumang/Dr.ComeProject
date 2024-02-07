@@ -1,5 +1,6 @@
 package com.drcome.project.medical.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -17,6 +18,32 @@ public interface HospitalService {
 	//QnA답변X
 	public List<Map<String, Object>> getQnAX(String hospitalId);
 	
+	/* 예약내역 - clinic */
+	//Main
+	public List<Map<String, Object>> getRerveList(String hospitalId, String date, String reserveKindstatus);
+	
+	//Dr
+	public List<Map<String, Object>> getReserveDrList(String hospitalId, Integer doctorNo);
+	
+	/* QnA */
+	//QnA 전체
+	public List<Map<String, Object>> getQnaList(String hospitalId);
+	
+	//QnA 단건상세
+	public List<Map<String, Object>> getQnaInfo(String hospitalId, Integer qnaNo);
+	
+	/* 공지사항 */
+	//공지사항 전체	
+	public List<Map<String, Object>> getNoticeList(int page, String hospitalId);
+	
+	public int noticeCount(String hospitalId);
+	//공지사항 단건상세
+	public List<NoticeVO> getNoticeDetail(String hospitalId, Integer noticeNo);
+	
+	//공지사항 등록
+	public int insertNoticeInfo(NoticeVO vo);
+	public int insertAttach(NoticeVO vo);
+	
 	/* 병원프로필 */
 	//병원 단건조회(id로)
 	public Hospital findByhospitalId(String hospitalId);
@@ -30,4 +57,6 @@ public interface HospitalService {
 	
 	//환자 상세 진료내역 조회
 	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo);
+
+
 }

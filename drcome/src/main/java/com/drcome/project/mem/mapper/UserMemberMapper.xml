@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper
+	namespace="com.drcome.project.mem.mapper.UserMemberMapper">
+
+	<insert id="insertUserMember"
+		parameterType="UserMemberVO">
+        <![CDATA[
+        INSERT INTO usertable (user_id
+        					, user_pw
+        					, user_name
+        					, phone
+        					, birthday
+        					, gender
+        					, identification)
+        VALUES
+        (#{userId}, #{userPw}, #{userName}, #{phone}, #{birthday}, #{gender}, #{identification})
+        ]]>
+	</insert>
+
+	<select id="getMember" resultType="MemVo">
+		SELECT user_id
+		, user_pw
+		,
+		user_name
+		, 'ROLE_' || grade as grade
+		FROM user_login_view
+		WHERE user_id
+		= #{id}
+	</select>
+
+	<select id="selectMem" resultType="UserMemberVO">
+		SELECT user_id
+		, user_name
+		, phone
+		, birthday
+		, gender
+		, identification
+		FROM usertable
+		WHERE user_id =
+		#{id}
+	</select>
+
+	<insert id="insertHosMember"
+		parameterType="HospitalVO">
+	<![CDATA[
+        INSERT INTO hospital (hospital_id
+        					, hospital_pw
+        					, hospital_name
+        					, address
+        					, phone
+        					, hospital_img
+        					, main_subject
+        					, director_name
+        					, director_phone
+        					, director_license
+        					, holiday
+        					, opentime
+        					, closetime)
+        VALUES
+        (#{hospitalId}, #{hospitalPw}, #{hospitalName}, #{address}, #{phone}, #{hospitalImg}, #{mainSubject}, #{directorName}, #{directorPhone}, #{directorLicense}, #{holiday}, #{opentime}, #{closetime})
+        ]]>
+	</insert>
+	
+	<select id="checkPhone" resultType="int" parameterType="String">
+		SELECT COUNT(phone)
+		FROM user_login_view
+		WHERE phone = #{phone}
+	</select>
+
+	<select id="checkId" resultType="int" parameterType="String">
+		SELECT COUNT(user_id)
+		FROM user_login_view
+		WHERE user_id = #{id}
+	</select>
+
+	<select id="findId" resultType="String" parameterType="String">
+		SELECT
+		user_id
+		FROM user_detail_view
+		WHERE user_name = #{userName}
+		AND phone =
+		#{phone}
+	</select>
+
+	<update id="updatePw" parameterType="MemVO">
+		<choose>
+			<when test="grade == 'ROLE_USER' or grade == 'ROLE_ADMIN'">
+				UPDATE usertable
+				SET user_pw = #{userPw}
+				WHERE user_id = #{userId}
+			</when>
+			<when test="grade == 'ROLE_HOSPITAL'">
+				UPDATE hospital
+				SET hospital_pw = #{userPw}
+				WHERE hospital_id = #{userId}
+			</when>
+			<when test="grade == 'ROLE_PHARMACY'">
+				UPDATE pharmacy
+				SET pharmacy_pw = #{userPw}
+				WHERE pharmacy_id = #{userId}
+			</when>
+		</choose>
+	</update>
+	
+	<update id="updateUserInfo" parameterType="MemVO">
+		UPDATE usertable
+		SET  user_pw = #{userPw}
+			,phone = #{phone}
+		WHERE user_id = #{userId}
+	</update>
+
+</mapper>

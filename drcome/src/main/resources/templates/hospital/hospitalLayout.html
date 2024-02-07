@@ -11,6 +11,10 @@
 
 <title>hospital - Dashboard</title>
 
+<!-- 밑에있던 제이쿼리랑 부트스트랩 -->
+<script src="/vendor/jquery/jquery.min.js"></script>
+<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+ 
 <!-- Custom fonts for this template-->
 <link href="/vendor/fontawesome-free/css/all.min.css" rel="stylesheet"
 	type="text/css" />
@@ -48,10 +52,13 @@
 				</div> 
 			</a>
 			-->
-			<div class="sidebar-card d-none d-sm-flex" style="margin-top: 20px">
+
+			<div class="sidebar-card" style="margin-top: 20px;">
 				<img th:src="@{/images/} + ${hospitalSel.hospitalImg}" alt="image"
-					style="overflow: hidden; width: 100%; height: 100%" />
+					style="overflow: hidden; width: 100%; height: 160px;" />
+
 			</div>
+
 			<div class="sidebar-card" style="align-items: flex-start">
 				<span th:text="${hospitalSel.hospitalId}"></span> <span
 					th:text="|${hospitalSel.hospitalName} ｜ ${hospitalSel.directorName}|"></span>
@@ -71,19 +78,10 @@
 			<!-- <div class="sidebar-heading">환자관리</div> -->
 
 			<!-- Nav Item - Pages Collapse Menu -->
-			<li class="nav-item"><a class="nav-link collapsed"
-				href="/hospital/patientList" data-target="#collapseTwo"
-				aria-expanded="true" aria-controls="collapseTwo"> <i
+			<li class="nav-item"><a class="nav-link"
+				href="/hospital/patientList"> <i
 					class="fas fa-fw fa-hospital-user"></i> <span>환자관리</span>
-			</a>
-				<div id="collapseTwo" class="collapse" aria-labelledby="headingTwo"
-					data-parent="#accordionSidebar">
-					<!-- <div class="bg-white py-2 collapse-inner rounded">
-              <h6 class="collapse-header">Custom Components:</h6>
-              <a class="collapse-item" href="buttons.html">Buttons</a>
-              <a class="collapse-item" href="cards.html">Cards</a>
-            </div> -->
-				</div></li>
+			</a></li>
 
 			<!-- Nav Item - Utilities Collapse Menu -->
 			<li class="nav-item"><a class="nav-link collapsed" href="#"
@@ -97,7 +95,7 @@
 						<!-- <h6 class="collapse-header">Custom Utilities:</h6> -->
 						<a class="collapse-item" href="/hospital/clinicMain"><i
 							class="fas fa-fw fa-clinic-medical"></i> 전체보기</a> <a
-							class="collapse-item" href="utilities-border.html"><i
+							class="collapse-item" href="/hospital/clinicDr"><i
 							class="fas fa-fw fa-stethoscope"></i> 진료실</a>
 						<!-- <a class="collapse-item" href="utilities-animation.html"
                 >Animations</a
@@ -113,33 +111,17 @@
 			<!-- <div class="sidebar-heading">Addons</div> -->
 
 			<!-- Nav Item - Pages Collapse Menu -->
-			<li class="nav-item"><a class="nav-link collapsed" href="#"
-				data-toggle="collapse" data-target="#collapsePages"
-				aria-expanded="true" aria-controls="collapsePages"> <i
+			<li class="nav-item"><a class="nav-link" href="/hospital/qnaList"> <i
 					class="fas fa-fw fa-question"></i> <span>Q&A</span>
-			</a>
-				<div id="collapsePages" class="collapse"
-					aria-labelledby="headingPages" data-parent="#accordionSidebar">
-					<div class="bg-white py-2 collapse-inner rounded">
-						<h6 class="collapse-header">Login Screens:</h6>
-						<a class="collapse-item" href="login.html">Login</a> <a
-							class="collapse-item" href="register.html">Register</a> <a
-							class="collapse-item" href="forgot-password.html">Forgot
-							Password</a>
-						<div class="collapse-divider"></div>
-						<h6 class="collapse-header">Other Pages:</h6>
-						<a class="collapse-item" href="404.html">404 Page</a> <a
-							class="collapse-item" href="blank.html">Blank Page</a>
-					</div>
-				</div></li>
+			</a></li>
 
 			<!-- Nav Item - Charts -->
-			<li class="nav-item"><a class="nav-link" href="charts.html">
+			<li class="nav-item"><a class="nav-link" href="/hospital/noticeList">
 					<i class="fas fa-fw fa-bullhorn"></i> <span>공지사항</span>
 			</a></li>
 
 			<!-- Nav Item - Tables -->
-			<li class="nav-item"><a class="nav-link" href="tables.html">
+			<li class="nav-item"><a class="nav-link" href="#">
 					<i class="fas fa-fw fa-comment"></i> <span>리뷰</span>
 			</a></li>
 
@@ -208,9 +190,12 @@
 		</div>
 	</div>
 
-	<!-- Bootstrap core JavaScript-->
-	<script src="/vendor/jquery/jquery.min.js"></script>
-	<script src="/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+	<!-- Bootstrap core JavaScript 위에도있음.. -->
+	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
+
 
 	<!-- Core plugin JavaScript-->
 	<script src="/vendor/jquery-easing/jquery.easing.min.js"></script>
@@ -225,9 +210,6 @@
 	<script src="/js/demo/chart-area-demo.js"></script>
 	<script src="/js/demo/chart-pie-demo.js"></script>
 
-	<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>

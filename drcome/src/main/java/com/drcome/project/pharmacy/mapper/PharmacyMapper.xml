@@ -23,7 +23,7 @@
 		 WHERE pharmacy_id = #{pharmacyId}
 	</select>
 	<!-- 약국별 처방 현황 조회 -->
-	<<!-- select id="selectPrescriptionList" resultType="Map">
+	<!-- <select id="selectPrescriptionList" resultType="Map">
 		SELECT   c.patient_no               "patientNo"
 			   , c.clinic_no                "clinicNo"
                , c.hospital_id              "hospitalId"

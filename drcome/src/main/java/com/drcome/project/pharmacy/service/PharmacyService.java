@@ -3,8 +3,6 @@ package com.drcome.project.pharmacy.service;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.ibatis.annotations.Param;
-
 import com.drcome.project.pharmacy.MedicineVO;
 import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
@@ -20,7 +18,7 @@ public interface PharmacyService {
 	/* 약국별 처방 내역 */
 //	public List<Map<String, Object>> selectLastPerList(int page, String date, String pharmacyId);
 	
-	public int percount(Map<String, Object> parameters, String date);
+	public int percount(String date, String pharmacyId);
 
 	/* 약 주성분 검색 */
 	public List<MedicineVO> findMedicine(String keyword);

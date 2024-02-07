@@ -32,8 +32,8 @@ public interface PharmacyMapper {
 	//-----Total Count-----
 	
 	/* 약국별 처방 현황 페이징 */
-	public int percount(Map<String, Object> parameters);
+	public int percount(@Param("date") String date, @Param("pharmacyId") String pharmacyId);
 	
 	/* 약국별 처방 내역 페이징 */
-	public int perLastcount(Map<String, Object> parameters);
+	public int perLastcount(@Param("date") String date, @Param("pharmacyId") String pharmacyId);
 }

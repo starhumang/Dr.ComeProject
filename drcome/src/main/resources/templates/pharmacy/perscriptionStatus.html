@@ -287,10 +287,12 @@ function sendDate() {
         success: function (response) {
             console.log("Ajax 요청 성공", response);
             if(dateValue === perdate) {
-            	createTable(response);
+            	createTable(response.plist);
             } else {
-            	createTable2(response);
+            	createTable2(response.plist);
             }
+            // 페이지 번호 생성
+            console.log(response.pagedto);
         },
         error: function (error) {
             console.error("Ajax 요청 실패:", error);
@@ -308,7 +310,7 @@ $(document).ready(function() {
     sendDate(); 
 });
 
-function createTable(response) {
+function createTable(plist) {
     // 동적으로 테이블 생성
     $(".table").empty();
     var table = document.querySelector('.table');
@@ -324,7 +326,7 @@ function createTable(response) {
 	 });
 
     // 테이블 내용 생성
-	 for (let i of response) {
+	 for (let i of plist) {
 	        var row = $("<tr>").appendTo(tbody);
 	        row.append(`<td>${i.clinicNo}</td>`);
 	        row.append(`<td>${i.userName}</td>`);
@@ -357,7 +359,7 @@ function createTable(response) {
 	    }
 };
 
-function createTable2(response) {
+function createTable2(plist) {
     // 동적으로 테이블 생성
     $(".table").empty();
     var table = document.querySelector('.table');
@@ -373,7 +375,7 @@ function createTable2(response) {
 	 });
 
     // 테이블 내용 생성
-	 for (let i of response) {
+	 for (let i of plist) {
 	        var row = $("<tr>").appendTo(tbody);
 	        row.append(`<td>${i.clinicNo}</td>`);
 	        row.append(`<td>${i.userName}</td>`);

@@ -77,7 +77,7 @@ public class PharmacyServiceImpl implements PharmacyService{
 	}
 
 	@Override
-	public int percount(Map<String, Object> parameters, String date) {
+	public int percount(String date, String pharmacyId) {
 		
 		Date currentDate = new Date();
 		System.out.println(currentDate);
@@ -87,10 +87,10 @@ public class PharmacyServiceImpl implements PharmacyService{
 		
         int result = 0;
 		if(date.equals(perdate)) {
-			result = mapper.percount(parameters);
+			result = mapper.percount(date, pharmacyId);
 		} 
 		else {
-			result = mapper.perLastcount(parameters);
+			result = mapper.perLastcount(date, pharmacyId);
 		}
 		
 		return result;

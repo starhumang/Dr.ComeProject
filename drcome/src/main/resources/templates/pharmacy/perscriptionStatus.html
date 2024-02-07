@@ -15,6 +15,33 @@
 	justify-content: space-between;
 	margin-top: 30px;
 }
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.pagination a {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 0 2px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #4e73df;
+  color: #fff;
+  /* border: 1px solid #4e73df; */
+}
+
+.pagination a:hover {
+  background-color: #bfc5d8;
+}
 </style>
 </head>
 <body>
@@ -96,6 +123,7 @@
               */-->
 					</table>
 				</div>
+				<div class="pagination"></div>
 			</div>
 		</div>
 		<!-- 반환 modal -->
@@ -273,10 +301,9 @@ function viewPer(no) {
 
 function viewreturn(no) {
 	clinicNo = no;
-  console.log('ㅎㅅ', clinicNo)
 }
 
-function sendDate() {
+function sendDate(page) {
     dateValue = $("#datepicker").val();
     var currentDate = new Date();
     var perdate = currentDate.toISOString().split('T')[0];
@@ -284,15 +311,21 @@ function sendDate() {
     $.ajax({
         type: "GET", 
         url: `/pharmacy/status/${dateValue}`, // 백엔드 엔드포인트로 교체
+        data: {
+          page: page,
+        },
         success: function (response) {
-            console.log("Ajax 요청 성공", response);
+            console.log("Ajax 요청 성공");
+            /* console.log("Ajax 요청 성공", response);
+            console.log("일", response.plist);
+            console.log("이", response.pagedto); */
             if(dateValue === perdate) {
             	createTable(response.plist);
             } else {
             	createTable2(response.plist);
             }
             // 페이지 번호 생성
-            console.log(response.pagedto);
+            makePaging(response.pagedto);
         },
         error: function (error) {
             console.error("Ajax 요청 실패:", error);
@@ -406,6 +439,49 @@ function formatDate(date) {
     
     return `${year}-${month}-${day}`;
 }
+
+let page = 1;
+
+function makePaging(dto = {}) {
+    document.querySelector(".pagination").innerHTML = ""; //초기화
+    console.log(dto);
+    //이전페이지가 있으면
+    if (dto.prev) {
+      let aTag = document.createElement("a");
+      aTag.setAttribute("href", dto.startPage - 1); //11페이지에서 <<누르면 10페이지로 가게끔
+      aTag.innerHTML = "&laquo";
+      document.querySelector(".pagination").append(aTag);
+    }
+
+    for (let i = dto.startPage; i <= dto.endPage; i++) {
+      let aTag = document.createElement("a");
+      aTag.setAttribute("href", i); //<a href="1">1</a>
+      aTag.innerHTML = i;
+      //active녹색 주는거
+      if (i == page) {
+        aTag.className = "active";
+      }
+      document.querySelector(".pagination").append(aTag);
+    } //포
+
+    //이후페이지가 있으면
+    if (dto.next) {
+      let aTag = document.createElement("a");
+      aTag.setAttribute("href", dto.endPage + 1);
+      aTag.innerHTML = "&raquo";
+      document.querySelector(".pagination").append(aTag);
+    }
+
+    //a 페이지 숫자 태그에 클릭이벤트 만들기
+    document.querySelectorAll(".pagination a").forEach((ele) => {
+      //페이지네이션클래스의 모든 a태그들을 가져옴   //배열 메소드 forEach씀
+      ele.addEventListener("click", function (e) {
+        e.preventDefault(); //기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 //페이지안넘어가게
+        page = ele.getAttribute("href"); //href의 값 = page
+        sendDate(page); // 페이지번호에 해당하는 데이터를 불러오는 함수 호출
+      }); //클릭이벤트
+    }); //포이치
+  } 
 
 /* 처방전 반환 사유 선택값 확인 */
 $("input[name='flexRadioDefault']").on("change", function () {

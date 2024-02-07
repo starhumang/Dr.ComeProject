@@ -12,7 +12,7 @@
 		  FROM challenge 
 		 WHERE user_id = #{userId}
 		   AND success = 'N'
-		   AND challenge_date = to_date(sysdate)
+		   AND to_char(challenge_date, 'yyyy-MM-dd') = #{date}
 	  ORDER BY challenge_no
 	</select>
 	
@@ -25,7 +25,7 @@
 		  FROM challenge 
 		 WHERE user_id= #{userId}
 		   AND success = 'Y'
-		   AND challenge_date = to_date(sysdate)
+		   AND to_char(challenge_date, 'yyyy-MM-dd') = #{date}
 	  ORDER BY challenge_no
 	</select>
 	
@@ -42,7 +42,7 @@
 	
 	<insert id="addTodoList">
 		INSERT INTO challenge(challenge_no, challenge_date, challenge_content, user_id) 
-		VALUES (chall_seq.NEXTVAL, to_date(sysdate), #{challengeContent}, #{userId})
+		VALUES (chall_seq.NEXTVAL, #{date}, #{challengeContent}, #{userId})
 	</insert>
 	
 	<delete id="deleteTodo">
@@ -65,4 +65,20 @@
 		 WHERE challenge_no = #{challengeNo} 
 		   AND user_id = #{userId}
 	</update>
+	<!-- countall -->
+	<select id="countAll" resultType="Map">
+		SELECT to_char(challenge_date, 'yyyy-MM-dd') as "start", 
+				CASE WHEN allcnt = successcnt THEN 'success' ELSE 'fail' END as "title"
+		 from ( SELECT challenge_date, COUNT(*) AS allcnt , SUM(CASE WHEN success = 'Y'THEN 1 ELSE 0 END) as successcnt
+        		  FROM challenge
+        		  WHERE user_id = #{userId}
+		          GROUP BY challenge_date
+		      )
+	</select>
+	<select id="reserveList" resultType="Map">
+		SELECT TO_CHAR(TO_DATE(reserve_year || '-' || reserve_month || '-' || reserve_day || ' ' || reserve_time, 'YYYY-MM-DD HH24:MI'), 'YYYY-MM-DD HH24:MI') as "start"
+			   ,hospital_id as "title"
+		  FROM reservation
+		 WHERE user_id = #{userId}
+	</select>
 </mapper>

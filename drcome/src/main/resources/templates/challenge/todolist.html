@@ -26,7 +26,9 @@ label {
 </head>
 <body>
 <div layout:fragment="content" class="container">
-	<h3 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}">To Do List</h3>
+	<!-- <h3 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}">To Do List</h3> -->
+	<h3>To Do List </h3>
+	<p th:text="${date}" id="dateValue"></p>
 	<button class="btn btn-primary" id="todoplus">todo <i class="fas fa-plus-circle"></i></button>
 	<div class="appendbox" style="display: none;">
 		<form id="todo-form">
@@ -35,21 +37,25 @@ label {
 		</form>
 	</div>
 	<form id="todolist" class ="todo-box">
-		<th:block th:each="todo : ${todolist}">
-			<div class="form-check">
-				<input class="form-check-input" type="checkbox"
-					name="flexRadioDefault" id="flexRadioDefault1" th:onchange="updatetodo(this, [[${todo.challengeNo}]])" /> 
-				<label class="form-check-label" for="flexRadioDefault1" th:text="${todo.challengeContent}"></label>
-				<button class="btn btn-success" th:onclick="deleteToDo([[${todo.challengeNo}]])">삭제</button>
-			</div>
+		<th:block th:if="${todolist != null and todolist.size() > 0}">
+			<th:block th:each="todo : ${todolist}">
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox"
+						name="flexRadioDefault" id="flexRadioDefault1" th:onchange="updatetodo(this, [[${todo.challengeNo}]])" /> 
+					<label class="form-check-label" for="flexRadioDefault1" th:text="${todo.challengeContent}"></label>
+					<button class="btn btn-success" th:onclick="deleteToDo([[${todo.challengeNo}]])">삭제</button>
+				</div>
+			</th:block>
 		</th:block>
-		<th:block th:each="ctodo : ${completetodo}">
-			<div class="form-check" th:if="${completetodo != null}">
-				<input class="form-check-input" type="checkbox"
-					name="flexRadioDefault" id="flexRadioDefault1" checked th:onchange="updatetodo(this, [[${ctodo.challengeNo}]])" /> 
-				<label class="form-check-label" for="flexRadioDefault1" th:text="${ctodo.challengeContent}" style="text-decoration: line-through;"></label>
-				<button class="btn btn-success" th:onclick="deleteToDo([[${ctodo.challengeNo}]])">삭제</button>
-			</div>
+		<th:block th:if="${completetodo != null and completetodo.size() > 0}">
+			<th:block th:each="ctodo : ${completetodo}">
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox"
+						name="flexRadioDefault" id="flexRadioDefault1" checked th:onchange="updatetodo(this, [[${ctodo.challengeNo}]])" /> 
+					<label class="form-check-label" for="flexRadioDefault1" th:text="${ctodo.challengeContent}" style="text-decoration: line-through;"></label>
+					<button class="btn btn-success" th:onclick="deleteToDo([[${ctodo.challengeNo}]])">삭제</button>
+				</div>
+			</th:block>
 		</th:block>
 	</form>
 </div>
@@ -59,10 +65,23 @@ label {
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 <script>
 var value = $("input[id='whattodo']");
+var dateElement = document.getElementById('dateValue');
+var dateValue = dateElement.textContent;
+
+var today = new Date();
+var date = today.toISOString().split('T')[0];
 
 $(document).ready(function () {
     $("#todoplus").click(function () {
-        $(".appendbox").toggle();
+    	if(dateValue >= date) {
+        	$(".appendbox").toggle();
+    	} else {
+    		Swal.fire({
+    			icon: 'warning',
+    			title: '이전 날짜는 입력할 수 없습니다.',
+    			text: '현재 날짜: ' + date
+    		})
+    	}
     });
 });
 
@@ -79,7 +98,7 @@ function insertToDo() {
 		return false;
 	}
 	
-	$.ajax("/todoinsert", {
+	$.ajax("/todoinsert/"+dateValue, {
           type: "post",
           data: {
         	  challengeContent: result

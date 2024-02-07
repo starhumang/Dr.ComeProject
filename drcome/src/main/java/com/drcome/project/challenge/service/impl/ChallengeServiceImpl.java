@@ -1,6 +1,7 @@
 package com.drcome.project.challenge.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,18 +17,18 @@ public class ChallengeServiceImpl implements ChallengeService {
 	ChallengeMapper cmapper;
 
 	@Override
-	public List<ChallengeVO> getTodoList(String userId) {
-		return cmapper.getAllTodoList(userId);
+	public List<ChallengeVO> getTodoList(String userId, String date) {
+		return cmapper.getAllTodoList(userId, date);
 	}
 
 	@Override
-	public List<ChallengeVO> clearToDo(String userId) {
-		return cmapper.getCompletedTodoList(userId);
+	public List<ChallengeVO> clearToDo(String userId, String date) {
+		return cmapper.getCompletedTodoList(userId, date);
 	}
 
 	@Override
-	public int addTodoList(String ChallengeContent, String userId) {
-		return cmapper.addTodoList(ChallengeContent, userId);
+	public int addTodoList(String date, String ChallengeContent, String userId) {
+		return cmapper.addTodoList(date, ChallengeContent, userId);
 	}
 
 	@Override
@@ -45,4 +46,16 @@ public class ChallengeServiceImpl implements ChallengeService {
 		int result = cmapper.deleteTodo(challengeNo, userId);
 		return result == 1 ? true : false;
 	}
+
+	@Override
+	public List<Map<String, Object>> SuccessToDo(String userId) {
+		return cmapper.countAll(userId);
+	}
+
+	@Override
+	public List<Map<String, Object>> ReserveList(String userId) {
+		return cmapper.reserveList(userId);
+	}
+
+	
 }

@@ -1,6 +1,7 @@
 package com.drcome.project.challenge.web;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,21 +24,36 @@ public class ChallengeController {
 	ChallengeService cservice;
 
 	@GetMapping("/challenge")
-	public String home() {
+	public String home(Principal principal, String userId, Model model) {
+		
+		userId = principal.getName();
+		
+		 //model.addAttribute("successToDo", cservice.SuccessToDo(userId));
+		 //model.addAttribute("successToDo", cservice.ReserveList(userId));
+		
+		List<Object> cList = new ArrayList<>();
+		
+		cList.addAll(cservice.SuccessToDo(userId));
+		cList.addAll(cservice.ReserveList(userId));
+		
+		model.addAttribute("successToDo", cList);
+		System.out.println("멍멍" + cList);
+
 		return "challenge/calendar";
 	}
 
-	@GetMapping("/todolist")
-	public String getTodoList(Principal principal, String userId, Model model) {
+	@GetMapping("/todolist/{date}")
+	public String getTodoList(@PathVariable String date, Principal principal, String userId, Model model) {
 		userId = principal.getName();
 
-		List<ChallengeVO> todoList = cservice.getTodoList(userId);
-		List<ChallengeVO> ctodoList = cservice.clearToDo(userId);
+		List<ChallengeVO> todoList = cservice.getTodoList(userId, date);
+		List<ChallengeVO> ctodoList = cservice.clearToDo(userId, date);
 		
 		model.addAttribute("todolist", todoList);
 		System.out.println(todoList);
 		model.addAttribute("completetodo", ctodoList);
 		System.out.println("com" + ctodoList);
+		model.addAttribute("date", date);
 
 		return "challenge/todolist";
 	}
@@ -49,16 +65,16 @@ public class ChallengeController {
 	 */
 
 	/* 등록 process */
-	@PostMapping("/todoinsert")
+	@PostMapping("/todoinsert/{date}")
 	@ResponseBody
-	public Map<String, Object> addTodoList(Principal principal, String challengeContent, String userId) {
+	public Map<String, Object> addTodoList(@PathVariable String date, Principal principal, String challengeContent, String userId) {
 		userId = principal.getName();
 
 		Map<String, Object> addTodoList = new HashMap();
 		System.out.println("challenge" + challengeContent);
 		addTodoList.put("result", challengeContent);
 
-		cservice.addTodoList(challengeContent, userId);
+		cservice.addTodoList(date, challengeContent, userId);
 
 		return addTodoList;
 	}
@@ -85,5 +101,6 @@ public class ChallengeController {
 		cservice.deleteTodo(challengeNo, userId);
 		return "redirect:todolist";
 	}
+
 
 }

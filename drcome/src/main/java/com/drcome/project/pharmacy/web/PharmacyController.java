@@ -1,5 +1,6 @@
 package com.drcome.project.pharmacy.web;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,8 +33,8 @@ public class PharmacyController {
 	}
 
 	@GetMapping("/pharmacy/info")
-	public String pharmacy(PharmacyVO pharmacyVO, Model model) {
-		String pharmacyId = "pharmacy1";
+	public String pharmacy(Principal principal, PharmacyVO pharmacyVO, Model model) {
+		String pharmacyId = principal.getName();
 		pharmacyVO.setPharmacyId(pharmacyId);
 		PharmacyVO findVO = pservice.selectPharmacyInfo(pharmacyVO);
 		model.addAttribute("pinfo", findVO);
@@ -41,16 +42,14 @@ public class PharmacyController {
 	}
 
 	@GetMapping("/pharmacy/status")
-	public String pharmacyprint(String date, String pharmacyId, Model model) {
-		pharmacyId = "pharmacy1";
+	public String pharmacyprint(String date,Principal principal, String pharmacyId, Model model) {
+		pharmacyId = principal.getName();
 		/*
 		 * List<Map<String, Object>> plist = pservice.selectPrescriptionList(date,
 		 * pharmacyId); model.addAttribute("plist", plist);
 		 */
 		return "pharmacy/perscriptionStatus";
 	}
-
-	
 
 	@GetMapping("/pharmacy/status/{date}")
 	@ResponseBody

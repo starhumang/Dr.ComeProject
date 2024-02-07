@@ -16,6 +16,8 @@
 	             MAIN_SUBJECT,
 	             HOLIDAY
 			FROM HOSPITAL
+			<![CDATA[WHERE ROWNUM <= 5]]>
+			
     	</select> <!-- 자료 다 들어오고 붙이기 WHERE HOSPITAL_STATUS = 'b2' -->
     	
     	<!-- 약국리스트 --> 
@@ -25,14 +27,17 @@
 		            PHARMACY_NAME,
 		            PHARMACY_IMG,
 		            ADDRESS,
+		            OPENTIME,
 		            CLOSETIME,
 		            HOLIDAY
 			FROM PHARMACY
+			<![CDATA[WHERE ROWNUM <= #{num}]]>
 		</select> <!-- WHERE PHARMACY_STATUS = 'b2' -->
 		
 		<!-- 병원상세 -->
 	    <select id="selectHos" resultType="HospitalVO">
-	    	SELECT HOSPITAL_NAME,
+	    	SELECT HOSPITAL_ID,
+	    		  HOSPITAL_NAME,
 	              ADDRESS,
 	              PHONE,
 	              HOSPITAL_IMG, 
@@ -99,9 +104,46 @@
 		ORDER BY HOSPITAL_NAME
 		</select>
 		
-		
-		
-		
-		
-		
+		<!-- 처방받을 약국선택 -->
+		<insert id="insertPhaSelect" >
+		INSERT INTO PHARMACY_SELECT (PHARMACY_SELECTNO, PHARMACY_ID, CLINIC_NO)
+            VALUES (PHARMACY_SELECTNO_SEQUENCE.NEXTVAL,#{pharmacyId},#{clinicNo})
+		</insert>
+	
+		<!-- 예약 전, 초진기록이 있는지 없는지 확인 -->
+		<select id="checkClinicHistory" resultType="int">
+    	SELECT COUNT(CLINIC_NO) 
+        FROM CLINIC
+        WHERE PATIENT_NO = (SELECT PATIENT_NO FROM PATIENT WHERE USER_ID= #{userId})
+        AND HOSPITAL_ID = #{hospitalId}
+    	</select>
+    	
+    	<!-- 당일 해당 병원에 예약기록이 있는지 확인하기(같은병원 같은시간 예약중복 방지) -->
+    	<select id="checkReservationHistory" resultType="int">
+    	SELECT COUNT(RESERVE_NO)
+        FROM RESERVATION
+        WHERE USER_ID =#{userId}
+        AND HOSPITAL_ID=#{hospitalId}
+        AND RESERVE_YEAR || RESERVE_MONTH || RESERVE_DAY = TO_CHAR(SYSDATE, 'yyyyMMdd')
+        AND RESERVE_TIME > TO_CHAR(SYSDATE, 'HH24')
+        AND RESERVE_STATUS ='e1'
+    	</select>
+    	
+    	<!-- 방문(대면)예약 insert -->
+    	<insert id="insertContactReservation" parameterType="ReservationVO">
+    	INSERT INTO RESERVATION VALUES(RESERVE_NO_SEQUENCE.NEXTVAL,
+                                       #{reserveYear},
+                                       #{reserveTime},
+                                       SYSDATE,
+                                       #{doctorNo},
+                                       #{reserveMonth},
+                                       #{reserveDay},
+                                       #{symptom},
+                                       'c1',
+                                       'e1',
+                                       #{userId},
+                                       #{hospitalId}
+                                       )
+    	</insert>
+    	
     </mapper>

@@ -64,10 +64,15 @@
 										<th style="text-align:left;padding-left:30px;">- 팩스번호</th>
 										<td th:text="${pha.pharmacyFax}"></td>
 									</tr>
-									<tr>
-										<th style="text-align:left;padding-left:30px;">- 휴무일</th>
-										<td th:text="${pha.holiday}"></td>
-									</tr>
+									<th:block th:each="detailCode : ${application.detailCode_i}">
+										<tr th:if="${detailCode.detailCode} == ${pha.holiday}">
+											<th style="text-align:left;padding-left:30px;" >- 휴무일</th>
+											<th:block th:each="detailCode : ${application.detailCode_i}">
+											<td th:if="${detailCode.detailCode == pha.holiday and #strings.length(pha.holiday) < 3}"  th:text="${detailCode.codeName}" class="oneday"></td>
+											<td th:unless="${detailCode.detailCode == pha.holiday and #strings.length(pha.holiday) < 3}" th:text="${pha.holiday}" class="moreday" style="display:none;"></td>
+										</th:block>
+										</tr>
+									</th:block>
 									<tr>
 										<th style="text-align:left;padding-left:30px;">- 운영시간</th>
 										<td th:text="|${pha.opentime} ~ ${pha.closetime}|"></td>
@@ -76,7 +81,35 @@
 	
 							</div>
 						</div>
-	
+						<script th:inline="javascript">
+						function dayday(){
+							let holiday = document.querySelector('.holiday');
+							//console.log("holiday", holiday);
+							
+							//요일이 여러개일때의 작업
+							//클래스가 oneday인 td가 없으면 코드를 잘라서 요일로 변환 후 td를 새로 생성해서 append 해주는 작업
+							if(!holiday.querySelector('.oneday')){
+							let day = document.querySelector('.moreday').innerText;
+							console.log(day);//i1,i2,i3
+							let days = day.split(',');
+							let realdays = ''; //월화수
+							//console.log(days.length);
+							let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
+							//console.log("dayList=",dayList["i2"])
+							days.forEach((ele, index)=>{
+								console.log(dayList[ele]);
+								realdays += dayList[ele] + ' ';
+							})
+							//console.log("realdays=",realdays);
+							var tdElement = document.createElement("td");
+							tdElement.textContent = realdays;
+							holiday.append(tdElement);
+							}
+							
+						}
+						dayday();
+						
+					</script>
 					</div>
 				</div>
 				
@@ -88,7 +121,7 @@
 							<h5 class="m-0 font-weight-bold text-secondary">
 								<i class="fas fa-fw fa-search-location"></i>약국위치 :
 							</h5>
-							<h5 class="m-0 font-weight-bold text-secondary me" th:text="${pha.address}"> </h5>
+							<h5 class="font-weight-bold text-secondary me" style="margin : 0 0 0 10px;" th:text="${pha.address}"> </h5>
 						</div>
 						<div class="card-body"
 							style="display: flex; justify-content: center; align-items: center;">

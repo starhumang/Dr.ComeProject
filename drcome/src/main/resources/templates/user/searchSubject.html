@@ -39,13 +39,15 @@ button:hover {
 </head>
 
 <body>
-	<div layout:fragment="content">
+	<div layout:fragment="content" style="margin-bottom:200px;">
 		<div class="container" style="margin-top: 50px; text-align: center;">
 			<div class="head"
 				style="display: flex; justify-content: center; margin-bottom: 130px;">
 				<div style="width: 600px;">
-					<h2 th:text="|Result : ${mainSubject}|"
+					<th:block th:each="detailCode : ${application.detailCode_h}">
+					<h2 th:if="${detailCode.detailCode} == ${mainSubject}" th:text="|Result : ${detailCode.codeName}|"
 						style="margin-bottom: 20px; color: #363636;"></h2>
+					</th:block>
 					<hr>
 					<hr>
 					<h5 class="loc" style="color: gray;">현재위치들어가는 곳</h5>

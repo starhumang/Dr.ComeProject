@@ -138,5 +138,11 @@ public class PatientController {
 	public int saveInfo(@RequestBody PatientVO vo) {
 		return patientService.insertClinic(vo);
 	}
+	
+	// 결제
+	@GetMapping("payment")
+	public String payment() {
+		return "doctor/clinicPayment";
+	}
 
 }// end class

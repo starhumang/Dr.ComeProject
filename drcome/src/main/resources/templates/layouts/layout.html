@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
-
 <head>
 	<meta charset="utf-8" />
 	<title>main</title>
@@ -37,10 +36,11 @@
 	<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 
 
-	<script>
+	<script th:inline="javascript">
 		$(document).ready(function () {
             // 로그인한 경우에만 웹 소켓 연결을 시도합니다.
-            var logId = document.querySelector('#loginId').innerHTML
+            // var logId = document.querySelector('#loginId').innerHTML;
+            var logId = [[${session.userId}]];
 			console.log(logId);
             if (logId != null && logId != '' && logId != undefined) {
                 connectWebSocket();
@@ -103,12 +103,16 @@
 		<a th:href="@{/admin/home}" class="btn btn-dark">관리자</a>
 	</div>
 
-	<div id="loginId" th:text="${session.userId}" th:if="${session.userId != null}" style="display: none;"></div>
-
-
 	<div id="socketAlert">
 		<p style="color: red; display: none;">빤짝빤짝</p>
 	</div>
+
+	<a class="nav-link nav-icons" href="javascript:void(0);" id="navbarDropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+		<i class="fas fa-fw fa-bell"></i>
+		<span class="indicator" id="alarmIcon" style="display:none;">
+		꺄아악
+		</span>
+	</a>
 	<!-- Your existing content goes here -->
 
 	<!-- 메인 시작 -->

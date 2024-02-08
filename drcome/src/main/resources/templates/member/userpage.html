@@ -6,18 +6,10 @@
 >
 	<head>
 		<meta charset="UTF-8" />
-		<script type="text/javascript">
-			function errAlert(content) {
-				Swal.fire({
-					icon: 'error',
-					text: content,
-				});
-			}
-		</script>
 	</head>
 	<body>
 		<div layout:fragment="content">
-			<p>마아아이이이페에에에이이이지이이이</p>
+			<p>마이페이지</p>
 			<!-- <p th:text="${profile}"></p> -->
 			<p id="userId" th:text="${session.userId}"></p>
 			<!-- <div><img th:src="@{/img/{img}(img= ${profile.identification})}" width="300px" height="300px" /></div> -->
@@ -31,7 +23,46 @@
 			<button onclick="sendMessage()">Send Message</button>
 			<div id="messages"></div>
 
+			<table class="table table-hover">
+				<thead>
+					<tr>
+						<th>예약코드</th>
+						<th>환자이름</th>
+						<th>생년월일</th>
+						<th>성별</th>
+						<th>환자Tel</th>
+						<th>예약시간</th>
+						<th>담당의</th>
+						<th>구분</th>
+						<th>진료상태</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="rdl : ${reserveMyList}">
+						<td th:text="${rdl.reserveNo}"></td>
+						<td th:text="${rdl.userName}"></td>
+						<td th:text="${#dates.format(rdl.userBirthday, 'yyyy-MM-dd')}"></td>
+						<td th:text="${rdl.gender}"></td>
+						<td th:text="${rdl.userPhone}"></td>
+						<td th:text="|${rdl.reserveTime} : 00|"></td>
+						<td th:text="${rdl.doctorName}"></td>
+
+						<td th:if="${ rdl.reserveKindstatus == 'c1' }">대면</td>
+						<td th:unless="${ rdl.reserveKindstatus == 'c1' }">비대면</td>
+						<td>
+							<button th:onclick="enter([[${rdl.reserveNo}]],'user2');" class="btn btn-dark">입장</button>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+
 			<script>
+				function errAlert(content) {
+					Swal.fire({
+						icon: 'error',
+						text: content,
+					});
+				}
 				function sendMessage() {
 					try {
 						if (socket && socket.readyState === WebSocket.OPEN) {
@@ -45,6 +76,10 @@
 					} catch (error) {
 						console.error('WebSocket 메시지 전송 에러:', error);
 					}
+				}
+
+				function enter(rno, uid) {
+					location.href = `/untactClinic?reserveNo=${rno}&userId=${uid}`;
 				}
 
 				function displayMessage(message) {

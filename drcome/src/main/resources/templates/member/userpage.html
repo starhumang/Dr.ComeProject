@@ -1,60 +1,111 @@
 <!DOCTYPE html>
 <html
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout}"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}"
 >
-	<head>
-		<meta charset="UTF-8" />
-		<script type="text/javascript">
-			function errAlert(content) {
-				Swal.fire({
-					icon: 'error',
-					text: content,
-				});
-			}
-		</script>
-	</head>
-	<body>
-		<div layout:fragment="content">
-			<p>마아아이이이페에에에이이이지이이이</p>
-			<!-- <p th:text="${profile}"></p> -->
-			<p id="userId" th:text="${session.userId}"></p>
-			<!-- <div><img th:src="@{/img/{img}(img= ${profile.identification})}" width="300px" height="300px" /></div> -->
-			<p>전체코드</p>
-			<!-- <p th:text="${application.detailCode}"></p> -->
-			<p>개별코드</p>
-			<!-- [[${application.detailCode_a}]] -->
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <p>마이페이지</p>
+      <!-- <p th:text="${profile}"></p> -->
+      <p id="userId" th:text="${session.userId}"></p>
+      <!-- <div><img th:src="@{/img/{img}(img= ${profile.identification})}" width="300px" height="300px" /></div> -->
+      <p>전체코드</p>
+      <!-- <p th:text="${application.detailCode}"></p> -->
+      <p>개별코드</p>
+      <!-- [[${application.detailCode_a}]] -->
 
-			<h1>WebSocket Test</h1>
-			<button onclick="connectWebSocket()">Connect WebSocket</button>
-			<button onclick="sendMessage()">Send Message</button>
-			<div id="messages"></div>
+      <h1>WebSocket Test</h1>
+      <button onclick="connectWebSocket()">Connect WebSocket</button>
+      <button onclick="sendMessage()">Send Message</button>
+      <div id="messages"></div>
 
-			<script>
-				function sendMessage() {
-					try {
-						if (socket && socket.readyState === WebSocket.OPEN) {
-							// 서버로 메시지 전송
-							const message = '문자 전송';
-							socket.send(message);
-							console.log('보낸 메시지: ' + message);
-						} else {
-							console.error('WebSocket 연결이 열려있지 않습니다.');
-						}
-					} catch (error) {
-						console.error('WebSocket 메시지 전송 에러:', error);
-					}
-				}
+      <p>[[${reserveMyList}]]</p>
 
-				function displayMessage(message) {
-					// 받은 메시지를 화면에 표시
-					const messagesDiv = document.getElementById('messages');
-					const messageDiv = document.createElement('div');
-					messageDiv.textContent = message;
-					messagesDiv.appendChild(messageDiv);
-				}
-			</script>
-		</div>
-	</body>
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th>예약코드</th>
+            <th>환자이름</th>
+            <th>생년월일</th>
+            <th>성별</th>
+            <th>환자Tel</th>
+            <th>예약시간</th>
+            <th>담당의</th>
+            <th>구분</th>
+            <th>진료상태</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="rdl : ${reserveMyList}">
+            <td th:text="${rdl.reserveNo}"></td>
+            <td th:text="${rdl.userName}"></td>
+            <td th:text="${#dates.format(rdl.userBirthday, 'yyyy-MM-dd')}"></td>
+            <td th:text="${rdl.gender}"></td>
+            <td th:text="${rdl.userPhone}"></td>
+            <td th:text="|${rdl.reserveTime} : 00|"></td>
+            <td th:text="${rdl.doctorName}"></td>
+
+            <td th:if="${ rdl.reserveKindstatus == 'c1' }">대면</td>
+            <td th:unless="${ rdl.reserveKindstatus == 'c1' }">비대면</td>
+            <td>
+              <button
+                disabled
+                th:if="${rdl.reserveStatus} =='e1'"
+                class="btn btn-secondary"
+              >
+                진료대기
+              </button>
+              <button
+                th:if="${rdl.reserveStatus} =='e3'"
+                th:onclick="enter();"
+                class="btn btn-primary enterBtn"
+              >
+                입장하기
+              </button>
+              <button
+                disabled
+                th:if="${rdl.reserveStatus} =='e4'"
+                class="btn btn-light"
+              >
+                진료완료
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <script>
+        function sendMessage() {
+          try {
+            if (alarmSocket && alarmSocket.readyState === WebSocket.OPEN) {
+              // 서버로 메시지 전송
+              const message = "user2";
+              alarmSocket.send(message);
+              console.log("보낸 메시지: " + message);
+            } else {
+              console.error("WebSocket 연결이 열려있지 않습니다.");
+            }
+          } catch (error) {
+            console.error("WebSocket 메시지 전송 에러:", error);
+          }
+        }
+
+        function enter() {
+          location.href = `/untactPatient`;
+        }
+
+        function displayMessage(message) {
+          // 받은 메시지를 화면에 표시
+          const messagesDiv = document.getElementById("messages");
+          const messageDiv = document.createElement("div");
+          messageDiv.textContent = message;
+          messagesDiv.appendChild(messageDiv);
+        }
+      </script>
+    </div>
+  </body>
 </html>

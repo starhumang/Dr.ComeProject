@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.drcome.project.FileUploadService;
+import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.mem.mapper.UserMemberMapper;
 import com.drcome.project.mem.service.MemVO;
@@ -32,6 +33,9 @@ public class UserMemberController {
 
 	@Autowired
 	UserMemberService userMemService;
+
+	@Autowired
+	HospitalService hospitalService;
 
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -90,7 +94,7 @@ public class UserMemberController {
 	@GetMapping("/userupdate")
 	public String userUpdateForm(@SessionAttribute(name = "userId", required = false) String id, Model model) {
 		UserMemberVO userInfo = memMapper.selectMem(id);
-		model.addAttribute("userInfo", userInfo); 
+		model.addAttribute("userInfo", userInfo);
 		return "/member/userupdate";
 	}
 
@@ -202,6 +206,12 @@ public class UserMemberController {
 		UserMemberVO myprofile = memMapper.selectMem(id);
 		model.addAttribute("profile", myprofile);
 
+		String hospitalId = "krrlo";
+		int doctorNo = 123;
+
+		List<Map<String, Object>> reserveMyList = hospitalService.getReserveDrList(hospitalId, doctorNo);
+		model.addAttribute("reserveMyList", reserveMyList);
+
 		return "/member/userpage";
 	}
 
@@ -229,10 +239,10 @@ public class UserMemberController {
 			response.put("checkNum", "중복");
 		}
 		System.out.println(response);
-		
+
 		return response;
 	}
-	
+
 	@GetMapping("/auth/checkAuthPhone")
 	@ResponseBody
 	public Map<String, Object> sendAuthNumber(@RequestParam String phoneNum) {

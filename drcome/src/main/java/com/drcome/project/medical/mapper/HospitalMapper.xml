@@ -67,6 +67,7 @@
 	<!-- 메인 -->
 	<select id="selectReserveMain" resultType="Map">
 	    SELECT r.RESERVE_NO "reserveNo"
+	         ,r.reserve_status "reserveStatus"
 	         , u.birthday "userBirthday"
 	         , u.gender "gender"
 	         , u.phone "userPhone" 
@@ -97,6 +98,7 @@
 	<!-- 진료실 -->
 	<select id="selectReserveDr" resultType="Map">
          SELECT r.RESERVE_NO "reserveNo"
+             ,r.reserve_status "reserveStatus"
 			 , u.birthday "userBirthday"
 			 , u.gender "gender"
 			 , u.phone "userPhone" 

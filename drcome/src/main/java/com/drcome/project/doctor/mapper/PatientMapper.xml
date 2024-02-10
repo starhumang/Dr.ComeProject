@@ -203,6 +203,21 @@
 	</select>
 
 
+	<!-- 진료완료로 업데이트 -->
+	<update id="updateReserve" parameterType="PatientVO">
+		update reservation
+		set
+		reserve_status = 'e4'
+		where reserve_no = #{reserveNo}
+	</update>
 
+
+	<!-- 입장하기로 업데이트 -->
+	<update id="updateEnter" parameterType="AlarmDao">
+		update reservation
+		set
+		reserve_status = 'e3'
+		where reserve_no = #{reserveNo}
+	</update>
 
 </mapper>

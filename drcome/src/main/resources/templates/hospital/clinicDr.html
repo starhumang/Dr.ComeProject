@@ -144,6 +144,8 @@
           <table class="table table-hover">
             <thead>
               <tr>
+                <th>예약상태확인용 주으니가추가</th>
+                <th>유저아이디</th>
                 <th>예약코드</th>
                 <th>환자이름</th>
                 <th>생년월일</th>
@@ -157,6 +159,8 @@
             </thead>
             <tbody>
               <tr th:each="rdl : ${reserveDrList}">
+                <td th:text="${rdl.reserveStatus}"></td>
+                <td th:text="${rdl.userId}"></td>
                 <td th:text="${rdl.reserveNo}"></td>
                 <td th:text="${rdl.userName}"></td>
                 <td
@@ -164,19 +168,57 @@
                 ></td>
                 <td th:text="${rdl.gender}"></td>
                 <td th:text="${rdl.userPhone}"></td>
-                <td th:text="|${rdl.reserveTime} : 00|"></td>
+                <td th:text="${rdl.reserveTime}"></td>
                 <td th:text="${rdl.doctorName}"></td>
 
                 <td th:if="${ rdl.reserveKindstatus == 'c1' }">대면</td>
                 <td th:unless="${ rdl.reserveKindstatus == 'c1' }">비대면</td>
+
+                <!--버튼..-->
                 <td>
-                  <button
-                    th:onclick="enter([[${rdl.reserveNo}]],'user2');"
-                    class="btn btn-dark"
-                  >
-                    입장
-                  </button>
+                  <div th:with="currentTime=${T(java.time.LocalTime).now()}">
+                    <div
+                      th:with="formattedString=${#temporals.format(currentTime, 'HH:mm:ss')}"
+                    >
+                      <div
+                        th:with="trimmedString=${#strings.substring(formattedString, 0, 2)}"
+                      >
+                        <button
+                          th:if="${#strings.substring(rdl.reserveTime, 0, 2)} == ${trimmedString} and ${rdl.reserveStatus} =='e1' and ${ rdl.reserveKindstatus == 'c2' }"
+                          th:onclick="enter([[${rdl.reserveNo}]],[[${rdl.userId}]])"
+                          class="btn btn-primary"
+                        >
+                          비대면 진료하기
+                        </button>
+
+                        <button
+                          th:if="${#strings.substring(rdl.reserveTime, 0, 2)} == ${trimmedString} and ${rdl.reserveStatus} =='e1' and ${ rdl.reserveKindstatus == 'c1' }"
+                          th:onclick="enterClinic([[${rdl.reserveNo}]],[[${rdl.userId}]])"
+                          class="btn btn-primary"
+                        >
+                          대면 진료하기
+                        </button>
+
+                        <button
+                          disabled
+                          th:if="${#strings.substring(rdl.reserveTime, 0, 2)} != ${trimmedString} and ${rdl.reserveStatus} =='e1'"
+                          class="btn btn-secondary"
+                        >
+                          진료대기
+                        </button>
+
+                        <button
+                          disabled
+                          th:if="${rdl.reserveStatus} =='e4'"
+                          class="btn btn-light"
+                        >
+                          진료완료
+                        </button>
+                      </div>
+                    </div>
+                  </div>
                 </td>
+                <!--버튼-->
               </tr>
             </tbody>
           </table>
@@ -188,11 +230,13 @@
           .toISOString()
           .substring(0, 10);
 
+        //진료하기버튼누를시 알람테이블 인서트+ 상태변경
         function enter(rno, uid) {
           let obj = {
             userId: uid,
             contentCode: "enterRoom",
             prefix: "진료실에 입장",
+            reserveNo: rno,
           };
 
           $.ajax("/saveAlarm", {
@@ -202,11 +246,19 @@
             contentType: "application/json",
           })
             .done((result) => {
-              console.log(result); //알람테이블 인서트 성공했으면//페이지 이동
-              location.href = `/untactClinic?reserveNo=${rno}&userId=${uid}`;
+              console.log(result);
+              //알람테이블 인서트 + 입장하기 상태변경 성공했으면//페이지 이동
+              if (result > 0) {
+                location.href = `/untactClinic?reserveNo=${rno}&userId=${uid}`;
+              }
             }) //.done
             .fail((err) => console.log(err));
-        } //진료실 입장하기 버튼
+        }
+
+        //대면진료
+        function enterClinic(rno, uid) {
+          location.href = `/clinic?reserveNo=${rno}&userId=${uid}`;
+        }
       </script>
     </div>
   </body>

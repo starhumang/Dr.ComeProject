@@ -157,6 +157,7 @@ thead tr:nth-child(3) th {
 	border: 1px solid #BDBDBD;
 	margin: 2px;
 	cursor: pointer;
+	margin-bottom: 10px;
 }
 
 .cell:hover {
@@ -223,16 +224,16 @@ thead tr:nth-child(3) th {
 								<th>진료일 / 진료시간</th>
 							</tr>
 						</thead>
-						<tbody style="vertical-align: middle;">
+						<tbody style="vertical-align:middle;">
 							<th:block th:each="doc : ${docList}">
 								<tr th:if="${#lists.size(docList) > 0}">
-									<td><input type="radio" name="doctor"
+									<td style="vertical-align:middle;"><input type="radio" name="doctor"
 										onclick="chooseDoctor()" /></td>
-									<td class="docName" th:text="${doc.doctorName}"></td>
-									<td th:text="${doc.subject}"></td>
-									<td class="docHol" th:text="${doc.holiday}"></td>
+									<td class="docName" th:text="${doc.doctorName}" style="vertical-align:middle;"></td>
+									<td th:text="${doc.subject}" style="vertical-align:middle;"></td>
+									<td class="docHol" th:text="${doc.holiday}" style="vertical-align:middle;"></td>
 									<td>
-										<div th:each="drTime : ${doc.times}">
+										<div th:each="drTime : ${doc.times}" class="doctorTime">
 											[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
 											[[${drTime.maxTime}]] : 00</div>
 									</td>
@@ -283,84 +284,13 @@ thead tr:nth-child(3) th {
 										<div
 											class="mx-0 mb-0 justify-content-sm-center justify-content-start px-1">
 											<input type="text" id="datePicker" class="datepicker one"
-												placeholder="날짜를 선택해주세요" name="date" readonly> <span
+												placeholder="날짜를 선택해주세요" name="date" onchange="changeTime()" > <span
 												class="fa fa-calendar"></span>
 										</div>
 									</div>
 									<div class="card-body p-3 p-sm-5">
-										<div class="row text-center mx-0">
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">9:00AM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">9:30AM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">9:45AM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">10:00AM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">10:30AM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">10:45AM</div>
-											</div>
-										</div>
-										<div class="row text-center mx-0">
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">11:00AM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">11:30AM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">11:45AM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">12:00PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">12:30PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">12:45PM</div>
-											</div>
-										</div>
-										<div class="row text-center mx-0">
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">1:00PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">1:30PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">1:45PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">2:00PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">2:30PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">2:45PM</div>
-											</div>
-										</div>
-										<div class="row text-center mx-0">
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">3:00PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">3:30PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">4:15PM</div>
-											</div>
-											<div class="col-md-2 col-4 my-1 px-2">
-												<div class="cell py-1">5:00PM</div>
-											</div>
+										<div class="row text-center mx-0 showTime">
+<!-- 											여기에 js로 태그 갖다붙임 -->
 										</div>
 									</div>
 								</form>
@@ -389,7 +319,7 @@ thead tr:nth-child(3) th {
 							//의사 선택
 							function chooseDoctor(){
 								let basicHosHoliDay = hosHoliday
-								let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
+								let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
 								let docName = tr.querySelector('.docName').innerText;
 								let holiday = tr.querySelector('.docHol').innerText;
 								document.querySelector('.name').innerText=docName; //이름뽑아오기
@@ -417,10 +347,11 @@ thead tr:nth-child(3) th {
 								
 								console.log("hosHoliday00",basicHosHoliDay);
 
-								createDatePicker(basicHosHoliDay)
+								createDatePicker(basicHosHoliDay)//달력설정이 새로 만들어짐
 								
 							}
 							
+							//달력 설정하는 함수
 							function createDatePicker(hosHoliday){
 								
 								$('#datePicker').datepicker("destroy");
@@ -431,7 +362,6 @@ thead tr:nth-child(3) th {
 							         startDate: '1d', //달력에서 선택 할 수 있는 가장 빠른 날짜. 이전으로는 선택 불가능 ( d : 일 m : 달 y : 년 w : 주)
 							         endDate: '+10d', //달력에서 선택 할 수 있는 가장 느린 날짜. 이후로 선택 불가 ( d : 일 m : 달 y : 년 w : 주)
 							         autoclose: true, //사용자가 날짜를 클릭하면 자동 캘린더가 닫히는 옵션
-							         datesDisabled: ['2019-06-24', '2019-06-26'], //선택 불가능한 일 설정 하는 배열 위에 있는 format 과 형식이 같아야함.
 							         daysOfWeekDisabled: hosHoliday, //선택 불가능한 요일 설정 0 : 일요일 ~ 6 : 토요일
 							         disableTouchKeyboard: false, //모바일에서 플러그인 작동 여부 기본값 false 가 작동 true가 작동 안함.
 							         immediateUpdates: true, //사용자가 보는 화면으로 바로바로 날짜를 변경할지 여부 기본값 :false
@@ -454,8 +384,72 @@ thead tr:nth-child(3) th {
 							      });
 								
 							}
+							
+							//해당 의사의 전체 진료시간 보여주는 함수
+							function changeTime(){
+								let tr = document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
+								let doctorTime = tr.querySelectorAll('.doctorTime');
+								let reserveday = document.querySelector('input[name="date"]').value; //선택한 날짜
+								let date  = new Date(reserveday);
+								let week = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];//선택한 날짜의 요일
+								console.log(week);//ex.월
+								let days = {};//진료 오픈시간 종료시간 들어있음
+								
+								//의사 요일별 진료시간 계산
+								for(let i=0; i < doctorTime.length; i++){
+									let docweek = (doctorTime[i].innerText).substr(0,1); //의사의 진료일
+									if(week == docweek){ //예약하는 요일과 의사의 진료요일이 일치하면 진료시간을 담겠따.										
+										days = {	"open" : (doctorTime[i].innerText).substr(4,2),
+													"close": (doctorTime[i].innerText).substr(14,2)
+												}
+									}
+								}
+								console.log("진료 시간:", days);
+								console.log((days["close"] - days["open"]));
+								
+								//새로 만들 태그들
+								let newDiv =null;
+								let innerDiv1 =null;
+								let innerDiv2 =null;
+								
+								//만약 새로 클릭시 기존에 만든 태그들 다 삭제
+								let removeDivs = document.querySelectorAll('.remove');
+								removeDivs.forEach(item=> item.remove());
+								
+								//요일별 시간에 대한 시간버튼 만들기
+								for(let i = 0; i < (days["close"] - days["open"]); i++){
+									
+									//큰 div
+									newDiv = document.createElement("div");
+									newDiv.className = "col-md-2 col-4 my-1 px-2 remove";
+									
+									//정각
+									innerDiv1 = document.createElement("div");
+									innerDiv1.className = "cell py-1 remove";
+									innerDiv1.textContent = (parseInt(days["open"]) + i) + ":00";
+									
+									//30분
+									innerDiv2 = document.createElement("div");
+									innerDiv2.className = "cell py-1 remove";
+									innerDiv2.textContent = (parseInt(days["open"]) + i) + ":30";
+									
+									//큰 div안에 두개 다 append
+									newDiv.appendChild(innerDiv1);
+									newDiv.appendChild(innerDiv2);
+									
+									//최종 append
+									let showTimeDiv = document.querySelector('.showTime');
+									showTimeDiv.appendChild(newDiv);
+								}
+								
+								
+							}
 					
-						
+							
+							//시간 선택시 스타일 바꿔주는 함수
+							function changeTimeStyle(){
+								
+							}
 						 
 						</script>
 				</div>

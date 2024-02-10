@@ -77,6 +77,12 @@ public class MainServiceImpl implements MainService {
 		return result;
 	}
 
+//	@Override
+//	public int findDoctorTime(String doctorNo, String day) {
+//		int findDoctorTime = mainMapper.findDoctorTime(doctorNo, day);
+//		return findDoctorTime;
+//	}
+
 
 
 

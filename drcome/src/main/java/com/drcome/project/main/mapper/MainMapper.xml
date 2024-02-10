@@ -146,4 +146,11 @@
                                        )
     	</insert>
     	
+    	<!-- <select id="findDoctorTime" resultType="int">
+    	select DAY, TIME 
+		FROM DOCTOR_TIME
+		WHERE DOCTOR_NO = #{doctorNo}
+		AND DAY =#{day}
+    	</select> -->
+    	
     </mapper>

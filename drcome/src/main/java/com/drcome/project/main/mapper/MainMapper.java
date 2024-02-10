@@ -45,4 +45,15 @@ public interface MainMapper {
 	//방문예약 (insert)
 	public int insertContactReservation(ReservationVO reservationVo);
 	
+	//의사시간 가져오기
+//	public int findDoctorTime(@Param("doctorNo")String doctorNo, @Param("day")String day);
+	
+	
+	
+	
+	
+	
+	
+	
+	
 }

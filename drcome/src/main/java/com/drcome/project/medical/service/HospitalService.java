@@ -57,6 +57,17 @@ public interface HospitalService {
 	
 	//환자 상세 진료내역 조회
 	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo);
-
-
+	
+	// 의사 번호 조회
+	public int getCurrentDoctorNo();
+	
+	// 의사 정보 조회
+	public DoctorVO selectDoctor(int doctorNo);
+	
+	// 의사 등록
+	public int insertDoctor(DoctorVO vo);
+	
+	// 의사 수정
+	public int updateDoctor(DoctorVO vo);
+	
 }

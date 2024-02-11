@@ -3,6 +3,7 @@ package com.drcome.project.medical.web;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,21 +12,29 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.drcome.project.FileUploadService;
 import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.common.service.PageDTO;
 import com.drcome.project.common.service.PageDTO2;
+import com.drcome.project.medical.service.DoctorTimeVO;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
+import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.medical.service.NoticeVO;
+import com.drcome.project.mem.mapper.UserMemberMapper;
+import com.drcome.project.mem.service.UserMemberService;
+import com.drcome.project.mem.service.UserMemberVO;
 
 @Controller
 public class HospitalController {
@@ -35,6 +44,15 @@ public class HospitalController {
 
 	@Autowired
 	private FileUploadService fileUploadService;
+
+	@Autowired
+	UserMemberMapper memMapper;
+
+	@Autowired
+	UserMemberService userMemService;
+
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	/* 공통 */
 	// 공통 병원 정보 따로 빼기
@@ -61,16 +79,17 @@ public class HospitalController {
 	}
 
 	/* 예약내역 - clinic */
-	//Main
+	// Main
 	@GetMapping("/hospital/clinicMain")
-	public String clinicReserve(Principal principal, String hospitalId, String date, String reserveKindstatus, Model model) {
+	public String clinicReserve(Principal principal, String hospitalId, String date, String reserveKindstatus,
+			Model model) {
 		hospitalId = principal.getName();
 		List<Map<String, Object>> reserveList = hospitalService.getRerveList(hospitalId, date, reserveKindstatus);
 		model.addAttribute("reserveList", reserveList);
 		return "hospital/clinicMain";
 	}
-	
-	//Dr
+
+	// Dr
 	@GetMapping("/hospital/clinicDr")
 	public String clinicReserveDr(Principal principal, String hospitalId, Integer doctorNo, Model model) {
 		hospitalId = principal.getName();
@@ -140,39 +159,38 @@ public class HospitalController {
 	@GetMapping("/hospital/noticeList")
 	public String qnaList(Principal principal, String hospitalId) {
 		hospitalId = principal.getName();
-		
+
 		return "hospital/noticeList";
 	}
-	
+
 	// 공지사항 전체 - 페이징
 	@GetMapping("/hospital/noticeListP")
 	@ResponseBody
-	public Map<String, Object> noticeList(Principal principal,
-							 String hospitalId,
-							 @RequestParam(required = false, defaultValue = "1") String page) {
+	public Map<String, Object> noticeList(Principal principal, String hospitalId,
+			@RequestParam(required = false, defaultValue = "1") String page) {
 		hospitalId = principal.getName();
-		
+
 		Map<String, Object> map = new HashMap();
 		// 리스트 전체 개수
 		int total = hospitalService.noticeCount(hospitalId);
-		
+
 		// 선택 페이지 변환
 		int cpage = Integer.parseInt(page);
 		System.out.println("선택된 페이지" + cpage);
-		
+
 		// 페이지네이션(currentpage, total)
 		PageDTO2 dto = new PageDTO2(cpage, total);
 		System.out.println("dtd 객체" + dto);
-		
+
 		List<Map<String, Object>> plist = hospitalService.getNoticeList(cpage, hospitalId);
-		
+
 		System.out.println(plist.size());
-		
+
 		// ajax는 return으로...
-		
+
 		map.put("plist", plist);
 		map.put("pagedto", dto);
-		
+
 		return map;
 	}
 
@@ -242,5 +260,145 @@ public class HospitalController {
 			e.printStackTrace();
 		}
 
+	}
+
+	@GetMapping("/hospital/hosinfoupdate")
+	public String hosUpdateForm() {
+		return "hospital/hosupdate";
+	}
+
+	@PostMapping("/hospital/hosinfoupdate")
+	@ResponseBody
+	public Map<String, Object> hosUpdate(HospitalVO hVO) {
+		Map<String, Object> response = new HashMap<>();
+		String password = hVO.getHospitalPw();
+		password = bCryptPasswordEncoder.encode(password);
+		hVO.setHospitalPw(password);
+
+		if (hVO.getUploadFiles() != null) {
+			List<String> imageList = fileUploadService.uploadFiles(hVO.getUploadFiles());
+
+			String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
+			hVO.setHospitalImg(uploadedFileName);
+		}
+
+		System.out.println(hVO);
+
+		try {
+			int cnt = userMemService.updateHosInfo(hVO);
+			if (cnt > 0) {
+				response.put("result", true);
+				response.put("msg", "정상적으로 수정되었습니다.");
+			} else {
+				response.put("result", false);
+				response.put("msg", "수정에 실패했습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("result", false);
+			response.put("msg", "에러 발생");
+		}
+		return response;
+	}
+
+	@GetMapping("/hospital/doctorinsert")
+	public String doctorInsertForm() {
+		return "hospital/doctorinsert";
+	}
+
+	@PostMapping("/hospital/doctorinsert")
+	@ResponseBody
+	public Map<String, Object> doctorInsert(DoctorVO vo, @RequestParam("i1") List<String> i1Times,
+			@RequestParam("i2") List<String> i2Times, @RequestParam("i3") List<String> i3Times,
+			@RequestParam("i4") List<String> i4Times, @RequestParam("i5") List<String> i5Times,
+			@RequestParam("i6") List<String> i6Times, @RequestParam("i7") List<String> i7Times) {
+
+		Map<String, Object> response = new HashMap<>();
+
+		List<DoctorTimeVO> times = new ArrayList<>();
+		times.add(createDoctorTimeVO("i1", i1Times));
+		times.add(createDoctorTimeVO("i2", i2Times));
+		times.add(createDoctorTimeVO("i3", i3Times));
+		times.add(createDoctorTimeVO("i4", i4Times));
+		times.add(createDoctorTimeVO("i5", i5Times));
+		times.add(createDoctorTimeVO("i6", i6Times));
+		times.add(createDoctorTimeVO("i7", i7Times));
+
+		vo.setTimes(times);
+		
+		try {
+			int cnt = hospitalService.insertDoctor(vo);
+			if (cnt > 0) {
+				int doctorNo = hospitalService.getCurrentDoctorNo();
+			    System.out.println(doctorNo);
+				response.put("result", true);
+				response.put("msg", "성공적으로 등록되었습니다.");
+			    
+			} else {
+				response.put("result", false);
+				response.put("msg", "등록에 실패했습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("result", false);
+			response.put("msg", "에러 발생");
+		}
+
+		return response;
+	}
+
+	private DoctorTimeVO createDoctorTimeVO(String day, List<String> times) {
+		DoctorTimeVO doctorTimeVO = new DoctorTimeVO();
+		doctorTimeVO.setDay(day);
+		doctorTimeVO.setTimeArray(times);
+		return doctorTimeVO;
+	}
+	
+	@GetMapping("/hospital/doctorupdate/{DoctorNo}")
+	public String doctorUpdateForm(@PathVariable("DoctorNo") String doctorNo, Model model) {
+		int doctorNum = Integer.parseInt(doctorNo);
+		DoctorVO drinfo = hospitalService.selectDoctor(doctorNum);
+		model.addAttribute("drInfo", drinfo);
+		return "hospital/doctormodify";
+	}
+	
+	@PostMapping("/hospital/doctorupdate")
+	@ResponseBody
+	public Map<String, Object> doctorUpdate(DoctorVO vo, @RequestParam("i1") List<String> i1Times,
+			@RequestParam("i2") List<String> i2Times, @RequestParam("i3") List<String> i3Times,
+			@RequestParam("i4") List<String> i4Times, @RequestParam("i5") List<String> i5Times,
+			@RequestParam("i6") List<String> i6Times, @RequestParam("i7") List<String> i7Times) {
+		Map<String, Object> response = new HashMap<>();
+
+		List<DoctorTimeVO> times = new ArrayList<>();
+		times.add(createDoctorTimeVO("i1", i1Times));
+		times.add(createDoctorTimeVO("i2", i2Times));
+		times.add(createDoctorTimeVO("i3", i3Times));
+		times.add(createDoctorTimeVO("i4", i4Times));
+		times.add(createDoctorTimeVO("i5", i5Times));
+		times.add(createDoctorTimeVO("i6", i6Times));
+		times.add(createDoctorTimeVO("i7", i7Times));
+
+		vo.setTimes(times);
+		
+		System.out.println(vo);
+		
+		try {
+			int cnt = hospitalService.updateDoctor(vo);
+			if (cnt > 0) {
+				response.put("result", true);
+				response.put("msg", "정상적으로 수정되었습니다.");
+			    
+			} else {
+				response.put("result", false);
+				response.put("msg", "수정에 실패했습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("result", false);
+			response.put("msg", "에러 발생");
+		}
+
+		return response;
 	}
 }

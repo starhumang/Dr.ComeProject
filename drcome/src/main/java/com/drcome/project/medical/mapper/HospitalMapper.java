@@ -59,4 +59,22 @@ public interface HospitalMapper {
 	/* ------- Total Count ------- */
 	/* 공지사항 리스트 페이징 */
 	public int noticeCount(@Param("hospitalId") String hospitalId);
+	
+	/* 의사 번호 조회 */
+	public int getCurrentDoctorNo();
+	
+	/* 의사 정보 조회 */
+	public DoctorVO selectDoctor(int doctorNo);
+	
+	/* 의사 등록 */
+	public int insertDoctor(DoctorVO vo);
+	
+	/* 의사 시간 등록 */
+	public int insertDoctorTime(int doctorNo, String day, String timeSlot);
+	
+	/* 의사 수정 */
+	public int updateDoctor(DoctorVO vo);
+	
+	/* 의사 시간 삭제 */
+	public int deleteDoctorTime(int doctorNo);
 }

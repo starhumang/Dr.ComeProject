@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.medical.mapper.HospitalMapper;
 import com.drcome.project.medical.repository.HospitalRepository;
+import com.drcome.project.medical.service.DoctorTimeVO;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.NoticeVO;
@@ -46,20 +47,21 @@ public class HospitalServiceImpl implements HospitalService {
 	}
 
 	/* 예약내역 - clinic */
-	//Main
+	// Main
 	@Override
 	public List<Map<String, Object>> getRerveList(String hospitalId, String date, String reserveKindstatus) {
-		List<Map<String, Object>> listReserveAll = hospitalMapper.selectReserveMain(hospitalId, date, reserveKindstatus);
+		List<Map<String, Object>> listReserveAll = hospitalMapper.selectReserveMain(hospitalId, date,
+				reserveKindstatus);
 		return listReserveAll;
 	}
 
-	//Dr
+	// Dr
 	@Override
 	public List<Map<String, Object>> getReserveDrList(String hospitalId, Integer doctorNo) {
 		List<Map<String, Object>> listReserveDr = hospitalMapper.selectReserveDr(hospitalId, doctorNo);
 		return listReserveDr;
 	}
-	
+
 	/* QnA */
 	// QnA 전체
 	@Override
@@ -101,6 +103,7 @@ public class HospitalServiceImpl implements HospitalService {
 	public int insertNoticeInfo(NoticeVO vo) {
 		return hospitalMapper.insertNotice(vo);
 	}
+
 	@Override
 	public int insertAttach(NoticeVO vo) {
 		return hospitalMapper.insertAttach(vo);
@@ -134,8 +137,55 @@ public class HospitalServiceImpl implements HospitalService {
 		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
 		return listPaDe;
 	}
+	
+	// 의사 번호 조회
+	@Override
+	public int getCurrentDoctorNo() {
+		return hospitalMapper.getCurrentDoctorNo();
+	}
+	
+	// 의사 정보 조회
+	@Override
+	public DoctorVO selectDoctor(int doctorNo) {
+		return hospitalMapper.selectDoctor(doctorNo);
+	}
 
+	// 의사 등록
+	@Override
+	public int insertDoctor(DoctorVO vo) {
+        int count = hospitalMapper.insertDoctor(vo);
+        
+        int doctorNo = hospitalMapper.getCurrentDoctorNo();
 
-
+        List<DoctorTimeVO> times = vo.getTimes();
+        for (DoctorTimeVO time : times) {
+            String day = time.getDay();
+            List<String> timeArray = time.getTimeArray();
+            for (String timeSlot : timeArray) {
+                hospitalMapper.insertDoctorTime(doctorNo, day, timeSlot);
+            }
+        }
+        return count;
+	}
+	
+	// 의사 수정
+	@Override
+	public int updateDoctor(DoctorVO vo) {
+		int count = hospitalMapper.updateDoctor(vo);
+		
+		int doctorNo = vo.getDoctorNo();
+		
+		hospitalMapper.deleteDoctorTime(doctorNo);
+		
+		List<DoctorTimeVO> times = vo.getTimes();
+        for (DoctorTimeVO time : times) {
+            String day = time.getDay();
+            List<String> timeArray = time.getTimeArray();
+            for (String timeSlot : timeArray) {
+                hospitalMapper.insertDoctorTime(doctorNo, day, timeSlot);
+            }
+        }
+		return count;
+	}
 
 }

@@ -79,7 +79,7 @@
 							<td th:text="${#dates.format(pl.userBirthday, 'yyyy-MM-dd')}"></td>
 							<td th:text="${pl.gender}"></td>
 							<td th:text="${pl.userPhone}"></td>
-							<td><a th:href="@{/hospital/patientList/patientDetail(patientNo=${pl.patientNo})}" class="btn btn-sm btn-outline-warning">상세보기</a></td>
+							<td><a th:href="@{/hospital/patientList/patientDetail(patientNo=${pl.patientNo})}" class="btn btn-sm btn-outline-warning">진료내역</a></td>
 						</tr>
 					</tbody>
 				</table>

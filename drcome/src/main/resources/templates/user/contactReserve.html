@@ -34,7 +34,8 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.js"></script>
-
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 <style>
 .bb {
 	display: inline;
@@ -43,7 +44,6 @@
 	margin: 10px 10px 10px 10px;
 }
 
-}
 .butt {
 	display: flex;
 }
@@ -63,7 +63,6 @@
 .card {
 	box-shadow: 0px 4px 8px 0px #7986CB;
 }
-
 .input {
 	padding: 10px 20px !important;
 	border: 1px solid #000 !important;
@@ -76,6 +75,7 @@
 	width: 180px;
 	display: inline;
 }
+
 
 .input:focus {
 	-moz-box-shadow: none !important;
@@ -158,6 +158,7 @@ thead tr:nth-child(3) th {
 	margin: 2px;
 	cursor: pointer;
 	margin-bottom: 10px;
+	caret-color:transparent;
 }
 
 .cell:hover {
@@ -176,6 +177,19 @@ thead tr:nth-child(3) th {
 	padding-left: 5px;
 	cursor: pointer;
 }
+.disableDiv{
+	background-color: lightgray;
+	pointer-events:none;
+}
+.pstyle{
+	margin-top:20px;
+	fontsize:20px;
+	color:red;
+	caret-color:transparent;
+}
+.nonecursor{
+	caret-color:transparent;
+}
 </style>
 </head>
 
@@ -183,7 +197,7 @@ thead tr:nth-child(3) th {
 	<div layout:fragment="content">
 		<h1 style="text-align: center; margin-top: 50px; color: gray;">[
 			방문예약 ]</h1>
-		<div class="container-fluid" style="margin-bottom: 50px; width: 75%">
+		<div class="container-fluid" style="margin-bottom: 50px; width: 75%; text-align:center;">
 
 			<!-- 병원이름 -->
 			<div class="container" style="margin-bottom: 50px;">
@@ -191,10 +205,10 @@ thead tr:nth-child(3) th {
 					<!-- 소제목 -->
 					<div class="card-header py-3"
 						style="display: flex; align-items: center;">
-						<h5 class="m-0 font-weight-bold text-secondary">
+						<h5 class="m-0 font-weight-bold text-secondary nonecursor">
 							<i class="fas fa-fw fa-hospital"></i>예약하는 병원 :
 						</h5>
-						<h5 class="font-weight-bold me"
+						<h5 class="font-weight-bold me nonecursor"
 							style="color: #06BBCC; margin: 0 0 0 10px;" th:text="${hosName}">
 						</h5>
 					</div>
@@ -206,10 +220,10 @@ thead tr:nth-child(3) th {
 				<div class="card shadow mb-4">
 					<div class="card-header py-3"
 						style="display: flex; align-items: center;">
-						<h5 class="m-0 font-weight-bold text-secondary">
+						<h5 class="m-0 font-weight-bold text-secondary nonecursor">
 							<i class="fas fa-fw fa-user-nurse"></i>선택한 의료진 :
 						</h5>
-						<h5 class="font-weight-bold name"
+						<h5 class="font-weight-bold name nonecursor"
 							style="color: #06BBCC; margin: 0 0 0 10px;"></h5>
 					</div>
 				</div>
@@ -222,6 +236,7 @@ thead tr:nth-child(3) th {
 								<th>담당진료과목</th>
 								<th>휴진일</th>
 								<th>진료일 / 진료시간</th>
+								<th style="display:none;">의사번호</th>
 							</tr>
 						</thead>
 						<tbody style="vertical-align:middle;">
@@ -237,6 +252,7 @@ thead tr:nth-child(3) th {
 											[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
 											[[${drTime.maxTime}]] : 00</div>
 									</td>
+									<td style="display:none;" th:text="${doc.doctorNo}" class="doctorNo"></td>
 								</tr>
 							</th:block>
 						</tbody>
@@ -245,15 +261,15 @@ thead tr:nth-child(3) th {
 			</div>
 
 			<!-- 날짜 및 시간선택버튼 -->
-			<div class="container" style="margin-bottom: 50px;">
+			<div class="container" style="margin-bottom: 100px;">
 				<div class="card shadow mb-4 body">
 
 					<div
 						style="display: flex; justify-content: left; align-items: center;">
 						<!-- 제목 -->
-						<div class=" py-3" style="width: 550px; padding-left: 20px;">
+						<div class=" py-3 nonecursor" style="width: 550px; padding-left: 20px; text-align:left;">
 							<h5 class="m-0 font-weight-bold text-secondary"
-								style="display: inline;">
+								style="display: inline; ">
 								<i class="fa fa-calendar text-secondary"
 									style="font-size: 21px; margin-right: 5px;"></i>선택한 날짜 :
 							</h5>
@@ -261,9 +277,9 @@ thead tr:nth-child(3) th {
 								style="display: inline; color: #06BBCC; margin: 0 0 0 10px;">
 							</h5>
 						</div>
-						<div class=" py-3" style="width: 550px; padding-left: 20px;">
+						<div class=" py-3 nonecursor" style="width: 550px; padding-left: 20px; text-align:left;">
 							<h5 class="m-0 font-weight-bold text-secondary"
-								style="display: inline;">
+								style="display: inline; ">
 								<i class="fa fa-clock text-secondary"
 									style="font-size: 21px; margin-right: 5px;"></i>선택한 시간 :
 							</h5>
@@ -344,7 +360,8 @@ thead tr:nth-child(3) th {
 									//hosHoliday.push(hosHoliday);//병원 쉬는날도 같이
 								}
 								
-								
+								document.querySelector('.time').innerText= null;
+								document.querySelector('.date').innerText= null;
 								console.log("hosHoliday00",basicHosHoliDay);
 
 								createDatePicker(basicHosHoliDay)//달력설정이 새로 만들어짐
@@ -390,10 +407,15 @@ thead tr:nth-child(3) th {
 								let tr = document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
 								let doctorTime = tr.querySelectorAll('.doctorTime');
 								let reserveday = document.querySelector('input[name="date"]').value; //선택한 날짜
+								//선택한 날짜
 								let date  = new Date(reserveday);
+								//현재날짜 현재시간
+								let nowDate = new Date();
+								let hours = nowDate.getHours();
 								let week = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];//선택한 날짜의 요일
-								console.log(week);//ex.월
+								//console.log(week);//ex.월
 								let days = {};//진료 오픈시간 종료시간 들어있음
+								console.log(date,",",nowDate);
 								
 								//의사 요일별 진료시간 계산
 								for(let i=0; i < doctorTime.length; i++){
@@ -404,13 +426,14 @@ thead tr:nth-child(3) th {
 												}
 									}
 								}
-								console.log("진료 시간:", days);
-								console.log((days["close"] - days["open"]));
+								//console.log("진료 시간:", days);
+								//console.log((days["close"] - days["open"]));
 								
 								//새로 만들 태그들
 								let newDiv =null;
 								let innerDiv1 =null;
 								let innerDiv2 =null;
+								let showTimeDiv = document.querySelector('.showTime');
 								
 								//만약 새로 클릭시 기존에 만든 태그들 다 삭제
 								let removeDivs = document.querySelectorAll('.remove');
@@ -427,55 +450,215 @@ thead tr:nth-child(3) th {
 									innerDiv1 = document.createElement("div");
 									innerDiv1.className = "cell py-1 remove";
 									innerDiv1.textContent = (parseInt(days["open"]) + i) + ":00";
+									//이미 지니간 날짜 & 지나간 시간이면 클릭 못하게
+									if(date.getDate() == nowDate.getDate() && parseInt(days["open"]) + i <= hours){
+										console.log("맞음");
+										innerDiv1.classList.add('disableDiv');
+									}
+									
+									//클릭이벤트 색상변경 + 선택한 시간 보여주기
+									innerDiv1.addEventListener("click", function(event){
+										document.querySelector('.time').innerText=event.target.textContent;
+										document.querySelectorAll('.cell').forEach(function(div) {
+								            div.style.backgroundColor = "white";
+								        });
+										event.target.style.backgroundColor="#06BBCC";
+									})
 									
 									//30분
 									innerDiv2 = document.createElement("div");
 									innerDiv2.className = "cell py-1 remove";
 									innerDiv2.textContent = (parseInt(days["open"]) + i) + ":30";
+									//이미 지니간 날짜 & 지나간 시간이면 클릭 못하게
+									if(date.getDate() == nowDate.getDate() && parseInt(days["open"]) + i <= hours){
+										innerDiv2.classList.add('disableDiv');
+									}
+									//클릭이벤트 색상변경 + 선택한 시간 보여주기
+									innerDiv2.addEventListener("click", function(event){
+										document.querySelector('.time').innerText=event.target.textContent;
+										document.querySelectorAll('.cell').forEach(function(div) {
+								            div.style.backgroundColor = "white";
+								        });
+										event.target.style.backgroundColor="#06BBCC";
+									})
+									
 									
 									//큰 div안에 두개 다 append
 									newDiv.appendChild(innerDiv1);
 									newDiv.appendChild(innerDiv2);
 									
 									//최종 append
-									let showTimeDiv = document.querySelector('.showTime');
 									showTimeDiv.appendChild(newDiv);
 								}
+								//안내글
+								let p = document.createElement("p");
+								p.textContent = "* 당일 예약 시, 현재시간 기준 30분 이후 시간부터 예약이 가능합니다.";
+								p.className="pstyle remove";
 								
+								showTimeDiv.appendChild(p);
 								
 							}
 					
-							
-							//시간 선택시 스타일 바꿔주는 함수
-							function changeTimeStyle(){
-								
-							}
 						 
 						</script>
 				</div>
 			</div>
 
 			<!-- 증상적는곳 -->
-			<div class="container" style="margin-bottom: 50px;">
+			<div class="container" style="margin-bottom: 100px;">
 				<div class="card shadow mb-4">
-					<div class="card-header py-3"
+					<div class="card-header py-3 nonecursor"
 						style="display: flex; align-items: center;">
 						<h5 class="m-0 font-weight-bold text-secondary">
 							<i class="fas fa-fw fa-check"
-								style="font-size: 21px; margin-right: 5px;"></i>증상을 적어주세요
+								style="font-size: 21px; margin-right: 5px;"></i>증상을 적어주세요(필수)
 						</h5>
-						<h5 class="m-0 font-weight-bold text-secondary me"></h5>
 					</div>
 					<div class="card-body"
 						style="display: flex; justify-content: center; align-items: center;">
+						<textarea id="textarea"style="width:1500px; height:200px; resize:none;"></textarea>
 					</div>
 				</div>
 			</div>
-
+			
+			<!-- 주의사항 -->
+			<div class="container nonecursor" style="margin-bottom: 50px;">
+				<div class="card shadow mb-4">
+					<div class="card-header py-3"
+						style="display: flex; align-items: center;">
+						<h5 class="m-0 font-weight-bold" style="color:red;">
+							<i class="fas fa-fw fa-exclamation-triangle"
+								style="font-size: 21px; margin-right: 5px; "></i>내원 전 주의사항(반드시 읽고 동의해주시기 바랍니다)
+						</h5>
+					</div>
+					<div class="card-body"
+						style="display: flex; justify-content: center; align-items: center; background-color:#F8F8F8">
+						<div style="width:1500px; height:300px; resize:none; font-size:16.5px;  vertical-align:middle;">
+							<ol style="text-align:left;">
+								<li style="margin-bottom:10px;">검진을 위한 고객은 내원 전 반드시 전날 저녁 7시부터 방문까지 금식해주시길 바라며 사탕, 술, 담배 등도 일정 금하셔야 합니다.</li>
+								<li style="margin-bottom:10px;">이미 기존에 복용하시는 약이 있으신 경우 반드시 들고 오시어 의사와 상의해주시기 바랍니다.</li>
+								<li style="margin-bottom:10px;">예약을 완료한 경우 내원하기 며칠전에 병원측에서 연락이 가며, 문제가 생겨 방문하지 못하는 경우 미리 연락주시기 바랍니다.</li>
+								<li style="margin-bottom:10px;">원활한 예약 및 진료를 위해 고객님의 기입하신 정보는 해당 병원으로 전송되며 이는 진료상의 자료로 쓰일 수 있음을 알려드립니다.</li>
+								<li style="margin-bottom:10px;">전염병 및 기타 비말을 통한 전염이 가능한 질환에 감염되신 분들은 방문 전, 반드시 병원측에 고지하셔야하며 이를 따르지 않을 시  법적 처벌을 받을 수 있습니다.</li>
+								<li style="margin-bottom:10px;">예약제도를 도입하고 있는 것은 고객의 편리를 제공하는 것이며 병원측의 사정에 따라 진료시간이 조금 늦춰질 수 있음을 양해부탁드립니다.</li>
+								<li style="margin-bottom:10px;">만 17세 미만의 고객분들은 보호자와 함께 방문해주시길 바랍니다.</li>
+							</ol>
+						</div>
+					</div>
+				</div>
+			</div>
+			<br>
+			<br>
+			<p style="font-size:20px; color:red; font-weight:bold;">위의 주의사항을 충분히 숙지하셨고, 이에 동의하십니까?</p>
+			<button type="button" class="bb btn btn-primary" onclick="insertReservation()"
+					style="width:300px; height:100px;font-size:20px;background-color: #06BBCC; border:none;">
+				동의하고 제출하기</button>
 		</div>
+	<script th:inline="javascript">
+		//신청했을때 insert시키는 함수
+		function insertReservation(){
+			//검사용
+			let hospital = document.querySelector('.me').innerText;//병원이 지정되었는가?
+			let doctor = document.querySelector('.name').innerText;//의사를 지정했는가?
+			let date = document.querySelector('.date').innerText;//날짜가 정해졌는가?
+			let time = document.querySelector('.time').innerText;//시간이 정해졌는가?
+			let textarea = document.querySelector('#textarea').value;//증상을 적었는가?
+			console.log("선택항목들 = ",hospital," , ",doctor," , ",date," , ",time," , ",textarea);
+			
+			//의사검사
+			if(doctor !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "의료진을 선택해주세요",
+		   			  html: '아직 진료받을 의료진을 선택하지 않으셨습니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
+			//날짜검사
+			if(date !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "날짜를 선택해주세요",
+		   			  html: '진료받으실 날짜를 선택해주시기 바랍니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
+			//시간검사
+			if(time !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "시간을 선택해주세요",
+		   			  html: '진료받으실 시간을 선택해주시기 바랍니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
+			//증상검사
+			if(textarea !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "증상을 입력해주세요",
+		   			  html: '필수로 작성하셔야되는 항목입니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
+			
+			
+			//제출할 것
+			let hospitalId = [[${hospitalId}]];//병원아이디
+			let userId = [[${userId}]]//유저아이디
+			let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
+			let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
+			let reserveYear = date.substr(0,4);//예약년도
+			let reserveMonth = date.substr(5,2);//예약월
+			let reserveDay = date.substr(8,2);//예약일
+			let symptom = textarea//증상
+			let reserveTime = time;//예약시간
+			console.log("제출항목들 = ",hospitalId," , ",userId," , ",doctorNo," , ",reserveYear," , ",reserveMonth," , ",reserveDay," , ",symptom);
+			
+			$.ajax("/contactReserve",{
+				type:"post",
+				contentType:"application/json",
+				data : JSON.stringify({
+					"hospitalId" : hospitalId,
+					"userId" : userId,
+					"doctorNo" : doctorNo,
+					"reserveYear" : reserveYear,
+					"reserveMonth" : reserveMonth,
+					"reserveDay" : reserveDay,
+					"symptom" : symptom,
+					"reserveTime" : reserveTime
+				}),
+				
+				success: function(response){
+					Swal.fire({
+			   			  title: "예약이 완료되었습니다!",
+			   			  html: '예약내역은 마이페이지에서 확인가능합니다~',
+			   			  icon: "success"
+			   			});
+					window.location.href = "/mypage";
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+				        console.error("에러 발생:", textStatus, errorThrown);
+				     Swal.fire({
+		   			  title: "예약실패",
+		   			  html: '뭔가 문제가 있음ㄴ',
+		   			  icon: "error"
+		   			});
+				}
+			})
+		}
+	
+	</script>
 	</div>
-
-
+	
 </body>
 
 </html>

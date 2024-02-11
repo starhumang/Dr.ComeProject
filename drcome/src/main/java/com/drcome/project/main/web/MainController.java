@@ -168,12 +168,19 @@ public class MainController {
 	public String contactReservationPage(HttpServletRequest request, String hospitalId, Model model) {
 		//병원정보
 		HospitalVO hosInfo = mainService.getHos(hospitalId);
-		//병원이름
+		//병원이름&아이디
 		model.addAttribute("hosName", hosInfo.getHospitalName());
+		model.addAttribute("hospitalId", hospitalId);
 		//병원의 의사정보
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
 		model.addAttribute("docList", docList);
 		//System.out.println("docList="+docList);
+		
+		//세션으로 유저아이디 가져옴
+		HttpSession session = request.getSession();
+		String userId = (String) session.getAttribute("userId");
+		model.addAttribute("userId", userId);
+		//System.out.println("userId="+userId);
 		
 		//병원 휴무일 보내기(숫자형태로 전환해서 보내는 중)
 		Map<String, Integer> dayList = new HashMap<>();
@@ -208,6 +215,7 @@ public class MainController {
 	@PostMapping("/contactReserve")
 	@ResponseBody
 	public boolean insertReservation(@RequestBody ReservationVO reservationVo) {
+		System.out.println("reservationVo"+reservationVo);
 		int result = mainService.insertContactReservation(reservationVo);
 		if(result == 0) { //insert 안되면 false
 			return false;

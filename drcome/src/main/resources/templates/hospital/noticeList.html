@@ -57,7 +57,7 @@ input[type="radio"]:checked+label {
 </head>
 
 <body>
-	<div layout:fragment="content">
+	<div layout:fragment="content" style="min-height: 926px;">
 		<div class="container-fluid">
 			<div class="head_info">
 				<h4 th:text="${hospitalSel.hospitalName}"></h4>
@@ -69,29 +69,20 @@ input[type="radio"]:checked+label {
 			<p>notice</p>
 			<div class="search">
 				<!-- drop -->
-				<div style="margin-right: 5px">
-					<select class="custom-select" aria-label="Default select example">
-						<option selected>검색유형</option>
-						<option value="1">제목</option>
-						<option value="2">내용</option>
-					</select>
-				</div>
-
-				<!-- 검색 -->
-				<div>
-					<div class="input-group">
-						<button class="btn btn-info" type="button"
-							style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
-							<i class="fas fa-search fa-sm"></i>
-						</button>
-						<input type="text" class="form-control bg-light border-1 small"
-							placeholder="검색어를 입력하세요." aria-label="Search"
-							aria-describedby="basic-addon2" />
-						<div class="input-group-append">
-							<button class="btn btn-info" type="button">검색하기</button>
-						</div>
-					</div>
-				</div>
+					<form th:action="@{/hospital/search}" method="get">
+					    <div class="input-group">
+					        <select name="type" class="custom-select" aria-label="Default select example" style="border-radius: 0.35rem;">
+					        	<option value="">전체보기</option>
+					            <option value="1">제목</option>
+					            <option value="2">내용</option>
+					        </select>
+					        <button class="btn btn-info" type="submit" style="border-top-right-radius: 0; border-bottom-right-radius: 0; margin-left: 0.3rem;">
+					            <i class="fas fa-search fa-sm"></i>
+					        </button>
+					        <input type="text" name="keyword" class="form-control bg-light border-1 small" placeholder="검색어를 입력하세요." aria-label="Search" aria-describedby="basic-addon2" style="width: 30%;"/>
+					        <button class="btn btn-info" type="submit" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">검색하기</button>
+					    </div>
+					</form>
 			</div>
 
 			<div class="noticeUp" style="text-align: right; margin: 15px 0;">
@@ -112,140 +103,177 @@ input[type="radio"]:checked+label {
 			</div>
 		</div>
 		<script>
-		//ajax로 페이지 열린 후에 페이징 한 거 받아오기...
-		let page = 1;
+		    //ajax로 페이지 열린 후에 페이징 한 거 받아오기...
+		    let page = 1;
+		
+		    // Ajax 요청을 보내는 함수
+		    function sendP(page) {
+		        $.ajax({
+		            url: '/hospital/noticeListP', // JSON 데이터를 반환하는 엔드포인트
+		            type: 'GET',
+		            data: { page: page },
+		            dataType: 'json', // 응답 데이터 타입은 JSON입니다.
+		        }).done(function(response) {
+		            // 응답을 받으면 처리합니다.
+		            var noticeList = $('#noticeList');
+		            noticeList.empty(); // 기존 목록을 지웁니다.
+		
+		            // 받은 JSON 데이터를 반복하여 목록에 추가합니다.
+		            $.each(response.plist, function(index, item) {
+		                noticeList.append('<div>' + item.title + '</div>');
+		                // 공지사항의 제목을 출력하거나 필요한 데이터를 표시할 수 있습니다.
+		            });
+		
+		            // 페이지네이션 정보를 사용하여 페이지네이션을 구현할 수 있습니다.
+		            console.log("pagedto" + response.pagedto);
+		            // 받은 JSON 데이터를 사용하여 테이블 생성
+		            createTable(response.plist);
+		            makePaging(response.pagedto);
+		
+		        }).fail(function(xhr, status, error) {
+		            // 요청이 실패한 경우 에러 처리를 합니다.
+		            console.error("error" + error);
+		        });
+		    }
+		
+		    // 페이지 로드 시 첫 번째 페이지 데이터를 가져옵니다.
+		    $(document).ready(function() {
+		        sendP(page);
+		    });
+		
+		    // 날짜 처리 함수
+		    function formatDate(dateString) {
+		        var date = new Date(dateString);
+		        var year = date.getFullYear();
+		        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+		        var day = date.getDate().toString().padStart(2, '0');
+		
+		        return `${year}-${month}-${day}`;
+		    }
+		
+		    // 페이징 함수
+		    function makePaging(dto = {}) {
+		        document.querySelector(".pagination").innerHTML = ""; // 초기화
+		        console.log("dto", dto);
+		        // 이전 페이지가 있으면
+		        if (dto.prev) {
+		            let aTag = document.createElement("a");
+		            aTag.setAttribute("href", dto.startPage - 1); // 11페이지에서 << 누르면 10페이지로 가게끔
+		            aTag.innerHTML = "&laquo";
+		            document.querySelector(".pagination").append(aTag);
+		        }
+		
+		        for (let i = dto.startPage; i <= dto.endPage; i++) {
+		            let aTag = document.createElement("a");
+		            aTag.setAttribute("href", i); //<a href="1">1</a>
+		            aTag.innerHTML = i;
+		            // active 녹색 주는거
+		            if (i == page) {
+		                aTag.className = "active";
+		            }
+		            document.querySelector(".pagination").append(aTag);
+		        } // 포
+		
+		        // 이후 페이지가 있으면
+		        if (dto.next) {
+		            let aTag = document.createElement("a");
+		            aTag.setAttribute("href", dto.endPage + 1);
+		            aTag.innerHTML = "&raquo";
+		            document.querySelector(".pagination").append(aTag);
+		        }
+		
+		        // 페이지 숫자 태그에 클릭 이벤트 만들기
+		        document.querySelectorAll(".pagination a").forEach((ele) => {
+		            // 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
+		            ele.addEventListener("click", function(e) {
+		                e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
+		                page = ele.getAttribute("href"); // href의 값 = page
+		                sendP(page); // 페이지 번호에 해당하는 데이터를 불러오는 함수 호출
+		            }); // 클릭 이벤트
+		        }); // 포이치
+		    }
+		
+		    // content를 줄임말로 표시하는 함수
+		    function shortenContent(content, maxLength) {
+		        if (content.length > maxLength) {
+		            return content.substring(0, maxLength) + '...';
+		        } else {
+		            return content;
+		        }
+		    }
+		    // 동적으로 테이블 생성 함수
+		    function createTable(plist) {
+		        $(".table").empty();
+		        var table = document.querySelector('.table');
+		        var thead = $("<thead>").appendTo(table);
+		        var tbody = $("<tbody>").appendTo(table);
+		
+		        var headerRow = $("<tr>").appendTo(thead);
+		        var headers = ["No.", "제목", "내용", "작성일자", "수정일자"];
+		
+		        $.each(headers, function(index, text) {
+		            $("<th>").text(text).appendTo(headerRow);
+		        });
+		
+		        $.each(plist, function(index, item) {
+		            var row = $("<tr>").appendTo(tbody);
+		            row.append(`<td>${item.noticeNo}</td>`);
+		            row.append(`<td>${item.title}</td>`);
+		            row.append(`<td>${shortenContent(item.content, 50)}</td>`);
+		            row.append(`<td>${formatDate(new Date(item.wdate))}</td>`);
+		            row.append(`<td>${item.udate ? formatDate(item.udate) : '-'}</td>`); // 수정일자가 null인 경우 '-' 출력
+		        });
+		
+		        //상세페이지로 넘어가기
+		        // 클릭 이벤트를 tbody에 바인딩하여 행 전체를 클릭했을 때 처리
+		        $(".table tbody").on("click", "tr", function() {
+		            // 현재 클릭된 행에서 noticeNo 값을 가져옴
+		            var noticeNo = $(this).find("td:first").text(); // 첫 번째 td에 있는 값이 noticeNo
+		
+		            // noticeNo 값을 가지고 다른 페이지로 이동
+		            window.location.href = '/hospital/noticeList/noticeDetail?noticeNo=' + noticeNo;
+		        });
+		
+		        // tr 요소에 마우스 오버 시에 손가락 모양으로 마우스 커서를 변경
+		        $(".table tbody tr").css("cursor", "pointer");
+		    }
+		    
+		    // 전체보기 옵션 누를시
+		    document.querySelector('select[name="type"]').addEventListener('change', function() {
+		        if (this.value === '') { // 전체보기 옵션 선택 시
+		            window.location.href = '/hospital/noticeList'; // 페이지 새로고침
+		        }
+		    });
+		    $("form").submit(function(event) {
+		        // 폼의 기본 동작을 막음
+		        event.preventDefault();
 
-        // Ajax 요청을 보내는 함수
-        function sendP(page) {
-            $.ajax({
-                url: '/hospital/noticeListP', // JSON 데이터를 반환하는 엔드포인트
-                type: 'GET',
-                data: { page: page },
-                dataType: 'json', // 응답 데이터 타입은 JSON입니다.
-            }).done(function(response) {
-                // 응답을 받으면 처리합니다.
-                var noticeList = $('#noticeList');
-                noticeList.empty(); // 기존 목록을 지웁니다.
-        
-                // 받은 JSON 데이터를 반복하여 목록에 추가합니다.
-                $.each(response.plist, function(index, item) {
-                    noticeList.append('<div>' + item.title + '</div>');
-                    // 공지사항의 제목을 출력하거나 필요한 데이터를 표시할 수 있습니다.
-                });
-        
-                // 페이지네이션 정보를 사용하여 페이지네이션을 구현할 수 있습니다.
-                console.log(response.pagedto);
-                // 받은 JSON 데이터를 사용하여 테이블 생성
-                createTable(response.plist);
-                makePaging(response.pagedto);
-                
-            }).fail(function(xhr, status, error) {
-                // 요청이 실패한 경우 에러 처리를 합니다.
-                console.error(error);
-            });
-        }
+		        // 검색어와 검색 유형 값을 가져옴
+		        var keyword = $("input[name='keyword']").val();
+		        var type = $("select[name='type']").val();
 
-        // 페이지 로드 시 첫 번째 페이지 데이터를 가져옵니다.
-        $(document).ready(function() {
-            sendP(page);
-        });
-
-        // 날짜 처리 함수
-        function formatDate(date) {
-            var year = date.getFullYear();
-            var month = (date.getMonth() + 1).toString().padStart(2, '0');
-            var day = date.getDate().toString().padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        // 페이징 함수
-        function makePaging(dto = {}) {
-            document.querySelector(".pagination").innerHTML = ""; // 초기화
-            console.log(dto);
-            // 이전 페이지가 있으면
-            if (dto.prev) {
-                let aTag = document.createElement("a");
-                aTag.setAttribute("href", dto.startPage - 1); // 11페이지에서 << 누르면 10페이지로 가게끔
-                aTag.innerHTML = "&laquo";
-                document.querySelector(".pagination").append(aTag);
-            }
-
-            for (let i = dto.startPage; i <= dto.endPage; i++) {
-                let aTag = document.createElement("a");
-                aTag.setAttribute("href", i); //<a href="1">1</a>
-                aTag.innerHTML = i;
-                // active 녹색 주는거
-                if (i == page) {
-                    aTag.className = "active";
-                }
-                document.querySelector(".pagination").append(aTag);
-            } // 포
-
-            // 이후 페이지가 있으면
-            if (dto.next) {
-                let aTag = document.createElement("a");
-                aTag.setAttribute("href", dto.endPage + 1);
-                aTag.innerHTML = "&raquo";
-                document.querySelector(".pagination").append(aTag);
-            }
-
-            // 페이지 숫자 태그에 클릭 이벤트 만들기
-            document.querySelectorAll(".pagination a").forEach((ele) => {
-                // 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
-                ele.addEventListener("click", function (e) {
-                    e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
-                    page = ele.getAttribute("href"); // href의 값 = page
-                    sendP(page); // 페이지 번호에 해당하는 데이터를 불러오는 함수 호출
-                }); // 클릭 이벤트
-            }); // 포이치
-        } 
-
-	     // content를 줄임말로 표시하는 함수
-        function shortenContent(content, maxLength) {
-            if (content.length > maxLength) {
-                return content.substring(0, maxLength) + '...';
-            } else {
-                return content;
-            }
-        }
-        // 동적으로 테이블 생성 함수
-        function createTable(plist) {
-            $(".table").empty();
-            var table = document.querySelector('.table');
-            var thead = $("<thead>").appendTo(table);
-            var tbody = $("<tbody>").appendTo(table);
-
-            var headerRow = $("<tr>").appendTo(thead);
-            var headers = ["No.", "제목", "내용", "작성일자", "수정일자"];
-
-            $.each(headers, function(index, text) {
-                $("<th>").text(text).appendTo(headerRow);
-            });
-
-            $.each(plist, function(index, item) {
-                var row = $("<tr>").appendTo(tbody);
-                row.append(`<td>${item.noticeNo}</td>`);
-                row.append(`<td>${item.title}</td>`);
-                row.append(`<td>${shortenContent(item.content, 50)}</td>`);
-                row.append(`<td>${formatDate(new Date(item.wDate))}</td>`);
-                row.append(`<td>${item.uDate ? formatDate(item.uDate) : '-'}</td>`); // 수정일자가 null인 경우 '-' 출력
-            });
-            
-            //상세페이지로 넘어가기
-    	    // 클릭 이벤트를 tbody에 바인딩하여 행 전체를 클릭했을 때 처리
-    	    $(".table tbody").on("click", "tr", function(){
-    	        // 현재 클릭된 행에서 noticeNo 값을 가져옴
-    	        var noticeNo = $(this).find("td:first").text(); // 첫 번째 td에 있는 값이 noticeNo
-    	
-    	        // noticeNo 값을 가지고 다른 페이지로 이동
-    	        window.location.href = '/hospital/noticeList/noticeDetail?noticeNo=' + noticeNo;
-    	    });
-            
-    	 	// tr 요소에 마우스 오버 시에 손가락 모양으로 마우스 커서를 변경
-    	    $(".table tbody tr").css("cursor", "pointer");
-        }
-        
-
+		        // AJAX 요청을 보냄
+		        $.ajax({
+		            url: '/hospital/searchNotices', // 검색을 처리하는 엔드포인트 URL
+		            type: 'GET', // HTTP GET 요청
+		            data: {
+		                keyword: keyword, // 검색어
+		                type: type // 검색 유형
+		            },
+		            success: function(response) {
+		                console.log("검색결과", response); // 검색 결과를 콘솔에 출력
+		                // 검색 결과를 받아와서 화면에 표시하는 부분
+		                $(".table").empty();
+		                console.log("pagedto", response.pagedto);
+		                createTable(response.searchResults); // 검색 결과를 테이블로 생성
+		            },
+		            error: function(xhr, status, error) {
+		                // 요청이 실패한 경우 처리하는 코드
+		                console.error(error); // 오류 메시지를 콘솔에 출력
+		            }
+		        });
+		    });
+		
 		</script>
 	</div>
 </body>

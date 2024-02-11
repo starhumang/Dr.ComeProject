@@ -86,7 +86,7 @@
 							<td th:if="${ pdl.reserveStatus == 'e3' }">진료완료</td>
 							
 							
-							<td><button class="btn btn-sm btn-outline-warning">진료내역</button></td>
+							<td><a th:href="@{/hospital/patientList/patientDetail/patientClinicInfo(patientNo=${pdl.patientNo},clinicNo=${pdl.clinicNo})}" class="btn btn-warning">상세보기</a></td>
 						</tr>
 					</tbody>
 				</table>

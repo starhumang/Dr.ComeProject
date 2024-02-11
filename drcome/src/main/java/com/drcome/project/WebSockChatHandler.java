@@ -45,9 +45,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 			System.out.println("User ID in sessions: " + id);
 		}
 		System.out.println("배열: " + userIdList);
-	}//afterConnectionEstablished
-	
-	
+	}// afterConnectionEstablished
 
 	// WebSocket으로 메시지가 도착하면 호출되는 메서드
 	@Override
@@ -55,22 +53,25 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 
 		// 의사가 담아보낸 아이디 출력
 		payload = message.getPayload();
-		System.out.println("의사가 보낸 환자아이디 " +payload);
+		System.out.println("의사가 보낸 환자아이디 " + payload);
 
 		int cnt = alarm.checkAlarm(payload);
+
+		System.out.println("알람조회결과는여?" + cnt);
 
 		if (cnt > 0) {
 			for (WebSocketSession sess : sessions) {
 				if (sess.getAttributes().get("userId").equals(payload)) {
-					TextMessage sendMsg = new TextMessage(sess.getAttributes().get("userId") + "님..진료실..입장하세요.."); 
+					TextMessage sendMsg = new TextMessage(sess.getAttributes().get("userId") + "님..진료실..입장하세요..");
+					System.out.println(sess.getAttributes().get("userId") + "님..진료실..입장하세요..");
 					sess.sendMessage(sendMsg);
 				}
-       
+
 			}
 
-		}//if
+		} // if
 
-	}///handleTextMessage
+	}/// handleTextMessage
 
 	// WebSocket 연결이 닫혔을 때 호출되는 메서드
 	@Override

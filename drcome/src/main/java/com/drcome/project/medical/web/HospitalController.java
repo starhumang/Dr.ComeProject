@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.drcome.project.FileUploadService;
 import com.drcome.project.admin.domain.Hospital;
-import com.drcome.project.common.service.PageDTO;
 import com.drcome.project.common.service.PageDTO2;
 import com.drcome.project.medical.service.DoctorTimeVO;
 import com.drcome.project.medical.service.DoctorVO;
@@ -77,7 +76,7 @@ public class HospitalController {
 		model.addAttribute("QnAX", QnAX);
 		return "hospital/home";
 	}
-
+  
 	/* 예약내역 - clinic */
 	// Main
 	@GetMapping("/hospital/clinicMain")
@@ -132,6 +131,71 @@ public class HospitalController {
 		model.addAttribute("detailPList", detailPList);
 		System.out.println(detailPList);
 		return "hospital/patientDetail";
+	}
+	
+	// 환자 진료내역 info
+	@GetMapping("/hospital/patientList/patientDetail/patientClinicInfo")
+	public String patientClinic(Principal principal, String hospitalId, Integer patientNo, Integer clinicNo, Model model) {
+		hospitalId = principal.getName();
+		
+		Map<String, Object> patientInfo = hospitalService.getPaientClinicInfo(hospitalId, patientNo, clinicNo);
+		List<Map<String, Object>> patientPill = hospitalService.getpaientPillInfo(clinicNo);
+		
+		model.addAttribute("patientNo", patientNo);
+		model.addAttribute("clinicNo", clinicNo);
+		model.addAttribute("patientInfo", patientInfo);
+		model.addAttribute("patientPill", patientPill);
+		System.out.println(patientInfo);
+		System.out.println("Received clinicNo" + clinicNo);
+		System.out.println(patientPill);
+		return "hospital/patientClinicInfo";
+	}
+
+	/* 예약내역 - clinic */
+	//Main
+	@GetMapping("/hospital/clinicMain")
+	public String clinicReserve(Principal principal, String hospitalId, String date, String reserveKindstatus) {
+		hospitalId = principal.getName();
+		return "hospital/clinicMain";
+	}
+	@GetMapping("/hospital/clinicMain/ajax")
+	@ResponseBody
+	public List<Map<String, Object>> clinicReserve1(Principal principal, String hospitalId, String date, String reserveKindstatus) {
+		hospitalId = principal.getName();
+		List<Map<String, Object>> reserveList = hospitalService.getRerveList(hospitalId, date, reserveKindstatus);
+		return reserveList;
+	}
+	
+	//Dr
+	@GetMapping("/hospital/clinicDr")
+	public String clinicReserveDr(Principal principal, String hospitalId, Integer doctorNo, String date, String reserveKindstatus) {
+		hospitalId = principal.getName();
+		return "hospital/clinicDr";
+	}
+	
+	@GetMapping("/hospital/clinicDr/ajax")
+	@ResponseBody
+	public List<Map<String, Object>> clinicReserveDr1(Principal principal, String hospitalId, Integer doctorNo, String date, String reserveKindstatus, Model model) {
+		hospitalId = principal.getName();
+		List<Map<String, Object>> reserveDrList = hospitalService.getReserveDrList(hospitalId, doctorNo, date, reserveKindstatus);
+		return reserveDrList;
+	}
+	@GetMapping("/hospital/clinicDr/allDr")
+	@ResponseBody
+	public List<Map<String, Object>> allDrList(Principal principal, String hospitalId) {
+		hospitalId = principal.getName();
+		List<Map<String, Object>> DrAllList = hospitalService.getDrAllList(hospitalId);
+		return DrAllList;
+	}
+	/* 병원프로필 */
+	// 병원 단건조회(id로) + 병원-의사 조회
+	@GetMapping("/hospital/myProfile")
+	public String findHospital(Principal principal, String hospitalId, Model model) {
+		hospitalId = principal.getName();
+		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId);
+		System.out.println(docList);
+		model.addAttribute("docList", docList);
+		return "hospital/myProfile";
 	}
 
 	/* QnA */
@@ -261,7 +325,7 @@ public class HospitalController {
 		}
 
 	}
-
+  
 	@GetMapping("/hospital/hosinfoupdate")
 	public String hosUpdateForm() {
 		return "hospital/hosupdate";
@@ -401,4 +465,52 @@ public class HospitalController {
 
 		return response;
 	}
+	
+	// 공지사항 검색
+//	@GetMapping("/hospital/searchNotices")
+//	@ResponseBody
+//	public Map<String, Object> searchNotices(Principal principal,
+//	                         @RequestParam("type") int type,
+//	                         @RequestParam("keyword") String keyword,
+//	                         @RequestParam(required = false, defaultValue = "1") String page) {
+//	    String hospitalId = principal.getName(); // Principal 객체에서 병원 ID 가져오기
+//	    
+//	    Map<String, Object> map = new HashMap();
+//	    // 리스트 전체 개수
+//	    int total = hospitalService.searchNoticeCount(hospitalId, keyword);
+//	    
+//	    // 선택 페이지 변환
+//	    int cpage = Integer.parseInt(page);
+//	    System.out.println("선택된 페이지" + cpage);
+//	    
+//	    // 페이지네이션(currentpage, total)
+//	    PageDTO2 dto = new PageDTO2(cpage, total);
+//	    System.out.println("dtd 객체" + dto);
+//	    
+//	    // 검색된 공지사항 리스트 가져오기
+//	    List<NoticeVO> searchResults = hospitalService.searchNotice(type, keyword, hospitalId);
+//	    
+//	    // 결과를 담을 Map 생성
+//	    map.put("searchResults", searchResults);
+//	    map.put("pagedto", dto);
+//	    
+//	    return map;
+//	}
+
+	
+	//공지사항 검색
+    @GetMapping("/hospital/searchNotices")
+    @ResponseBody
+    public List<NoticeVO> searchNotices(Principal principal,
+    							String hospitalId,
+    							@RequestParam("type") int type,
+    							@RequestParam("keyword") String keyword,
+    							Model model) {
+    	hospitalId = principal.getName();
+        List<NoticeVO> searchResults = hospitalService.searchNotice(type, keyword, hospitalId);
+        model.addAttribute("searchResults", searchResults);
+        System.out.println(searchResults);
+        // JSON으로 반환
+        return searchResults;
+    }
 }

@@ -67,6 +67,7 @@
 	<!-- 메인 -->
 	<select id="selectReserveMain" resultType="Map">
 	    SELECT r.RESERVE_NO "reserveNo"
+	         ,r.reserve_status "reserveStatus"
 	         , u.birthday "userBirthday"
 	         , u.gender "gender"
 	         , u.phone "userPhone" 
@@ -88,15 +89,86 @@
 	             #{date}
 	           </otherwise>
 	         </choose>
-	       <if test="reserveKindstatus != null">
-	         AND r.reserve_kindstatus = #{reserveKindstatus}
-	       </if>
+			<if test="reserveKindstatus != null and reserveKindstatus != ''">
+			    AND r.reserve_kindstatus = #{reserveKindstatus}
+			</if>
 	    ORDER BY r.reserve_time, r.reserve_no
 	</select>
+	
+	<!-- Patient -->
+	<!-- 환자 리스트 -->
+	<select id="selectPatientList" resultType="Map">
+		SELECT a.patient_no "patientNo"
+			, u.user_name "userName"
+			, u.birthday "userBirthday"
+			, u.gender "gender"
+			, u.phone "userPhone"
+		FROM patient a 
+		JOIN usertable u ON a.user_id = u.user_id
+		WHERE a.hospital_id = #{hospitalId}
+		ORDER BY a.patient_no
+	</select>
+	
+	<!-- 환자 상세 -->
+	<select id="selectPatientDetailList" resultType="Map">
+	SELECT c.clinic_no "clinicNo"
+		 , c.pay_yn "payYn"
+		 , c.clinic_date "clinicDate"
+		 , c.clinic_symptom "clinicSymptom"
+		 , c.specificity "specificity"
+		 , c.perscription_yn "perscriptionYn"
+		 , r.reserve_status "reserveStatus"
+		 , r.reserve_kindstatus "reserveKindstatus"
+		 , u.user_name "userName"
+		 , u.birthday "userBirthday"
+		 , u.gender "gender"
+		 , u.phone "userPhone"
+		 , a.patient_no "patientNo" 
+	FROM clinic c 
+	JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
+	JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
+	JOIN usertable u ON u.user_id = a.user_id
+	WHERE a.hospital_id = #{hospitalId} AND a.patient_no = #{patientNo}
+	ORDER BY c.clinic_no
+	</select>
+	
+	<!-- 환자 진료 내역서 단건 조회 -->
+	<select id="selectPatientInfo" resultType="Map">
+		SELECT c.clinic_no "clinicNo"
+			 , c.clinic_date "clinicDate"
+			 , c.clinic_symptom "clinicSymptom"
+			 , c.specificity "specificity"
+			 , c.perscription_yn "perscriptionYn"
+			 , u.user_name "userName"
+			 , u.birthday "userBirthday"
+			 , u.gender "gender"
+			 , r.reserve_kindstatus "reserveKindstatus"
+		 	 , a.patient_no "patientNo"
+		  FROM clinic c 
+		  JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
+		  JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
+		  JOIN usertable u ON u.user_id = a.user_id
+		 WHERE a.hospital_id = #{hospitalId}
+	       AND a.patient_no = #{patientNo}
+	       AND c.clinic_no = #{clinicNo}
+	</select>
+	<!-- 처방전 가져오기 -->
+	<select id="selectPillList" resultType="Map">
+		SELECT medicine_name "medicineName",
+			   dosage "dosage",
+			   dose_cnt "doseCnt",
+			   dose_day "doseDay"
+		  FROM perscription p
+		  JOIN medicine d
+		    ON (p.medicine_no = d.medicine_no)
+		 WHERE clinic_no = #{clinicNo}
+	</select>
+	
 	
 	<!-- 진료실 -->
 	<select id="selectReserveDr" resultType="Map">
          SELECT r.RESERVE_NO "reserveNo"
+             ,r.reserve_status "reserveStatus"
 			 , u.birthday "userBirthday"
 			 , u.gender "gender"
 			 , u.phone "userPhone" 
@@ -109,9 +181,29 @@
 		  JOIN doctor d ON r.doctor_no = d.doctor_no AND r.hospital_id = d.hospital_id
 		  JOIN usertable u ON u.user_id = r.user_id
 		  WHERE r.hospital_id = #{hospitalId}
-		  AND r.reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
-		  AND d.doctor_No = #{doctorNo}
+		  AND r.reserve_year||r.RESERVE_month||r.reserve_day =
+         	<choose>
+	           <when test="date == null">
+	             to_char(sysdate, 'YYYYMMDD')
+	           </when>
+	           <otherwise>
+	             #{date}
+	           </otherwise>
+	         </choose>
+   			<if test="doctorNo != null and doctorNo != ''">
+				AND d.doctor_No = #{doctorNo}
+			</if>
+  			<if test="reserveKindstatus != null and reserveKindstatus != ''">
+			    AND r.reserve_kindstatus = #{reserveKindstatus}
+			</if>
 		  ORDER BY r.reserve_time, r.reserve_no
+	</select>
+	<select id="allDrList" resultType="Map">
+		SELECT doctor_no "doctorNo",
+			   doctor_name "doctorName",
+			   hospital_id "hospitalId"
+		  FROM doctor
+		 WHERE hospital_id = #{hospitalId}
 	</select>
 	
 	<!-- QnA -->
@@ -152,8 +244,8 @@
 			    SELECT notice_no "noticeNo",
 			           title "title",
 			           content "content",
-			           wdate "wDate",
-			           udate "uDate",
+			           wdate "wdate",
+			           udate "udate",
 			           ROWNUM AS rn
 			      FROM (
 			          SELECT notice_no,
@@ -239,6 +331,39 @@
 				#{fileName},
 				#{noticeNo})
 	</insert>
+	
+	<!-- 공지사항 검색 -->
+	<select id="searchNoticeByTitle" parameterType="NoticeVO" resultType="NoticeVO">
+		SELECT notice_no,
+	           title,
+	           content,
+	           wdate,
+	           udate
+	      FROM notice
+		 WHERE title LIKE 
+		 '%'|| #{keyword} ||'%'
+		 AND hospital_id = #{hospitalId}
+	</select>
+	
+	<select id="searchNoticeByContent" parameterType="NoticeVO" resultType="NoticeVO">
+		SELECT notice_no,
+	           title,
+	           content,
+	           wdate,
+	           udate
+	      FROM notice
+		 WHERE content LIKE 
+		 '%'|| #{keyword} ||'%'
+		 AND hospital_id = #{hospitalId}
+	</select>
+	
+	<!-- 공지사항 검색 결과 수 -->
+	<select id="searchNoticeCount" parameterType="NoticeVO" resultType="int">
+	    SELECT COUNT(*)
+	    FROM notice
+	    WHERE (title LIKE '%' || #{keyword} || '%' OR content LIKE '%' || #{keyword} || '%')
+	      AND hospital_id = #{hospitalId}
+	</select>
 	
 	<!-- MyProfile -->
 	<!-- 병원-의사-시간 조회 -->

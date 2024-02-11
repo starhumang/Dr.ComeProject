@@ -37,13 +37,14 @@
 
 
 	<script th:inline="javascript">
+	
 		$(document).ready(function () {
             // 로그인한 경우에만 웹 소켓 연결을 시도합니다.
             // var logId = document.querySelector('#loginId').innerHTML;
             var logId = [[${session.userId}]];
 			console.log(logId);
             if (logId != null && logId != '' && logId != undefined) {
-                connectWebSocket();
+                connectWebSocket(logId);
             }
         });
 	</script>

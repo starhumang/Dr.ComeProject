@@ -131,7 +131,11 @@
                 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
               ></span>
             </p>
-            <button class="btn btn-dark" style="margin-right: 15px">
+            <button
+              onclick="endClinic()"
+              class="btn btn-dark"
+              style="margin-right: 15px"
+            >
               진료종료
             </button>
           </div>
@@ -274,13 +278,20 @@
 
               <form name="clinicForm">
                 <!--예약번호 받아와야함-->
-                <input type="hidden" name="reserveNo" value="4" />
-                <!--병원아이디 th:value="${session.userId}" 수정해야함 -->
-                <input type="hidden" name="hospitalId" th:value="krrlo" />
-                <!-- 초진/재진여부 수정 했을껄  -->
+                <input
+                  type="hidden"
+                  name="reserveNo"
+                  th:value="${pInfo.reserveNo}"
+                />
+                <input
+                  type="hidden"
+                  name="hospitalId"
+                  th:value="${session.userId}"
+                />
+                <!-- 초진/재진여부  -->
                 <input type="hidden" name="visit" />
-                <!--유저아이디 값 받아와야함 수정수정 -->
-                <input type="hidden" name="userId" value="user1" />
+                <!--유저아이디 -->
+                <input type="hidden" name="userId" th:value="${pInfo.userId}" />
                 <!--필수-->
                 <div style="margin-bottom: 20px">
                   <label style="color: #858796; font-size: 1rem">
@@ -492,7 +503,29 @@
           rel="stylesheet"
         />
 
-        <script>
+        <script th:inline="javascript">
+          //아이디  //예약번호
+          let uid = [[ ${pInfo.userId} ]];
+          let rno = [[ ${pInfo.reserveNo} ]];
+          // console.log("나와라~!rno)
+
+          //진료종료시 예약상태 업데이트
+          function endClinic() {
+            $.ajax({
+              url: `/updateStatus?reserveNo=${rno}`,
+              method: "POST",
+            })
+              .done((result) => {
+                //console.log("dddddddddd" + result);
+
+                if (result > 0) {
+                  location.href = `/hospital/clinicDr`;
+                }
+              })
+              .fail((err) => {
+                console.log(err);
+              });
+          }
           //소켓서버 연결
           $(document).ready(function () {
             connectWebSocket();
@@ -510,7 +543,7 @@
                 if (alarmSocket && alarmSocket.readyState === WebSocket.OPEN) {
                   // 서버로 메시지 전송
                   console.log("의사가 메세지 전송 ㅎㅎ");
-                  const message = "user2";
+                  const message = uid;
                   alarmSocket.send(message);
                 }
               }; ///
@@ -545,8 +578,7 @@
             trList.forEach((tr) => {
               tr.remove();
             });
-            //값 담아와야한다..
-            let uid = "user1";
+
             //리스트 조회
             $.ajax(`/clist?page=${pg}&uid=${uid}`)
               .done((result) => {
@@ -738,7 +770,7 @@
             return pary;
           }
 
-          //처방전 유무 체크
+          //처방전 유무 체크박스
           let cb = document.querySelector("#check_btn");
           cb.addEventListener("change", (event) => {
             const checked = event.target.checked;
@@ -751,7 +783,7 @@
             }
           });
 
-          //처방전상세보기 진료 no받아와야함
+          //처방전상세보기
           function viewPer(no) {
             console.log(no);
             const modalTable = $("#modalTable");

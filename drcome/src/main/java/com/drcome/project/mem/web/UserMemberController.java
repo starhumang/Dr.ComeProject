@@ -37,7 +37,7 @@ public class UserMemberController {
 
 	@Autowired
 	HospitalService hospitalService;
-	
+  
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -95,7 +95,7 @@ public class UserMemberController {
 	@GetMapping("/userupdate")
 	public String userUpdateForm(@SessionAttribute(name = "userId", required = false) String id, Model model) {
 		UserMemberVO userInfo = memMapper.selectMem(id);
-		model.addAttribute("userInfo", userInfo); 
+		model.addAttribute("userInfo", userInfo);
 		return "/member/userupdate";
 	}
 
@@ -241,6 +241,12 @@ public class UserMemberController {
 		List<Map<String, Object>> reserveMyList = hospitalService.getReserveDrList(hospitalId, doctorNo);
 		model.addAttribute("reserveMyList", reserveMyList);
 
+		String hospitalId = "krrlo";
+		int doctorNo = 123;
+
+		List<Map<String, Object>> reserveMyList = hospitalService.getReserveDrList(hospitalId, doctorNo);
+		model.addAttribute("reserveMyList", reserveMyList);
+
 		return "/member/userpage";
 	}
 
@@ -268,10 +274,10 @@ public class UserMemberController {
 			response.put("checkNum", "중복");
 		}
 		System.out.println(response);
-		
+
 		return response;
 	}
-	
+
 	@GetMapping("/auth/checkAuthPhone")
 	@ResponseBody
 	public Map<String, Object> sendAuthNumber(@RequestParam String phoneNum) {

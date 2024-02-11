@@ -4,6 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.drcome.project.common.mapper.AlarmMapper">
 
+	<!-- 알람등록 -->
 	<insert id="insertAlarm" parameterType="AlarmDao">
 		insert into
 		alarm(
@@ -11,6 +12,7 @@
 		,user_id
 		,content_code
 		,prefix
+		,reserve_no
 		)
 
 		values (
@@ -18,10 +20,11 @@
 		,#{userId}
 		,#{contentCode}
 		,#{prefix}
+		,#{reserveNo}
 		)
 	</insert>
-	
-	
+
+
 	<!-- 알람여부 -->
 	<select id="selectAlarm" resultType="int">
 		select count(*)
@@ -30,6 +33,6 @@
 		user_id
 		=#{uid} and check_code='X' and content_code='enterRoom'
 	</select>
-	
-	
+
+
 </mapper>

@@ -77,7 +77,7 @@ public class PatientServiceImpl implements PatientService {
 		result = mapper.insertClinic(vo);
 		// 부여된 cno가져와서
 		int cno = vo.getClinicNo();
-		// 처방전이있다면
+		// 처방전이있다면 인서트
 		if (vo.getPerscriptionYn() == null) {
 			for (PatientVO obj : plist) {
 				obj.setClinicNo(cno);
@@ -86,6 +86,15 @@ public class PatientServiceImpl implements PatientService {
 		}
 
 		return result;
+	}
+
+	// 예약상태 업데이트
+	@Override
+	public int modifyReserve(PatientVO vo) {
+		System.out.println("서비스서비스" + vo);
+
+		return mapper.updateReserve(vo);
+
 	}
 
 }

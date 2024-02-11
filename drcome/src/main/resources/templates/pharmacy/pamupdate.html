@@ -2,11 +2,11 @@
 <html
 	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout}"
+	layout:decorate="~{pharmacy/pharmacyLayout}"
 >
 	<head>
 		<meta charset="UTF-8" />
-		<title>의료기관 회원가입</title>
+		<title>약국 회원 정보 수정</title>
 
 		<style>
 			label {
@@ -32,7 +32,6 @@
 				border: 0;
 				outline: none;
 				padding-left: 10px;
-				background-color: rgb(233, 233, 233);
 			}
 
 			.input-group button {
@@ -81,6 +80,10 @@
 			#verification-section button {
 				width: 150px;
 			}
+
+			.onlyread {
+				background-color: #ccc;
+			}
 		</style>
 
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
@@ -99,7 +102,7 @@
 				});
 				handleFilePreview();
 
-				let fileInput = document.getElementById('himg');
+				let fileInput = document.getElementById('mimg');
 
 				fileInput.addEventListener('change', function () {
 					const file = this.files[0];
@@ -148,57 +151,10 @@
 				});
 			}
 
-			function checkId() {
-				let userId = document.getElementById('hid').value;
-				let idErrorMessage = document.getElementById('idErrorMessage');
-				let checkDupliIdBtn = document.getElementById('hidcheck');
-
-				if (userId === '') {
-					idErrorMessage.innerHTML = '아이디를 입력하세요.';
-					idErrorMessage.style.color = 'red';
-					checkDupliIdBtn.disabled = true;
-					return false;
-				}
-
-				let idRegex = /^[a-zA-Z0-9]{5,20}$/;
-				if (!idRegex.test(userId)) {
-					idErrorMessage.innerHTML = '아이디는 5자에서 20자의 영문 대소문자 또는 숫자로 입력하세요.';
-					idErrorMessage.style.color = 'red';
-					checkDupliIdBtn.disabled = true;
-					return false;
-				}
-
-				idErrorMessage.innerHTML = '';
-				checkDupliIdBtn.disabled = false;
-				return true;
-			}
-
-			function checkDupliId() {
-				let checkId = $('#hid').val();
-				console.log(checkId);
-				let url = '/auth/checkId?userId=' + checkId;
-				$.ajax({
-					url: url,
-					type: 'get',
-				})
-					.done((resp) => {
-						if (resp == 1) {
-							// alert('이미 사용중인 아이디입니다.');
-							errAlert('이미 사용중인 아이디입니다.');
-						} else {
-							// alert('사용가능한 아이디입니다.');
-							scsAlert('사용가능한 아이디입니다.');
-						}
-					})
-					.fail((err) => {
-						// alert('오류 발생');
-						errAlert('오류 발생');
-						console.log(err);
-					});
-			}
+			var formData = new FormData();
 
 			function checkPassword() {
-				let password = document.getElementById('hpw').value;
+				let password = document.getElementById('mpw').value;
 				let passwordErrorMessage = document.getElementById('pwErrorMessage');
 
 				if (password === '') {
@@ -220,8 +176,8 @@
 			}
 
 			function checkPasswordMatch() {
-				let password = document.getElementById('hpw').value;
-				let rePassword = document.getElementById('hpwcheck').value;
+				let password = document.getElementById('mpw').value;
+				let rePassword = document.getElementById('mpwcheck').value;
 				let rePasswordErrorMessage = document.getElementById('rePasswordErrorMessage');
 
 				if (password !== rePassword) {
@@ -234,31 +190,6 @@
 				return true;
 			}
 
-			function checkName() {
-				let name = document.getElementById('hname').value;
-				let nameErrorMessage = document.getElementById('nameErrorMessage');
-
-				if (name === '') {
-					nameErrorMessage.innerHTML = '이름을 입력하세요.';
-					nameErrorMessage.style.color = 'red';
-					return false;
-				}
-
-				nameErrorMessage.innerHTML = '';
-				return true;
-			}
-
-			function searchAdd() {
-				let address = document.getElementById('hadd');
-				new daum.Postcode({
-					oncomplete: function (data) {
-						address.value = data.address;
-
-						console.log(data.address);
-					},
-				}).open();
-			}
-
 			const autoHyphen = (target) => {
 				target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
 			};
@@ -268,7 +199,7 @@
 			};
 
 			function checkPhone() {
-				let phone = $('#hceophone').val().replace(/-/g, '');
+				let phone = $('#ceophone').val().replace(/-/g, '');
 				console.log(phone);
 				let url = '/auth/checkPhone?phoneNum=' + phone;
 				$.ajax({
@@ -303,56 +234,6 @@
 				}
 			}
 
-			function uploadImg() {
-				let formData = new FormData();
-				let inputFile = document.querySelector('#himg').files[0];
-				for (var i = 0; i < inputFile.length; i++) {
-					console.log(inputFile[i]);
-					formData.append('uploadFiles', files[i]);
-				}
-			}
-
-			function checkLicense() {
-				let registrationNumber = $('#hceolicense').val().replace(/-/g, '');
-				let url =
-					'https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=xzADYrvAUisAVDob8yaz4gaeTvaJVrxJG5M93Ihkj5IDQgqmpN%2FejAdm26cz1BsmATLApRLmj7HWYVfgqvwnKw%3D%3D';
-
-				$.ajax({
-					url: url,
-					type: 'POST',
-					contentType: 'application/json',
-					data: JSON.stringify({ b_no: [registrationNumber] }),
-					success: function (response) {
-						// console.log(response.data);
-						console.log(response.data[0]);
-						if (response.data[0].b_stt_cd === '01') {
-							Swal.fire({
-								title: '계속사업자',
-								icon: 'success',
-							});
-						} else if (response.data[0].b_stt_cd === '02') {
-							Swal.fire({
-								title: '휴업중인 사업자 번호입니다',
-								icon: 'warning',
-							});
-						} else if (response.data[0].b_stt_cd === '03') {
-							Swal.fire({
-								title: '폐업한 사업자 번호입니다',
-								icon: 'error',
-							});
-						} else {
-							Swal.fire({
-								title: '등록되지 않은 사업자 번호입니다',
-								icon: 'error',
-							});
-						}
-					},
-					error: function (err) {
-						console.log(err);
-					},
-				});
-			}
-
 			function checkAgreement() {
 				let agreement = document.getElementById('invalidCheck').checked;
 				let agreementErrorMessage = document.getElementById('agreementErrorMessage');
@@ -367,13 +248,8 @@
 				return true;
 			}
 
-			function openModal() {
-				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
-				myModal.show();
-			}
-
 			function handleFilePreview() {
-				let fileInput = document.getElementById('himg');
+				let fileInput = document.getElementById('mimg');
 				let filePreview = document.getElementById('filePreview');
 
 				fileInput.addEventListener('change', function () {
@@ -394,13 +270,47 @@
 				});
 			}
 
-			function submitForm(event) {
-				event.preventDefault();
+			function openModal() {
+				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+				myModal.show();
+			}
 
-				const formData = new FormData(document.getElementById('medicalForm'));
+			function submitForm() {
+				let userId = document.getElementById('mid').value;
+				let password = document.getElementById('mpw').value;
+				let phoneNumber = document.getElementById('mphone').value;
+				let faxNumber = document.getElementById('mfax').value;
+				let inputFile = document.getElementById('mimg').files[0];
+				let pharmacyImg = document.getElementById('pharmacyImg').innerText;
+				let holidays = document.querySelectorAll('input[type="checkbox"][id="holiday"]:checked');
+				let holidayValues = Array.from(holidays).map(function (checkbox) {
+					return checkbox.value;
+				});
+				let openTime = document.getElementById('otime').value;
+				let closeTime = document.getElementById('ctime').value;
+				let ceoPhone = document.getElementById('ceophone').value;
+
+				console.log('약국');
+				formData.append('pharmacyId', userId);
+				formData.append('pharmacyPw', password);
+				formData.append('pharmacyPhone', phoneNumber);
+				formData.append('pharmacyFax', faxNumber);
+				if (inputFile != undefined || inputFile != null) {
+					formData.append('uploadFiles', inputFile);
+				} else {
+					formData.append('pharmacyImg', pharmacyImg);
+				}
+				formData.append('holiday', holidayValues.join(','));
+				formData.append('opentime', openTime);
+				formData.append('closetime', closeTime);
+				formData.append('ceoPhone', ceoPhone);
+
+				for (let pair of formData.entries()) {
+					console.log(pair[0] + ': ' + pair[1]);
+				}
 
 				$.ajax({
-					url: '/medicaljoin',
+					url: '/pharmacy/paminfoupdate',
 					type: 'post',
 					processData: false,
 					contentType: false,
@@ -412,7 +322,7 @@
 								icon: 'success',
 								text: resp.msg,
 							}).then(function () {
-								location.href = '/userlogin';
+								location.href = '/pharmacy/info';
 							});
 						} else {
 							Swal.fire({
@@ -430,33 +340,26 @@
 
 	<body>
 		<div layout:fragment="content">
-			<form id="medicalForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
+			<form id="medicalForm" method="post">
 				<div class="container">
-					<h3>의료기관 회원가입</h3>
-					<br />
-					<p>병원가입</p>
-					<p>약국가입</p>
-					<br />
+					<h3>약국 회원 정보 수정</h3>
 					<div class="input-group">
 						<label>아이디</label>
 						<input
 							type="text"
-							name="hospitalId"
-							id="hid"
-							placeholder="아이디를 입력하세요"
+							id="mid"
 							required
-							oninput="checkId()"
+							th:value="${pharmacy.pharmacyId}"
+							readonly
+							class="onlyread"
 						/>
-						<button type="button" id="hidcheck" onclick="checkDupliId()" disabled>중복 확인</button>
-						<span id="idErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group">
 						<label>비밀번호</label>
 						<input
 							type="password"
-							name="hospitalPw"
-							id="hpw"
+							id="mpw"
 							placeholder="비밀번호를 입력하세요"
 							required
 							oninput="checkPassword()"
@@ -468,7 +371,7 @@
 						<label>비밀번호 확인</label>
 						<input
 							type="password"
-							id="hpwcheck"
+							id="mpwcheck"
 							placeholder="비밀번호를 다시 입력하세요"
 							required
 							oninput="checkPasswordMatch()"
@@ -477,27 +380,26 @@
 					</div>
 
 					<div class="input-group">
-						<label>병원 이름</label>
+						<label id="namelabel">약국 이름</label>
 						<input
 							type="text"
-							name="hospitalName"
-							id="hname"
-							placeholder="이름을 입력하세요"
+							id="mname"
 							required
-							oninput="checkName()"
+							th:value="${pharmacy.pharmacyName}"
+							readonly
+							class="onlyread"
 						/>
-						<span id="nameErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group">
-						<label>병원 주소</label>
-						<input type="text" name="address" id="hadd" required />
+						<label id="addlabel">약국 주소</label>
 						<input
-							type="button"
-							id="haddcheck"
-							class="btn btn-warning"
-							value="주소검색"
-							onclick="searchAdd()"
+							type="text"
+							id="madd"
+							required
+							th:value="${pharmacy.address}"
+							readonly
+							class="onlyread"
 						/>
 					</div>
 
@@ -505,29 +407,33 @@
 						<label>전화번호</label>
 						<input
 							type="tel"
-							name="phone"
-							id="hphone"
+							id="mphone"
 							placeholder="전화번호를 입력하세요"
 							required
-							maxlength="10"
+							maxlength="12"
 							oninput="autoHyphen(this)"
+							th:value="${pharmacy.pharmacyPhone}"
+						/>
+					</div>
+
+					<div class="input-group" id="faxnum">
+						<label>팩스번호</label>
+						<input
+							type="tel"
+							id="mfax"
+							placeholder="팩스번호를 입력하세요"
+							required
+							maxlength="12"
+							oninput="autoHyphen(this)"
+							th:value="${pharmacy.pharmacyFax}"
 						/>
 					</div>
 
 					<div class="input-group">
 						<label>대표 사진</label>
-						<input type="file" name="uploadFiles" id="himg" />
+						<input type="file" id="mimg" />
+						<p id="pharmacyImg" th:text="${pharmacy.pharmacyImg}" style="display: none"></p>
 						<img id="filePreview" alt="File Preview" />
-					</div>
-
-					<div class="input-group">
-						<label>대표 진료 과목</label>
-						<select name="mainSubject" id="hsub">
-							<option selected>선택하세요</option>
-							<th:block th:each="detailCode : ${application.detailCode_h}">
-								<option th:value="${detailCode.detailCode}" th:text="${detailCode.codeName}"></option>
-							</th:block>
-						</select>
 					</div>
 
 					<div class="input-group">
@@ -535,7 +441,7 @@
 						<th:block th:each="detailCode : ${application.detailCode_i}">
 							<input
 								type="checkbox"
-								name="holiday"
+								id="holiday"
 								th:value="${detailCode.detailCode}"
 								style="
 									width: 20px;
@@ -561,8 +467,8 @@
 
 					<div class="input-group">
 						<label>오픈 시간</label>
-						<select name="opentime" id="hotime">
-							<option selected>선택하세요</option>
+						<select id="otime">
+							<option selected>[[${pharmacy.opentime}]]</option>
 							<th:block th:each="detailCode : ${application.detailCode_k}">
 								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
 							</th:block>
@@ -571,8 +477,8 @@
 
 					<div class="input-group">
 						<label>마감 시간</label>
-						<select name="closetime" id="hctime">
-							<option selected>선택하세요</option>
+						<select id="ctime">
+							<option selected>[[${pharmacy.closetime}]]</option>
 							<th:block th:each="detailCode : ${application.detailCode_k}">
 								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
 							</th:block>
@@ -582,20 +488,27 @@
 					<hr />
 
 					<div class="input-group">
-						<label>병원장 이름</label>
-						<input type="text" name="directorName" id="hceoname" placeholder="이름을 입력하세요" required />
+						<label id="ceonamelabel">대표자 이름</label>
+						<input
+							type="text"
+							id="ceoname"
+							required
+							th:value="${pharmacy.ceoName}"
+							readonly
+							class="onlyread"
+						/>
 					</div>
 
 					<div class="input-group">
-						<label>병원장 전화번호</label>
+						<label id="ceophonelabel">대표자 전화번호</label>
 						<input
 							type="tel"
-							name="directorPhone"
-							id="hceophone"
+							id="ceophone"
 							placeholder="전화번호를 입력하세요"
 							required
 							maxlength="13"
 							oninput="autoHyphen(this)"
+							th:value="${pharmacy.ceoPhone}"
 						/>
 						<button type="button" id="checkPhoneBtn" onclick="checkPhone()">인증번호발송</button>
 						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
@@ -611,23 +524,17 @@
 						<label>사업자등록번호</label>
 						<input
 							type="text"
-							name="directorLicense"
-							id="hceolicense"
-							placeholder="사업자등록번호를 입력하세요"
-							required
+							id="ceolicense"
 							maxlength="12"
-							oninput="autoHyphenNum(this)"
+							required
+							th:value="${pharmacy.ceoLicense}"
+							readonly
+							class="onlyread"
 						/>
-						<button type="button" id="hlicensecheck" onclick="checkLicense()">인증하기</button>
-					</div>
-
-					<div>
-						<input type="checkbox" id="invalidCheck" required />
-						동의항목<label class="form-check-label" onclick="openModal()"> [상세보기]</label>
 					</div>
 
 					<br />
-					<input type="submit" value="회원가입" class="btn btn-danger" />
+					<input type="button" value="수정하기" onclick="submitForm()" class="btn btn-danger" />
 				</div>
 			</form>
 

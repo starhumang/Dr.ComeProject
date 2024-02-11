@@ -12,12 +12,14 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.mem.mapper.UserMemberMapper;
 import com.drcome.project.mem.service.MemVO;
 import com.drcome.project.mem.service.UserDetailVO;
 import com.drcome.project.mem.service.UserMemberService;
 import com.drcome.project.mem.service.UserMemberVO;
+import com.drcome.project.pharmacy.PharmacyVO;
 
 import net.nurigo.sdk.NurigoApp;
 import net.nurigo.sdk.message.model.Message;
@@ -60,6 +62,11 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 	}
 	
 	@Override
+	public int insertPamMember(PharmacyVO vo) {
+		return mapper.insertPamMember(vo);
+	}
+	
+	@Override
 	public MemVO getMember(String id) {
 		return mapper.getMember(id);
 	}
@@ -92,6 +99,16 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 	@Override
 	public int updateUserInfo(UserMemberVO vo) {
 		return mapper.updateUserInfo(vo);
+	}
+	
+	@Override
+	public int updateHosInfo(HospitalVO vo) {
+		return mapper.updateHosInfo(vo);
+	}
+	
+	@Override
+	public int updatePamInfo(PharmacyVO vo) {
+		return mapper.updatePamInfo(vo);
 	}
 	
 	@Override

@@ -194,7 +194,7 @@ thead tr:nth-child(3) th {
 </head>
 
 <body>
-	<div layout:fragment="content">
+	<div layout:fragment="content" style="caret-color:transparent;">
 		<h1 style="text-align: center; margin-top: 50px; color: gray;">[
 			방문예약 ]</h1>
 		<div class="container-fluid" style="margin-bottom: 50px; width: 75%; text-align:center;">
@@ -403,10 +403,11 @@ thead tr:nth-child(3) th {
 							}
 							
 							//해당 의사의 전체 진료시간 보여주는 함수
-							function changeTime(){
+							async function changeTime(){
 								let tr = document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
 								let doctorTime = tr.querySelectorAll('.doctorTime');
 								let reserveday = document.querySelector('input[name="date"]').value; //선택한 날짜
+								let doctorReserveTimeList = [];//이미 예약된 시간 담을 배열
 								//선택한 날짜
 								let date  = new Date(reserveday);
 								//현재날짜 현재시간
@@ -428,6 +429,28 @@ thead tr:nth-child(3) th {
 								}
 								//console.log("진료 시간:", days);
 								//console.log((days["close"] - days["open"]));
+								
+								//해당 의사의 이미 예약된 시간리스트 요청
+								let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
+								let reserveYear = reserveday.substr(0,4);//예약년도
+								let reserveMonth = reserveday.substr(5,2);//예약월
+								let reserveDate = reserveday.substr(8,2);//예약일
+								await $.ajax("/reserveList",{
+									type:"post",
+									contentType:"application/json",
+									data : JSON.stringify({
+										"doctorNo" : doctorNo,
+										"reserveYear" : reserveYear,
+										"reserveMonth" : reserveMonth,
+										"reserveDay" : reserveDate,
+									}),
+									success:function(response){
+										//console.log("response", response);
+										response.forEach(ele=> doctorReserveTimeList.push(ele['reserveTime']));
+										console.log("이미 예약된 시간 =",doctorReserveTimeList);
+
+									}
+								})
 								
 								//새로 만들 태그들
 								let newDiv =null;
@@ -456,10 +479,19 @@ thead tr:nth-child(3) th {
 										innerDiv1.classList.add('disableDiv');
 									}
 									
+									//만약 만들어진 시간중에 이미 예약된 시간이 있으면 클릭못하게 처리(위의 ajax요청에 대한 응답)
+									for(let ele of doctorReserveTimeList){
+										//console.log("ele",ele);
+										//console.log("innerDiv1.textContent",innerDiv1.textContent);
+										if(innerDiv1.textContent == ele){
+											innerDiv1.classList.add('disableDiv');
+										}
+									}
+									
 									//클릭이벤트 색상변경 + 선택한 시간 보여주기
 									innerDiv1.addEventListener("click", function(event){
 										document.querySelector('.time').innerText=event.target.textContent;
-										document.querySelectorAll('.cell').forEach(function(div) {
+										document.querySelectorAll('.cell:not(.disableDiv)').forEach(function(div) {
 								            div.style.backgroundColor = "white";
 								        });
 										event.target.style.backgroundColor="#06BBCC";
@@ -473,10 +505,19 @@ thead tr:nth-child(3) th {
 									if(date.getDate() == nowDate.getDate() && parseInt(days["open"]) + i <= hours){
 										innerDiv2.classList.add('disableDiv');
 									}
+									
+									for(let ele of doctorReserveTimeList){
+										//console.log("ele",ele);
+										//console.log("innerDiv1.textContent",innerDiv1.textContent);
+										if(innerDiv2.textContent == ele){
+											innerDiv2.classList.add('disableDiv');
+										}
+									}
+									
 									//클릭이벤트 색상변경 + 선택한 시간 보여주기
 									innerDiv2.addEventListener("click", function(event){
 										document.querySelector('.time').innerText=event.target.textContent;
-										document.querySelectorAll('.cell').forEach(function(div) {
+										document.querySelectorAll('.cell:not(.disableDiv)').forEach(function(div) {
 								            div.style.backgroundColor = "white";
 								        });
 										event.target.style.backgroundColor="#06BBCC";
@@ -516,7 +557,7 @@ thead tr:nth-child(3) th {
 					</div>
 					<div class="card-body"
 						style="display: flex; justify-content: center; align-items: center;">
-						<textarea id="textarea"style="width:1500px; height:200px; resize:none;"></textarea>
+						<textarea id="textarea"style="width:1500px; height:200px; resize:none; caret-color:black;"></textarea>
 					</div>
 				</div>
 			</div>
@@ -642,8 +683,12 @@ thead tr:nth-child(3) th {
 			   			  title: "예약이 완료되었습니다!",
 			   			  html: '예약내역은 마이페이지에서 확인가능합니다~',
 			   			  icon: "success"
-			   			});
-					window.location.href = "/mypage";
+			   			}).then(result=>{
+			   				if(result.value){
+			   					window.location.href = "/mypage";
+			   				}
+			   			})
+					
 				},
 				error: function(jqXHR, textStatus, errorThrown) {
 				        console.error("에러 발생:", textStatus, errorThrown);

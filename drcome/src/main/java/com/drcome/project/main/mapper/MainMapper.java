@@ -45,10 +45,11 @@ public interface MainMapper {
 	//방문예약 (insert)
 	public int insertContactReservation(ReservationVO reservationVo);
 	
-	//의사시간 가져오기
-//	public int findDoctorTime(@Param("doctorNo")String doctorNo, @Param("day")String day);
+	//비대면예약 (insert)
+	public int insertUntactReservation(ReservationVO reservationVo);
 	
-	
+	//선택한 의사의 예약시간뽑기(클릭못하게 처리)
+	public List<ReservationVO> findreserveListToChoice(ReservationVO reservationVo);
 	
 	
 	

@@ -76,12 +76,21 @@ public class MainServiceImpl implements MainService {
 		int result = mainMapper.insertContactReservation(reservationVo);
 		return result;
 	}
+	
+	@Override
+	public int insertUntactReservation(ReservationVO reservationVo) {
+		int result = mainMapper.insertUntactReservation(reservationVo);
+		return result;
+	}
 
-//	@Override
-//	public int findDoctorTime(String doctorNo, String day) {
-//		int findDoctorTime = mainMapper.findDoctorTime(doctorNo, day);
-//		return findDoctorTime;
-//	}
+	@Override
+	public List<ReservationVO> findreserveListToChoice(ReservationVO reservationVo) {
+		return mainMapper.findreserveListToChoice(reservationVo);
+	}
+
+	
+
+	
 
 
 

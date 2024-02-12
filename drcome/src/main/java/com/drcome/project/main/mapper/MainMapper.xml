@@ -67,90 +67,114 @@
 		
 		<!-- 병원이름검색하기 -->
 		<select id="searchHosList" resultType="HospitalVO">
-		SELECT HOSPITAL_NAME,
-			   HOSPITAL_ID,
-			   PHONE,
-			   OPENTIME,
-	           CLOSETIME,
-	           ADDRESS
-		FROM HOSPITAL
-		WHERE HOSPITAL_NAME LIKE '%' ||#{word}||'%'
-		ORDER BY HOSPITAL_NAME  
+			SELECT HOSPITAL_NAME,
+				   HOSPITAL_ID,
+				   PHONE,
+				   OPENTIME,
+		           CLOSETIME,
+		           ADDRESS
+			FROM HOSPITAL
+			WHERE HOSPITAL_NAME LIKE '%' ||#{word}||'%'
+			ORDER BY HOSPITAL_NAME  
 		</select>
 		
 		<!-- 약국이름검색하기 -->
 		<select id="searchPhaList" resultType="PharmacyVO">
-		SELECT PHARMACY_NAME,
-			   PHARMACY_ID,
-			   PHARMACY_PHONE,
-			   OPENTIME,
-	           CLOSETIME,
-	           ADDRESS
-		FROM PHARMACY
-		WHERE PHARMACY_NAME LIKE '%' ||#{word}||'%' 
-		ORDER BY PHARMACY_NAME  
+			SELECT PHARMACY_NAME,
+				   PHARMACY_ID,
+				   PHARMACY_PHONE,
+				   OPENTIME,
+		           CLOSETIME,
+		           ADDRESS
+			FROM PHARMACY
+			WHERE PHARMACY_NAME LIKE '%' ||#{word}||'%' 
+			ORDER BY PHARMACY_NAME  
 		</select>
 		
 		<!-- 병원 진료과목으로 검색하기 -->
 		<select id="searchSubjectHos" resultType="HospitalVO">
-		SELECT HOSPITAL_NAME,
-			   HOSPITAL_ID,
-			   PHONE,
-			   OPENTIME,
-	           CLOSETIME,
-	           ADDRESS
-		FROM HOSPITAL
-		WHERE MAIN_SUBJECT = #{mainSubject}
-		ORDER BY HOSPITAL_NAME
+			SELECT HOSPITAL_NAME,
+				   HOSPITAL_ID,
+				   PHONE,
+				   OPENTIME,
+		           CLOSETIME,
+		           ADDRESS
+			FROM HOSPITAL
+			WHERE MAIN_SUBJECT = #{mainSubject}
+			ORDER BY HOSPITAL_NAME
 		</select>
 		
 		<!-- 처방받을 약국선택 -->
 		<insert id="insertPhaSelect" >
-		INSERT INTO PHARMACY_SELECT (PHARMACY_SELECTNO, PHARMACY_ID, CLINIC_NO)
-            VALUES (PHARMACY_SELECTNO_SEQUENCE.NEXTVAL,#{pharmacyId},#{clinicNo})
+			INSERT INTO PHARMACY_SELECT (PHARMACY_SELECTNO, PHARMACY_ID, CLINIC_NO)
+	            VALUES (PHARMACY_SELECTNO_SEQUENCE.NEXTVAL,#{pharmacyId},#{clinicNo})
 		</insert>
 	
 		<!-- 예약 전, 초진기록이 있는지 없는지 확인 -->
 		<select id="checkClinicHistory" resultType="int">
-    	SELECT COUNT(CLINIC_NO) 
-        FROM CLINIC
-        WHERE PATIENT_NO = (SELECT PATIENT_NO FROM PATIENT WHERE USER_ID= #{userId})
-        AND HOSPITAL_ID = #{hospitalId}
+	    	SELECT COUNT(CLINIC_NO) 
+	        FROM CLINIC
+	        WHERE PATIENT_NO = (SELECT PATIENT_NO FROM PATIENT WHERE USER_ID= #{userId})
+	        AND HOSPITAL_ID = #{hospitalId}
     	</select>
     	
     	<!-- 당일 해당 병원에 예약기록이 있는지 확인하기(같은병원 같은시간 예약중복 방지) -->
     	<select id="checkReservationHistory" resultType="int">
-    	SELECT COUNT(RESERVE_NO)
-        FROM RESERVATION
-        WHERE USER_ID =#{userId}
-        AND HOSPITAL_ID=#{hospitalId}
-        AND RESERVE_YEAR || RESERVE_MONTH || RESERVE_DAY = TO_CHAR(SYSDATE, 'yyyyMMdd')
-        AND RESERVE_TIME > TO_CHAR(SYSDATE, 'HH24')
-        AND RESERVE_STATUS ='e1'
+	    	SELECT COUNT(RESERVE_NO)
+	        FROM RESERVATION
+	        WHERE USER_ID =#{userId}
+	        AND HOSPITAL_ID=#{hospitalId}
+	        AND RESERVE_YEAR || RESERVE_MONTH || RESERVE_DAY = TO_CHAR(SYSDATE, 'yyyyMMdd')
+	        AND RESERVE_TIME > TO_CHAR(SYSDATE, 'HH24')
+	        AND RESERVE_STATUS ='e1'
     	</select>
     	
     	<!-- 방문(대면)예약 insert -->
     	<insert id="insertContactReservation" parameterType="ReservationVO">
-    	INSERT INTO RESERVATION VALUES(RESERVE_NO_SEQUENCE.NEXTVAL,
-                                       #{reserveYear},
-                                       #{reserveTime},
-                                       SYSDATE,
-                                       #{doctorNo},
-                                       #{reserveMonth},
-                                       #{reserveDay},
-                                       #{symptom},
-                                       'c1',
-                                       'e1',
-                                       #{userId},
-                                       #{hospitalId}
-                                       )
+	    	INSERT INTO RESERVATION VALUES(RESERVE_NO_SEQUENCE.NEXTVAL,
+	                                       #{reserveYear},
+	                                       #{reserveTime},
+	                                       SYSDATE,
+	                                       #{doctorNo},
+	                                       #{reserveMonth},
+	                                       #{reserveDay},
+	                                       #{symptom},
+	                                       'c1',
+	                                       'e1',
+	                                       #{userId},
+	                                       #{hospitalId}
+	                                       )
     	</insert>
     	
-    	<!-- <select id="findDoctorTime" resultType="int">
-    	select DAY, TIME 
-		FROM DOCTOR_TIME
-		WHERE DOCTOR_NO = #{doctorNo}
-		AND DAY =#{day}
-    	</select> -->
+    	<!-- 방문(대면)예약 insert -->
+    	<insert id="insertUntactReservation" parameterType="ReservationVO">
+	    	INSERT INTO RESERVATION VALUES(RESERVE_NO_SEQUENCE.NEXTVAL,
+	                                       #{reserveYear},
+	                                       #{reserveTime},
+	                                       SYSDATE,
+	                                       #{doctorNo},
+	                                       #{reserveMonth},
+	                                       #{reserveDay},
+	                                       #{symptom},
+	                                       'c2',
+	                                       'e1',
+	                                       #{userId},
+	                                       #{hospitalId}
+	                                       )
+    	</insert>
+    	
+		<!-- 선택한 의사의 예약시간뽑기(클릭못하게 처리) -->
+		<select id="findreserveListToChoice">
+			SELECT RESERVE_TIME
+			FROM RESERVATION
+			WHERE RESERVE_YEAR = #{reserveYear}
+			AND RESERVE_MONTH=#{reserveMonth}
+			AND RESERVE_DAY =#{reserveDay}
+			AND DOCTOR_NO=#{doctorNo}
+		</select>
+    	
+    	
+    	
+    	
     	
     </mapper>

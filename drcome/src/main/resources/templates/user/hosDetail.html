@@ -39,7 +39,7 @@
 </head>
 
 <body>
-	<div layout:fragment="content">
+	<div layout:fragment="content" style="caret-color:transparent;">
 		<h1 style="text-align:center; margin-bottom:50px; margin-top:50px; color:gray;">- Detail Info -</h1>
 		<div class="container-fluid" style="margin-bottom:150px;">
 			<th:block th:each="hos : ${hosInfo}">
@@ -155,9 +155,9 @@
 							if(clinicHistory){
 								//console.log("clinicHistory=",clinicHistory);
 								//console.log("word=",word);
+								let hospitalId = document.querySelector('.hosId').innerText;
 								if(word == 'later'){ //비대면 예약
-									alert("비대면 예약");
-									//window.location.href="/untactReserve";
+									window.location.href="/untactReserve?hospitalId="+hospitalId;
 								}else if(word == 'now'){//비대면 실시간 접수
 									alert("비대면 실시간 접수");
 									//window.location.href="/untactAccept";

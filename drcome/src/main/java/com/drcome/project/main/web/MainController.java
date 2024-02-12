@@ -151,11 +151,11 @@ public class MainController {
 		String[] pharmacyIdArray = pharmacyIdListAsList.toArray(new String[0]);
 		int clinicNo = Integer.parseInt((String) data.get("clinicNo"));
 		int result = 0;
-		System.out.println("pharmacyIdArray="+pharmacyIdArray);
+		//System.out.println("pharmacyIdArray="+pharmacyIdArray);
 		for(int i=0; i < pharmacyIdArray.length; i++) {
 			result += mainService.insertPhaSelect(pharmacyIdArray[i], clinicNo);
 		}
-		System.out.println("result=" + result);
+		//System.out.println("result=" + result);
 		if(result == 0) { //insert 안되면 false
 			return false;
 		}else { //insert되면 true
@@ -165,7 +165,7 @@ public class MainController {
 	
 	//방문예약페이지(select)
 	@GetMapping("/contactReserve")
-	public String contactReservationPage(HttpServletRequest request, String hospitalId, Model model) {
+	public String contactReservationPage(HttpServletRequest request, String hospitalId, Model model, ReservationVO reservationVo ) {
 		//병원정보
 		HospitalVO hosInfo = mainService.getHos(hospitalId);
 		//병원이름&아이디
@@ -192,7 +192,7 @@ public class MainController {
 		dayList.put("i6", 6);//토
 		dayList.put("i7", 0);//일
 		String date = hosInfo.getHoliday();
-		System.out.println("date="+date);
+		//System.out.println("date="+date);
 		//System.out.println(dayList.get("i1"));
 		if(date.length() < 3){
 			List<Integer> newDate = new ArrayList<>();
@@ -208,6 +208,7 @@ public class MainController {
 			System.out.println("newDate요일여러개="+newDate);
 			model.addAttribute("newDate", newDate);
 		}
+		
 		return "user/contactReserve";
 	}
 	
@@ -215,16 +216,88 @@ public class MainController {
 	@PostMapping("/contactReserve")
 	@ResponseBody
 	public boolean insertReservation(@RequestBody ReservationVO reservationVo) {
-		System.out.println("reservationVo"+reservationVo);
+		//System.out.println("reservationVo"+reservationVo);
 		int result = mainService.insertContactReservation(reservationVo);
 		if(result == 0) { //insert 안되면 false
 			return false;
 		}else { //insert되면 true
 			return true;
 		}
-
-		
 	}
 	
+	//모든예약페이지(이미 예약된 시간보여주기)
+	@PostMapping("/reserveList")
+	@ResponseBody
+	public List<ReservationVO> selectReserveList(@RequestBody ReservationVO reservationVo) {
+		//선택한 의사의 해당날짜 예약시간 보여주기
+		List<ReservationVO> reserveTimeList = mainService.findreserveListToChoice(reservationVo);
+//		for(int i=0; i < reserveTimeList.size(); i++) {
+//			System.out.println("reserveTimeList="+ reserveTimeList.get(i).getReserveTime());
+//		}
+		return reserveTimeList;
+	}
+	
+	//비대면예약페이지(select)
+		@GetMapping("/untactReserve")
+		public String unntactReservationPage(HttpServletRequest request, String hospitalId, Model model, ReservationVO reservationVo ) {
+			//병원정보
+			HospitalVO hosInfo = mainService.getHos(hospitalId);
+			//병원이름&아이디
+			model.addAttribute("hosName", hosInfo.getHospitalName());
+			model.addAttribute("hospitalId", hospitalId);
+			//병원의 의사정보
+			List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
+			model.addAttribute("docList", docList);
+			//System.out.println("docList="+docList);
+			
+			//세션으로 유저아이디 가져옴
+			HttpSession session = request.getSession();
+			String userId = (String) session.getAttribute("userId");
+			model.addAttribute("userId", userId);
+			//System.out.println("userId="+userId);
+			
+			//병원 휴무일 보내기(숫자형태로 전환해서 보내는 중)
+			Map<String, Integer> dayList = new HashMap<>();
+			dayList.put("i1", 1);//월
+			dayList.put("i2", 2);//화
+			dayList.put("i3", 3);//수
+			dayList.put("i4", 4);//목
+			dayList.put("i5", 5);//금
+			dayList.put("i6", 6);//토
+			dayList.put("i7", 0);//일
+			String date = hosInfo.getHoliday();
+			//System.out.println("date="+date);
+			//System.out.println(dayList.get("i1"));
+			if(date.length() < 3){
+				List<Integer> newDate = new ArrayList<>();
+				newDate.add(dayList.get(date));
+				System.out.println("newDate요일하나"+newDate);
+				model.addAttribute("newDate", newDate);
+			}else {
+				String[] sliceDate = date.split(",");
+				List<Integer> newDate = new ArrayList<>();
+				for(int i=0; i < sliceDate.length; i++) {
+					newDate.add(dayList.get(sliceDate[i]));
+				}
+				System.out.println("newDate요일여러개="+newDate);
+				model.addAttribute("newDate", newDate);
+			}
+			
+			return "user/untactReserve";
+		}
+		
+		//비대면예약페이지(insert)
+		@PostMapping("/untactReserve")
+		@ResponseBody
+		public boolean insertUntactReservation(@RequestBody ReservationVO reservationVo) {
+			//System.out.println("reservationVo"+reservationVo);
+			int result = mainService.insertUntactReservation(reservationVo);
+			System.out.println("insertUntactReservation="+result);
+			if(result == 0) { //insert 안되면 false
+				return false;
+			}else { //insert되면 true
+				return true;
+			}
+		}
 	
 }

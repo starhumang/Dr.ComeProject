@@ -178,13 +178,6 @@
 	<body>
 		<div layout:fragment="content">
 			<div class="container-fluid">
-				<p th:text="${rInfo}"></p>
-				<div class="head_info">
-					<p>
-						<i class="fas fa-fw fa-calendar"></i> 현재날짜 :
-						<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
-					</p>
-				</div>
 				<div class="pay_what">
 					<div class="pay_list">
 						<label class="pay">

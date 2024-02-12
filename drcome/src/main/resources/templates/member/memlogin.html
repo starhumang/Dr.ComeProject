@@ -65,27 +65,87 @@
 				text-decoration: none;
 			}
 
-			a:hover {
+			/* a:hover {
 				text-decoration: underline;
-			}
+			} */
 
 			.jointext {
 				color: #051fb4;
+				text-decoration: none;
 			}
 		</style>
+
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+
+		<script>
+			$('form').on('submit', (e) => {
+				e.preventDefault();
+			});
+
+			function scsAlert(content) {
+				Swal.fire({
+					icon: 'success',
+					text: content,
+				});
+			}
+
+			function errAlert(content) {
+				Swal.fire({
+					icon: 'error',
+					text: content,
+				});
+			}
+
+			function login() {
+				const username = $('input[name="username"]').val();
+				if (username.length <= 0) {
+					errAlert('아이디를 입력하세요');
+					return;
+				}
+
+				const password = $('input[name="password"]').val();
+				if (password.length <= 0) {
+					errAlert('비밀번호를 입력하세요');
+					return;
+				}
+
+				const formData = new FormData();
+				formData.append('username', username);
+				formData.append('password', password);
+
+				$.ajax('/userlogin', {
+					type: 'post',
+					data: formData,
+					contentType: false,
+					processData: false,
+					statusCode: {
+						401: function () {
+							errAlert('아이디/비밀번호를 확인해주세요');
+						},
+					},
+					success: function (data, textStatus, xhr) {
+						if (xhr.status === 200) {
+							// 로그인 성공 시 리다이렉트할 URL을 확인하여 페이지 이동
+							window.location.href = data.redirectUrl;
+						}
+					},
+				});
+			}
+		</script>
 	</head>
 	<body>
 		<div layout:fragment="content">
 			<div class="registered-customers">
 				<h3 class="blog-section-title border-left mb-30">Dr.Come</h3>
-				<form th:action="@{/userlogin}" style="text-align: center" method="post">
+				<form style="text-align: center" method="post">
 					<div class="login-account p-30 box-shadow">
 						<p>아이디</p>
 						<input type="text" name="username" />
 						<p>비밀번호</p>
 						<input type="password" name="password" />
 						<div class="mb-40" style="text-align: center">
-							<button type="submit">로그인</button>
+							<button type="button" onclick="login()">로그인</button>
 							<br />
 							<div class="mb-40">
 								<p>

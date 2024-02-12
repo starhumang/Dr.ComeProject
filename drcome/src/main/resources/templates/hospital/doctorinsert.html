@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>의사 등록</title>
+		<style>
+			label {
+				display: inline-block;
+				width: 200px;
+				margin-bottom: 5px;
+			}
+
+			.input-group {
+				align-items: center;
+				margin-bottom: 15px;
+			}
+
+			.input-group input,
+			.input-group button {
+				height: 30px;
+			}
+
+			.input-group input {
+				width: 400px;
+				margin-right: 10px;
+				height: 32px;
+				border: 0;
+				outline: none;
+				padding-left: 10px;
+			}
+
+			.input-group button {
+				width: 150px;
+			}
+
+			#filePreview {
+				max-width: 100%;
+				max-height: 150px;
+				margin-top: 10px;
+				display: none;
+			}
+
+			#remainingDays div {
+				display: inline-block;
+				margin-right: 20px;
+			}
+		</style>
+
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+
+		<script type="text/javascript">
+			window.addEventListener('DOMContentLoaded', (event) => {
+				let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+				checkboxes.forEach((checkbox) => {
+					checkbox.addEventListener('change', function () {
+						if (this.checked) {
+							let value = this.value;
+							document.getElementById(value).style.display = 'none';
+						} else {
+							let value = this.value;
+							document.getElementById(value).style.display = 'block';
+						}
+					});
+				});
+			});
+		</script>
+
+		<script th:inline="javascript">
+			var formData = new FormData();
+
+			let addLeadingZero = function (num) {
+				return num < 10 ? '0' + num : num.toString();
+			};
+
+			function submitForm() {
+				let hospitalId = [[${hospitalSel.hospitalId}]];
+				let doctorName = document.getElementById('doctorName').value;
+				let doctorLicense = document.getElementById('doctorLicense').value;
+				let subject = document.getElementById('sub').value;
+				let holidays = document.querySelectorAll('input[type="checkbox"][id="holiday"]:checked');
+				let holidayValues = Array.from(holidays).map(function (checkbox) {
+					return checkbox.value;
+				});
+
+				let restotime = document.getElementById('restotime').value;
+				let restctime = document.getElementById('restctime').value;
+
+				console.log('의사');
+
+				console.log('o', restotime);
+				console.log('c', restctime);
+
+				formData.append('hospitalId', hospitalId);
+				formData.append('doctorName', doctorName);
+				formData.append('doctorLicense', doctorLicense);
+				formData.append('subject', subject);
+				formData.append('holiday', holidayValues.join(','));
+
+				let daysOfWeek = ['i1', 'i2', 'i3', 'i4', 'i5', 'i6', 'i7'];
+				daysOfWeek.forEach(function (day) {
+					let timeArray = [];
+					let startTimeSelect = document.getElementById(day + 'Time');
+					let endTimeSelect = document.getElementById(day + 'EndTime');
+					let startTime = startTimeSelect.value;
+					let endTime = endTimeSelect.value;
+					for (let i = parseInt(startTime); i <= parseInt(endTime); i++) {
+						if (!(i >= parseInt(restotime) && i <= parseInt(restctime))) {
+							timeArray.push(addLeadingZero(i));
+						}
+					}
+					formData.append(day, timeArray.join(','));
+				});
+
+				for (let pair of formData.entries()) {
+					console.log(pair[0] + ': ' + pair[1]);
+				}
+
+				$.ajax({
+					url: '/hospital/doctorinsert',
+					type: 'post',
+					processData: false,
+					contentType: false,
+					data: formData,
+					success: function (resp) {
+						console.log(resp);
+						if (resp.result) {
+							Swal.fire({
+								icon: 'success',
+								text: resp.msg,
+							}).then(function () {
+								location.href = '/hospital/myProfile';
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								text: resp.msg,
+							}).then(function () {
+								// location.reload();
+							});
+						}
+					},
+				});
+			}
+		</script>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<div class="card shadow mb-4">
+				<div
+					class="card-header py-3"
+					style="display: flex; justify-content: space-between; align-items: center"
+				>
+					<h5 class="m-0 font-weight-bold text-secondary">
+						<i class="fas fa-fw fa-user-nurse"></i>의사 등록
+					</h5>
+				</div>
+				<div class="card-body">
+					<form id="doctorForm" enctype="multipart/form-data" method="post">
+						<div class="container">
+							<br />
+							<div class="input-group">
+								<label>의사 이름</label>
+								<input type="text" id="doctorName" required />
+							</div>
+
+							<div class="input-group" id="subject">
+								<label>대표 진료 과목</label>
+								<select id="sub">
+									<option selected>선택하세요</option>
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<option
+											th:value="${detailCode.detailCode}"
+											th:text="${detailCode.codeName}"
+										></option>
+									</th:block>
+								</select>
+							</div>
+
+							<div class="input-group">
+								<label>면허증</label>
+								<input type="text" id="doctorLicense" required />
+							</div>
+
+							<div class="input-group">
+								<label>휴진일</label>
+								<th:block th:each="detailCode : ${application.detailCode_i}">
+									<input
+										type="checkbox"
+										id="holiday"
+										th:value="${detailCode.detailCode}"
+										style="
+											width: 20px;
+											height: 20px;
+											border: 2px solid #3498db;
+											border-radius: 5px;
+											margin-right: 10px;
+											cursor: pointer;
+											display: flex;
+											align-items: center;
+											justify-content: center;
+											transition: background-color 0.3s;
+										"
+									/>
+									<label
+										th:for="${'holiday_' + detailCode.detailCode}"
+										th:text="${detailCode.codeName}"
+										style="width: 50px"
+									></label>
+									<br />
+								</th:block>
+							</div>
+
+							<div class="input-group">
+								<label>진료 시간</label>
+								<div id="remainingDays">
+									<div id="i1">
+										<label>월요일</label>
+										<select id="i1Time">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+										<span>~</span>
+										<select id="i1EndTime">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+									<div id="i2">
+										<label>화요일</label>
+										<select id="i2Time">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+										<span>~</span>
+										<select id="i2EndTime">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+									<div id="i3">
+										<label>수요일</label>
+										<select id="i3Time">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+										<span>~</span>
+										<select id="i3EndTime">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+									<div id="i4">
+										<label>목요일</label>
+										<select id="i4Time">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+										<span>~</span>
+										<select id="i4EndTime">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+									<div id="i5">
+										<label>금요일</label>
+										<select id="i5Time">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+										<span>~</span>
+										<select id="i5EndTime">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+									<div id="i6">
+										<label>토요일</label>
+										<select id="i6Time">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+										<span>~</span>
+										<select id="i6EndTime">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+									<div id="i7">
+										<label>일요일</label>
+										<select id="i7Time">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+										<span>~</span>
+										<select id="i7EndTime">
+											<option selected>선택하세요</option>
+											<th:block th:each="detailCode : ${application.detailCode_k}">
+												<option
+													th:value="${detailCode.codeName}"
+													th:text="${detailCode.codeName}"
+												></option>
+											</th:block>
+										</select>
+									</div>
+								</div>
+							</div>
+
+							<div class="input-group">
+								<label>휴게 시간</label>
+								<select id="restotime">
+									<option selected>선택하세요</option>
+									<th:block th:each="detailCode : ${application.detailCode_k}">
+										<option
+											th:value="${detailCode.codeName}"
+											th:text="${detailCode.codeName}"
+										></option>
+									</th:block>
+								</select>
+								<span>~</span>
+								<select id="restctime">
+									<option selected>선택하세요</option>
+									<th:block th:each="detailCode : ${application.detailCode_k}">
+										<option
+											th:value="${detailCode.codeName}"
+											th:text="${detailCode.codeName}"
+										></option>
+									</th:block>
+								</select>
+							</div>
+
+							<br />
+							<input type="button" value="등록하기" onclick="submitForm()" class="btn btn-danger" />
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

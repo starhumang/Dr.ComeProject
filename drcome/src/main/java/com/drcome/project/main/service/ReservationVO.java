@@ -14,7 +14,7 @@ public class ReservationVO {
 	private String reserveMonth;
 	private String reserveDay;
 	private String symptom;
-	private String reserveKind;
+	private String reserveKindstatus;
 	private String reserveStatus;
 	private String userId;
 	private String hospitalId;

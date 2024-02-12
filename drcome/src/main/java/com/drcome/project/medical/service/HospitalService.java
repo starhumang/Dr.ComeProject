@@ -17,7 +17,6 @@ public interface HospitalService {
 	//QnA답변X
 	public List<Map<String, Object>> getQnAX(String hospitalId);
 	
-	
 	/* 환자리스트 */
 	//환자 조회
 	public List<Map<String, Object>> getPaientList(String hospitalId);
@@ -40,6 +39,7 @@ public interface HospitalService {
 	
 	//Dr리스트
 	public List<Map<String, Object>> getDrAllList(String hospitalId);
+	
 	/* QnA */
 	//QnA 전체
 	public List<Map<String, Object>> getQnaList(String hospitalId);
@@ -70,5 +70,17 @@ public interface HospitalService {
 	
 	//병원-의사 조회
 	public List<DoctorVO> getDoctorAll(String hospitalId);
+	
+	// 의사 번호 조회
+	public int getCurrentDoctorNo();
+	
+	// 의사 정보 조회
+	public DoctorVO selectDoctor(int doctorNo);
+	
+	// 의사 등록
+	public int insertDoctor(DoctorVO vo);
+	
+	// 의사 수정
+	public int updateDoctor(DoctorVO vo);
 	
 }

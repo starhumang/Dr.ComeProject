@@ -399,6 +399,61 @@
 			day
 		ORDER BY doctor_no, days
 	</select>
-
-
+	
+	<!-- 의사 번호 조회 -->
+	<select id="getCurrentDoctorNo" resultType="int">
+        SELECT doctor_seq.currval FROM dual
+    </select>
+    
+    <!-- 의사 정보 조회 -->
+    <select id="selectDoctor" resultType="DoctorVO">
+    	SELECT doctor_no
+    	      , subject
+    		  , doctor_name
+    		  , doctor_license
+    	FROM doctor 
+    	WHERE doctor_no = #{doctorNo}
+    </select>
+	
+	<!-- 의사 정보 등록 -->
+	<insert id="insertDoctor" parameterType="DoctorVO">
+		INSERT INTO doctor (doctor_no
+							, subject
+							, doctor_name
+							, doctor_license
+							, holiday
+							, hospital_id)
+		VALUES (doctor_seq.nextval
+				, #{subject}
+				, #{doctorName}
+				, #{doctorLicense}
+				, #{holiday}
+				, #{hospitalId})
+	</insert>
+	
+	<!-- 의사 시간 등록 -->
+	<insert id="insertDoctorTime" parameterType="DoctorTimeVO">
+        INSERT INTO doctor_time (doctor_timeno
+        						, doctor_no
+        						, day
+        						, time)
+        VALUES (doctor_time_seq.nextval
+        		, #{doctorNo}
+        		, #{day}
+        		, #{timeSlot})
+    </insert>
+    
+    <!-- 의사 정보 수정 -->
+    <update id="updateDoctor" parameterType="DoctorVO" >
+    	UPDATE doctor
+    	SET subject = #{subject}
+    	  , holiday = #{holiday}
+    	WHERE doctor_no = #{doctorNo}
+    </update>
+    
+    <!-- 의사 시간 삭제 -->
+	<delete id="deleteDoctorTime">
+		DELETE doctor_time
+		WHERE doctor_no = #{doctorNo}
+	</delete>
 </mapper>

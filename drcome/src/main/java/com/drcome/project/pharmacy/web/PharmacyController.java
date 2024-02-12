@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +17,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.drcome.project.FileUploadService;
 import com.drcome.project.common.service.PageDTO;
+import com.drcome.project.medical.service.HospitalVO;
+import com.drcome.project.mem.service.UserMemberService;
 import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 import com.drcome.project.pharmacy.service.PharmacyService;
@@ -26,6 +30,15 @@ public class PharmacyController {
 
 	@Autowired
 	PharmacyService pservice;
+	
+	@Autowired
+	UserMemberService userMemService;
+	
+	@Autowired
+	BCryptPasswordEncoder bCryptPasswordEncoder;
+	
+	@Autowired
+	private FileUploadService fileUploadService;
 
 	@GetMapping("/pharmacy")
 	public String home() {
@@ -104,5 +117,44 @@ public class PharmacyController {
 		pharmacyVO.setPharmacyId(pharmacyId);
 		PharmacyVO findVO = pservice.selectPharmacyInfo(pharmacyVO);
 		return findVO;
+	}
+	
+	@GetMapping("/pharmacy/paminfoupdate")
+	public String pamUpdateForm() {
+		return "pharmacy/pamupdate";
+	}
+	
+	@PostMapping("/pharmacy/paminfoupdate")
+	@ResponseBody
+	public Map<String, Object> pamUpdate(PharmacyVO pVO) {		
+		Map<String, Object> response = new HashMap<>();
+		String password = pVO.getPharmacyPw();
+		password = bCryptPasswordEncoder.encode(password);
+		pVO.setPharmacyPw(password);
+		
+		if(pVO.getUploadFiles() != null) {
+			List<String> imageList = fileUploadService.uploadFiles(pVO.getUploadFiles());
+			
+			String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
+			pVO.setPharmacyImg(uploadedFileName);
+		}
+
+		System.out.println(pVO);
+		
+		try {
+			int cnt = userMemService.updatePamInfo(pVO);
+			if (cnt > 0) {
+				response.put("result", true);
+				response.put("msg", "정상적으로 수정되었습니다.");
+			} else {
+				response.put("result", false);
+				response.put("msg", "수정에 실패했습니다.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("result", false);
+			response.put("msg", "에러 발생");
+		}
+		return response;
 	}
 }

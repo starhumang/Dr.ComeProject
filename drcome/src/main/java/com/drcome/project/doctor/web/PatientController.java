@@ -148,12 +148,6 @@ public class PatientController {
 		return patientService.insertClinic(vo);
 	}
 
-	// 결제
-	@GetMapping("payment")
-	public String payment() {
-		return "doctor/clinicPayment";
-	}
-
 	// 진료종료시 상태 업데이트
 	@PostMapping("/updateStatus")
 	@ResponseBody

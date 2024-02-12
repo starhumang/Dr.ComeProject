@@ -98,16 +98,43 @@
 	<!-- Patient -->
 	<!-- 환자 리스트 -->
 	<select id="selectPatientList" resultType="Map">
-		SELECT a.patient_no "patientNo"
-			, u.user_name "userName"
-			, u.birthday "userBirthday"
-			, u.gender "gender"
-			, u.phone "userPhone"
-		FROM patient a 
-		JOIN usertable u ON a.user_id = u.user_id
-		WHERE a.hospital_id = #{hospitalId}
-		ORDER BY a.patient_no
+		SELECT * FROM (
+				    SELECT a.patient_no "patientNo",
+						   u.user_name "userName",
+						   u.birthday "userBirthday",
+						   u.gender "gender",
+						   u.phone "phone",
+				           ROWNUM AS rn
+					  FROM patient a 
+					  JOIN usertable u ON a.user_id = u.user_id
+				     WHERE a.hospital_id = #{hospitalId}
+				         <include refid="searchP"></include>
+				     AND ROWNUM <![CDATA[ <= ]]> #{page} * 10
+				     ORDER BY a.patient_no DESC
+				      )
+		 WHERE rn > (#{page} - 1) * 10
 	</select>
+	
+	<!-- 환자 리스트 페이징-->
+	<select id="patientCount" resultType="int">
+		SELECT COUNT(*)
+			FROM patient a 
+			JOIN usertable u ON a.user_id = u.user_id
+			WHERE a.hospital_id = #{hospitalId}
+           <include refid="searchP"></include>
+	</select>
+	
+	<!-- 환자 공통 if search 쿼리 -->
+	<sql id="searchP">
+		<if test="keyword != null and keyword != '' ">
+	         <if test="type == 1">
+	       	 AND patient_no LIKE '%'|| #{keyword} ||'%'
+	         </if>
+	         <if test="type == 2">
+	          AND user_name LIKE '%'|| #{keyword} ||'%'
+	         </if>
+	    </if>
+	</sql>
 	
 	<!-- 환자 상세 -->
 	<select id="selectPatientDetailList" resultType="Map">
@@ -209,17 +236,60 @@
 	<!-- QnA -->
 	<!-- QnA 전체 -->
 	<select id ="selectQnaList" resultType="Map">
-		SELECT qna_no "qnaNo",
-			   title "title",
-			   user_id "userId",
-			   category_status "categoryStatus",
-			   wdate "wDate",
-			   udate "uDate",
-			   ans_status "ansStatus"
-		  FROM qna
-		 WHERE hospital_id = #{hospitalId} AND ANS_STATUS IS NOT NULL
-		 ORDER BY qna_no DESC
+		SELECT * FROM (
+				    SELECT qna_no "qnaNo",
+						   title "title",
+						   user_id "userId",
+						   category_status "categoryStatus",
+						   wdate "wdate",
+						   udate "udate",
+						   ans_status "ansStatus",
+				           ROWNUM AS rn
+				      FROM (
+				          SELECT qna_no,
+							     title,
+							     user_id,
+							     category_status,
+							     wdate,
+							     udate,
+							     ans_status
+				            FROM qna
+				           WHERE hospital_id = #{hospitalId}
+				             AND ANS_STATUS IS NOT NULL
+				         <include refid="search"></include>
+				           ORDER BY qna_no DESC
+				      )
+				      WHERE ROWNUM <![CDATA[ <= ]]> #{page} * 10
+				)
+		 WHERE rn > (#{page} - 1) * 10
 	</select>
+	
+	<!-- QnA 페이징-->
+	<select id="qnaCount" resultType="int">
+		SELECT COUNT(*)
+			FROM qna
+			WHERE hospital_id = #{hospitalId}
+			AND ANS_STATUS IS NOT NULL
+           <include refid="search"></include>
+	</select>
+	
+	<!-- QnA 공통 if search 쿼리 -->
+	<sql id="search">
+		<if test="keyword != null and keyword != '' ">
+             <if test="type == 1">
+	          AND title LIKE '%'|| #{keyword} ||'%'
+             </if>
+             <if test="type == 2">
+              AND user_id LIKE '%'|| #{keyword} ||'%'
+             </if>
+           </if>
+           <if test="categoryStatus != null and categoryStatus != '' ">
+	          AND category_status = #{categoryStatus}
+           </if>
+           <if test="ansStatus != null and ansStatus != '' ">
+	          AND ans_status = #{ansStatus}
+           </if>
+	</sql>
 	
 	<!-- QnA 상세 -->
 	<select id ="selectQnaInfo" resultType="Map">
@@ -239,7 +309,7 @@
 	<!-- 공지사항 -->
 	<!-- 공지사항 전체 -->
 	<select id ="selectNoticeList" resultType="Map">
-		<![CDATA[
+		
 			SELECT * FROM (
 			    SELECT notice_no "noticeNo",
 			           title "title",
@@ -255,12 +325,22 @@
 			                 udate
 			            FROM notice
 			           WHERE hospital_id = #{hospitalId}
+			           <if test="keyword != null and keyword != '' ">
+			             <if test="type == 1">
+				          AND title LIKE '%'|| #{keyword} ||'%'
+			             </if>
+			             <if test="type == 2">
+			              AND content LIKE '%'|| #{keyword} ||'%'
+			             </if>
+			           </if>
 			           ORDER BY notice_no DESC
 			      )
-			      WHERE ROWNUM <= #{page} * 10
+			      
+			      WHERE ROWNUM <![CDATA[ <= ]]> #{page} * 10
+			      
 			)
 			WHERE rn > (#{page} - 1) * 10
-		]]>
+
 	</select>
 	
 	<!-- 공지사항 페이징-->
@@ -268,6 +348,14 @@
 		SELECT COUNT(*)
 			FROM notice
 			WHERE hospital_id = #{hospitalId}
+           	<if test="keyword != null and keyword != '' ">
+             <if test="type == 1">
+	          AND title LIKE '%'|| #{keyword} ||'%'
+             </if>
+             <if test="type == 2">
+              AND content LIKE '%'|| #{keyword} ||'%'
+             </if>
+           </if>
 	</select>
 	
 	<!-- 공지사항 상세 -->
@@ -331,39 +419,6 @@
 				#{fileName},
 				#{noticeNo})
 	</insert>
-	
-	<!-- 공지사항 검색 -->
-	<select id="searchNoticeByTitle" parameterType="NoticeVO" resultType="NoticeVO">
-		SELECT notice_no,
-	           title,
-	           content,
-	           wdate,
-	           udate
-	      FROM notice
-		 WHERE title LIKE 
-		 '%'|| #{keyword} ||'%'
-		 AND hospital_id = #{hospitalId}
-	</select>
-	
-	<select id="searchNoticeByContent" parameterType="NoticeVO" resultType="NoticeVO">
-		SELECT notice_no,
-	           title,
-	           content,
-	           wdate,
-	           udate
-	      FROM notice
-		 WHERE content LIKE 
-		 '%'|| #{keyword} ||'%'
-		 AND hospital_id = #{hospitalId}
-	</select>
-	
-	<!-- 공지사항 검색 결과 수 -->
-	<select id="searchNoticeCount" parameterType="NoticeVO" resultType="int">
-	    SELECT COUNT(*)
-	    FROM notice
-	    WHERE (title LIKE '%' || #{keyword} || '%' OR content LIKE '%' || #{keyword} || '%')
-	      AND hospital_id = #{hospitalId}
-	</select>
 	
 	<!-- MyProfile -->
 	<!-- 병원-의사-시간 조회 -->

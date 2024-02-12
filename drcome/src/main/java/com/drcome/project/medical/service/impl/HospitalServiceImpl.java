@@ -44,14 +44,19 @@ public class HospitalServiceImpl implements HospitalService {
 		List<Map<String, Object>> listQnAX = hospitalMapper.selectQnAX(hospitalId);
 		return listQnAX;
 	}
-	
 
 	/* 환자리스트 */
 	// 환자 조회
 	@Override
-	public List<Map<String, Object>> getPaientList(String hospitalId) {
-		List<Map<String, Object>> listPa = hospitalMapper.selectPatientList(hospitalId);
+	public List<Map<String, Object>> getPaientList(Map<String, Object> map) {
+		List<Map<String, Object>> listPa = hospitalMapper.selectPatientList(map);
 		return listPa;
+	}
+	
+	// 환자 페이징
+	@Override
+	public int patientCount(Map<String, Object> map) {
+		return hospitalMapper.patientCount(map);
 	}
 
 	// 환자 상세 조회
@@ -100,9 +105,15 @@ public class HospitalServiceImpl implements HospitalService {
 	/* QnA */
 	// QnA 전체
 	@Override
-	public List<Map<String, Object>> getQnaList(String hospitalId) {
-		List<Map<String, Object>> listQnaAll = hospitalMapper.selectQnaList(hospitalId);
+	public List<Map<String, Object>> getQnaList(Map<String, Object> map) {
+		List<Map<String, Object>> listQnaAll = hospitalMapper.selectQnaList(map);
 		return listQnaAll;
+	}
+	
+	// QnA 페이징
+	@Override
+	public int qnaCount(Map<String, Object> map) {
+		return hospitalMapper.qnaCount(map);
 	}
 
 	// QnA 단건상세
@@ -115,17 +126,17 @@ public class HospitalServiceImpl implements HospitalService {
 	/* 공지사항 */
 	// 공지사항 전체
 	@Override
-	public List<Map<String, Object>> getNoticeList(int page, String hospitalId) {
-		List<Map<String, Object>> listNoticeAll = hospitalMapper.selectNoticeList(page, hospitalId);
+	public List<Map<String, Object>> getNoticeList(int page, int type, String keyword, String hospitalId) {
+		List<Map<String, Object>> listNoticeAll = hospitalMapper.selectNoticeList(page, type, keyword, hospitalId);
 		return listNoticeAll;
 	}
-
+	
 	// 공지사항 페이징
 	@Override
-	public int noticeCount(String hospitalId) {
-		return hospitalMapper.noticeCount(hospitalId);
+	public int noticeCount(int type, String keyword, String hospitalId) {
+		return hospitalMapper.noticeCount(type, keyword, hospitalId);
 	}
-
+	
 	// 공지사항 단건상세
 	@Override
 	public List<NoticeVO> getNoticeDetail(String hospitalId, Integer noticeNo) {
@@ -142,25 +153,6 @@ public class HospitalServiceImpl implements HospitalService {
 	@Override
 	public int insertAttach(NoticeVO vo) {
 		return hospitalMapper.insertAttach(vo);
-	}
-	
-	// 공지사항 검색
-	@Override
-	public List<NoticeVO> searchNotice(int type, String keyword, String hospitalId) {
-        if (type == 1) {
-            return hospitalMapper.searchNoticeByTitle(keyword, hospitalId);
-        } else if (type == 2) {
-        	 return hospitalMapper.searchNoticeByContent(keyword, hospitalId);
-        } else {
-            // 예외 처리 또는 기본값 반환
-            return Collections.emptyList();
-        }
-	}
-	
-
-	@Override
-	public int searchNoticeCount(String hospitalId, String keyword) {
-		return hospitalMapper.searchNoticeCount(hospitalId, keyword);
 	}
 
 	/* 병원프로필 */
@@ -226,5 +218,6 @@ public class HospitalServiceImpl implements HospitalService {
         }
 		return count;
 	}
+
 
 }

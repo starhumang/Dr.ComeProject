@@ -19,7 +19,8 @@ public interface HospitalService {
 	
 	/* 환자리스트 */
 	//환자 조회
-	public List<Map<String, Object>> getPaientList(String hospitalId);
+	public List<Map<String, Object>> getPaientList(Map<String, Object> map);
+	public int patientCount(Map<String, Object> map);
 	
 	//환자 상세 진료내역 조회
 	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo);
@@ -42,27 +43,23 @@ public interface HospitalService {
 	
 	/* QnA */
 	//QnA 전체
-	public List<Map<String, Object>> getQnaList(String hospitalId);
+	public List<Map<String, Object>> getQnaList(Map<String, Object> map);
+	public int qnaCount(Map<String, Object> map);
 	
 	//QnA 단건상세
 	public List<Map<String, Object>> getQnaInfo(String hospitalId, Integer qnaNo);
 	
 	/* 공지사항 */
 	//공지사항 전체	
-	public List<Map<String, Object>> getNoticeList(int page, String hospitalId);
+	public List<Map<String, Object>> getNoticeList(int page, int type, String keyword, String hospitalId);
+	public int noticeCount(int type, String keyword, String hospitalId);
 	
-	public int noticeCount(String hospitalId);
 	//공지사항 단건상세
 	public List<NoticeVO> getNoticeDetail(String hospitalId, Integer noticeNo);
 	
 	//공지사항 등록
 	public int insertNoticeInfo(NoticeVO vo);
 	public int insertAttach(NoticeVO vo);
-	
-	//공지사항 검색
-	public List<NoticeVO> searchNotice(int type, String hospitalId, String keyword);
-	
-	public int searchNoticeCount(String hospitalId, String keyword);
 	
 	/* 병원프로필 */
 	//병원 단건조회(id로)

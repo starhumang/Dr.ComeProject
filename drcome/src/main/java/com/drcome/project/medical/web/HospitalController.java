@@ -93,9 +93,45 @@ public class HospitalController {
 	@GetMapping("/hospital/patientList")
 	public String searchPatient(Principal principal, String hospitalId, Model model) {
 		hospitalId = principal.getName();
-		List<Map<String, Object>> palist = hospitalService.getPaientList(hospitalId);
-		model.addAttribute("palist", palist);
 		return "hospital/patientList";
+	}
+	
+	// 환자 페이징 - 검색
+	/**
+	 * 
+	 * @param principal
+	 * @param param
+	 * @param page
+	 * @return
+	 */
+	@GetMapping("/hospital/patientListP")
+	@ResponseBody
+	public Map<String, Object> patientList(Principal principal, 
+			@RequestParam Map<String, Object> param,
+			@RequestParam(required = false, defaultValue = "1") int page) {
+		
+		String hospitalId = principal.getName();
+		param.put("hospitalId", hospitalId);
+		param.put("page", page);
+		
+		Map<String, Object> map = new HashMap();
+		// 리스트 전체 개수
+		int total = hospitalService.patientCount(param);
+
+		// 페이지네이션(currentpage, total)
+		PageDTO2 dto = new PageDTO2(page, total);
+		System.out.println("dtd 객체" + dto);
+
+		List<Map<String, Object>> plist = hospitalService.getPaientList(param);
+
+		System.out.println(plist.size());
+
+		// ajax는 return으로...
+
+		map.put("plist", plist);
+		map.put("pagedto", dto);
+
+		return map;
 	}
 
 	// @RequestParam("userId") Long firstPageId
@@ -173,9 +209,45 @@ public class HospitalController {
 	@GetMapping("/hospital/qnaList")
 	public String qnaList(Principal principal, String hospitalId, Model model) {
 		hospitalId = principal.getName();
-		List<Map<String, Object>> qnaAllList = hospitalService.getQnaList(hospitalId);
-		model.addAttribute("qnaAllList", qnaAllList);
 		return "hospital/qnaList";
+	}
+	
+	// QnA 전체 - 페이징
+	/**
+	 * 
+	 * @param principal
+	 * @param param : page, type, ansStatus, keyword, categoryStatus
+	 * @param page
+	 * @return
+	 */
+	@GetMapping("/hospital/qnaListP")
+	@ResponseBody
+	public Map<String, Object> qnaList(Principal principal, 
+			@RequestParam Map<String, Object> param,
+			@RequestParam(required = false, defaultValue = "1") int page) {
+		
+		String hospitalId = principal.getName();
+		param.put("hospitalId", hospitalId);
+		param.put("page", page);
+		
+		Map<String, Object> map = new HashMap();
+		// 리스트 전체 개수
+		int total = hospitalService.qnaCount(param);
+
+		// 페이지네이션(currentpage, total)
+		PageDTO2 dto = new PageDTO2(page, total);
+		System.out.println("dtd 객체" + dto);
+
+		List<Map<String, Object>> plist = hospitalService.getQnaList(param);
+
+		System.out.println(plist.size());
+
+		// ajax는 return으로...
+
+		map.put("plist", plist);
+		map.put("pagedto", dto);
+
+		return map;
 	}
 
 	// QnA 단건상세
@@ -191,7 +263,7 @@ public class HospitalController {
 	/* 공지사항 */
 	// 공지사항 불러오기
 	@GetMapping("/hospital/noticeList")
-	public String qnaList(Principal principal, String hospitalId) {
+	public String noticeList(Principal principal, String hospitalId) {
 		hospitalId = principal.getName();
 
 		return "hospital/noticeList";
@@ -201,12 +273,14 @@ public class HospitalController {
 	@GetMapping("/hospital/noticeListP")
 	@ResponseBody
 	public Map<String, Object> noticeList(Principal principal, String hospitalId,
-			@RequestParam(required = false, defaultValue = "1") String page) {
+			@RequestParam(required = false, defaultValue = "1") String page,
+			@RequestParam(required = false, defaultValue = "0") int type,
+            @RequestParam("keyword") String keyword) {
 		hospitalId = principal.getName();
 
 		Map<String, Object> map = new HashMap();
 		// 리스트 전체 개수
-		int total = hospitalService.noticeCount(hospitalId);
+		int total = hospitalService.noticeCount(type, keyword, hospitalId);
 
 		// 선택 페이지 변환
 		int cpage = Integer.parseInt(page);
@@ -216,7 +290,7 @@ public class HospitalController {
 		PageDTO2 dto = new PageDTO2(cpage, total);
 		System.out.println("dtd 객체" + dto);
 
-		List<Map<String, Object>> plist = hospitalService.getNoticeList(cpage, hospitalId);
+		List<Map<String, Object>> plist = hospitalService.getNoticeList(cpage, type, keyword, hospitalId);
 
 		System.out.println(plist.size());
 
@@ -295,7 +369,9 @@ public class HospitalController {
 		}
 
 	}
-  
+	
+
+    //병원 업데이트
 	@GetMapping("/hospital/hosinfoupdate")
 	public String hosUpdateForm() {
 		return "hospital/hosupdate";
@@ -436,51 +512,4 @@ public class HospitalController {
 		return response;
 	}
 	
-	// 공지사항 검색
-//	@GetMapping("/hospital/searchNotices")
-//	@ResponseBody
-//	public Map<String, Object> searchNotices(Principal principal,
-//	                         @RequestParam("type") int type,
-//	                         @RequestParam("keyword") String keyword,
-//	                         @RequestParam(required = false, defaultValue = "1") String page) {
-//	    String hospitalId = principal.getName(); // Principal 객체에서 병원 ID 가져오기
-//	    
-//	    Map<String, Object> map = new HashMap();
-//	    // 리스트 전체 개수
-//	    int total = hospitalService.searchNoticeCount(hospitalId, keyword);
-//	    
-//	    // 선택 페이지 변환
-//	    int cpage = Integer.parseInt(page);
-//	    System.out.println("선택된 페이지" + cpage);
-//	    
-//	    // 페이지네이션(currentpage, total)
-//	    PageDTO2 dto = new PageDTO2(cpage, total);
-//	    System.out.println("dtd 객체" + dto);
-//	    
-//	    // 검색된 공지사항 리스트 가져오기
-//	    List<NoticeVO> searchResults = hospitalService.searchNotice(type, keyword, hospitalId);
-//	    
-//	    // 결과를 담을 Map 생성
-//	    map.put("searchResults", searchResults);
-//	    map.put("pagedto", dto);
-//	    
-//	    return map;
-//	}
-
-	
-	//공지사항 검색
-    @GetMapping("/hospital/searchNotices")
-    @ResponseBody
-    public List<NoticeVO> searchNotices(Principal principal,
-    							String hospitalId,
-    							@RequestParam("type") int type,
-    							@RequestParam("keyword") String keyword,
-    							Model model) {
-    	hospitalId = principal.getName();
-        List<NoticeVO> searchResults = hospitalService.searchNotice(type, keyword, hospitalId);
-        model.addAttribute("searchResults", searchResults);
-        System.out.println(searchResults);
-        // JSON으로 반환
-        return searchResults;
-    }
 }

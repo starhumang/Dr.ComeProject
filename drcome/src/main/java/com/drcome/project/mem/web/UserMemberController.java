@@ -238,13 +238,10 @@ public class UserMemberController {
 		String hospitalId = "krrlo";
 		int doctorNo = 123;
 		
-		List<Map<String, Object>> reserveMyList = hospitalService.getReserveDrList(hospitalId, doctorNo);
-		model.addAttribute("reserveMyList", reserveMyList);
-
-		String hospitalId = "krrlo";
-		int doctorNo = 123;
-
-		List<Map<String, Object>> reserveMyList = hospitalService.getReserveDrList(hospitalId, doctorNo);
+		String date = "2024-02-12";
+		String reserveKindstatus = "c1";
+		
+		List<Map<String, Object>> reserveMyList = hospitalService.getReserveDrList(hospitalId, doctorNo, date, reserveKindstatus);
 		model.addAttribute("reserveMyList", reserveMyList);
 
 		return "/member/userpage";

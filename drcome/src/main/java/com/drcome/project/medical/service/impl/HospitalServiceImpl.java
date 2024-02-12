@@ -76,22 +76,21 @@ public class HospitalServiceImpl implements HospitalService {
 	}
 
 	/* 예약내역 - clinic */
-	// Main
+	//Main
 	@Override
 	public List<Map<String, Object>> getRerveList(String hospitalId, String date, String reserveKindstatus) {
-		List<Map<String, Object>> listReserveAll = hospitalMapper.selectReserveMain(hospitalId, date,
-				reserveKindstatus);
+		List<Map<String, Object>> listReserveAll = hospitalMapper.selectReserveMain(hospitalId, date, reserveKindstatus);
 		return listReserveAll;
 	}
 
-	// Dr
+	//Dr
 	@Override
 	public List<Map<String, Object>> getReserveDrList(String hospitalId, Integer doctorNo, String date, String reserveKindstatus) {
 		List<Map<String, Object>> listReserveDr = hospitalMapper.selectReserveDr(hospitalId, doctorNo, date, reserveKindstatus);
 		return listReserveDr;
 	}
-
 	//Dr리스트
+
 	@Override
 	public List<Map<String, Object>> getDrAllList(String hospitalId) {
 		List<Map<String, Object>> listDrAll = hospitalMapper.allDrList(hospitalId);
@@ -178,21 +177,6 @@ public class HospitalServiceImpl implements HospitalService {
 		return hospitalMapper.selectDrList(hospitalId);
 	}
 
-	/* 환자리스트 */
-	// 환자 조회
-	@Override
-	public List<Map<String, Object>> getPaientList(String hospitalId) {
-		List<Map<String, Object>> listPa = hospitalMapper.selectPatientList(hospitalId);
-		return listPa;
-	}
-
-	// 환자 상세 조회
-	@Override
-	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo) {
-		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
-		return listPaDe;
-	}
-	
 	// 의사 번호 조회
 	@Override
 	public int getCurrentDoctorNo() {

@@ -76,27 +76,6 @@ public class HospitalController {
 		model.addAttribute("QnAX", QnAX);
 		return "hospital/home";
 	}
-  
-	/* 예약내역 - clinic */
-	// Main
-	@GetMapping("/hospital/clinicMain")
-	public String clinicReserve(Principal principal, String hospitalId, String date, String reserveKindstatus,
-			Model model) {
-		hospitalId = principal.getName();
-		List<Map<String, Object>> reserveList = hospitalService.getRerveList(hospitalId, date, reserveKindstatus);
-		model.addAttribute("reserveList", reserveList);
-		return "hospital/clinicMain";
-	}
-
-	// Dr
-	@GetMapping("/hospital/clinicDr")
-	public String clinicReserveDr(Principal principal, String hospitalId, Integer doctorNo, Model model) {
-		hospitalId = principal.getName();
-		doctorNo = 123;
-		List<Map<String, Object>> reserveDrList = hospitalService.getReserveDrList(hospitalId, doctorNo);
-		model.addAttribute("reserveDrList", reserveDrList);
-		return "hospital/clinicDr";
-	}
 
 	/* 병원프로필 */
 	// 병원 단건조회(id로) + 병원-의사 조회
@@ -180,22 +159,13 @@ public class HospitalController {
 		List<Map<String, Object>> reserveDrList = hospitalService.getReserveDrList(hospitalId, doctorNo, date, reserveKindstatus);
 		return reserveDrList;
 	}
+	
 	@GetMapping("/hospital/clinicDr/allDr")
 	@ResponseBody
 	public List<Map<String, Object>> allDrList(Principal principal, String hospitalId) {
 		hospitalId = principal.getName();
 		List<Map<String, Object>> DrAllList = hospitalService.getDrAllList(hospitalId);
 		return DrAllList;
-	}
-	/* 병원프로필 */
-	// 병원 단건조회(id로) + 병원-의사 조회
-	@GetMapping("/hospital/myProfile")
-	public String findHospital(Principal principal, String hospitalId, Model model) {
-		hospitalId = principal.getName();
-		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId);
-		System.out.println(docList);
-		model.addAttribute("docList", docList);
-		return "hospital/myProfile";
 	}
 
 	/* QnA */

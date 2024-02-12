@@ -22,8 +22,6 @@
 		r.reserve_no=#{reserveNo}
 	</select>
 
-
-
 	<!-- 처방전가져오기 -->
 	<select id="perscription"
 		resultType="com.drcome.project.doctor.service.PatientVO">

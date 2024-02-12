@@ -4,7 +4,7 @@ var reconnectInterval = 5000; // 다시 연결하는 간격 (밀리초)
 function connectWebSocket(uid) {
   try {
     // WebSocket 연결
-    alarmSocket = new WebSocket("ws://192.168.0.36:80/echo");
+    alarmSocket = new WebSocket("ws://192.168.0.16:80/echo");
 
     // 연결이 열리면 호출되는 이벤트 핸들러
     alarmSocket.onopen = function (event) {

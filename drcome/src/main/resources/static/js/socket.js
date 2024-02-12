@@ -1,11 +1,11 @@
-let socket = io("http://192.168.0.36:3000/", {
+let socket = io("http://192.168.0.16:3000/", {
   cors: { origin: "*" },
 });
 
 console.log(socket.connected);
 
 const myPeer = new Peer({
-  host: "192.168.0.36",
+  host: "192.168.0.16",
   port: "3001", //PeerJS 서버가 실행되고 있는 포트
 });
 
@@ -18,6 +18,7 @@ navigator.mediaDevices
     audio: true,
   })
   .then((stream) => {
+    //내화면만들고
     localVideo.srcObject = stream;
     // call 받을 때의 동작
     myPeer.on("call", async (call) => {
@@ -26,7 +27,7 @@ navigator.mediaDevices
       call.answer(stream);
       // 다른 유저의 stream을 받아옴  // 상대방 스트림 내 화면에 표시
       call.on("stream", (userVideoStream) => {
-        console.log("두번째로 들어온 사용자 remote 화면");
+        console.log("두번째 사용자 remote 화면 만들기");
         remoteVideo.srcObject = userVideoStream;
       });
     });
@@ -57,7 +58,7 @@ async function connectToNewUser(userId, stream) {
 
   // 다른 유저의 stream을 받아와서 내 화면에 표시
   call.on("stream", (userVideoStream) => {
-    console.log("첫번째 사용자 remote 화면");
+    console.log("첫번째 사용자 remote 화면 만들기");
     remoteVideo.srcObject = userVideoStream;
   });
 

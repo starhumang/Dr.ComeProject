@@ -330,4 +330,44 @@
           AND s.rejection IS NULL
           AND s.pharmacy_id = #{pharmacyId}
 	</select>
+	<!-- 약국 검색 -->
+	<select id="searchpharmacy" resultType="Map">
+		<![CDATA[
+	      SELECT *
+			FROM (
+			    SELECT 
+			           c.patient_no "patientNo",
+			           c.clinic_no "clinicNo",
+			           c.hospital_id "hospitalId",
+			           c.reserve_no "reserveNo",
+			           c.perscription_yn "perscriptionYn",
+			           a.user_id "patientUserId",
+			           u.user_name "userName",
+			           u.birthday "userBirthday",
+			           u.phone "userPhone",
+			           h.hospital_name "hospitalName",
+			           h.phone "hospitalPhone",
+			           d.doctor_name "doctorName",
+			           s.print_status "printStatus",
+			           c.clinic_date "perscriptionDate",
+			           s.send_status "sendStatus",
+			           s.rejection "rejection",
+			           ROWNUM AS rn
+			    FROM clinic c 
+			    LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
+			    JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
+			    JOIN hospital h ON c.hospital_id = h.hospital_id
+			    JOIN reservation r ON c.reserve_no = r.reserve_no
+			    JOIN doctor d ON r.doctor_no = d.doctor_no
+			    JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+			    WHERE s.print_status = '출력완료'
+			    AND s.send_status = 'Y'
+			    AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
+			    AND s.rejection IS NULL
+			    AND s.pharmacy_id = #{pharmacyId}
+			    AND ROWNUM <= #{page} * 5
+			)   
+			WHERE rn > (#{page} - 1) * 5
+	  ]]>
+	</select>
 </mapper>

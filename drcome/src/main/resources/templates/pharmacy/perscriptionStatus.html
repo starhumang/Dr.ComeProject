@@ -42,6 +42,13 @@
 .pagination a:hover {
   background-color: #bfc5d8;
 }
+
+.search {
+	display: flex;
+	margin-bottom: 2.5rem;
+	text-align: right;
+	justify-content: flex-end;
+}
 </style>
 </head>
 <body>
@@ -54,12 +61,27 @@
 						data-target="#calendarModal"></i> 현재날짜 : <span
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
 						id="datepicker" th:name="datepicker"></span> -->
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 <input type="text"
-						id="datepicker" />
+					<i class="fas fa-fw fa-calendar"></i>  <input type="text"
+						id="datepicker" style="width: 120px;"/>
 				</p>
 			</div>
 
 			<p>처방전 승인 및 출력</p>
+			<div class="search">
+				<!-- drop -->
+			    <div class="input-group" style="width: 40%;">
+			        <select id="type" class="custom-select" aria-label="Default select example" style="border-radius: 0.35rem;">
+			        	<option value="">검색유형</option>
+			            <option value="1">환자이름</option>
+			            <option value="2">병원명</option>
+			        </select>
+			        <p class="btn btn-info" style="border-top-right-radius: 0; border-bottom-right-radius: 0; margin-left: 0.3rem; margin-bottom: 0;">
+			            <i class="fas fa-search fa-sm"></i>
+			        </p>
+			        <input type="text" id="keyword" class="form-control bg-light border-1 small" placeholder="검색어를 입력하세요." aria-label="Search" aria-describedby="basic-addon2" style="width: 30%;"/>
+			        <button id="searchBtn" class="btn btn-info" type="button" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">검색하기</button>
+			    </div>
+			</div>
 			<div class="card shadow mb-4">
 				<div class="card-header py-3"
 					style="display: flex; justify-content: space-between; align-items: center;">

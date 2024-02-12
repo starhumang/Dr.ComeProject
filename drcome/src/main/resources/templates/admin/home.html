@@ -10,9 +10,83 @@
 	</head>
 	<body>
 		<div layout:fragment="content">
-			<div class="user-logout-link">
+			<!-- <div class="user-logout-link">
 				<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
+			</div> -->
+			<div class="row">
+				<!-- Earnings (Monthly) Card Example -->
+				<div class="col-xl-3 col-md-6 mb-4">
+					<div class="card border-left-primary shadow h-100 py-2">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+										일반 사용자 수</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800">100</div>
+								</div>
+								<div class="col-auto">
+									<i class="fas fa-calendar fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Earnings (Annual) Card Example -->
+				<div class="col-xl-3 col-md-6 mb-4">
+					<div class="card border-left-success shadow h-100 py-2">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div
+										class="text-xs font-weight-bold text-success text-uppercase mb-1">
+										병원 사용자 수</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800">143</div>
+								</div>
+								<div class="col-auto">
+									<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- Pending Requests Card Example -->
+				<div class="col-xl-3 col-md-6 mb-4">
+					<div class="card border-left-warning shadow h-100 py-2">
+						<div class="card-body">
+							<div class="row no-gutters align-items-center">
+								<div class="col mr-2">
+									<div
+										class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+										약국 사용자 수</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800">212</div>
+								</div>
+								<div class="col-auto">
+									<i class="fas fa-comments fa-2x text-gray-300"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 			</div>
+			<div class="card-body" style="display: flex; justify-content: space-around;">
+				<div class="card shadow mb-4">
+					<div class="left">
+						<div>
+							<h5 class="m-0 font-weight-bold text-secondary">병원 승인 대기 목록</h5>
+						</div>
+						<table></table>
+					</div>
+				</div>
+				<div class="card shadow mb-4">
+					<div class="right">
+						<h5 class="m-0 font-weight-bold text-secondary">약국 승인 대기 목록</h5>
+						<table></table>
+					</div>
+				</div>
+			</div>
+			
 			<!-- 모달 -->
 			<div class="modal fade" tabindex="-1" id="toggleMyModal">
 				<div class="modal-dialog modal-dialog-centered">

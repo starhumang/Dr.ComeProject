@@ -147,7 +147,7 @@ public class PatientController {
 		System.out.println("진료기록저장될ㅇㅇㅇㅇㅇㅇㅇㅇㅇ" + vo);
 		return patientService.insertClinic(vo);
 	}
-  
+
 	// 진료종료시 상태 업데이트
 	@PostMapping("/updateStatus")
 	@ResponseBody

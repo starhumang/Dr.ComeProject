@@ -9,8 +9,8 @@ public interface PatientService {
 
 	// 환자 진료내역 조회
 	public List<PatientVO> getClinicList(int page, PatientVO vo);
-	
-	//진료 리스트 total 
+
+	// 진료 리스트 total
 	public int totalList(PatientVO vo);
 
 	// 환자 처방전 조회
@@ -22,7 +22,7 @@ public interface PatientService {
 	// 진료기록 insert
 	public int insertClinic(PatientVO vo);
 
-
-
+	// 예약상태 업데이트
+	public int modifyReserve(PatientVO vo);
 
 }

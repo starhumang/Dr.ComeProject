@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.drcome.project.FileUploadService;
+import com.drcome.project.main.service.ReservationVO;
+import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.mem.mapper.UserMemberMapper;
 import com.drcome.project.mem.service.MemVO;
@@ -33,6 +35,9 @@ public class UserMemberController {
 	@Autowired
 	UserMemberService userMemService;
 
+	@Autowired
+	HospitalService hospitalService;
+  
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
@@ -90,7 +95,7 @@ public class UserMemberController {
 	@GetMapping("/userupdate")
 	public String userUpdateForm(@SessionAttribute(name = "userId", required = false) String id, Model model) {
 		UserMemberVO userInfo = memMapper.selectMem(id);
-		model.addAttribute("userInfo", userInfo); 
+		model.addAttribute("userInfo", userInfo);
 		return "/member/userupdate";
 	}
 
@@ -132,8 +137,6 @@ public class UserMemberController {
 		userPw = bCryptPasswordEncoder.encode(userPw);
 		mVO.setUserPw(userPw);
 
-		System.out.println(mVO);
-
 		List<String> imageList = fileUploadService.uploadFiles(mVO.getUploadFiles());
 
 		String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
@@ -166,33 +169,63 @@ public class UserMemberController {
 
 	@PostMapping("/medicaljoin")
 	@ResponseBody
-	public Map<String, Object> medicalJoin(HospitalVO hVO, PharmacyVO pVO) {
+	public Map<String, Object> medicalJoin(@RequestParam("hospital") boolean isHospital, HospitalVO hVO, PharmacyVO pVO) {
 		Map<String, Object> response = new HashMap<>();
-		String hospitalPw = hVO.getHospitalPw();
-		hospitalPw = bCryptPasswordEncoder.encode(hospitalPw);
-		hVO.setHospitalPw(hospitalPw);
+		
+	    // 병원
+	    if (isHospital) {
+	        String hospitalPw = hVO.getHospitalPw();
+	        hospitalPw = bCryptPasswordEncoder.encode(hospitalPw);
+	        hVO.setHospitalPw(hospitalPw);
 
-		List<String> imageList = fileUploadService.uploadFiles(hVO.getUploadFiles());
+	        List<String> imageList = fileUploadService.uploadFiles(hVO.getUploadFiles());
+	        String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
+	        hVO.setHospitalImg(uploadedFileName);
 
-		String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
-		hVO.setHospitalImg(uploadedFileName);
-
-		System.out.println(hVO);
-
-		try {
-			int cnt = userMemService.insertHosMember(hVO);
-			if (cnt > 0) {
-				response.put("result", true);
-				response.put("msg", "회원가입이 성공적으로 완료되었습니다.");
-			} else {
+	        System.out.println(hVO);
+	        
+			try {
+				int cnt = userMemService.insertHosMember(hVO);
+				if (cnt > 0) {
+					response.put("result", true);
+					response.put("msg", "회원가입이 성공적으로 완료되었습니다.");
+				} else {
+					response.put("result", false);
+					response.put("msg", "회원가입에 실패했습니다.");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
 				response.put("result", false);
-				response.put("msg", "회원가입에 실패했습니다.");
+				response.put("msg", "에러 발생");
 			}
-		} catch (Exception e) {
-			e.printStackTrace();
-			response.put("result", false);
-			response.put("msg", "에러 발생");
-		}
+	    } 
+	    // 약국
+	    else {
+	        String pharmacyPw = pVO.getPharmacyPw();
+	        pharmacyPw = bCryptPasswordEncoder.encode(pharmacyPw);
+	        pVO.setPharmacyPw(pharmacyPw);
+
+	        List<String> imageList = fileUploadService.uploadFiles(pVO.getUploadFiles());
+	        String uploadedFileName = imageList.get(0);
+	        pVO.setPharmacyImg(uploadedFileName);
+
+	        System.out.println(pVO);
+	        
+			try {
+				int cnt = userMemService.insertPamMember(pVO);
+				if (cnt > 0) {
+					response.put("result", true);
+					response.put("msg", "회원가입이 성공적으로 완료되었습니다.");
+				} else {
+					response.put("result", false);
+					response.put("msg", "회원가입에 실패했습니다.");
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+				response.put("result", false);
+				response.put("msg", "에러 발생");
+			}
+	    }
 
 		return response;
 	}
@@ -201,6 +234,15 @@ public class UserMemberController {
 	public String myPage(@SessionAttribute(name = "userId", required = false) String id, Model model) {
 		UserMemberVO myprofile = memMapper.selectMem(id);
 		model.addAttribute("profile", myprofile);
+		
+		String hospitalId = "krrlo";
+		int doctorNo = 123;
+		
+		String date = "2024-02-12";
+		String reserveKindstatus = "c1";
+		
+		List<Map<String, Object>> reserveMyList = hospitalService.getReserveDrList(hospitalId, doctorNo, date, reserveKindstatus);
+		model.addAttribute("reserveMyList", reserveMyList);
 
 		return "/member/userpage";
 	}
@@ -229,10 +271,10 @@ public class UserMemberController {
 			response.put("checkNum", "중복");
 		}
 		System.out.println(response);
-		
+
 		return response;
 	}
-	
+
 	@GetMapping("/auth/checkAuthPhone")
 	@ResponseBody
 	public Map<String, Object> sendAuthNumber(@RequestParam String phoneNum) {
@@ -240,6 +282,14 @@ public class UserMemberController {
 		response = userMemService.sendNumber(phoneNum);
 
 		return response;
+	}
+	
+	// 결제
+	@GetMapping("/payment")
+	public String payment(Model model) {
+		ReservationVO rInfo = memMapper.selectReserveInfo(12);
+		model.addAttribute("rInfo", rInfo);
+		return "user/clinicPayment";
 	}
 
 }

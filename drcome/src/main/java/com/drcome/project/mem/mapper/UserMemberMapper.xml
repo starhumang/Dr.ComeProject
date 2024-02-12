@@ -16,8 +16,13 @@
         					, birthday
         					, gender
         					, identification)
-        VALUES
-        (#{userId}, #{userPw}, #{userName}, #{phone}, #{birthday}, #{gender}, #{identification})
+        VALUES (#{userId}
+        		, #{userPw}
+        		, #{userName}
+        		, #{phone}
+        		, #{birthday}
+        		, #{gender}
+        		, #{identification})
         ]]>
 	</insert>
 
@@ -60,8 +65,51 @@
         					, holiday
         					, opentime
         					, closetime)
-        VALUES
-        (#{hospitalId}, #{hospitalPw}, #{hospitalName}, #{address}, #{phone}, #{hospitalImg}, #{mainSubject}, #{directorName}, #{directorPhone}, #{directorLicense}, #{holiday}, #{opentime}, #{closetime})
+        VALUES (#{hospitalId}
+        		, #{hospitalPw}
+        		, #{hospitalName}
+        		, #{address}
+        		, #{phone}
+        		, #{hospitalImg}
+        		, #{mainSubject}
+        		, #{directorName}
+        		, #{directorPhone}
+        		, #{directorLicense}
+        		, #{holiday}
+        		, #{opentime}
+        		, #{closetime})
+        ]]>
+	</insert>
+	
+	<insert id="insertPamMember"
+		parameterType="PharmacyVO">
+	<![CDATA[
+        INSERT INTO pharmacy (pharmacy_id
+        					, pharmacy_pw
+        					, pharmacy_name
+        					, address
+        					, pharmacy_phone
+        					, pharmacy_fax
+        					, pharmacy_img
+        					, ceo_name
+        					, ceo_phone
+        					, ceo_license
+        					, holiday
+        					, opentime
+        					, closetime)
+        VALUES (#{pharmacyId}
+        		, #{pharmacyPw}
+        		, #{pharmacyName}
+        		, #{address}
+        		, #{pharmacyPhone}
+        		, #{pharmacyFax}
+        		, #{pharmacyImg}
+        		, #{ceoName}
+        		, #{ceoPhone}
+        		, #{ceoLicense}
+        		, #{holiday}
+        		, #{opentime}
+        		, #{closetime})
         ]]>
 	</insert>
 	
@@ -112,5 +160,56 @@
 			,phone = #{phone}
 		WHERE user_id = #{userId}
 	</update>
+	
+	<update id="updateHosInfo" parameterType="HospitalVO">
+		UPDATE hospital
+		SET hospital_pw = #{hospitalPw}
+		  , phone = #{phone}
+		  , hospital_img = #{hospitalImg}
+		  , director_phone = #{directorPhone}
+		  , holiday = #{holiday}
+		  , opentime = #{opentime}
+		  , closetime = #{closetime}
+		WHERE hospital_id = #{hospitalId}
+	</update>
+	
+	<update id="updatePamInfo" parameterType="PharmacyVO">
+		UPDATE pharmacy
+		SET pharmacy_pw = #{pharmacyPw}
+		  , pharmacy_phone = #{pharmacyPhone}
+		  , pharmacy_fax = #{pharmacyFax}
+		  , pharmacy_img = #{pharmacyImg}
+		  , ceo_phone = #{ceoPhone}
+		  , holiday = #{holiday}
+		  , opentime = #{opentime}
+		  , closetime = #{closetime}
+		WHERE pharmacy_id = #{pharmacyId}
+	</update>
+	
+	<select id="selectReserveInfo" resultType="ReservationVO">
+		SELECT reserve_no
+		     , reserve_year
+		     , reserve_month
+		     , reserve_day
+		     , reserve_time
+		     , booking_date
+		     , symptom
+		     , doctor_no
+		     , reserve_kindstatus
+		     , reserve_status
+		     , user_id
+		     , hospital_id
+		FROM reservation
+		WHERE reserve_no = #{reserveNo}		
+	</select>
+	
+	<insert id="insertPayment" parameterType="PaymentVO">
+		INSERT INTO payment (order_num
+							, amount
+							, user_id)
+		VALUES (#{orderNum}
+				, #{amount}
+				, #{userId}) 
+	</insert>
 
 </mapper>

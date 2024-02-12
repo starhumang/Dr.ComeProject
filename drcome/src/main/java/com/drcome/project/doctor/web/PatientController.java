@@ -31,11 +31,10 @@ public class PatientController {
 
 	@Autowired
 	PatientService patientService;
-	
+
 	@Autowired
 	AlarmService alarmService;
 
-	
 	// 공통 병원 정보 따로 빼기
 	@ModelAttribute("hospitalSel")
 	public Hospital getServerTime() {
@@ -44,28 +43,47 @@ public class PatientController {
 		return hosSel;
 	}
 
-	
-	// 비대면진료페이지
+	// 비대면진료페이지 - 의사
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
 
-		// System.out.println("너뭐야????????????????????? " + vo); //예약번호, 유저아이디 들어옴
+		// System.out.println("너뭐야????????????????????? " + vo); // 예약번호, 유저아이디 들어옴
 		// 기본정보
 		PatientVO findVO = patientService.getPatientInfo(vo);
 		model.addAttribute("pInfo", findVO);
-		System.out.println(findVO);
+		// System.out.println("pInfo" + findVO);
+		// System.out.println(findVO);
 		return "doctor/untactClinic";
 
 	}
-	
-	//알람 테이블 인서트 
+
+	// 비대면 진료 - 환자
+	@GetMapping("untactPatient")
+	public String untactPatient(PatientVO vo, Model model) {
+
+		return "doctor/untactPatient";
+
+	}
+
+	// 대면진료페이지
+	@GetMapping("clinic")
+	public String getInfo(PatientVO vo, Model model) {
+		PatientVO findVO = patientService.getPatientInfo(vo);
+		model.addAttribute("pInfo", findVO);
+		// System.out.println("pInfo" + findVO);
+		// System.out.println(findVO);
+		return "doctor/clinic";
+
+	}
+
+	// 알람 테이블 인서트 + 입장하기로 업데이트
 	@PostMapping("saveAlarm")
 	@ResponseBody
 	public int saveAlarm(@RequestBody AlarmDao dao) {
-		System.out.println("알람 인서트완료");
+		System.out.println("알람 daoooooooooooo " + dao);
 		return alarmService.saveAlarm(dao);
+
 	}
-	
 
 	// 진료기록 불러오기
 	@GetMapping("clist")
@@ -103,16 +121,6 @@ public class PatientController {
 
 	}
 
-	// 대면진료페이지
-	@GetMapping("clinic")
-	public String getInfo(PatientVO vo, Model model) {
-		PatientVO findVO = patientService.getPatientInfo(vo);
-		model.addAttribute("pInfo", findVO);
-		// System.out.println(findVO);
-		return "doctor/clinic";
-
-	}
-
 	// 처방전 조회
 	@GetMapping("perscription/{no}")
 	@ResponseBody
@@ -136,13 +144,18 @@ public class PatientController {
 	@PostMapping("saveClinic")
 	@ResponseBody
 	public int saveInfo(@RequestBody PatientVO vo) {
+		System.out.println("진료기록저장될ㅇㅇㅇㅇㅇㅇㅇㅇㅇ" + vo);
 		return patientService.insertClinic(vo);
 	}
-	
-	// 결제
-	@GetMapping("payment")
-	public String payment() {
-		return "doctor/clinicPayment";
+
+	// 진료종료시 상태 업데이트
+	@PostMapping("/updateStatus")
+	@ResponseBody
+	public int updateStatus(PatientVO vo) {
+
+		int cnt = patientService.modifyReserve(vo);
+
+		return cnt;
 	}
 
 }// end class

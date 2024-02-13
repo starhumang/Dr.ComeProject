@@ -293,45 +293,102 @@ public class HospitalController {
 	}
 
 	// QnA 단건상세
+//	@GetMapping("/hospital/qnaList/qnaDetail")
+//	public String qnaInfo(Principal principal,
+//						  String hospitalId,
+//						  @RequestParam(required = false) Integer qnaNo,
+//						  @RequestParam Integer ansCode,
+//						  Model model) {
+//		
+//	    QnaVO qnaVO = new QnaVO();
+//	    qnaVO.setHospitalId(principal.getName());
+//	    
+//	    QnaVO qnaInfo = new QnaVO();
+//	    QnaVO ansInfo = new QnaVO();
+//	    
+//	    // qnaNo가 있는 경우 selectQnaInfo와 selectAnsInfo 두 개의 쿼리를 모두 실행
+//	    if (qnaNo != null) {
+//	        // selectQnaInfo 쿼리 실행
+//	    	model.addAttribute("ansCode", ansCode);
+//	        qnaInfo = hospitalService.getQnaInfo(qnaVO);
+//	        model.addAttribute("qnaInfo", qnaInfo);
+//	        
+//	        // selectAnsInfo 쿼리 실행
+//	        model.addAttribute("qnaNo", qnaNo);
+//	        ansInfo = hospitalService.getAnsInfo(qnaVO);
+//	        model.addAttribute("ansInfo", ansInfo);
+//	        
+//	        System.out.println("qnaInfo"+ qnaInfo);
+//	        System.out.println("ansInfo" + ansInfo);
+//	    } else {
+//	        // qnaNo가 없는 경우 selectQnaInfo 쿼리만 실행
+//	    	model.addAttribute("ansCode", ansCode);
+//	        qnaInfo = hospitalService.getQnaInfo(qnaVO);
+//	        model.addAttribute("qnaInfo", qnaInfo);
+//	        
+//	        System.out.println("qnaInfo"+ qnaInfo);
+//	        System.out.println("ansInfo" + ansInfo);
+//	    }
+//	    
+//	    return "hospital/qnaDetail";
+//	}
 	@GetMapping("/hospital/qnaList/qnaDetail")
 	public String qnaInfo(Principal principal,
 						  String hospitalId,
-						  @RequestParam(required = false) Integer qnaNo,
-						  @RequestParam Integer ansCode,
+						  @ModelAttribute QnaVO qnaVO,
 						  Model model) {
 		
-	    QnaVO qnaVO = new QnaVO();
-	    qnaVO.setHospitalId(principal.getName());
-	    
-	    QnaVO qnaInfo = new QnaVO();
-	    QnaVO ansInfo = new QnaVO();
-	    
-	    // qnaNo가 있는 경우 selectQnaInfo와 selectAnsInfo 두 개의 쿼리를 모두 실행
-	    if (qnaNo != null) {
-	        // selectQnaInfo 쿼리 실행
-	    	model.addAttribute("ansCode", ansCode);
-	        qnaInfo = hospitalService.getQnaInfo(qnaVO);
-	        model.addAttribute("qnaInfo", qnaInfo);
-	        
-	        // selectAnsInfo 쿼리 실행
-	        model.addAttribute("qnaNo", qnaNo);
-	        ansInfo = hospitalService.getAnsInfo(qnaVO);
-	        model.addAttribute("ansInfo", ansInfo);
-	        
-	        System.out.println("qnaInfo"+ qnaInfo);
-	        System.out.println("ansInfo" + ansInfo);
+	    if (qnaVO.getAnsCode() == null && !"undefined".equals(qnaVO.getAnsCode())) {
+	        QnaVO qnaInfo = hospitalService.getQnaInfo(qnaVO);
+	        if (qnaInfo != null) {
+	            model.addAttribute("qnaInfo", qnaInfo);
+	        }
 	    } else {
-	        // qnaNo가 없는 경우 selectQnaInfo 쿼리만 실행
-	    	model.addAttribute("ansCode", ansCode);
-	        qnaInfo = hospitalService.getQnaInfo(qnaVO);
-	        model.addAttribute("qnaInfo", qnaInfo);
+	        QnaVO qnaInfo = hospitalService.getQnaInfo(qnaVO);
+	        if (qnaInfo != null) {
+	            model.addAttribute("qnaInfo", qnaInfo);
+	        }
 	        
-	        System.out.println("qnaInfo"+ qnaInfo);
-	        System.out.println("ansInfo" + ansInfo);
+	        QnaVO ansInfo = hospitalService.getAnsInfo(qnaVO);
+	        if (ansInfo != null) {
+	            model.addAttribute("ansInfo", ansInfo);
+	        }
 	    }
-	    
-	    return "hospital/qnaDetail";
-	}
+
+		
+		/*
+		 * // QnaVO qnaInfo = new QnaVO(); // QnaVO ansInfo = new QnaVO(); // // Integer
+		 * qnaNo = qnaVO.getQnaNo(); // Integer ansCode = qnaVO.getAnsCode(); // if
+		 * (qnaNo != null) { // // selectQnaInfo 쿼리 실행 // model.addAttribute("ansCode",
+		 * ansCode); // qnaInfo = hospitalService.getQnaInfo(qnaVO); //
+		 * model.addAttribute("qnaInfo", qnaInfo); // // // selectAnsInfo 쿼리 실행 //
+		 * model.addAttribute("qnaNo", qnaNo); // ansInfo =
+		 * hospitalService.getAnsInfo(qnaVO); // model.addAttribute("ansInfo", ansInfo);
+		 * // // System.out.println("qnaInfo"+ qnaInfo); // System.out.println("ansInfo"
+		 * + ansInfo); // } else { // // qnaNo가 없는 경우 selectQnaInfo 쿼리만 실행 //
+		 * model.addAttribute("ansCode", ansCode); // qnaInfo =
+		 * hospitalService.getQnaInfo(qnaVO); // model.addAttribute("qnaInfo", qnaInfo);
+		 * // // System.out.println("qnaInfo"+ qnaInfo); // System.out.println("ansInfo"
+		 * + ansInfo); // }
+		 */		/*
+		 * // 파라미터 param1에 따른 결과를 모델에 담음 if (qnaVO.getAnsCode() != null) {
+		 * model.addAttribute("ansCode", ansCode); model.addAttribute("qnaInfo",
+		 * hospitalService.getQnaInfo(qnaVO)); } // 파라미터 param2에 따른 결과를 모델에 담음 if
+		 * (qnaVO.getQnaNo() != null) { model.addAttribute("qnaNo", qnaNo);
+		 * model.addAttribute("ansInfo", hospitalService.getAnsInfo(qnaVO)); }
+		 * 
+		 * // 파라미터 param1, param2 모두 존재하는 경우 if (qnaVO.getAnsCode() != null &&
+		 * qnaVO.getQnaNo() != null) { model.addAttribute("ansCode", ansCode);
+		 * model.addAttribute("qnaInfo", hospitalService.getQnaInfo(qnaVO));
+		 * model.addAttribute("qnaNo", qnaNo); model.addAttribute("ansInfo",
+		 * hospitalService.getAnsInfo(qnaVO)); }
+		 */
+	        
+	        // 결과를 보여줄 뷰 페이지의 이름을 반환
+	        return "hospital/qnaDetail";
+	    }
+	
+		
 
 	/* 공지사항 */
 	// 공지사항 불러오기

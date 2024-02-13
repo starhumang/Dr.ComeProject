@@ -325,13 +325,21 @@
 	<!-- QnA 상세 -->
 	<select id ="selectQnaInfo" resultType="QnaVO">
 		SELECT * FROM qna
-		 WHERE ans_code = #{ansCode}
+		<where>
+	        <if test="ansCode != null">
+	            ans_code = #{ansCode}
+	        </if>
+	        <if test="ansCode == null or qnaNo != null">
+	            qna_no = #{qnaNo}
+	        </if>
+		
+		</where>
 	</select>
 	
 	<!-- Answer select -->
 	<select id="selectAnsInfo" resultType="QnaVO">
 		SELECT * FROM qna
-		 WHERE qna_no = #{qnaNo}
+		 WHERE qna_no = #{ansCode}
 	</select>
 	
 	<!-- QnA 답변 입력 -->

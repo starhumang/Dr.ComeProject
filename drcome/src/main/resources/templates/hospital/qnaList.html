@@ -283,24 +283,41 @@ input[type="radio"]:checked+label {
 			            row.append(`<td>${item.ansCode}</td>`);
 			        });
 			
-			      //상세페이지로 넘어가기
 			        $(".table tbody").on("click", "tr", function() {
-			            var qnaNo = $(this).find("td:first").text();
-			            var ansCode = $(this).find("td:first").text();
-			            
-			            // ansCode가 비어 있는 경우 빈 문자열로 설정
-			            if (ansCode.trim() === "") {
-			                ansCode = "undefined"; // 빈 문자열로 설정
-			            }
+			            var ansCode = $(this).find("td:last").text(); // ansCode 값만 가져오기
+			            var qnaNo = $(this).find("td:first").text(); // qnaNo 값 가져오기
 
-			            // ansCode가 있는지 여부에 따라 쿼리 스트링 조작
-			            var queryString = '?qnaNo=' + qnaNo;
-			            if (ansCode !== "undefined") {
-			                queryString += '&ansCode=' + ansCode;
+			            // AJAX 요청을 통해 서버에 데이터 전송
+			            $.ajax({
+			                url: '/hospital/qnaList/qnaDetail',
+			                method: 'GET',
+			                data: {
+			                    ansCode: ansCode,
+			                    qnaNo: qnaNo
+			                },
+			                success: function(response) {
+			                    // 성공적으로 응답을 받았을 때 처리
+			                    console.log("서버 응답:", response);
+			                    // 원하는 동작을 수행
+			                },
+			                error: function(xhr, status, error) {
+			                    // 오류 발생 시 처리
+			                    console.error("오류:", error);
+			                    // 오류에 대한 적절한 처리
+			                }
+			            });
+
+			            // 쿼리 스트링 조작
+			            var queryString = '';
+			            if (ansCode !== '' && ansCode !== 'undefined') {
+			                queryString += '?ansCode=' + ansCode;
+			            } else {
+			                queryString += '?qnaNo=' + qnaNo;
 			            }
 
 			            window.location.href = '/hospital/qnaList/qnaDetail' + queryString;
 			        });
+
 			
 			        // tr 요소에 마우스 오버 시에 손가락 모양으로 마우스 커서를 변경
 			        $(".table tbody tr").css("cursor", "pointer");

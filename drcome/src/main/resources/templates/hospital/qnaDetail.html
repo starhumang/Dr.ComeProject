@@ -49,6 +49,12 @@
 <p>QnA 번호: <span th:text="${qnaNo}"></span></p>
 <p>답변 코드: <span th:text="${ansCode}"></span></p>
 
+<p>리스트 확인1 : 
+[[${qnaInfo}]] <br>
+띄우고 또 리스트 확인2 : 
+[[${ansInfo}]]
+</p>
+
 <div th:if="${qnaInfo}">
     <p>QnA 정보:</p>
     <p>제목: <span th:text="${qnaInfo.title}"></span></p>

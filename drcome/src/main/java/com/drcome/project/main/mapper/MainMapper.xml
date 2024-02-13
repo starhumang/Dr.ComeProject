@@ -173,8 +173,49 @@
 			AND DOCTOR_NO=#{doctorNo}
 		</select>
     	
+    	<!-- 1.현재시간 이후 예약된 모든 리스트 가져옴 /
+    	 2.컨트롤러에서 의사 요일별 시작시간이랑 끝 시간가지고 30분단위로 쪼갠 후,
+    	 3. 현재 시간에서 가장 가까운 마지막으로 예약된 시간찾아서
+    	 4. 현재 예약대기인원 구할거임 -->
+    	<select id="findWaitingList" resultType="ReservationVO">
+    	SELECT RESERVE_NO,
+              DOCTOR_NO,
+              RESERVE_TIME,
+              (SELECT MIN(TIME)
+                    FROM DOCTOR_TIME
+                    WHERE DOCTOR_NO = #{doctorNo}
+                    AND (
+                        (TO_CHAR(SYSDATE, 'd') = '1' AND DAY = 'i7') --일요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '2' AND DAY = 'i1') --월요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '3' AND DAY = 'i2') --화요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '4' AND DAY = 'i3') --수요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '5' AND DAY = 'i4') --목요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '6' AND DAY = 'i5') --금요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '7' AND DAY = 'i6') --토요일
+                    )) DOCTOR_MINTIME,
+             (SELECT MAX(TIME)
+                    FROM DOCTOR_TIME
+                    WHERE DOCTOR_NO = #{doctorNo}
+                    AND (
+                        (TO_CHAR(SYSDATE, 'd') = '1' AND DAY = 'i7') --일요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '2' AND DAY = 'i1') --월요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '3' AND DAY = 'i2') --화요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '4' AND DAY = 'i3') --수요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '5' AND DAY = 'i4') --목요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '6' AND DAY = 'i5') --금요일
+                        OR  (TO_CHAR(SYSDATE, 'd') = '7' AND DAY = 'i6') --토요일
+                    )) DOCTOR_MAXTIME
+			FROM RESERVATION
+			WHERE RESERVE_YEAR =  '20'||SUBSTR(SYSDATE, 0, 2)
+			AND RESERVE_MONTH = SUBSTR(SYSDATE, 4, 2)
+			AND RESERVE_DAY =SUBSTR(SYSDATE, 7, 2)
+			AND DOCTOR_NO = #{doctorNo}
+			AND SUBSTR(RESERVE_TIME, 1, 2) >= TO_CHAR(SYSDATE, 'HH24')
+			AND (SUBSTR(RESERVE_TIME, 1, 2) > TO_CHAR(SYSDATE, 'HH24')
+			    OR (SUBSTR(RESERVE_TIME, 1, 2) = TO_CHAR(SYSDATE, 'HH24') 
+			        AND SUBSTR(RESERVE_TIME, 4, 2) > TO_CHAR(SYSDATE, 'MI')))
     	
-    	
+    	</select>
     	
     	
     </mapper>

@@ -127,7 +127,10 @@
 							var tdElement = document.createElement("td");
 							tdElement.textContent = realdays;
 							holiday.append(tdElement);
+							
 							}
+							
+							
 							
 						}
 						dayday();
@@ -159,8 +162,7 @@
 								if(word == 'later'){ //비대면 예약
 									window.location.href="/untactReserve?hospitalId="+hospitalId;
 								}else if(word == 'now'){//비대면 실시간 접수
-									alert("비대면 실시간 접수");
-									//window.location.href="/untactAccept";
+									window.location.href="/untactAccept?hospitalId="+hospitalId;
 								}
 								
 							//3. 해당병원에 초진기록이 없음(방문예약으로 안내)
@@ -211,7 +213,7 @@
 						// + 의사가 없으면 접수버튼 못 누르게하는 함수
 						function closetime(){
 							//영업시간
-							let findCloseBtn = document.querySelector('.now')
+							let findCloseBtn = document.querySelector('.now');
 							let findCloseTime = document.querySelector('.closeTime').innerText;
 							let closeTime = findCloseTime.substr(8,2);
 							let today = new Date();
@@ -224,6 +226,7 @@
 							console.log("doctor=",doctor.length);
 							let visitBtn = document.querySelector('.visit');
 							let laterBtn = document.querySelector('.later');
+							
 							
 							
 							if(doctor.length <5 ){ //의사가 없다.(전체 다 못누름)
@@ -241,6 +244,18 @@
 								findCloseBtn.disabled = true;
 							}
 							
+							//오늘이 휴무일이면 실시간 접수 못함
+							let day = document.querySelector('.moreday').innerText;
+							let days = day.split(',');
+							let weekday = today.getDay();
+							let dayList2 = {"i1":1,"i2":2,"i3":3,"i4":4,"i5":5,"i6":6,"i7":0}
+							days.forEach((ele, index)=>{
+								console.log("weekday",weekday);
+								console.log("ele",dayList2[ele]);
+								if(weekday == dayList2[ele]){
+									findCloseBtn.disabled = true;
+								}
+							})
 							
 						}
 						closetime();

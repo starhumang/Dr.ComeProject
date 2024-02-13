@@ -1,5 +1,6 @@
 package com.drcome.project.main.web;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -367,30 +368,28 @@ public class MainController {
 		//비대면실시간접수페이지(대기현황)
 		@PostMapping("/waitingList")
 		@ResponseBody
-		public int findWaitingList(@RequestBody DoctorVO doctorVO, Model model) {
+		public boolean findWaitingList(@RequestBody DoctorVO doctorVO, Model model) {
 			System.out.println("///////////////////////////////////////////");
-			//System.out.println("doctorVO"+doctorVO);
 			List<ReservationVO> findWaitingList = mainService.findWaitingList(doctorVO);
 			List<String> times = new ArrayList<>();//옛날 시간 넣을 곳
 			List<String> newTimes = new ArrayList<>();//concat한 시간 넣을곳
 			String lastReservation = null; //내가 할 수 있는 가장 빠른 예약시간의 바로 앞전 시간
+			boolean overWork = true; //의사의 진료시간안에 들어가는 예약인지 여부(t=진료안에 들어감, f=초과근무 )
 			int waitingNum = 0;//대기인원
+			LocalDateTime canClinicNow = null; //지금당장 상담할 수 있는 가장 가까운 시간
 			
 			//19:00와 같은 옛날시간 times배열에 넣음
 			for(int i=0; i < findWaitingList.size(); i++) {
-				//System.out.println("findWaitingList="+ findWaitingList.get(i).getReserveTime());
+				
 				times.add(findWaitingList.get(i).getReserveTime());
 			}
-			//System.out.println("findWaitingList ="+ times);
+			
 			
 			//1900와 같이 옛날시간 가공해서 newTimes배열에 넣음
 			for(int i=0; i < times.size(); i++) {
 				String hour = (times.get(i)).substring(0, 2);
 				String minute = (times.get(i)).substring(3, 5);
 				newTimes.add(hour.concat(minute));
-//				System.out.println("(times.get(i))="+(times.get(i)));
-//				System.out.println("hour="+hour);
-//				System.out.println("minute="+minute);
 			}
 			
 			//만약 배열의 값이 1개 이상이면
@@ -398,24 +397,55 @@ public class MainController {
 				for(int i= 0; i < (newTimes.size()-1) ; i++) {
 					int extraNum = Integer.parseInt(newTimes.get(i + 1)) - Integer.parseInt(newTimes.get(i));
 					System.out.println("extraNum= "+extraNum);
-					int minutes = Integer.parseInt((newTimes.get(i)).substring(1, 3));
 					
-					//만약 예약의 값이 70넘게 차이나고(바로 다음 예약이 없다는 뜻) && 분이 30분 단위로 처리되면
-					if(extraNum > 70 && (minutes) == 30) {
+					if(extraNum > 70) { //의사의 마지막 진료시간 가져와서 비교해야함
 						waitingNum = i + 1; //대기인원
 						model.addAttribute("waitingNum", waitingNum);
 						lastReservation = newTimes.get(i);
-						model.addAttribute("lastReservation", lastReservation);
-					
-					//만약 예약의 값이 70이상 차이나고(바로 다음 예약이 없다는 뜻) && 분이 30분 단위로 처리되지 않으면
-					}else if(extraNum > 70 && (minutes) == 00) {
-						
+						model.addAttribute("lastReservation", lastReservation);//내가 할 수 있는 가장 빠른 예약시간의 바로 앞전 시간
+						overWork = true;
 					}
 				}
+			//만약 배열의 값이 1이면
+			}else if(newTimes.size() == 1){//의사의 마지막 진료시간 가져와서 비교해야함
+				waitingNum = 1; //대기인원
+				model.addAttribute("waitingNum", waitingNum);
+				lastReservation = newTimes.get(0);
+				model.addAttribute("lastReservation", lastReservation);//내가 할 수 있는 가장 빠른 예약시간의 바로 앞전 시간
+				overWork = true;
 				
+			//만약 대기하는 사람이 없으면
+			}else if(true) {//의사의 마지막 진료시간 가져와서 비교해야함
+				waitingNum = 0; //대기인원
+				model.addAttribute("waitingNum", waitingNum);
+				overWork = true;
+				
+				//현재시간 기준 이미 지나간 시간 제외하고 가장 가까운 정각이나 30분
+				LocalDateTime now = LocalDateTime.now();
+
+		        // 현재 분 수 가져오기
+		        int minute = now.getMinute();
+
+		        // 현재 시간을 조정하기
+		        LocalDateTime closeTime;
+		        if (minute >= 30) {
+		            // 다음 정각으로 조정
+		        	canClinicNow = now.plusHours(1).withMinute(0).withSecond(0).withNano(0);
+		        } else {
+		            // 다음 30분 단위 시간으로 조정
+		        	canClinicNow = now.withMinute(30).withSecond(0).withNano(0);
+		        }
+		        model.addAttribute("closeTime", canClinicNow);//내가 할 수 있는 가장 빠른 예약시간(헷갈리지 않게끔 중요!)
+			}else {
+				overWork = false;
 			}
-			System.out.println("newTimes = "+newTimes.size());
-			return 0;
+			
+			System.out.println("앞전예약시간="+lastReservation);
+			System.out.println("대기인원="+waitingNum);
+			System.out.println("초과근무여부="+overWork);
+			System.out.println("대기인원없음/가장빨리할수 있는 예약시간"+canClinicNow);
+			
+			return overWork;
 		}
 
 

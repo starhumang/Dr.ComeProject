@@ -12,15 +12,18 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.drcome.project.FileUploadService;
 import com.drcome.project.admin.domain.Hospital;
@@ -30,6 +33,7 @@ import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.medical.service.NoticeVO;
+import com.drcome.project.medical.service.QnaVO;
 import com.drcome.project.mem.mapper.UserMemberMapper;
 import com.drcome.project.mem.service.UserMemberService;
 
@@ -290,12 +294,43 @@ public class HospitalController {
 
 	// QnA 단건상세
 	@GetMapping("/hospital/qnaList/qnaDetail")
-	public String qnaInfo(Principal principal, String hospitalId, Integer qnaNo, Model model) {
-		hospitalId = principal.getName();
-		List<Map<String, Object>> qnaInfo = hospitalService.getQnaInfo(hospitalId, qnaNo);
-		model.addAttribute("qnaInfo", qnaInfo);
-		model.addAttribute("qnaNo", qnaNo);
-		return "hospital/qnaDetail";
+	public String qnaInfo(Principal principal,
+						  String hospitalId,
+						  @RequestParam(required = false) Integer qnaNo,
+						  @RequestParam Integer ansCode,
+						  Model model) {
+		
+	    QnaVO qnaVO = new QnaVO();
+	    qnaVO.setHospitalId(principal.getName());
+	    
+	    QnaVO qnaInfo = new QnaVO();
+	    QnaVO ansInfo = new QnaVO();
+	    
+	    // qnaNo가 있는 경우 selectQnaInfo와 selectAnsInfo 두 개의 쿼리를 모두 실행
+	    if (qnaNo != null) {
+	        // selectQnaInfo 쿼리 실행
+	    	model.addAttribute("ansCode", ansCode);
+	        qnaInfo = hospitalService.getQnaInfo(qnaVO);
+	        model.addAttribute("qnaInfo", qnaInfo);
+	        
+	        // selectAnsInfo 쿼리 실행
+	        model.addAttribute("qnaNo", qnaNo);
+	        ansInfo = hospitalService.getAnsInfo(qnaVO);
+	        model.addAttribute("ansInfo", ansInfo);
+	        
+	        System.out.println("qnaInfo"+ qnaInfo);
+	        System.out.println("ansInfo" + ansInfo);
+	    } else {
+	        // qnaNo가 없는 경우 selectQnaInfo 쿼리만 실행
+	    	model.addAttribute("ansCode", ansCode);
+	        qnaInfo = hospitalService.getQnaInfo(qnaVO);
+	        model.addAttribute("qnaInfo", qnaInfo);
+	        
+	        System.out.println("qnaInfo"+ qnaInfo);
+	        System.out.println("ansInfo" + ansInfo);
+	    }
+	    
+	    return "hospital/qnaDetail";
 	}
 
 	/* 공지사항 */
@@ -467,12 +502,27 @@ public class HospitalController {
 
 	}
 	
+	// 공지사항 삭제
+	@ResponseStatus(HttpStatus.SEE_OTHER)
+	@DeleteMapping("/hospital/noticeDelete/{noticeNo}")
+	public String noticeDelete(Principal principal,
+							   @PathVariable int noticeNo) {
 
-    private char[] typeof(List<String> fileNames) {
-		// TODO Auto-generated method stub
-		return null;
+	    String hospitalId = principal.getName();
+	    
+        NoticeVO noticeVO = new NoticeVO();
+        noticeVO.setHospitalId(hospitalId);
+        noticeVO.setNoticeNo(noticeNo);
+
+	    // 첨부 파일 먼저 삭제
+	    hospitalService.deleteAttachment(noticeNo);
+
+	    // 공지사항 삭제
+	    hospitalService.deleteNotice(noticeVO);
+
+	    return "redirect:/hospital/noticeList";
 	}
-
+	
 	//병원 업데이트
 	@GetMapping("/hospital/hosinfoupdate")
 	public String hosUpdateForm() {

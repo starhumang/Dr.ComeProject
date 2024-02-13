@@ -87,7 +87,7 @@
 										</div>
 										<div class="leftBtn">
 											<a th:href="@{/hospital/noticeUpdate/__${nif.noticeNo}__}" class="btn btn-xs btn-info">수정</a>
-											<button class="btn btn-xs btn-warning">삭제</button>
+											<a href="#" class="btn btn-xs btn-warning" th:attr="onclick='deleteNotice(\'' + ${nif.noticeNo} + '\'); return false;'">삭제</a>
 										</div>
 									</div>
 								</td>
@@ -96,8 +96,30 @@
 					</th:block>
 				</table>
 			</div>
-
 		</div>
+		<script th:inline="javascript">
+	    /* JavaScript 함수를 정의하여 AJAX 요청을 보내는 기능 구현 */
+/* JavaScript 함수를 정의하여 AJAX 요청을 보내는 기능 구현 */
+function deleteNotice(noticeNo) {
+    /* 사용자에게 삭제 여부를 확인하는 경고창 표시 */
+    if (confirm('정말로 삭제하시겠습니까?')) {
+        /* AJAX 요청을 보내는 부분 */
+        var xhr = new XMLHttpRequest();
+        xhr.open('DELETE', '/hospital/noticeDelete/' + noticeNo, true);
+        xhr.setRequestHeader('Content-type', 'application/json');
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+                if (xhr.status === 200) {
+                    window.location.href = '/hospital/noticeList';
+                } else {
+                    console.error('Delete request failed with status code: ' + xhr.status);
+                }
+            }
+        };
+        xhr.send();
+    }
+}
+		</script>
 	</div>
 </body>
 </html>

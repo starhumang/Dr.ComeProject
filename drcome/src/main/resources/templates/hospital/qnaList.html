@@ -280,13 +280,26 @@ input[type="radio"]:checked+label {
 			            row.append(`<td>${formatDate(new Date(item.wdate))}</td>`);
 			            row.append(`<td>${item.udate ? formatDate(item.udate) : '-'}</td>`);
 			            row.append(`<td>${item.ansStatus}</td>`);
+			            row.append(`<td>${item.ansCode}</td>`);
 			        });
 			
-			        //상세페이지로 넘어가기
+			      //상세페이지로 넘어가기
 			        $(".table tbody").on("click", "tr", function() {
 			            var qnaNo = $(this).find("td:first").text();
-			
-			            window.location.href = '/hospital/qnaList/qnaDetail?qnaNo=' + qnaNo;
+			            var ansCode = $(this).find("td:first").text();
+			            
+			            // ansCode가 비어 있는 경우 빈 문자열로 설정
+			            if (ansCode.trim() === "") {
+			                ansCode = "undefined"; // 빈 문자열로 설정
+			            }
+
+			            // ansCode가 있는지 여부에 따라 쿼리 스트링 조작
+			            var queryString = '?qnaNo=' + qnaNo;
+			            if (ansCode !== "undefined") {
+			                queryString += '&ansCode=' + ansCode;
+			            }
+
+			            window.location.href = '/hospital/qnaList/qnaDetail' + queryString;
 			        });
 			
 			        // tr 요소에 마우스 오버 시에 손가락 모양으로 마우스 커서를 변경

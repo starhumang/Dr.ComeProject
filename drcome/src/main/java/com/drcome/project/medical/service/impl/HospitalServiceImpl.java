@@ -1,6 +1,5 @@
 package com.drcome.project.medical.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +13,7 @@ import com.drcome.project.medical.service.DoctorTimeVO;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.NoticeVO;
+import com.drcome.project.medical.service.QnaVO;
 
 @Service
 public class HospitalServiceImpl implements HospitalService {
@@ -124,9 +124,15 @@ public class HospitalServiceImpl implements HospitalService {
 
 	// QnA 단건상세
 	@Override
-	public List<Map<String, Object>> getQnaInfo(String hospitalId, Integer qnaNo) {
-		List<Map<String, Object>> qnaInfo = hospitalMapper.selectQnaInfo(hospitalId, qnaNo);
+	public QnaVO getQnaInfo(QnaVO qnaVO) {
+		QnaVO qnaInfo = hospitalMapper.selectQnaInfo(qnaVO);
 		return qnaInfo;
+	}
+	// Answer 단건상세
+	@Override
+	public QnaVO getAnsInfo(QnaVO qnaVO) {
+		QnaVO ansInfo = hospitalMapper.selectAnsInfo(qnaVO);
+		return ansInfo;
 	}
 
 	/* 공지사항 */
@@ -155,7 +161,6 @@ public class HospitalServiceImpl implements HospitalService {
 	public int insertNoticeInfo(NoticeVO vo) {
 		return hospitalMapper.insertNotice(vo);
 	}
-
 	@Override
 	public int insertAttach(NoticeVO vo) {
 		return hospitalMapper.insertAttach(vo);
@@ -173,7 +178,13 @@ public class HospitalServiceImpl implements HospitalService {
 	public int deleteAttachment(int noticeNo) {
 		return hospitalMapper.deleteAttachment(noticeNo);
 	}
-
+	
+	// 공지사항 삭제 + 첨부파일도 같이
+	@Override
+	public void deleteNotice(NoticeVO vo) {
+		hospitalMapper.deleteNotice(vo);		
+	}
+	
 	/* 병원프로필 */
 	// 병원 단건조회(id로)
 	@Override
@@ -237,7 +248,6 @@ public class HospitalServiceImpl implements HospitalService {
         }
 		return count;
 	}
-
 
 
 }

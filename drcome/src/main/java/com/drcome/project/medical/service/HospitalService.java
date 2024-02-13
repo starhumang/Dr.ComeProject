@@ -48,7 +48,10 @@ public interface HospitalService {
 	public int qnaCount(Map<String, Object> map);
 	
 	//QnA 단건상세
-	public List<Map<String, Object>> getQnaInfo(String hospitalId, Integer qnaNo);
+	public QnaVO getQnaInfo(QnaVO qnaVO);
+	
+	//Answer 단건상세
+	public QnaVO getAnsInfo(QnaVO qnaVO);
 	
 	/* 공지사항 */
 	//공지사항 전체	
@@ -64,7 +67,10 @@ public interface HospitalService {
 	
 	//공지사항 수정
 	public int updateNotice(NoticeVO vo);
-	public int deleteAttachment(int noticeNo); 
+	public int deleteAttachment(int noticeNo);
+	
+	//공지사항 삭제
+	public void deleteNotice(NoticeVO vo);
 	
 	/* 병원프로필 */
 	//병원 단건조회(id로)
@@ -84,5 +90,5 @@ public interface HospitalService {
 	
 	// 의사 수정
 	public int updateDoctor(DoctorVO vo);
-	
+
 }

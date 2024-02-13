@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.NoticeVO;
+import com.drcome.project.medical.service.QnaVO;
 
 public interface HospitalMapper {
 	
@@ -57,7 +58,10 @@ public interface HospitalMapper {
 	public int qnaCount(Map<String, Object> map);
 	
 	//QnA 단건상세
-	public List<Map<String, Object>> selectQnaInfo(String hospitalId, Integer qnaNo);
+	public QnaVO selectQnaInfo(QnaVO qnaVO);
+	
+	//Ans 단건상세
+	public QnaVO selectAnsInfo(QnaVO qnaVO);
 	
 	/* 공지사항 */
 	//공지사항 전체
@@ -76,6 +80,9 @@ public interface HospitalMapper {
 	//공지사항 수정 + 첨부파일 수정or등록
 	public int updateNotice(NoticeVO vo);
 	public int deleteAttachment(int noticeNo);
+	
+	//공지사항 삭제
+	public int deleteNotice(NoticeVO vo);
 
 	/* 병원프로필 */
 	//병원-의사 조회
@@ -98,4 +105,5 @@ public interface HospitalMapper {
 	
 	/* 의사 시간 삭제 */
 	public int deleteDoctorTime(int doctorNo);
+
 }

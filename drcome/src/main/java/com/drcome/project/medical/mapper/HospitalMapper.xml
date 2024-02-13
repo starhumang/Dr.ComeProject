@@ -273,6 +273,7 @@
 						   wdate "wdate",
 						   udate "udate",
 						   ans_status "ansStatus",
+						   ans_code "ansCode",
 				           ROWNUM AS rn
 				      FROM (
 				          SELECT qna_no,
@@ -281,7 +282,8 @@
 							     category_status,
 							     wdate,
 							     udate,
-							     ans_status
+							     ans_status,
+							     ans_code
 				            FROM qna
 				           WHERE hospital_id = #{hospitalId}
 				             AND ANS_STATUS IS NOT NULL
@@ -321,19 +323,18 @@
 	</sql>
 	
 	<!-- QnA 상세 -->
-	<select id ="selectQnaInfo" resultType="Map">
-		SELECT qna_no "qnaNo",
-		       title "title",
-		       user_id "userId",
-		       category_status "categoryStatus",
-		       content "content",
-		       wdate "wDate",
-		       udate "uDate",
-		       ans_status "ansStatus"
-		  FROM qna
-		 WHERE hospital_id = #{hospitalId} AND qna_no = #{qnaNo} AND ANS_STATUS IS NOT NULL
-		 ORDER BY qna_no DESC
+	<select id ="selectQnaInfo" resultType="QnaVO">
+		SELECT * FROM qna
+		 WHERE ans_code = #{ansCode}
 	</select>
+	
+	<!-- Answer select -->
+	<select id="selectAnsInfo" resultType="QnaVO">
+		SELECT * FROM qna
+		 WHERE qna_no = #{qnaNo}
+	</select>
+	
+	<!-- QnA 답변 입력 -->
 
 	<!-- 공지사항 -->
 	<!-- 공지사항 전체 -->
@@ -465,8 +466,15 @@
 	    DELETE FROM attachment
 	    WHERE notice_no = #{noticeNo}
 	</delete>
-	<!-- 첨부파일 등록 쿼리 -->
+	<!-- 첨부파일 등록 쿼리(위에 쿼리 쓰기) -->
 
+	<!-- 공지사항 삭제 및 첨부파일 삭제 -->
+	<delete id="deleteNotice" parameterType="NoticeVO">
+		DELETE FROM notice
+		 WHERE notice_no = #{noticeNo}
+		   AND hospital_id = #{hospitalId}
+	</delete>
+	<!-- 첨부파일도 삭제(위에 쿼리 쓰기) -->
 
 	<!-- MyProfile -->
 	<!-- 병원-의사-시간 조회 -->

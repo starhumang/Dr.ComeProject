@@ -372,8 +372,8 @@ public class UserMemberController {
 
 	// 결제
 	@GetMapping("/payment")
-	public String payment(Model model) {
-		ReservationVO rInfo = memMapper.selectReserveInfo(12);
+	public String payment(@SessionAttribute(name = "userId", required = false) String id, Model model) {
+		List<ReservationVO> rInfo = memMapper.selectReserveInfo(id);
 		model.addAttribute("rInfo", rInfo);
 		return "user/clinicPayment";
 	}

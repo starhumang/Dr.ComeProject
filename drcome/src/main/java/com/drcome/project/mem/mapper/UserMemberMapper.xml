@@ -210,7 +210,7 @@
 	</update>
 	
 	<!-- 예약 조회 -->
-	<select id="selectReserveInfo" resultType="ReservationVO">
+	<select id="selectReserveInfo">
 		SELECT reserve_no
 		     , reserve_year
 		     , reserve_month
@@ -224,7 +224,7 @@
 		     , user_id
 		     , hospital_id
 		FROM reservation
-		WHERE reserve_no = #{reserveNo}		
+		WHERE user_id = #{userId}
 	</select>
 	
 	<!-- 결제 -->

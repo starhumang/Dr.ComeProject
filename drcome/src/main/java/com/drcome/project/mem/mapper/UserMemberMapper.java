@@ -55,7 +55,7 @@ public interface UserMemberMapper {
 	public List<Map<String, Object>> selectTodayReserve(String userId);
 	
 //	예약 조회
-	public ReservationVO selectReserveInfo(int reserveNo);
+	public List<ReservationVO> selectReserveInfo(String userId);
 	
 //	결제
 	int insertPayment(PaymentVO vo);

@@ -113,11 +113,12 @@
 						if (resp.success) {
 							var payResp = resp.pay_method;
 							console.log(payResp);
-							console.log(resp)
+							console.log(resp);
 
 							//gotoOrder(payResp);
 						} else {
 							let msg = '결제에 실패하였습니다.';
+							alert(msg);
 							msg += ' : ' + resp.error_msg;
 							console.log(msg);
 						}
@@ -140,7 +141,8 @@
 					},
 					error: function (err) {
 						//수정
-						swal('앗!', '결제정보를 저장하지 못했습니다.', 'error');
+						alert('결제에 실패하였습니다.');
+						console.log(err);
 					},
 				});
 				//form데이터 submit
@@ -178,6 +180,7 @@
 	<body>
 		<div layout:fragment="content">
 			<div class="container-fluid">
+				<p th:text="${rInfo}"></p>
 				<div class="pay_what">
 					<div class="pay_list">
 						<label class="pay">

@@ -31,7 +31,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		
 		// 세션에 필요한 값 담기
 		UserDetailVO userDetailVO = (UserDetailVO) auth.getPrincipal();
-
+		
 		HttpSession session = request.getSession();
 		session.setAttribute("userId", userDetailVO.getUsername()); // 아이디
 		session.setAttribute("userGrade", userDetailVO.getGrade()); // 권한

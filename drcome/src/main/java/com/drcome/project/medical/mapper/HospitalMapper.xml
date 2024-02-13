@@ -138,26 +138,55 @@
 	
 	<!-- 환자 상세 -->
 	<select id="selectPatientDetailList" resultType="Map">
-	SELECT c.clinic_no "clinicNo"
-		 , c.pay_yn "payYn"
-		 , c.clinic_date "clinicDate"
-		 , c.clinic_symptom "clinicSymptom"
-		 , c.specificity "specificity"
-		 , c.perscription_yn "perscriptionYn"
-		 , r.reserve_status "reserveStatus"
-		 , r.reserve_kindstatus "reserveKindstatus"
-		 , u.user_name "userName"
-		 , u.birthday "userBirthday"
-		 , u.gender "gender"
-		 , u.phone "userPhone"
-		 , a.patient_no "patientNo" 
-	FROM clinic c 
-	JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
-	JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
-	JOIN usertable u ON u.user_id = a.user_id
-	WHERE a.hospital_id = #{hospitalId} AND a.patient_no = #{patientNo}
-	ORDER BY c.clinic_no
+	SELECT * FROM (
+					SELECT c.clinic_no "clinicNo",
+						   c.pay_yn "payYn",
+						   r.reserve_year||'-'||r.RESERVE_month||'-'||r.reserve_day "reserveToday",
+						   c.clinic_symptom "clinicSymptom",
+						   c.specificity "specificity",
+						   c.perscription_yn "perscriptionYn",
+						   r.reserve_status "reserveStatus",
+						   r.reserve_kindstatus "reserveKindstatus",
+						   u.user_name "userName",
+						   u.birthday "userBirthday",
+						   u.gender "gender",
+						   u.phone "userPhone",
+						   a.patient_no "patientNo",
+				           ROWNUM AS rn
+					 FROM clinic c 
+					 JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
+					 JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
+					 JOIN usertable u ON u.user_id = a.user_id
+					 WHERE a.hospital_id = #{hospitalId} AND a.patient_no = #{patientNo}
+				     <include refid="searchPInfo"></include>
+				     AND ROWNUM <![CDATA[ <= ]]> #{page} * 10
+				     ORDER BY c.clinic_no DESC
+				      )
+	 WHERE rn > (#{page} - 1) * 10
 	</select>
+	
+	<!-- 환자 상세 페이징-->
+	<select id="patientInfoCount" resultType="int">
+		SELECT COUNT(*)
+			FROM clinic c 
+		    JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
+		    JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
+		    JOIN usertable u ON u.user_id = a.user_id
+		   WHERE a.hospital_id = #{hospitalId} AND a.patient_no = #{patientNo}
+           <include refid="searchPInfo"></include>
+	</select>
+	
+	<!-- 환자 상세 공통 if search 쿼리 -->
+	<sql id="searchPInfo">
+		<if test="keyword != null and keyword != '' ">
+             <if test="type == 1">
+	          AND reserve_year||reserve_month||reserve_day LIKE '%'|| #{keyword} ||'%'
+             </if>
+             <if test="type == 2">
+              AND clinic_symptom LIKE '%'|| #{keyword} ||'%'
+             </if>
+        </if>
+	</sql>
 	
 	<!-- 환자 진료 내역서 단건 조회 -->
 	<select id="selectPatientInfo" resultType="Map">
@@ -413,6 +442,7 @@
 				#{content},
 				#{hospitalId})
 	</insert>
+	<!-- 첨부파일 등록 -->
 	<insert id="insertAttach" parameterType="NoticeVO">
 		INSERT INTO attachment (file_no, file_name, notice_no)
 		VALUES (attachment_seq.NEXTVAL,
@@ -420,6 +450,24 @@
 				#{noticeNo})
 	</insert>
 	
+	<!-- 공지사항 수정 -->
+	<!-- 첨부파일 같이 수정 -->
+	<update id="updateNotice" parameterType="NoticeVO">
+	    UPDATE notice
+	    SET title = #{title},
+	        content = #{content},
+	        udate = sysdate
+	    WHERE notice_no = #{noticeNo}
+	</update>
+	<!-- 첨부파일 수정 또는 삽입 -->
+	<!-- 첨부파일 삭제 -->
+	<delete id="deleteAttachment" parameterType="int">
+	    DELETE FROM attachment
+	    WHERE notice_no = #{noticeNo}
+	</delete>
+	<!-- 첨부파일 등록 쿼리 -->
+
+
 	<!-- MyProfile -->
 	<!-- 병원-의사-시간 조회 -->
 	<resultMap id="drResult" type="DoctorVO">

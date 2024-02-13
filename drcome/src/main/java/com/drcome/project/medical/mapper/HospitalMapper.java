@@ -28,7 +28,10 @@ public interface HospitalMapper {
 	public int patientCount(Map<String, Object> map);
 	
 	//환자 진료 상세 조회
-	public List<Map<String, Object>> selectPatientDetailList(String hospitalId, Integer patientNo);
+	public List<Map<String, Object>> selectPatientDetailList(Map<String, Object> map);
+	
+	/* 환자리스트 페이징 */
+	public int patientInfoCount(Map<String, Object> map); 
 	
 	//환자 진료내역 단건 조회
 	public Map<String, Object> selectPatientInfo(String hospitalId, Integer patientNo, Integer clinicNo);
@@ -64,17 +67,16 @@ public interface HospitalMapper {
 	public int noticeCount(@Param("type") int type, @Param("keyword") String keyword, @Param("hospitalId") String hospitalId);
 	
 	//공지사항 단건상세
-	public List<NoticeVO> selectNoList(String hospitalId, Integer noticeNo);
+	public NoticeVO selectNoList(NoticeVO noticeVO);
 	
 	//공지사항 등록 + 첨부파일 등록
 	public int insertNotice(NoticeVO vo);
 	public int insertAttach(NoticeVO vo);
-	
-	//공지사항 검색
-//	public List<NoticeVO> searchNoticeByTitle(@Param("page") int page, @Param("hospitalId") String hospitalId, @Param("keyword") String keyword);
-//	public List<NoticeVO> searchNoticeByContent(@Param("page") int page, @Param("hospitalId") String hospitalId, @Param("keyword") String keyword);
-//	public int searchNoticeCount(@Param("keyword") String keyword, @Param("hospitalId") String hospitalId);
-	
+
+	//공지사항 수정 + 첨부파일 수정or등록
+	public int updateNotice(NoticeVO vo);
+	public int deleteAttachment(int noticeNo);
+
 	/* 병원프로필 */
 	//병원-의사 조회
 	public List<DoctorVO> selectDrList(String hospitalId);

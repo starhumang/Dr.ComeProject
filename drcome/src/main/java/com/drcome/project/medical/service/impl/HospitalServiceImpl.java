@@ -61,9 +61,15 @@ public class HospitalServiceImpl implements HospitalService {
 
 	// 환자 상세 조회
 	@Override
-	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo) {
-		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
+	public List<Map<String, Object>> getPaientDetailList(Map<String, Object> map) {
+		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(map);
 		return listPaDe;
+	}
+	
+	// 환자 상세 페이징
+	@Override
+	public int patientInfoCount(Map<String, Object> map) {
+		return hospitalMapper.patientInfoCount(map);
 	}
 
 	// 환자 진료내역 단건 조회
@@ -139,8 +145,8 @@ public class HospitalServiceImpl implements HospitalService {
 	
 	// 공지사항 단건상세
 	@Override
-	public List<NoticeVO> getNoticeDetail(String hospitalId, Integer noticeNo) {
-		List<NoticeVO> noticeInfo = hospitalMapper.selectNoList(hospitalId, noticeNo);
+	public NoticeVO getNoticeDetail(NoticeVO noticeVO) {
+		NoticeVO noticeInfo = hospitalMapper.selectNoList(noticeVO);
 		return noticeInfo;
 	}
 
@@ -153,6 +159,19 @@ public class HospitalServiceImpl implements HospitalService {
 	@Override
 	public int insertAttach(NoticeVO vo) {
 		return hospitalMapper.insertAttach(vo);
+	}
+	
+	// 공지사항 수정 + 첨부파일
+	@Override
+	public int updateNotice(NoticeVO vo) {
+//		int result = 0;
+//		int noticeNo = vo.getNoticeNo();
+//		result = hospitalMapper.deleteAttachment(noticeNo);
+		return hospitalMapper.updateNotice(vo);
+	}
+	@Override
+	public int deleteAttachment(int noticeNo) {
+		return hospitalMapper.deleteAttachment(noticeNo);
 	}
 
 	/* 병원프로필 */
@@ -218,6 +237,7 @@ public class HospitalServiceImpl implements HospitalService {
         }
 		return count;
 	}
+
 
 
 }

@@ -44,7 +44,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         } else if (userDetailVO.getGrade().equals("ROLE_HOSPITAL")) {
             redirectUrl = "/hospital";
         } else if (userDetailVO.getGrade().equals("ROLE_PHARMACY")) {
-            redirectUrl = "/pharmacy/info";
+            redirectUrl = "/pharmacy/status";
         }
 
         // 응답으로 리다이렉트할 URL 전달

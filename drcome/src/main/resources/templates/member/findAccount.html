@@ -10,7 +10,7 @@
 		<style>
 			.registered-customers {
 				margin: 0 auto;
-				width: 500px;
+				width: 350px;
 				background-color: #fff;
 				padding: 20px;
 				border-radius: 8px;
@@ -29,12 +29,17 @@
 
 			label {
 				display: inline-block;
-				width: 150px;
+				width: 200px;
 				margin-bottom: 5px;
 			}
 
-			input {
-				width: 80%;
+			.input-group {
+				align-items: center;
+				margin-bottom: 15px;
+			}
+
+			.input-group input {
+				width: 100%;
 				padding: 10px;
 				margin-bottom: 10px;
 				border: 1px solid #ccc;
@@ -42,7 +47,7 @@
 				box-sizing: border-box;
 			}
 
-			button {
+			.mb-40 > button {
 				width: 80%;
 				padding: 10px;
 				color: #fff;
@@ -54,23 +59,10 @@
 				transition: background-color 0.3s;
 			}
 
-			button:hover {
-				background-color: #333;
-			}
-
 			#verification-section {
 				display: none;
 				align-items: center;
 				margin-bottom: 15px;
-			}
-
-			#verification-section input,
-			#verification-section button {
-				height: 30px;
-			}
-
-			#verification-section button {
-				width: 150px;
 			}
 		</style>
 
@@ -232,10 +224,11 @@
 				<div class="registered-customers">
 					<h3 class="blog-section-title border-left mb-30">내 정보 찾기</h3>
 					<br />
-					<span onclick="showFindIdForm()">아이디 찾기</span>
-					<span>|</span>
-					<span onclick="showFindPwForm()">비밀번호 찾기</span>
-					<br />
+					<div class="text-center">
+						<span onclick="showFindIdForm()">아이디 찾기</span>
+						<span>|</span>
+						<span onclick="showFindPwForm()">비밀번호 찾기</span>
+					</div>
 					<br />
 
 					<div id="findIdForm" style="display: block">
@@ -254,7 +247,10 @@
 								oninput="autoHyphen(this)"
 							/>
 						</div>
-						<button type="button" onclick="findId()">아이디 찾기</button>
+
+						<div class="mb-40" style="text-align: center">
+							<button type="button" onclick="findId()">아이디 찾기</button>
+						</div>
 					</div>
 
 					<div id="findPwForm" style="display: none">
@@ -272,14 +268,31 @@
 								maxlength="13"
 								oninput="autoHyphen(this)"
 							/>
-							<button type="button" id="checkPhoneBtnPw" onclick="checkPhonePw()">인증번호발송</button>
+							<button
+								type="button"
+								id="checkPhoneBtnPw"
+								onclick="checkPhonePw()"
+								class="btn btn-sm btn-secondary shadow-sm"
+							>
+								인증번호발송
+							</button>
 						</div>
 						<div class="input-group" id="verification-section">
 							<label>인증번호</label>
 							<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
-							<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
+							<button
+								type="button"
+								id="checkPhoneNumBtn"
+								onclick="checkPhoneNumber()"
+								class="btn btn-sm btn-secondary shadow-sm"
+							>
+								인증하기
+							</button>
 						</div>
-						<button id="findPwBtn" type="button" onclick="findPw()" disabled>비밀번호 찾기</button>
+
+						<div class="mb-40" style="text-align: center">
+							<button id="findPwBtn" type="button" onclick="findPw()" disabled>비밀번호 찾기</button>
+						</div>
 					</div>
 				</div>
 			</div>

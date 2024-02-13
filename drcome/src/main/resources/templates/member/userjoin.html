@@ -9,6 +9,21 @@
 		<title>사용자 회원가입</title>
 
 		<style>
+			.registered-customers {
+				margin: 0 auto;
+				width: 680px;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.blog-section-title {
+				color: #333;
+				border-left: 2px solid #06bbcc;
+				padding-left: 10px;
+			}
+
 			label {
 				display: inline-block;
 				width: 200px;
@@ -27,12 +42,50 @@
 
 			.input-group input {
 				width: 400px;
-				margin-right: 10px;
 				height: 32px;
 				border: 0;
 				outline: none;
-				padding-left: 10px;
+				box-sizing: border-box;
 			}
+
+			.gender {
+				width: 100px;
+			}
+
+			/* .input-group-select input[type='radio'] {
+				display: none;
+			}
+
+			.input-group-select > .gender > span {
+				width: 100px;
+			}
+
+			.input-group-select > .gender input[type='radio']:checked + span {
+				display: inline-block;
+				padding: 10px 15px;
+				margin: 5px;
+				border: 1px solid #808080;
+				border-radius: 5px;
+				background-color: #f0f0f0;
+				color: gray;
+				text-align: center;
+				cursor: pointer;
+			}
+
+			.input-group-select > .gender input[type='radio'] + span {
+				display: inline-block;
+				padding: 10px 15px;
+				margin: 5px;
+				border-radius: 5px;
+				background-color: #c4e1c3;
+				color: rgb(87, 87, 87);
+				text-align: center;
+				cursor: pointer;
+			}
+			.input-group-select > .gender > input[type='radio']:hover + span {
+				background-color: #739171;
+				color: #ffffff;
+			} */
 
 			.input-group button {
 				width: 150px;
@@ -65,28 +118,11 @@
 				margin-bottom: 15px;
 			}
 
-			.btn-upload {
-				width: 150px;
-				height: 30px;
-				background: #fff;
-				border: 1px solid rgb(77, 77, 77);
-				border-radius: 10px;
-				font-weight: 500;
-				display: flex;
-				cursor: pointer;
-				align-items: center;
-				justify-content: center;
-
-				&:hover {
-					background: rgb(77, 77, 77);
-					color: #fff;
-				}
-			}
-
 			#filePreview {
 				max-width: 100%;
 				max-height: 200px;
 				margin-top: 10px;
+				margin-left: 170px;
 				display: none;
 			}
 
@@ -94,15 +130,6 @@
 				display: none;
 				align-items: center;
 				margin-bottom: 15px;
-			}
-
-			#verification-section input,
-			#verification-section button {
-				height: 30px;
-			}
-
-			#verification-section button {
-				width: 150px;
 			}
 		</style>
 
@@ -332,20 +359,6 @@
 				return true;
 			}
 
-			function checkAgreement() {
-				let agreement = document.getElementById('invalidCheck').checked;
-				let agreementErrorMessage = document.getElementById('agreementErrorMessage');
-
-				if (!agreement) {
-					agreementErrorMessage.innerHTML = '약관에 동의해야 합니다.';
-					agreementErrorMessage.style.color = 'red';
-					return false;
-				}
-
-				agreementErrorMessage.innerHTML = '';
-				return true;
-			}
-
 			function openModal() {
 				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
 				myModal.show();
@@ -411,14 +424,19 @@
 					},
 				});
 			}
+
+			function revertForm() {
+				location.href = '/userlogin';
+			}
 		</script>
 	</head>
 
 	<body>
 		<div layout:fragment="content">
-			<form id="userForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
-				<div class="container">
-					<h3>사용자 회원가입</h3>
+			<div class="registered-customers">
+				<h3 class="blog-section-title border-left mb-30">사용자 회원가입</h3>
+				<br />
+				<form id="userForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
 					<br />
 					<div class="input-group">
 						<label>아이디</label>
@@ -429,8 +447,18 @@
 							placeholder="아이디를 입력하세요"
 							required
 							oninput="checkId()"
+							style="width: 250px; margin-right: 10px"
 						/>
-						<button type="button" id="checkDupliIdBtn" onclick="checkDupliId()" disabled>중복 확인</button>
+						<button
+							type="button"
+							id="checkDupliIdBtn"
+							onclick="checkDupliId()"
+							disabled
+							class="btn btn-sm btn-secondary shadow-sm"
+							style="display: inline-block; height: 30px"
+						>
+							중복 확인
+						</button>
 						<span id="idErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
@@ -482,29 +510,62 @@
 							required
 							maxlength="13"
 							oninput="autoHyphen(this)"
+							style="width: 250px; margin-right: 10px"
 						/>
-						<button type="button" id="checkPhoneBtn" onclick="checkPhone()">인증번호발송</button>
+						<button
+							type="button"
+							id="checkPhoneBtn"
+							onclick="checkPhone()"
+							class="btn btn-sm btn-secondary shadow-sm"
+						>
+							인증번호 발송
+						</button>
 						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group" id="verification-section">
 						<label>인증번호</label>
-						<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
-						<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
+						<input
+							type="number"
+							id="checkPhoneNum"
+							placeholder="인증번호를 입력하세요"
+							maxlength="4"
+							required
+							style="width: 250px; margin-right: 10px"
+						/>
+						<button
+							type="button"
+							id="checkPhoneNumBtn"
+							onclick="checkPhoneNumber()"
+							class="btn btn-sm btn-secondary shadow-sm"
+						>
+							인증하기
+						</button>
 					</div>
 
 					<div class="input-group">
 						<label>생년월일</label>
-						<input type="date" name="birthday" id="birthDay" required oninput="checkBirthday()" />
+						<input
+							type="date"
+							name="birthday"
+							id="birthDay"
+							required
+							oninput="checkBirthday()"
+							style="width: 200px"
+						/>
 						<span id="birthdayErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group-select">
 						<label>성별</label>
-						<input type="radio" name="gender" id="male" value="M" />
-						<label for="input-group-select">남자</label>
-						<input type="radio" name="gender" id="female" value="F" />
-						<label for="input-group-select">여자</label>
+						<label class="gender">
+							<input type="radio" name="gender" id="male" value="M" />
+							<span>남자</span>
+						</label>
+						<label class="gender">
+							<input type="radio" name="gender" id="female" value="F" />
+							<span>여자</span>
+						</label>
 					</div>
 
 					<div class="input-group">
@@ -513,22 +574,33 @@
 						<img id="filePreview" alt="File Preview" />
 					</div>
 
+					<br />
+
 					<div>
-						<input type="checkbox" id="invalidCheck" required />
+						<input type="checkbox" required />
 						<label class="form-check-label"> 만 17세 이상입니다 </label>
 					</div>
 
+					<br />
+
 					<div>
-						<input type="checkbox" id="invalidCheck" required />
-						동의항목<label class="form-check-label" data-bs-toggle="modal" data-bs-target="#exampleModal">
-							[상세보기]</label
+						<input type="checkbox" required />
+						개인정보 사용 동의<label
+							class="form-check-label"
+							data-bs-toggle="modal"
+							data-bs-target="#exampleModal"
+						>
+							&nbsp;[상세보기]</label
 						>
 					</div>
 
 					<br />
-					<input type="submit" value="회원가입" class="btn btn-danger" id="submitButton" />
-				</div>
-			</form>
+					<div style="text-align: center">
+						<input type="submit" value="회원가입" class="btn btn-danger" id="submitButton" />
+						<input type="button" value="취소하기" onclick="revertForm()" class="btn btn-warning" />
+					</div>
+				</form>
+			</div>
 
 			<!-- Modal -->
 			<div class="modal" tabindex="-1" id="exampleModal">

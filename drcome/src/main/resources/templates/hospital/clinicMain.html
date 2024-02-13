@@ -154,13 +154,20 @@
                       var rt = reserve.reserveKindstatus;
                       var rs = reserve.reserveStatus;
                       var reserveStatusText = "";
+                      var btnclass = "";
+                      var btnDisabled = "";
 
                       if (rs === "e1") {
                         reserveStatusText = "진료대기";
+                        btnclass = "class = 'btn btn-secondary'";
+                        btnDisabled = "disabled";
                       } else if (rs === "e4" && rt === "c2") {
                         reserveStatusText = "진료완료";
+                        btnclass = "class = 'btn btn-light'";
+                        btnDisabled = "disabled";
                       } else if (rs === "e4" && rt === "c1") {
                         reserveStatusText = "결제대기";
+                        btnclass = "class = 'btn btn-warning'";
                       }
 
                       var reserveTr =
@@ -182,7 +189,7 @@
                         "</td>" +
                         "<td>" +
                         reserve.reserveTime +
-                        " : 00</td>" +
+                        "</td>" +
                         "<td>" +
                         reserve.doctorName +
                         "</td>" +
@@ -192,7 +199,7 @@
                           : "비대면") +
                         "</td>" +
                         "<td>" +
-                        "<button class='btn btn-primary btn-status' disabled>" +
+                        "<button "+ btnclass + btnDisabled + ">" +
                         reserveStatusText +
                         "</button>" +
                         "</td>" +

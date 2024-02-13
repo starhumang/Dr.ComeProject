@@ -18,6 +18,13 @@ import com.drcome.project.admin.repository.PharmacyRepository;
 import com.drcome.project.admin.repository.UsertableRepository;
 import com.drcome.project.admin.service.AdminService;
 
+/** 사이트 관리자 페이지(일반 사용자, 병원 사용자, 약국 사용자 조회 및 승인 처리)
+ * 
+ * @author 최해주
+ * @since 2024.01
+ *
+ */
+
 @Controller
 public class AdminController {
 	
@@ -35,7 +42,11 @@ public class AdminController {
    
    @GetMapping("/admin")
    public String home(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-      Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
+	  Page<Usertable> userlist = aservice.getuserAll(pageNo, 10);
+	     model.addAttribute("list", userlist);
+	     model.addAttribute("totalCount", userlist.getNumberOfElements());
+	   
+	   Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
       model.addAttribute("grantlisth", grantlisth);
       
       Page<Pharmacy> grantlistp = aservice.findBypharmacyStatus("b1", pageNo, 5);
@@ -56,25 +67,25 @@ public class AdminController {
 		 * Page<Usertable> userlistw = aservice.getwithdrawaluser("a3", pageNo, 10);
 		 * model.addAttribute("wlist", userlistw);
 		 */
-     
+	
       return "admin/adminUser";
    }
    
    /* 일반 사용자 - 일반회원 */
-   @GetMapping("/admin/userc")
-   public String commonuser(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-      Page<Usertable> userlist = aservice.getgeneraluser("a1", pageNo, 10);
-      model.addAttribute("clist", userlist);
-      return "admin/adminUser";
-   }
+//   @GetMapping("/admin/userc")
+//   public String commonuser(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+//      Page<Usertable> userlist = aservice.getgeneraluser("a1", pageNo, 10);
+//      model.addAttribute("clist", userlist);
+//      return "admin/adminUser";
+//   }
    
    /* 일반 사용자 - 탈퇴회원 */
-   @GetMapping("/admin/userw")
-   public String withdrawaluser(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-      Page<Usertable> userlist = aservice.getwithdrawaluser("a3", pageNo, 10);
-      model.addAttribute("wlist", userlist);
-      return "admin/adminUser";
-   }
+//   @GetMapping("/admin/userw")
+//   public String withdrawaluser(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+//      Page<Usertable> userlist = aservice.getwithdrawaluser("a3", pageNo, 10);
+//      model.addAttribute("wlist", userlist);
+//      return "admin/adminUser";
+//   }
    
    /* 승인된 병원 사용자 */
    @GetMapping("/admin/hospital")

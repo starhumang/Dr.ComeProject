@@ -10,4 +10,3 @@ public interface UsertableRepository extends JpaRepository<Usertable, String> {
 	
 	public Page<Usertable> findByuserStatus(String ustatus, Pageable pageable);
 }
-

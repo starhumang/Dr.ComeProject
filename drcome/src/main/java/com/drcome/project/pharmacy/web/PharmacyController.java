@@ -42,7 +42,7 @@ public class PharmacyController {
 	}
 
 	@GetMapping("/pharmacy/status")
-	public String pharmacyprint(String date,Principal principal, String pharmacyId, Model model) {
+	public String pharmacyprint(String date, Principal principal, String pharmacyId, Model model) {
 		pharmacyId = principal.getName();
 		/*
 		 * List<Map<String, Object>> plist = pservice.selectPrescriptionList(date,
@@ -53,29 +53,42 @@ public class PharmacyController {
 
 	@GetMapping("/pharmacy/status/{date}")
 	@ResponseBody
-	public Map<String, Object> pharmacyList(@RequestParam(required = false, defaultValue = "1") String page, 
+	public Map<String, Object> pharmacyList(Principal principal, 
+											@RequestParam(required = false, defaultValue = "1") int page, 
 			                                @PathVariable String date, 
-			                                String pharmacyId,
-			                                @RequestParam Map<String, Object> parammap ) {
-		pharmacyId = "pharmacy1";
+			                                @RequestParam Map<String, Object> parammap) {
+		
+		String pharmacyId = principal.getName();
+		parammap.put("pharmacyId", pharmacyId);
+		parammap.put("page", page);
+		
+		System.out.println("keword가 있을까요??" + parammap);
 		
 		// result map
 		Map<String, Object> map = new HashMap();
 		
+		/*
+		 * map.put("page", parammap.get("page")); map.put("pharmacyId",
+		 * parammap.get("pharmacyId")); map.put("date", date); map.put("keyword",
+		 * parammap.get("keyword")); map.put("type", parammap.get("type"));
+		 * System.out.println("map" + map);
+		 */
+		
+		
 		// 리스트 전체갯수 가져오기
-		int total = pservice.percount(date, pharmacyId);
+		int total = pservice.percount(parammap, date);
 		System.out.println("토탈" + total);
 		
 		
 		// 선택된 페이지 인트로 변환
-		int cpage = Integer.parseInt(page);
-		System.out.println("선택된페이지" + cpage);
 
 		// 페이지네이션(currentpage, total)
-		PageDTO dto = new PageDTO(cpage, total);
+		PageDTO dto = new PageDTO(page, total);
+		System.out.println("page" + page);
+		System.out.println("total" + total);
 		System.out.println("dtd 객체 " + dto);
 		
-		List<Map<String, Object>> plist = pservice.selectPrescriptionList(cpage, date, pharmacyId);
+		List<Map<String, Object>> plist = pservice.selectPrescriptionList(parammap, date);
 		
 		System.out.println(plist.size());
 		

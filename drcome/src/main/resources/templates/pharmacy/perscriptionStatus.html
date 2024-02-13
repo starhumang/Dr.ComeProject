@@ -45,9 +45,19 @@
 
 .search {
 	display: flex;
-	margin-bottom: 2.5rem;
+	margin-bottom: 10px;
 	text-align: right;
 	justify-content: flex-end;
+}
+.btn-info {
+    color: black;
+    background-color: lightgray;
+    border-color: lightgray;
+}
+
+#cal {
+	display: flex;
+	justify-content: right;
 }
 </style>
 </head>
@@ -61,12 +71,20 @@
 						data-target="#calendarModal"></i> 현재날짜 : <span
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
 						id="datepicker" th:name="datepicker"></span> -->
-					<i class="fas fa-fw fa-calendar"></i>  <input type="text"
-						id="datepicker" style="width: 120px;"/>
+					<!-- <i class="fas fa-fw fa-calendar"></i>  <input type="text"
+						id="datepicker" style="width: 120px;"/> -->
+						<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
 
 			<p>처방전 승인 및 출력</p>
+			<div class="head_info" id="cal">
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 날짜 선택 : <input type="text"
+						id="datepicker" style="width: 167px;"/>
+				</p>
+			</div>
 			<div class="search">
 				<!-- drop -->
 			    <div class="input-group" style="width: 40%;">
@@ -203,7 +221,7 @@
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLongTitle">처방전 상세보기</h5>
 					</div>
-					<div class="modal-body">
+					<div class="modal-body container">
 						<table id="modalTable">
 							<tr>
 								<th>약품명</th>
@@ -329,15 +347,23 @@ function sendDate(page) {
     dateValue = $("#datepicker").val();
     var currentDate = new Date();
     var perdate = currentDate.toISOString().split('T')[0];
+    
+    var keyword = $("#keyword").val();
+    console.log('keyword', keyword);
+    var type = $("#type").val();
+    console.log('type', type);
 	
     $.ajax({
         type: "GET", 
         url: `/pharmacy/status/${dateValue}`, // 백엔드 엔드포인트로 교체
         data: {
           page: page,
+          keyword: keyword,
+          type: type
         },
+        dataType: 'json',
         success: function (response) {
-            console.log("Ajax 요청 성공");
+            console.log("Ajax 요청 성공", response);
             /* console.log("Ajax 요청 성공", response);
             console.log("일", response.plist);
             console.log("이", response.pagedto); */
@@ -358,11 +384,12 @@ function sendDate(page) {
 $("#datepicker").on("change", function () {
     console.log("선택된 날짜:", $(this).val());
     dateValue = $(this).val();
+    console.log("ajax로 보낼 날짜", dateValue);
     sendDate();
   });
 
 $(document).ready(function() {
-    sendDate(); 
+    sendDate(page); 
 });
 
 function createTable(plist) {
@@ -462,7 +489,7 @@ function formatDate(date) {
     return `${year}-${month}-${day}`;
 }
 
-let page = 1;
+var page = 1;
 
 function makePaging(dto = {}) {
     document.querySelector(".pagination").innerHTML = ""; //초기화
@@ -543,4 +570,8 @@ $("#reperscript").on("click", function () {
     });
 });
 
+//검색버튼 이벤트 만들기
+$('#searchBtn').on("click", function() {
+	sendDate(1);
+})
 </script>

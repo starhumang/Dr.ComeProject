@@ -1,5 +1,5 @@
 var alarmSocket = null;
-var reconnectInterval = 5000; // 다시 연결하는 간격 (밀리초)
+
 
 function connectWebSocket(uid) {
   try {
@@ -12,7 +12,7 @@ function connectWebSocket(uid) {
       alarmSocket.send(uid);
     };
 
-    // 메시지를 받았을 때 호출되는 이벤트 핸들러
+    // 메시지를 받았을 때 호출되는 이벤트 핸들러 
     alarmSocket.onmessage = function (event) {
       console.log("onmessage" + event.data);
       let $socketAlert = $("div#socketAlert");

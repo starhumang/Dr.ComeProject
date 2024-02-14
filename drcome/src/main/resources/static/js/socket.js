@@ -1,16 +1,17 @@
-let socket = io("http://192.168.0.36:3000/", {
+let socket = io("http://localhost:3000/", {
   cors: { origin: "*" },
 });
 
 console.log(socket.connected);
 
 const myPeer = new Peer({
-  host: "192.168.0.36",
+  host: "localhost",
   port: "3001", //PeerJS 서버가 실행되고 있는 포트
 });
 
 const peers = {};
 let ROOM_ID = "123";
+let myScreen;
 
 navigator.mediaDevices
   .getUserMedia({
@@ -18,6 +19,8 @@ navigator.mediaDevices
     audio: true,
   })
   .then((stream) => {
+    //화면onoff
+    myScreen = stream;
     //내화면만들고
     localVideo.srcObject = stream;
     // call 받을 때의 동작

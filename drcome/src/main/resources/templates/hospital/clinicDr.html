@@ -131,10 +131,11 @@
       <script>
         //입장하기
         function enter(rno, uid, rt) {
-          console.log(rno, uid, rt);
+          //console.log(rno, uid, rt);
 
           //비대면 진료면 알람테이블 인서트하고 입장하기상태 업뎃침 
           if(rt==="c2"){
+            //알람테이블에 들어갈 객체 
             let obj = {
             reserveNo:rno,
             userId: uid,
@@ -149,14 +150,16 @@
             contentType: "application/json",
             })
             .done((result) => {
+             //result == 1  성공했으면 페이지 이동 
               if(result>0){
-                location.href = `/untactClinic?reserveNo=${rno}&userId=${uid}`;
+                location.href = `/untactClinic?reserveNo=${rno}`;
               }
             }) //.done
             .fail((err) => console.log(err));
+
           } else {
               //대면이면 그냥 입장 
-             location.href = `/clinic?reserveNo=${rno}&userId=${uid}`;
+             location.href = `/clinic?reserveNo=${rno}`;
           }
         } // 입장하기 
 
@@ -238,7 +241,7 @@
                     var btnDisabled = "";
                     var btnclass = "";
 
-                    //진료대기//진료완료
+                    //e1이면 진료대기// e4면 진료완료
                     if (rs === "e1") {
                       reserveStatusText = "진료대기";
                       btnDisabled = "disabled";
@@ -263,7 +266,7 @@
                     //console.log("예약시간" + reserveTimeHour);
                     //console.log("현재시간" + currentTimeHour);
 
-                    //예약시간이고, e1 이고 대면진료라면
+                    //예약시간이고, 예약대기 e1 이고 대면진료 c1 라면
                     if (
                       currentTimeHour === reserveTimeHour &&
                       rt === "c1" &&
@@ -274,7 +277,7 @@
                       btnclass = "class = 'btn btn-primary'";
                     }
 
-                    //예약시간이고 e1이고  비대면진료라면
+                    //예약시간이고  예약대기 e1이고  비대면진료 c2 라면
                     if (
                       currentTimeHour === reserveTimeHour &&
                       rt === "c2" &&

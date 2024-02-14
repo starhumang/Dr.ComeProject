@@ -22,8 +22,8 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	List<WebSocketSession> sessions = new ArrayList<WebSocketSession>();
 	String payload = "";
 
-	// 모든 세션의 userId를 담을 배열 생성
-	List<String> userIdList = new ArrayList<>();
+	// 모든 세션의 userId 찐 아이디.. 를 담을 배열 생성
+	//List<String> userIdList = new ArrayList<>();
 
 	// WebSocket 연결이 성립되면 호출되는 메서드
 	@Override
@@ -31,29 +31,30 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 		// 연결된 세션을 세션 목록에 추가
 		sessions.add(session);
 
-		String userId = (String) session.getAttributes().get("userId");
+		String userId = (String) session.getAttributes().get("userId");  //http세션아이디
 		System.out.println("세션 연결 찐 아이디 User ID: " + userId);
 		System.out.println("세션 연결 긴 ID: " + session.getId());
 
-		// 모든 세션에 대해 userId를 추출하여 리스트에 저장
-		for (WebSocketSession sess : sessions) {
-			userIdList.add((String) sess.getAttributes().get("userId"));
-		}
-
-		// userIdList 출력
-		for (String id : userIdList) {
-			System.out.println("User ID in sessions: " + id);
-		}
-		System.out.println("배열: " + userIdList);
+//		// 모든 세션에 대해 userId를 추출하여 리스트에 저장
+//		for (WebSocketSession sess : sessions) {
+//			userIdList.add((String) sess.getAttributes().get("userId"));
+//		}
+//
+//		// userIdList 출력
+//		for (String id : userIdList) {
+//			System.out.println("User ID in sessions: " + id);
+//		}
+//		System.out.println("배열: " + userIdList);
 	}// afterConnectionEstablished
 
+	
 	// WebSocket으로 메시지가 도착하면 호출되는 메서드
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
 
-		// 의사가 담아보낸 아이디 출력
+		// 의사or환자가 담아보낸 아이디 출력
 		payload = message.getPayload();
-		System.out.println("의사가 보낸 환자아이디 " + payload);
+		System.out.println("의사 or 환자가 보낸 환자아이디 " + payload);
 
 		int cnt = alarm.checkAlarm(payload);
 
@@ -79,7 +80,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 		// 세션 목록에서 연결이 종료된 세션을 제거
 		sessions.remove(session);
 		// userIdList에서 해당 세션의 userId를 제거
-		userIdList.remove(session.getAttributes().get("userId"));
+		//userIdList.remove(session.getAttributes().get("userId"));
 		System.out.println("연결이 종료된 세션 ID: " + session.getAttributes().get("userId"));
 	}
 

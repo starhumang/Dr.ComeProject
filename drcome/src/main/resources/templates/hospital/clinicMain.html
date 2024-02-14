@@ -168,6 +168,10 @@
                       } else if (rs === "e4" && rt === "c1") {
                         reserveStatusText = "결제대기";
                         btnclass = "class = 'btn btn-warning'";
+                      } else if (rs ==="e5"){
+                        reserveStatusText = "결제완료";
+                        btnDisabled = "disabled";
+                        btnclass = "class = 'btn btn-danger'";
                       }
 
                       var reserveTr =

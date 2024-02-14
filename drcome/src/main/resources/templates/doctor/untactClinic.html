@@ -111,9 +111,22 @@
       <div class="container-fluid">
         <!--title-->
         <div class="title" style="background-color: #06bbcc; padding: 5px">
+
+              <!--on off-->
+              <div class="d-flex justify-content-center align-items-center">
+                <!-- 마이크 버튼 -->
+                <button class="btn btn-secondary" onclick="toggleAudio()" style="margin-right: 5px;">
+                  <i id="micIcon" class="bi bi-mic"></i>
+                </button>
+                <!-- 비디오 버튼 -->
+                <button class="btn btn-secondary" onclick="toggleVideo()">
+                  <i id="cameraIcon" class="bi bi-camera-video"></i>
+                </button>
+              </div>   
+              <!--on off-->
           <h3
             style="
-              width: 80%;
+              width: 70%;
               text-align: center;
               margin-bottom: 0;
               padding-left: 120px;
@@ -157,14 +170,11 @@
             </div>
             <!--비디오-->
 
-            <!--진료기록초진 재진여부 조건 달아야함 -->
+            <!--진료기록-->
             <div
               id="clinic"
               style="width: 100%; justify-content: center; margin-top: 20%"
             >
-              <!--초진
-              <div id="firstV">초진입니다</div>-->
-
               <!--재진-->
               <div id="secondV">
                 <!--제목-->
@@ -256,8 +266,9 @@
             </div>
             <!--기본정보-->
 
-            <!--진료form-->
+            <!--진료-->
             <div>
+              <!--제목-->
               <div style="margin-bottom: 15px">
                 <i class="bi bi-pencil-square fa-lg"></i>
                 <span>
@@ -275,9 +286,9 @@
                   </h5>
                 </span>
               </div>
-
+              <!--제목-->
+              <!--폼-->
               <form name="clinicForm">
-                <!--예약번호 받아와야함-->
                 <input
                   type="hidden"
                   name="reserveNo"
@@ -288,7 +299,7 @@
                   name="hospitalId"
                   th:value="${session.userId}"
                 />
-                <!-- 초진/재진여부  -->
+                <!-- 초진/재진여부 -->
                 <input type="hidden" name="visit" />
                 <!--유저아이디 -->
                 <input type="hidden" name="userId" th:value="${pInfo.userId}" />
@@ -436,8 +447,9 @@
                   </button>
                 </div>
               </form>
+              <!--폼-->
             </div>
-            <!--진료form-->
+            <!--진료-->
           </div>
           <!--오른쪽-->
         </div>
@@ -525,15 +537,18 @@
                 console.log(err);
               });
           }
-          //소켓서버 연결
+
+
+          //알람소켓서버 연결
           $(document).ready(function () {
             connectWebSocket();
           });
+
           let alarmSocket = null;
           function connectWebSocket() {
             try {
               // WebSocket 연결
-              alarmSocket = new WebSocket("ws://192.168.0.36:80/echo");
+              alarmSocket = new WebSocket("ws://localhost:80/echo");
 
               // 연결이 열리면 호출되는 이벤트 핸들러
               alarmSocket.onopen = function (event) {
@@ -550,17 +565,13 @@
               // 연결이 닫혔을 때 호출되는 이벤트 핸들러
               alarmSocket.onclose = function (event) {
                 console.log("의사 퇴장 WebSocket 연결이 닫혔습니다.");
-              }; ///
+              }; 
 
               // 에러가 발생했을 때 호출되는 이벤트 핸들러
               alarmSocket.onerror = function (error) {
                 console.error(" 의사... WebSocket 연결 에러:", error);
-                setTimeout(function () {
-                  console.log("다시 연결을 시도합니다.");
-                  connectWebSocket();
-                }, 3000);
               }; ///
-            } catch (error) {
+              } catch (error) {
               console.error("의사... WebSocket 연결 에러:", error);
             }
           }
@@ -919,6 +930,22 @@
               } //for
             };
           }
+
+              //on off 토글버튼
+              function toggleVideo() {
+              const tracks = myScreen.getVideoTracks();
+              tracks.forEach(track => {
+              track.enabled = !track.enabled;
+              });
+              
+              }
+
+              function toggleAudio() {
+              const tracks = myScreen.getAudioTracks();
+              tracks.forEach(track => {
+              track.enabled = !track.enabled;
+              });
+              }
         </script>
       </div>
       <!--container-fluid-->

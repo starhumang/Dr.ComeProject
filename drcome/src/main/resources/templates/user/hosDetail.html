@@ -342,7 +342,9 @@
 									<th:block th:each="doc : ${docList}">
 										<tr th:if="${#lists.size(docList) > 0}">
 											<td th:text="${doc.doctorName}"></td>
-											<td th:text="${doc.subject}"></td>
+											<th:block th:each="detailCode : ${application.detailCode_h}">
+											<td th:if="${doc.subject} == ${detailCode.detailCode}" th:text="${detailCode.codeName}" ></td>
+											</th:block>
 											<td th:text="${doc.holiday}"></td>
 											<td>
 												<div th:each="drTime : ${doc.times}">
@@ -363,7 +365,6 @@
 					</div>
 				</div>
 		</div>
-
 
 	</div>
 </body>

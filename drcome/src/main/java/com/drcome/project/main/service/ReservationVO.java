@@ -18,4 +18,7 @@ public class ReservationVO {
 	private String reserveStatus;
 	private String userId;
 	private String hospitalId;
+	
+	private String doctorMintime;
+	private String doctorMaxtime;
 }

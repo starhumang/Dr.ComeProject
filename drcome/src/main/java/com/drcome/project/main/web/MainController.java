@@ -351,101 +351,199 @@ public class MainController {
 			return "user/untactAccept";
 		}
 				
-		//비대면실시간접수페이지(insert)
-		@PostMapping("/untactAccept")
-		@ResponseBody
-		public boolean insertUntactAccept(@RequestBody ReservationVO reservationVo) {
-			//System.out.println("reservationVo"+reservationVo);
-			int result = mainService.insertUntactReservation(reservationVo);
-			System.out.println("insertUntactReservation="+result);
-			if(result == 0) { //insert 안되면 false
-				return false;
-			}else { //insert되면 true
-				return true;
-			}
-		}
+//		//비대면실시간접수페이지(insert)
+//		@PostMapping("/untactAccept")
+//		@ResponseBody
+//		public boolean insertUntactAccept(@RequestBody ReservationVO reservationVo) {
+//			//System.out.println("reservationVo"+reservationVo);
+//			int result = mainService.insertUntactReservation(reservationVo);
+//			System.out.println("insertUntactReservation="+result);
+//			if(result == 0) { //insert 안되면 false
+//				return false;
+//			}else { //insert되면 true
+//				return true;
+//			}
+//		}
 		
 		//비대면실시간접수페이지(대기현황)
 		@PostMapping("/waitingList")
 		@ResponseBody
-		public boolean findWaitingList(@RequestBody DoctorVO doctorVO, Model model) {
+		public Map<String,Object> findWaitingList(@RequestBody DoctorVO doctorVO) {
 			System.out.println("///////////////////////////////////////////");
 			List<ReservationVO> findWaitingList = mainService.findWaitingList(doctorVO);
 			List<String> times = new ArrayList<>();//옛날 시간 넣을 곳
 			List<String> newTimes = new ArrayList<>();//concat한 시간 넣을곳
-			String lastReservation = null; //내가 할 수 있는 가장 빠른 예약시간의 바로 앞전 시간
-			boolean overWork = true; //의사의 진료시간안에 들어가는 예약인지 여부(t=진료안에 들어감, f=초과근무 )
-			int waitingNum = 0;//대기인원
-			LocalDateTime canClinicNow = null; //지금당장 상담할 수 있는 가장 가까운 시간
+			String canClinicNow = null; //지금당장 예약할 수 있는 가장 가까운 시간
+			String firstReserve = null;//당일 첫번째 예약
+			int firstReserveHour = 0;//첫번째 예약의 시
+			boolean ClinicYN = true; //진료가능 여부
+			int waitingPP = 0;
 			
-			//19:00와 같은 옛날시간 times배열에 넣음
-			for(int i=0; i < findWaitingList.size(); i++) {
+			 if(!findWaitingList.isEmpty()) { //전체 값을 제대로 받아왔다면
+				//19:00와 같은 옛날시간 times배열에 넣음
+				for(int i=0; i < findWaitingList.size(); i++) {
+					times.add(findWaitingList.get(i).getReserveTime());
+				}
 				
-				times.add(findWaitingList.get(i).getReserveTime());
-			}
+				//1900와 같이 옛날시간 가공해서 newTimes배열에 넣음
+				for(int i=0; i < times.size(); i++) {
+					String hour = (times.get(i)).substring(0, 2);
+					String minute = (times.get(i)).substring(3, 5);
+					newTimes.add(hour.concat(minute));
+				}
+				firstReserve = newTimes.get(0); //가장빠른 예약시간
+				System.out.println("findWaitingList="+findWaitingList);
+				System.out.println("times ="+times);
+				System.out.println("newTimes ="+newTimes);
+			 }
+			 
 			
+			//ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ위는 시간계산
 			
-			//1900와 같이 옛날시간 가공해서 newTimes배열에 넣음
-			for(int i=0; i < times.size(); i++) {
-				String hour = (times.get(i)).substring(0, 2);
-				String minute = (times.get(i)).substring(3, 5);
-				newTimes.add(hour.concat(minute));
-			}
+			//현재시간
+			LocalDateTime now = LocalDateTime.now();
 			
-			//만약 배열의 값이 1개 이상이면
-			if(newTimes.size() > 1) {
-				for(int i= 0; i < (newTimes.size()-1) ; i++) {
-					int extraNum = Integer.parseInt(newTimes.get(i + 1)) - Integer.parseInt(newTimes.get(i));
-					System.out.println("extraNum= "+extraNum);
+			// 현재 시
+			int hour = now.getHour();
+	        // 현재 분
+	        int minute = now.getMinute();
+	        
+	        //의사진료 종료시간
+	        int doctorMaxtime = 0;
+			
+	        System.out.println("현재시간= "+ hour);
+	        System.out.println("현재 분= "+ minute);
+			
+	        if(!findWaitingList.isEmpty()) {
+	        	// 가장 빠른 예약시간 구하기
+		        for (int i = 0; i < newTimes.size(); i++) {
+		            if (Integer.parseInt(newTimes.get(i)) < Integer.parseInt(firstReserve)) {
+		                firstReserve = newTimes.get(i);
+		                
+		            }
+		        }
+		        System.out.println("가장빠른예약= "+ firstReserve);
+		        //가장 빨리 예약할 수 있는 시간
+		        firstReserveHour = Integer.parseInt(firstReserve.substring(0, 2));
+	        }
+	        
+	        
+	        
+	        //▶ 만약 대기하는 사람이 없으면
+	        if(times.isEmpty()) {
+				System.out.println("현재 대기하는 인원 없음");
+				
+				//의사 진료시간에 맞게 조건을 걸어야하지만 여
+				if(minute >= 30) {
+	        		canClinicNow = String.valueOf(hour + 1).concat(":00");
+	        	}else{
+	        		canClinicNow = String.valueOf(hour).concat(":30");
+	        	}
+	        
+	        //▶ 대기하는 사람이 있지만 지금 당장 예약할 수 있을때(현재시간 + 1시간한게 가장빠른 예약시간보다 더 빠르면)
+	        }else if(hour + 1  < firstReserveHour) {
+	        	System.out.println("현재 대기 인원은 있지만 내 앞엔 없음");
+	        	if(minute >= 30) {
+	        		canClinicNow = String.valueOf(hour + 1).concat(":00");
+	        	}else {
+	        		canClinicNow = String.valueOf(hour).concat(":30");
+	        	}
+	        	
+	        //▶ 대기하는 사람도 있고 지금당장 예약할 수 없을떄
+	        }else {
+	        	
+	        	// ▶ 예약된게 1개밖에 없고 그게 바로 내 앞임(내가 예약할 수 있는 시간 앞)
+	        	if(newTimes.size() == 1){
+					System.out.println("현재 내 앞 대기인원 1명");
+					doctorMaxtime = Integer.parseInt(findWaitingList.get(0).getDoctorMaxtime());//의사 진료종료시간
+					System.out.println("doctorMaxtime="+doctorMaxtime);
+					int sliceHour = Integer.parseInt((newTimes.get(0)).substring(0, 2));
+					int sliceMinute = Integer.parseInt((newTimes.get(0)).substring(2, 4));
+					//System.out.println("쪼갠시간= "+sliceHour);
+					//System.out.println("쪼갠분= "+sliceMinute);
 					
-					if(extraNum > 70) { //의사의 마지막 진료시간 가져와서 비교해야함
-						waitingNum = i + 1; //대기인원
-						model.addAttribute("waitingNum", waitingNum);
-						lastReservation = newTimes.get(i);
-						model.addAttribute("lastReservation", lastReservation);//내가 할 수 있는 가장 빠른 예약시간의 바로 앞전 시간
-						overWork = true;
+					//의사 진료시간안에 있고 끝이 30분으로 끝날때랑
+					if(sliceMinute >=30 && doctorMaxtime > hour) {
+						canClinicNow = String.valueOf(sliceHour + 1).concat(":00"); //현재 예약가능한 시간
+						System.out.println("canClinicNow= "+canClinicNow);
+					//00으로 끝날때
+					}else if(doctorMaxtime > hour) {
+						canClinicNow = String.valueOf(sliceHour).concat(":30"); //현재 예약가능한 시간
+					}else {
+						ClinicYN = false;//의사 진료시간이 넘어서 예약불가
+					}
+					waitingPP= 1;//기다리는 인원
+	        	
+				// ▶ 예약많고 빈예약자리 찾아야함
+				}else if(newTimes.size() > 1) {
+					doctorMaxtime = Integer.parseInt(findWaitingList.get(0).getDoctorMaxtime());//의사 진료종료시간
+					System.out.println("doctorMaxtime="+doctorMaxtime);
+					
+					//1. 빈 예약찾는 연산
+					for(int i= 0; i < (newTimes.size()-1) ; i++) {
+						int extraNum = Integer.parseInt(newTimes.get(i + 1)) - Integer.parseInt(newTimes.get(i));
+						System.out.println("+ "+newTimes.get(i + 1));
+						System.out.println("- "+newTimes.get(i));
+						System.out.println("연산결과값= "+extraNum);
+						
+						if(extraNum >= 100 ) { //1.연산값이 100이상일때 = 중간에 빈예약이 있다는 뜻
+							System.out.println("현재 대기인원 여러명임");
+							//2.빈예약 앞전 시간을 가져와서 시간과 분으로 쪼갬
+							int sliceHour = Integer.parseInt((newTimes.get(i)).substring(0, 2));
+							int sliceMinute = Integer.parseInt((newTimes.get(i)).substring(2, 4));
+							//System.out.println("쪼갠시간= "+sliceHour);
+							//System.out.println("쪼갠분= "+sliceMinute);
+							
+							//3. 예약가능한 시간 바로 앞 예약된 시간을 토대로 예약가능한 시간으로 계산해줄거임
+							// ▶ 내 앞전에 예약이 있어서 내가 예약할 수 있는 가장 빠른시간을 찾을때
+							if(canClinicNow == null) {//가장빠른 예약시간으로
+								if(sliceMinute >=30 && doctorMaxtime > hour) {
+									canClinicNow = String.valueOf(sliceHour + 1).concat(":00"); //현재 예약가능한 시간
+									//System.out.println("canClinicNow= "+canClinicNow);
+								}else if(doctorMaxtime > hour) {
+									canClinicNow = String.valueOf(sliceHour).concat(":30"); //현재 예약가능한 시간
+								}else {
+									ClinicYN = false;//의사 진료시간이 넘어서 예약불가
+								}
+								waitingPP= i;//기다리는 인원
+							}
+							
+						}else {//▶ 중간에 빈 예약이 없고 지금 내가 마지막 예약임
+							//바로 앞전 예약시간 자르기
+							System.out.println("현재 대기인원 여러명이고 내가 마지막차례임");
+							int sliceHour = Integer.parseInt((newTimes.get(newTimes.size()-1)).substring(0, 2));
+							int sliceMinute = Integer.parseInt((newTimes.get(newTimes.size()-1)).substring(2, 4));
+							
+							if(sliceMinute >=30 && doctorMaxtime > hour) {
+								canClinicNow = String.valueOf(sliceHour + 1).concat(":00"); //현재 예약가능한 시간
+								//System.out.println("canClinicNow= "+canClinicNow);
+							}else if(doctorMaxtime > hour) {
+								canClinicNow = String.valueOf(sliceHour).concat(":30"); //현재 예약가능한 시간
+							}else {
+								ClinicYN = false;//의사 진료시간이 넘어서 예약불가
+							}
+							waitingPP= newTimes.size();//기다리는 인원
+						}
 					}
 				}
-			//만약 배열의 값이 1이면
-			}else if(newTimes.size() == 1){//의사의 마지막 진료시간 가져와서 비교해야함
-				waitingNum = 1; //대기인원
-				model.addAttribute("waitingNum", waitingNum);
-				lastReservation = newTimes.get(0);
-				model.addAttribute("lastReservation", lastReservation);//내가 할 수 있는 가장 빠른 예약시간의 바로 앞전 시간
-				overWork = true;
-				
-			//만약 대기하는 사람이 없으면
-			}else if(true) {//의사의 마지막 진료시간 가져와서 비교해야함
-				waitingNum = 0; //대기인원
-				model.addAttribute("waitingNum", waitingNum);
-				overWork = true;
-				
-				//현재시간 기준 이미 지나간 시간 제외하고 가장 가까운 정각이나 30분
-				LocalDateTime now = LocalDateTime.now();
-
-		        // 현재 분 수 가져오기
-		        int minute = now.getMinute();
-
-		        // 현재 시간을 조정하기
-		        LocalDateTime closeTime;
-		        if (minute >= 30) {
-		            // 다음 정각으로 조정
-		        	canClinicNow = now.plusHours(1).withMinute(0).withSecond(0).withNano(0);
-		        } else {
-		            // 다음 30분 단위 시간으로 조정
-		        	canClinicNow = now.withMinute(30).withSecond(0).withNano(0);
-		        }
-		        model.addAttribute("closeTime", canClinicNow);//내가 할 수 있는 가장 빠른 예약시간(헷갈리지 않게끔 중요!)
-			}else {
-				overWork = false;
-			}
-			
-			System.out.println("앞전예약시간="+lastReservation);
-			System.out.println("대기인원="+waitingNum);
-			System.out.println("초과근무여부="+overWork);
-			System.out.println("대기인원없음/가장빨리할수 있는 예약시간"+canClinicNow);
-			
-			return overWork;
+	        }
+	        
+	        
+	        if(doctorMaxtime < hour) { //저장전 한번더 넣기 / 진료시간 끝나면 예약못함
+	        	ClinicYN = false;
+	        }
+	        
+	        
+	        Map<String,Object> response = new HashMap<>();
+	        response.put("waitingPP",waitingPP);
+	        response.put("canClinicNow", canClinicNow);
+	        response.put("ClinicYN", ClinicYN);
+	        
+	        System.out.println("대기 인원 ="+waitingPP);
+	        System.out.println("지금당장 예약할 수 있는 시간 ="+canClinicNow);
+	        System.out.println("의사진료시간이 지나지 않음 ="+ClinicYN);
+	        
+			return response; 
 		}
 
 

@@ -244,7 +244,9 @@ thead tr:nth-child(3) th {
 									<td style="vertical-align:middle;"><input type="radio" name="doctor"
 										onclick="chooseDoctor()" /></td>
 									<td class="docName" th:text="${doc.doctorName}" style="vertical-align:middle;"></td>
-									<td th:text="${doc.subject}" style="vertical-align:middle;"></td>
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<td th:if="${doc.subject} == ${detailCode.detailCode}" th:text="${detailCode.codeName}" style="vertical-align:middle;"></td>
+									</th:block>
 									<td class="docHol" th:text="${doc.holiday}" style="vertical-align:middle;"></td>
 									<td>
 										<div th:each="drTime : ${doc.times}" class="doctorTime">

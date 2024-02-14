@@ -48,15 +48,16 @@
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>notice Upload</p>
+			<p>Qna Answer Upload</p>
 
-			<!-- 공지사항 form -->
+			<!-- Qna Anser form -->
 			<div>
 				<div class="p-5">
 					<div class="text-center">
 						<h1 class="h4 text-gray-900 mb-4">QnA 답변 등록</h1>
 					</div>
 					<form class="user" th:action="@{/hospital/qnaAnsForm}" method="post" enctype="multipart/form-data">
+					 	<input type="number" name="qnaNo" id="qnaNo" th:value="${qnaNo}" style="display:none;">
 						<div class="mb-3">
 							<label for="exampleFormControlTextarea1" class="form-label">내용</label>
 							<textarea class="form-control" name="content" id="exampleFormControlTextarea1"
@@ -65,7 +66,7 @@
 						<div class="mb-3">
 							<label for="formFileMultiple" class="form-label">첨부파일
 								</label> <input class="form-control" type="file" name="uploadFiles"
-								id="formFileMultiple" multiple>
+								id="formFileMultiple">
 						</div>
 						<hr>
 						<div class="inBtn">

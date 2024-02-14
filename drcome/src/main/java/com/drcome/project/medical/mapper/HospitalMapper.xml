@@ -294,6 +294,7 @@
 				)
 		 WHERE rn > (#{page} - 1) * 10
 	</select>
+
 	
 	<!-- QnA 페이징-->
 	<select id="qnaCount" resultType="int">
@@ -323,6 +324,8 @@
 	</sql>
 	
 	<!-- QnA 상세 -->
+
+
 	<select id ="selectQnaInfo" resultType="QnaVO">
 		SELECT * FROM qna
 		<where>
@@ -332,9 +335,9 @@
 	        <if test="ansCode == null or qnaNo != null">
 	            qna_no = #{qnaNo}
 	        </if>
-		
 		</where>
 	</select>
+
 	
 	<!-- Answer select -->
 	<select id="selectAnsInfo" resultType="QnaVO">
@@ -342,7 +345,39 @@
 		 WHERE qna_no = #{ansCode}
 	</select>
 	
-	<!-- QnA 답변 입력 -->
+	<!-- QnA 답변 Insert -->
+	<insert id="insertQnaAns" parameterType="QnaVO">
+		<selectKey keyProperty="qnaNo" order="BEFORE" resultType="int">
+		  select nvl(max(qna_no), 0)+1 
+		  from qna
+		</selectKey>
+			INSERT INTO qna (qna_no,
+			                 wdate,
+			                 content,
+			                 hospital_id
+			                 )
+			VALUES (#{qnaNo},
+			        sysdate,
+			        #{content},
+			        #{hospitalId}
+			        )
+	</insert>
+	<!-- 답변 받은 qna 업데이트 -->
+	<update id="updateQnaStatus" parameterType="QnaVO">
+		UPDATE qna SET ans_code = #{ansCode},
+					   ans_status = 'j2'
+		 WHERE qna_no = #{qnaNo}
+	</update>
+	<!-- 첨부파일 Insert -->
+	<insert id="insertAttachQnaAns" parameterType="NoticeAttachVO">
+		INSERT INTO attachment (file_no,
+	                        	file_name,
+	                        	qna_no)
+		VALUES (attachment_seq.NEXTVAL,
+		        #{fileName},
+		        #{qnaNo}
+		        )
+	</insert>	
 
 	<!-- 공지사항 -->
 	<!-- 공지사항 전체 -->
@@ -439,8 +474,8 @@
 	<!-- 첨부파일 같이 등록 -->
 	<insert id="insertNotice" parameterType="NoticeVO">
 	<selectKey keyProperty="noticeNo" order="BEFORE" resultType="int">
-	  select notice_seq.NEXTVAL 
-	  from   dual
+	  select nvl(max(notice_no), 0)+1 
+	  from   notice
 	</selectKey>
 		INSERT INTO notice (notice_no,
 								title,

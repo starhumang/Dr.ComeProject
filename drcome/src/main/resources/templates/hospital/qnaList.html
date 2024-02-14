@@ -280,7 +280,7 @@ input[type="radio"]:checked+label {
 			            row.append(`<td>${formatDate(new Date(item.wdate))}</td>`);
 			            row.append(`<td>${item.udate ? formatDate(item.udate) : '-'}</td>`);
 			            row.append(`<td>${item.ansStatus}</td>`);
-			            row.append(`<td>${item.ansCode}</td>`);
+			            row.append(`<td style="display: none;">${item.ansCode}</td>`);
 			        });
 			
 			        $(".table tbody").on("click", "tr", function() {

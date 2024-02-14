@@ -53,6 +53,11 @@ public interface HospitalService {
 	//Answer 단건상세
 	public QnaVO getAnsInfo(QnaVO qnaVO);
 	
+	//QnA 답변 인서트 + 첨부파일 인서트 + 기존 QnA 상태 업데이트
+	public int insertQnaAns(QnaVO qnaVO);
+	public int updateQnaStatus(QnaVO qnaVO);
+	public int insertAttachQnaAns(QnaVO qnaVO);
+	
 	/* 공지사항 */
 	//공지사항 전체	
 	public List<Map<String, Object>> getNoticeList(int page, int type, String keyword, String hospitalId);

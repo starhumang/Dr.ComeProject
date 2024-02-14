@@ -134,6 +134,24 @@ public class HospitalServiceImpl implements HospitalService {
 		QnaVO ansInfo = hospitalMapper.selectAnsInfo(qnaVO);
 		return ansInfo;
 	}
+	
+	// Answer 등록
+	@Override
+	public int insertQnaAns(QnaVO qnaVO) {
+		return hospitalMapper.insertQnaAns(qnaVO);
+	}
+
+	// 기존 QnA 상테 업데이트
+	@Override
+	public int updateQnaStatus(QnaVO qnaVO) {
+		return hospitalMapper.updateQnaStatus(qnaVO);
+	}
+
+	// Answer 첨부파일 등록
+	@Override
+	public int insertAttachQnaAns(QnaVO qnaVO) {
+		return hospitalMapper.insertAttachQnaAns(qnaVO);
+	}
 
 	/* 공지사항 */
 	// 공지사항 전체

@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.security.core.Authentication;
 
+import com.drcome.project.main.service.PaymentVO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
@@ -50,5 +51,8 @@ public interface UserMemberService {
 	
 //	회원 탈퇴
 	int deleteUser(String userId, String password, Authentication auth);
+	
+//	결제
+	int paymentUpdate(PaymentVO vo);
 
 }

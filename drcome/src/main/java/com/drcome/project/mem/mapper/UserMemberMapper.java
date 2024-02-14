@@ -3,6 +3,7 @@ package com.drcome.project.mem.mapper;
 import java.util.List;
 import java.util.Map;
 
+import com.drcome.project.main.service.ClinicPayVO;
 import com.drcome.project.main.service.PaymentVO;
 import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.HospitalVO;
@@ -52,11 +53,18 @@ public interface UserMemberMapper {
 	int deleteUser(MemVO vo);
 	
 //	예약 조회
-	public List<Map<String, Object>> selectTodayReserve(String userId);
+	public List<ReservationVO> selectUserReserveInfo(String userId);
 	
-//	예약 조회
-	public List<ReservationVO> selectReserveInfo(String userId);
+//	결제 정보
+	public ClinicPayVO selectClinicPay(int reserveNo);
+	
+//	결제 - 예약 테이블 업데이트
+	int updateReserve(int reserveNo);
 	
 //	결제
 	int insertPayment(PaymentVO vo);
+	
+//	결제 - 진료 테이블 업데이트
+	int updatePayment(int reserveNo, int paymentNo);
+	
 }

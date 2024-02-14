@@ -9,17 +9,30 @@
 		<title>결제 페이지</title>
 
 		<style>
+			.head_info {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30px;
+			}
+
+			.right {
+				width: 60%;
+			}
+
 			.pay_what {
 				display: flex;
 				justify-content: center;
 				margin-bottom: 30px;
 			}
+
 			.pay_list input[type='radio'] {
 				display: none;
 			}
+
 			.pay_list > .pay > span {
 				width: 140px;
 			}
+
 			.pay_list > .pay input[type='radio']:checked + span {
 				display: inline-block;
 				padding: 10px 15px;
@@ -31,6 +44,7 @@
 				text-align: center;
 				cursor: pointer;
 			}
+
 			.pay_list > .pay input[type='radio'] + span {
 				display: inline-block;
 				padding: 10px 15px;
@@ -41,16 +55,19 @@
 				text-align: center;
 				cursor: pointer;
 			}
+
 			.pay_list > .pay > input[type='radio']:hover + span {
 				background-color: #739171;
 				color: #ffffff;
 			}
+
 			.payEnd {
 				display: flex;
 				flex-direction: column;
 				justify-content: center;
 				align-items: center;
 			}
+
 			.payEnd > .payEndBtn {
 				width: 40%;
 				height: 50px;
@@ -59,6 +76,7 @@
 				border: none;
 				border-radius: 10px;
 			}
+
 			.payEnd > .payEndBtn:hover {
 				width: 40%;
 				height: 50px;
@@ -75,7 +93,11 @@
 			var IMP = window.IMP;
 			IMP.init('imp43228827');
 
-			var rInfo = [[${rInfo}]];
+			var cInfo = [[${cInfo}]];
+
+			var myInfo = [[${myInfo}]];
+
+			var rNo = [[${rNo}]];
 
 			var selectedPayElement = '';
 			var checkedPay = '';
@@ -90,12 +112,10 @@
 
 			//결제 api
 			function paySubmit() {
-				console.log(IMP);
-				console.log(checkedPay);
 				var payTotal;
-				if (rInfo.reserveKindstatus === 'c1') {
+				if (cInfo.pay === 'Y') {
 					payTotal = 5000;
-				} else if (rInfo.reserveKindstatus === 'c2') {
+				} else if (cInfo.pay === 'N') {
 					payTotal = 10000;
 				}
 				//결제 요청
@@ -103,74 +123,52 @@
 					{
 						pg: checkedPay,
 						pay_method: 'card',
-						merchant_uid: 'merchant_' + new Date().getTime(), //주문번호
-						name: '진료비',
+						merchant_uid: 'pm_' + new Date().getTime(),
+						name: cInfo.hospitalName,
 						amount: payTotal,
-						buyer_name: 'user1',
-						buyer_tel: '010-1234-5678', //연락처
+						buyer_name: myInfo.userId,
+						buyer_tel: myInfo.phone,
 					},
 					function (resp) {
 						if (resp.success) {
-							var payResp = resp.pay_method;
-							console.log(payResp);
 							console.log(resp);
-
-							//gotoOrder(payResp);
+							updateReserve(resp);
 						} else {
-							let msg = '결제에 실패하였습니다.';
-							alert(msg);
-							msg += ' : ' + resp.error_msg;
+							alert('결제에 실패하였습니다.');
+							let msg = resp.error_msg;
 							console.log(msg);
 						}
 					}
 				);
 			}
 
-			//예약정보 DB에 담기 위한 함수(form데이터 submit) - 결제방법(payMthd)을 가지고옴
-			function gotoOrder(payMthd) {
-				var formData = new FormData($('#orderForm')[0]);
+			// 예약 테이블 업데이트 + 결제 테이블 인서트 + 진료 테이블 업데이트
+			function updateReserve(resp) {
+				let formData = new FormData();
+
+				formData.append('reserveNo', rNo);
+				formData.append('orderNum', resp.merchant_uid);
+				formData.append('amount', resp.paid_amount);
+				formData.append('userId', resp.buyer_name);
+				formData.append('paymentMethod', resp.pg_provider);
+
 				$.ajax({
-					url: '/my/orderFormSubmit',
-					type: 'POST',
+					url: '/payment/updateReserve',
+					type: 'post',
 					data: formData,
 					processData: false,
 					contentType: false,
-					success: function (result) {
-						//3️⃣번째 : 결제정보를 DB에 담기위한 함수(예약번호, 결제방법 가지고 넘어감)
-						saveRsvtPay(result, payMthd);
+					success: function (res) {
+						if (res.result == true) {
+							alert(res.msg);
+							location.href = '/mypage';
+						} else {
+							alert(res.msg);
+						}
 					},
 					error: function (err) {
-						//수정
-						alert('결제에 실패하였습니다.');
+						alert('오류가 발생했습니다. 관리자에게 문의하세요.');
 						console.log(err);
-					},
-				});
-				//form데이터 submit
-				$('#orderForm').submit();
-			}
-
-			//3️⃣번째 : 결제정보를 DB에 담기위한 함수(예약번호, 결제방법 가지고 넘어옴)
-			function saveRsvtPay(result, payMthd) {
-				//결제금액, 결제방법, 예약번호를 변수에 담음
-				let payment = {
-					payAmt: $('#rsvtPay').val(),
-					payMthd: payMthd,
-					rsvtNo: result,
-				};
-				//ajax로 예약번호를 컨트롤러에 전달
-				$.ajax({
-					url: '/my/insertRsvtPayment',
-					type: 'post',
-					data: JSON.stringify(payment),
-					contentType: 'application/json; charset=utf-8',
-					success: function (rsvtNo) {
-						swal('성공!', '예약이 정상적으로 완료되었습니다.', 'success').then(function () {
-							//예약완료 페이지로 이동(예약번호 파라미터)
-							location.href = '/my/rsvtComplete/' + rsvtNo;
-						});
-					},
-					error: function (err) {
-						swal('앗!', '결제 실패..', 'error');
 					},
 				});
 			}
@@ -179,8 +177,55 @@
 
 	<body>
 		<div layout:fragment="content">
+			<h1 style="text-align: center; margin-bottom: 50px; margin-top: 50px; color: gray">- Payment -</h1>
+			<p>[[${cInfo}]]</p>
+			<p>[[${myInfo}]]</p>
+			<p>[[${rNo}]]</p>
 			<div class="container-fluid">
-				<p th:text="${rInfo}"></p>
+				<div class="container" style="margin-bottom: 50px">
+					<div class="card shadow mb-4">
+						<div
+							class="card-header py-3"
+							style="display: flex; justify-content: space-between; align-items: center"
+						>
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-user-nurse"></i>결제 정보
+							</h5>
+						</div>
+
+						<div class="card-body" style="display: flex; justify-content: center; align-items: center">
+							<table class="table" style="text-align: center">
+								<tr>
+									<th style="text-align: left; width: 200px; padding-left: 30px">- 진료번호</th>
+									<td th:text="${cInfo.clinicNo}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 병원이름</th>
+									<td th:text="${cInfo.hospitalName}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 담당의사</th>
+									<td th:text="${cInfo.DoctorName}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 진료과목</th>
+									<td th:text="${cInfo.subject}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 환자이름</th>
+									<td th:text="${cInfo.userName}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 진료일자</th>
+									<td th:text="${#dates.format(cInfo.clinicDate, 'yyyy-MM-dd')}"></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="container" style="text-align: center">
+					<p>총 결제 금액: 10000</p>
+				</div>
 				<div class="pay_what">
 					<div class="pay_list">
 						<label class="pay">
@@ -202,7 +247,7 @@
 					</div>
 				</div>
 				<div class="payEnd">
-					<h6 style="color: gray">주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</h6>
+					<!-- <h6 style="color: gray">주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</h6> -->
 					<button class="payEndBtn" onclick="paySubmit()">결제하기</button>
 				</div>
 				<button

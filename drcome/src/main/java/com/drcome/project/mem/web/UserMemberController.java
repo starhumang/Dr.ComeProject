@@ -1,6 +1,8 @@
 package com.drcome.project.mem.web;
 
 import com.drcome.project.FileUploadService;
+import com.drcome.project.main.service.ClinicPayVO;
+import com.drcome.project.main.service.PaymentVO;
 import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
@@ -20,6 +22,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -70,7 +73,7 @@ public class UserMemberController {
 	 */
 	@GetMapping("/userlogin")
 	public String userLogin() {
-		return "/member/memlogin";
+		return "member/memlogin";
 	}
 
 	/**
@@ -79,7 +82,7 @@ public class UserMemberController {
 	 */
 	@GetMapping("findAccount")
 	public String findAccount() {
-		return "/member/findAccount";
+		return "member/findAccount";
 	}
 
 	/**
@@ -173,7 +176,7 @@ public class UserMemberController {
 	 */
 	@GetMapping("/userjoin")
 	public String userJoinForm() {
-		return "/member/userjoin";
+		return "member/userjoin";
 	}
 
 	/**
@@ -219,7 +222,7 @@ public class UserMemberController {
 	 */
 	@GetMapping("/medicaljoin")
 	public String medicalJoinForm() {
-		return "/member/medicaljoin";
+		return "member/medicaljoin";
 	}
 
 	/**
@@ -304,7 +307,7 @@ public class UserMemberController {
 	public String userUpdateForm(@SessionAttribute(name = "userId", required = false) String id, Model model) {
 		UserMemberVO userInfo = memMapper.selectMem(id);
 		model.addAttribute("userInfo", userInfo);
-		return "/member/userupdate";
+		return "member/userupdate";
 	}
 
 	/**
@@ -356,26 +359,49 @@ public class UserMemberController {
 	public String myPage(@SessionAttribute(name = "userId", required = false) String id, Model model) {
 		UserMemberVO myprofile = memMapper.selectMem(id);
 		model.addAttribute("profile", myprofile);
+		
+		List<ReservationVO> rInfo = memMapper.selectUserReserveInfo(id);		
+		model.addAttribute("reserveMyList", rInfo);
 
-		String hospitalId = "krrlo";
-		int doctorNo = 123;
-
-		String date = "2024-02-13";
-		String reserveKindstatus = "c1";
-
-		List<Map<String, Object>> reserveMyList = hospitalService.getReserveDrList(hospitalId, doctorNo, date,
-				reserveKindstatus);
-		model.addAttribute("reserveMyList", reserveMyList);
-
-		return "/member/userpage";
+		return "member/usermypage";
 	}
 
-	// 결제
-	@GetMapping("/payment")
-	public String payment(@SessionAttribute(name = "userId", required = false) String id, Model model) {
-		List<ReservationVO> rInfo = memMapper.selectReserveInfo(id);
-		model.addAttribute("rInfo", rInfo);
+	// 결제 페이지
+	@GetMapping("/payment/{ReserveNo}")
+	public String payment(@PathVariable("ReserveNo") String ReserveNo, @SessionAttribute(name = "userId", required = false) String id, Model model) {
+		int reserveNo = Integer.parseInt(ReserveNo);
+		model.addAttribute("rNo", reserveNo);
+		
+		ClinicPayVO cInfo = memMapper.selectClinicPay(reserveNo);
+		model.addAttribute("cInfo", cInfo);
+		
+		UserMemberVO myInfo = memMapper.selectMem(id);
+		model.addAttribute("myInfo", myInfo);
+		
 		return "user/clinicPayment";
 	}
-
+	
+	// 결제 기능
+	@PostMapping("/payment/updateReserve")
+	@ResponseBody
+	public Map<String, Object> updateReserve(PaymentVO vo){		
+		Map<String, Object> response = new HashMap<String, Object>();
+		
+		try {
+			int cnt = userMemService.paymentUpdate(vo);
+			if (cnt > 0) {
+				response.put("result", true);
+				response.put("msg", "결제가 완료되었습니다.");
+			} else {
+				response.put("result", false);
+				response.put("msg", "오류가 발생했습니다. 관리자에게 문의하세요.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			response.put("result", false);
+			response.put("msg", "오류가 발생했습니다. 관리자에게 문의하세요.");
+		}
+		return response;
+	}
+	
 }

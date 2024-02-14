@@ -1,191 +1,169 @@
 <!DOCTYPE html>
 <html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{layouts/layout}"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}"
 >
-  <head>
-    <meta charset="UTF-8" />
-    <title>비대면 진료페이지</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
-      rel="stylesheet"
-    />
+	<head>
+		<meta charset="UTF-8" />
+		<title>비대면 진료페이지</title>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css" rel="stylesheet" />
 
-    <style>
-      #clist tr {
-        height: 50px;
-        /* 원하는 고정 높이를 지정합니다. */
-      }
+		<style>
+			#clist tr {
+				height: 50px;
+				/* 원하는 고정 높이를 지정합니다. */
+			}
 
-      .pagination a {
-        display: inline-block;
-        padding: 5px 10px;
-        margin: 0 2px;
-        border: 1px solid #ccc;
-        background-color: #fff;
-        color: #333;
-        text-decoration: none;
-      }
+			.pagination a {
+				display: inline-block;
+				padding: 5px 10px;
+				margin: 0 2px;
+				border: 1px solid #ccc;
+				background-color: #fff;
+				color: #333;
+				text-decoration: none;
+			}
 
-      .pagination a.active {
-        background-color: #4e73df;
-        color: #fff;
-        /* border: 1px solid #4e73df; */
-      }
+			.pagination a.active {
+				background-color: #4e73df;
+				color: #fff;
+				/* border: 1px solid #4e73df; */
+			}
 
-      .pagination a:hover {
-        background-color: #bfc5d8;
-      }
+			.pagination a:hover {
+				background-color: #bfc5d8;
+			}
 
-      .title {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-top: 10px;
-      }
+			.title {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+				margin-top: 10px;
+			}
 
-      .title-right {
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-      }
+			.title-right {
+				display: flex;
+				justify-content: flex-end;
+				align-items: center;
+			}
 
-      p {
-        margin-bottom: 0;
-      }
+			p {
+				margin-bottom: 0;
+			}
 
-      #full {
-        display: flex;
-        justify-content: space-around;
-      }
+			#full {
+				display: flex;
+				justify-content: space-around;
+			}
 
-      .select {
-        padding: 20px 10px;
-      }
+			.select {
+				padding: 20px 10px;
+			}
 
-      .select input[type="radio"] {
-        display: none;
-      }
+			.select input[type='radio'] {
+				display: none;
+			}
 
-      .select input[type="radio"] + label {
-        display: inline-block;
-        cursor: pointer;
-        height: 35px;
-        width: 120px;
-        border: 1px solid #858796;
-        border-radius: 7px;
-        line-height: 35px;
-        text-align: center;
-        /* font-weight: bold; */
-        font-size: 13px;
-      }
+			.select input[type='radio'] + label {
+				display: inline-block;
+				cursor: pointer;
+				height: 35px;
+				width: 120px;
+				border: 1px solid #858796;
+				border-radius: 7px;
+				line-height: 35px;
+				text-align: center;
+				/* font-weight: bold; */
+				font-size: 13px;
+			}
 
-      .select input[type="radio"] + label {
-        background-color: #ffffff;
-        color: #858796;
-      }
+			.select input[type='radio'] + label {
+				background-color: #ffffff;
+				color: #858796;
+			}
 
-      .select input[type="radio"]:checked + label {
-        background-color: #4e73df;
-        color: #fff;
-      }
+			.select input[type='radio']:checked + label {
+				background-color: #4e73df;
+				color: #fff;
+			}
 
-      input[type="checkbox"] {
-        zoom: 1.4;
-      }
+			input[type='checkbox'] {
+				zoom: 1.4;
+			}
 
-      #myButton {
-        float: right;
-      }
+			#myButton {
+				float: right;
+			}
 
-      #perscription {
-        display: none;
-      }
-    </style>
-  </head>
+			#perscription {
+				display: none;
+			}
+		</style>
+	</head>
 
-  <body>
-    <div layout:fragment="content">
-      <!--container-fluid-->
-      <div class="container-fluid">
-        <!--title-->
-        <div class="title" style="background-color: #06bbcc; padding: 5px">
-          <h3
-            style="
-              width: 80%;
-              text-align: center;
-              margin-bottom: 0;
-              padding-left: 120px;
-              color: white;
-            "
-          >
-            비대면 진료중
-          </h3>
+	<body>
+		<div layout:fragment="content">
+			<!--container-fluid-->
+			<div class="container-fluid">
+				<!--title-->
+				<div class="title" style="background-color: #06bbcc; padding: 5px">
+					<h3 style="width: 80%; text-align: center; margin-bottom: 0; padding-left: 120px; color: white">
+						비대면 진료중
+					</h3>
 
-          <!--title-right-->
-          <div class="title-right">
-            <p style="margin-right: 15px">
-              <i class="fas fa-fw fa-calendar"></i> 현재날짜:
-              <span
-                th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
-              ></span>
-            </p>
-            <button
-              onclick="payment()"
-              class="btn btn-dark"
-              style="margin-right: 15px"
-            >
-              나가기
-            </button>
-          </div>
-          <!--title-right--->
-        </div>
-        <!--title-->
+					<!--title-right-->
+					<div class="title-right">
+						<p style="margin-right: 15px">
+							<i class="fas fa-fw fa-calendar"></i> 현재날짜:
+							<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+						</p>
+						<button onclick="payment()" class="btn btn-dark" style="margin-right: 15px">나가기</button>
+					</div>
+					<!--title-right--->
+				</div>
+				<!--title-->
 
-        <!--비디오-->
-        <div style="height: 100vh">
-          <div
-            id="video"
-            style="
-              width: 100%;
-              display: flex;
-              justify-content: center;
-              margin-top: 5%;
-            "
-          >
-            <video id="localVideo" autoplay width="40%" height="52%"></video>
-            <video id="remoteVideo" autoplay width="40%" height="52%"></video>
-          </div>
-        </div>
-        <!--비디오-->
+				<!--비디오-->
+				<div style="height: 100vh">
+					<div id="video" style="width: 100%; display: flex; justify-content: center; margin-top: 5%">
+						<video id="localVideo" autoplay width="40%" height="52%"></video>
+						<video id="remoteVideo" autoplay width="40%" height="52%"></video>
+					</div>
+				</div>
+				<!--비디오-->
 
-        <!--bottom-->
-        <div
-          style="
-            width: 100%;
-            height: 43px;
-            margin-bottom: 0;
-            margin-top: 15px;
-            padding-left: 120px;
-            background-color: #06bbcc;
-          "
-        ></div>
-        <!--bottom-->
+				<!--bottom-->
+				<div
+					style="
+						width: 100%;
+						height: 43px;
+						margin-bottom: 0;
+						margin-top: 15px;
+						padding-left: 120px;
+						background-color: #06bbcc;
+					"
+				></div>
+				<!--bottom-->
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-        <script src="/js/socket.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-        <link
-          href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
-          rel="stylesheet"
-        />
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+				<script src="/js/socket.js"></script>
+				<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+				<link
+					href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
+					rel="stylesheet"
+				/>
 
-        <script th:inline="javascript"></script>
-      </div>
-      <!--container-fluid-->
-    </div>
-    <!--<div layout:fragment="content">-->
-  </body>
+				<script th:inline="javascript">
+					let rNo = [[${rNo}]];
+					function payment() {
+						location.href = '/payment/' + rNo;
+					}
+				</script>
+			</div>
+			<!--container-fluid-->
+		</div>
+		<!--<div layout:fragment="content">-->
+	</body>
 </html>

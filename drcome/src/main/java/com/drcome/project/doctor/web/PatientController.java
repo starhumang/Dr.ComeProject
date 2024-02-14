@@ -58,9 +58,9 @@ public class PatientController {
 	}
 
 	// 비대면 진료 - 환자
-	@GetMapping("untactPatient")
-	public String untactPatient(PatientVO vo, Model model) {
-
+	@GetMapping("untactPatient/{reserveNo}")
+	public String untactPatient(@PathVariable("reserveNo") String reserveNo, PatientVO vo, Model model) {
+		model.addAttribute("rNo", reserveNo);
 		return "doctor/untactPatient";
 
 	}

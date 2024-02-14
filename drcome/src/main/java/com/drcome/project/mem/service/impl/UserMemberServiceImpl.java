@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,6 +16,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.drcome.project.main.service.PaymentVO;
 import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.mem.mapper.UserMemberMapper;
@@ -161,6 +163,28 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
         
         // 탈퇴 처리        
         return mapper.deleteUser(user);
+	}
+	
+	@Override
+	@Transactional
+	public int paymentUpdate(PaymentVO vo) {
+		
+		// 예약 번호
+		int reserveNo = vo.getReserveNo();
+		
+		// 예약 테이블 업데이트
+		int result = mapper.updateReserve(reserveNo); 
+		
+		// 결제 테이블 인서트
+		result = mapper.insertPayment(vo);
+		
+		// 결제 번호
+		int paymentNo = vo.getPaymentNo();
+		
+		// 진료 테이블 업데이트
+		result = mapper.updatePayment(reserveNo, paymentNo);
+		
+		return result;
 	}
 
 //	시큐리티 로그인 검증

@@ -21,6 +21,13 @@ import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 import com.drcome.project.pharmacy.service.PharmacyService;
 
+/** 약국 사용자 페이지(처방내역 조회, 처방현황 확인, 정보 수정)
+ * 
+ * @author 최해주
+ * @since 2024.02
+ *
+ */
+
 @Controller
 public class PharmacyController {
 
@@ -31,7 +38,14 @@ public class PharmacyController {
 	public String home() {
 		return "pharmacy/home";
 	}
-
+	
+	/**
+	 * 약국별 정보 조회
+	 * @param principal 세션
+	 * @param pharmacyVO 약국 정보
+	 * @param model 화면모델
+	 * @return pharmacy/pharmacyInfo
+	 */
 	@GetMapping("/pharmacy/info")
 	public String pharmacy(Principal principal, PharmacyVO pharmacyVO, Model model) {
 		String pharmacyId = principal.getName();
@@ -40,9 +54,15 @@ public class PharmacyController {
 		model.addAttribute("pinfo", findVO);
 		return "pharmacy/pharmacyInfo";
 	}
-
+	
+	/**
+	 * 약국 처방현황 페이지
+	 * @param principal 세선
+	 * @param pharmacyId
+	 * @return pharmacy/perscriptionStatus
+	 */
 	@GetMapping("/pharmacy/status")
-	public String pharmacyprint(String date, Principal principal, String pharmacyId, Model model) {
+	public String pharmacyprint(Principal principal, String pharmacyId) {
 		pharmacyId = principal.getName();
 		/*
 		 * List<Map<String, Object>> plist = pservice.selectPrescriptionList(date,
@@ -51,6 +71,14 @@ public class PharmacyController {
 		return "pharmacy/perscriptionStatus";
 	}
 
+	/**
+	 * 날짜별 처방내역/현황 리스트 조회
+	 * @param principal 세션
+	 * @param page 페이징
+	 * @param date 날짜 조건
+	 * @param parammap 검색조건 정보
+	 * @return map
+	 */
 	@GetMapping("/pharmacy/status/{date}")
 	@ResponseBody
 	public Map<String, Object> pharmacyList(Principal principal, 
@@ -101,7 +129,13 @@ public class PharmacyController {
 		
 		return map;
 	}
-
+	
+	/**
+	 * 처방전 반환 시, 반환 사유를 저장
+	 * @param id 세션
+	 * @param pharmacyselectVO 상태수정 정보
+	 * @return pservice.updaterejection(pharmacyselectVO)
+	 */
 	@PostMapping("/pharmacy/rejection")
 	@ResponseBody
 	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, PharmacySelectVO pharmacyselectVO) {
@@ -109,13 +143,18 @@ public class PharmacyController {
 		pharmacyselectVO.setPharmacyId(id);
 		return pservice.updaterejection(pharmacyselectVO);
 	}
-
-	@ModelAttribute("pharmacy")
-	public PharmacyVO getServer() {
-		PharmacyVO pharmacyVO = new PharmacyVO();
-		String pharmacyId = "pharmacy1";
-		pharmacyVO.setPharmacyId(pharmacyId);
-		PharmacyVO findVO = pservice.selectPharmacyInfo(pharmacyVO);
+	
+	/**
+	 * 약국 정보 조회(공통 사용)
+	 * @return findVO
+	 */
+	@ModelAttribute("pharmacy") 
+	public PharmacyVO getServer() { 
+		PharmacyVO
+		pharmacyVO = new PharmacyVO(); String pharmacyId = "pharmacy1";
+		pharmacyVO.setPharmacyId(pharmacyId); PharmacyVO findVO =
+		pservice.selectPharmacyInfo(pharmacyVO); 
 		return findVO;
 	}
+	
 }

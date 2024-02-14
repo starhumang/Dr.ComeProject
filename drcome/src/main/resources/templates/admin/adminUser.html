@@ -46,15 +46,16 @@
                 name="btnradio"
                 id="btnradio1"
                 autocomplete="off"
-                checked
+                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/user')}"
+                onclick="window.location.href='/admin/user'"
               />
               <label
                 class="btn btn-outline-dark"
                 for="btnradio1"
                 style="
                   border-top-left-radius: 0.35rem;
-                  border-bottom-left-radius: 0.35rem;
-                "
+                  border-bottom-left-radius: 0.35rem;"
+                
                 >전체회원</label
               >
               <input
@@ -63,8 +64,10 @@
                 name="btnradio"
                 id="btnradio2"
                 autocomplete="off"
+                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/userc')}"
+               onclick="window.location.href='/admin/userc'"
               />
-              <label class="btn btn-outline-dark" for="btnradio2"
+              <label class="btn btn-outline-dark" for="btnradio2" 
                 >일반회원</label
               >
               <input
@@ -73,8 +76,10 @@
                 name="btnradio"
                 id="btnradio3"
                 autocomplete="off"
+                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/userw')}"
+                onclick="window.location.href='/admin/userw'"
               />
-              <label class="btn btn-outline-dark" for="btnradio3"
+              <label class="btn btn-outline-dark" for="btnradio3" 
                 >탈퇴회원</label
               >
             </div>
@@ -87,6 +92,7 @@
                 id="dataTable"
                 width="100%"
                 cellspacing="0"
+                style="min-height: 556px"
               >
                 <thead>
                   <tr>
@@ -100,20 +106,19 @@
                   </tr>
                 </thead>
                 <tbody id="tbody">
-                  <!--/* <tr th:each="usertable : ${list}">
-									<td th:text="${usertable.userId}"></td>
-									<td th:text="${usertable.userName}"></td>
-									<td th:text="${usertable.phone}"></td>
-									<td th:text="${#dates.format(usertable.birthday, 'yyyy-MM-dd')}"></td>
-									<td th:text="${usertable.gender}"></td>
-									/* <td>==[[${usertable.userStatus}]]==</td> */
-									<td
-										th:if="${usertable.grade == 'USER' && usertable.userStatus != 'a2  '}">일반회원</td>
-									<td th:if="${usertable.grade == 'ADMIN'}">관리자</td>
-									<td th:if="${usertable.userStatus == 'a2  '}">탈퇴회원</td>
-									<td
-										th:text="${#dates.format(usertable.joindate, 'yyyy-MM-dd')}"></td>
-								</tr> */-->
+                  <tr th:each="usertable : ${list}">
+					<td th:text="${usertable.userId}"></td>
+					<td th:text="${usertable.userName}"></td>
+					<td th:text="${usertable.phone}"></td>
+					<td th:text="${#dates.format(usertable.birthday, 'yyyy-MM-dd')}"></td>
+					<td th:text="${usertable.gender}"></td>
+					<td
+						th:if="${usertable.grade == 'USER' && usertable.userStatus != 'a2  '}">일반회원</td>
+					<td th:if="${usertable.grade == 'ADMIN'}">관리자</td>
+					<td th:if="${usertable.userStatus == 'a2  '}">탈퇴회원</td>
+					<td
+						th:text="${#dates.format(usertable.joindate, 'yyyy-MM-dd')}"></td>
+				</tr>
                 </tbody>
               </table>
             </div>
@@ -122,35 +127,33 @@
       </div>
       <!-- 페이징 컴포넌트 -->
       <div aria-label="Page navigation">
-        <!--/* <ul class="pagination justify-content-center">
-          <li th:class="${list.first ? 'page-item disabled' : 'page-item'}">
-            <a
-              class="page-link"
-              th:href="@{/admin/user(pageNo=0)}"
-              tabindex="-1"
-              aria-disabled="true"
-              >Previous</a
-            >
-          </li>
-          <li
-            th:each="i : ${#numbers.sequence(0, list.totalPages - 1)}"
-            th:class="${i == list.number ? 'page-item active' : 'page-item'}"
-          >
-            <a
-              class="page-link"
-              th:href="@{/admin/user(pageNo=${i})}"
-              th:text="${i + 1}"
-            ></a>
-          </li>
-          <li th:class="${list.last ? 'page-item disabled' : 'page-item'}">
-            <a
-              class="page-link"
-              th:href="@{/admin/user(pageNo=${list.totalPages - 1})}"
-              >Next</a
-            >
-          </li>
-        </ul> */-->
-      </div>
+<!--/*     <th:block th:with="basePath">
+        <th:block th:if="${#strings.contains(#httpServletRequest.requestURI, '/admin/user')}">
+            /admin/user
+        </th:block>
+        <th:block th:if="${#strings.contains(#httpServletRequest.requestURI, '/admin/userc')}">
+            /admin/userc
+        </th:block>
+        <th:block th:if="${#strings.contains(#httpServletRequest.requestURI, '/admin/userw')}">
+            /admin/userw
+        </th:block>
+    </th:block> */-->
+    <ul class="pagination justify-content-center">
+        <li th:class="${list.first ? 'page-item disabled' : 'page-item'}">
+            <a class="page-link" th:href="@{/admin/user(pageNo=0)}" tabindex="-1" aria-disabled="true">Previous</a>
+        </li>
+        <li th:each="i : ${#numbers.sequence(0, list.totalPages - 1)}"
+            th:class="${i == list.number ? 'page-item active' : 'page-item'}">
+            <a class="page-link"
+               th:href="@{/admin/user(pageNo=${i})}"
+               th:text="${i + 1}"></a>
+        </li>
+        <li th:class="${list.last ? 'page-item disabled' : 'page-item'}">
+            <a class="page-link"
+               th:href="@{/admin/user(pageNo=${list.totalPages - 1})}">Next</a>
+        </li>
+    </ul>
+</div>
     </div>
   </body>
 </html>

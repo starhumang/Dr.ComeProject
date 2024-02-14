@@ -22,10 +22,32 @@
 label {
 	width: 400px;
 }
+
+.container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.card-body {
+    background-color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    width: 400px; /* 카드 너비 설정 */
+    justify-content: center;
+    align-items: center;
+}
+
+/* 추가된 CSS 스타일: SweetAlert2 */
+.swal2-popup {
+    font-size: 1rem !important;
+}
 </style>
 </head>
 <body>
 <div layout:fragment="content" class="container">
+	<div class="card-body">
 	<!-- <h3 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}">To Do List</h3> -->
 	<h3>To Do List </h3>
 	<p th:text="${date}" id="dateValue" ></p>
@@ -58,6 +80,7 @@ label {
 			</th:block>
 		</th:block>
 	</form>
+</div>
 </div>
 </body>
 </html>

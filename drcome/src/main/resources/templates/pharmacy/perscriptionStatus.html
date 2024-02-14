@@ -59,6 +59,67 @@
 	display: flex;
 	justify-content: right;
 }
+
+/* 모달 배경 */
+.modal-content {
+    border-radius: 10px;
+}
+
+/* 모달 헤더 */
+.modal-header {
+    background-color: #06bbcc; /* 헤더 배경 색상 */
+    color: #fff; /* 헤더 글자 색상 */
+    border-bottom: none; /* 헤더 아래 테두리 없애기 */
+    border-radius: 10px 10px 0 0; /* 헤더 모서리를 둥글게 만들기 */
+}
+
+/* 모달 제목 */
+.modal-title {
+    font-weight: bold;
+}
+
+/* 모달 바디 */
+.modal-body {
+    padding: 20px;
+}
+
+/* 모달 테이블 */
+#modalTable {
+    width: 100%;
+}
+
+#modalTable th,
+#modalTable td {
+    padding: 10px;
+    border-bottom: 1px solid #dee2e6; /* 테이블 셀 테두리 */
+}
+
+/* 모달 푸터 */
+.modal-footer {
+    border-top: none; /* 푸터 위 테두리 없애기 */
+    border-radius: 0 0 10px 10px; /* 푸터 모서리를 둥글게 만들기 */
+}
+
+/* 버튼 */
+.btn-primary {
+    background-color: #007bff; /* 버튼 배경 색상 */
+    border-color: #007bff; /* 버튼 테두리 색상 */
+}
+
+.btn-primary:hover {
+    background-color: #0056b3; /* 마우스 호버시 버튼 배경 색상 */
+    border-color: #0056b3; /* 마우스 호버시 버튼 테두리 색상 */
+}
+
+/* 폼 */
+.form-check-label {
+    font-weight: normal; /* 폼 라벨 텍스트 정상 굵기 */
+}
+
+/* 폼 라디오 버튼 */
+.form-check-input[type="radio"] {
+    margin-top: 5px; /* 폼 라디오 버튼 위 여백 */
+}
 </style>
 </head>
 <body>
@@ -169,12 +230,12 @@
 		<!-- 반환 modal -->
 		<div class="modal fade" id="returnModal" tabindex="-1"
 			aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog">
+			<div class="modal-dialog modal-dialog-centered">
 				<div class="modal-content">
 					<div class="modal-header">
 						<h5 class="modal-title" id="exampleModalLabel">반환 사유</h5>
 						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"></button>
+							aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
 					</div>
 					<div class="modal-body container">
 						<form id="returnform">
@@ -197,9 +258,9 @@
 								<input class="form-check-input" type="radio"
 									name="flexRadioDefault" id="flexRadioDefault4"  /> <label
 									for="message-text" class="col-form-label">기타</label>
-								<!-- <div>
-									<textarea class="form-control" id="message-text"></textarea>
-								</div> -->
+								<div id="message-text" style="display: none;">
+									<textarea class="form-control" ></textarea>
+								</div>
 							</div>
 						</form>
 						<div class="modal-footer">
@@ -390,6 +451,21 @@ $("#datepicker").on("change", function () {
 
 $(document).ready(function() {
     sendDate(page); 
+    
+    if ($('#flexRadioDefault4').is(':checked')) {
+        $('#message-text').show();
+    } else {
+        $('#message-text').hide();
+    }
+    
+    // 라디오 버튼 변경 시 이벤트 처리
+    $('input[name="flexRadioDefault"]').on('change', function(){
+        if ($(this).attr('id') === 'flexRadioDefault4') {
+            $('#message-text').show().find('textarea').focus();
+        } else {
+            $('#message-text').hide().find('textarea').val('');
+        }
+    });
 });
 
 function createTable(plist) {
@@ -425,10 +501,9 @@ function createTable(plist) {
                     class="btn btn-info"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModalCenter"
-                  >
-                    미리보기
+                  ><i class="fas fa-solid fa-file-medical"></i>
                   </button></td>`);
-	        row.append(`<td><button class="btn btn-warning">출력</button></td>`);
+	        row.append(`<td><button class="btn btn-warning"><i class="fas fa-solid fa-print"></i></button></td>`);
 	        row.append(`<td><button
                     id="returnbtn"
                     class="btn btn-danger"
@@ -474,8 +549,7 @@ function createTable2(plist) {
                     class="btn btn-info"
                     data-bs-toggle="modal"
                     data-bs-target="#exampleModalCenter"
-                  >
-                    미리보기
+                  ><i class="fas fa-solid fa-file-medical"></i>
                   </button></td>`);
 	    }
 };
@@ -547,7 +621,15 @@ $("#reperscript").on("click", function () {
     var checkedValue = $("input[name='flexRadioDefault']:checked");
     var checkedId = checkedValue.attr('id');
     var checkedLabel = $("label[for='" + checkedId + "']").text();
-    console.log('반환사유: ', checkedLabel);
+    var rejectionReason;
+
+    if (checkedId === 'flexRadioDefault4') {
+        rejectionReason = $("#message-text textarea").val(); // 기타 선택 시 입력된 내용 가져오기
+    } else {
+        rejectionReason = checkedLabel; // 다른 선택지일 경우 라벨 텍스트 가져오기
+    }
+
+    console.log('반환사유: ', rejectionReason);
     console.log('진료번호ddd', clinicNo);
 
     // AJAX 요청을 통해 서버 엔드포인트로 데이터 전송
@@ -555,7 +637,7 @@ $("#reperscript").on("click", function () {
         type: "POST",
         url: "/pharmacy/rejection",
         data: {
-            rejection: checkedLabel,
+            rejection: rejectionReason,
             clinicNo: clinicNo
         },
         dataType: 'json',
@@ -574,4 +656,5 @@ $("#reperscript").on("click", function () {
 $('#searchBtn').on("click", function() {
 	sendDate(1);
 })
+
 </script>

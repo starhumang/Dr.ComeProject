@@ -33,4 +33,7 @@ public interface PharmacyMapper {
 	
 	/* 약국별 처방 내역 페이징 */
 	public int perLastcount(Map<String, Object> map);
+	
+	/* 처방전 출력시 update */
+	public int printupdate(int pharmacySelectno);
 }

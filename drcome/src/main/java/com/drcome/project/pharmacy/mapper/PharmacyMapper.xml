@@ -463,4 +463,10 @@
             </if>
        </if>
    </sql>
+   
+   <update id="printupdate" parameterType="int">
+   	UPDATE pharmacy_select 
+   	   SET print_status = '출력완료' 
+   	 WHERE pharmacy_selectno = #{pharmacySelectno}
+   </update>
 </mapper>

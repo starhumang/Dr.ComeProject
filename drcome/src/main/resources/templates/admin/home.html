@@ -3,22 +3,24 @@
 	layout:decorate="~{admin/adminLayout}">
 
 <head>
-	<meta charset="UTF-8" />
-	<title>Insert title here</title>
-	<style>
+<meta charset="UTF-8" />
+<title>Insert title here</title>
+<style>
+#dashname {
+	margin: 10px 10px
+}
 
-		#dashname {
-			margin: 10px 10px
-		}
-	</style>
+#logout {
+	display: flex;
+	justify-content: right;
+	padding-right: 30px;
+}
+</style>
 </head>
 
 <body>
 	<div layout:fragment="content">
 		<div class="container-fluid">
-			<!-- <div class="user-logout-link">
-				<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
-			</div> -->
 			<p id="dashname">Admin Dashboard</p>
 			<div class="row">
 				<!-- Earnings (Monthly) Card Example -->
@@ -47,7 +49,7 @@
 								<div class="col mr-2">
 									<div class="text-xs font-weight-bold text-success text-uppercase mb-1">
 										병원 사용자 수</div>
-									<div class="h5 mb-0 font-weight-bold text-gray-800">143</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800">[[${totalCounth}]]</div>
 								</div>
 								<div class="col-auto">
 									<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -65,7 +67,7 @@
 								<div class="col mr-2">
 									<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
 										약국 사용자 수</div>
-									<div class="h5 mb-0 font-weight-bold text-gray-800">212</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800">[[${totalCountp}]]</div>
 								</div>
 								<div class="col-auto">
 									<i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -182,6 +184,9 @@
 					</div>
 				</div>
 			</div>
+		</div>
+		<div class="user-logout-link" id="logout">
+				<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
 		</div>
 	</div>
 

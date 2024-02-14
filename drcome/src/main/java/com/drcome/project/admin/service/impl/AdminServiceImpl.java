@@ -60,13 +60,15 @@ public class AdminServiceImpl implements AdminService {
 		return prepo.findBypharmacyStatus(phamacyStatus, pageable);
 	}
 
-	/*
-	 * @Override public Page<Usertable> getgeneraluser(String userStatus, int
-	 * pageNo, int pageSize) { Pageable pageable = PageRequest.of(pageNo, pageSize);
-	 * return urepo.findByuserStatus(userStatus, pageable); }
-	 * 
-	 * @Override public Page<Usertable> getwithdrawaluser(String userStatus, int
-	 * pageNo, int pageSize) { Pageable pageable = PageRequest.of(pageNo, pageSize);
-	 * return urepo.findByuserStatus(userStatus, pageable); }
-	 */
+
+	@Override public Page<Usertable> getgeneraluser(String userStatus, int pageNo, int pageSize) { 
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		return urepo.findByuserStatus(userStatus, pageable); 
+	}
+	
+	@Override public Page<Usertable> getwithdrawaluser(String userStatus, int pageNo, int pageSize) { 
+		Pageable pageable = PageRequest.of(pageNo, pageSize);
+		return urepo.findByuserStatus(userStatus, pageable); 
+	}
+
 }

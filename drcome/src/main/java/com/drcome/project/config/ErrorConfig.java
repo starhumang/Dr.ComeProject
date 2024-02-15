@@ -1,4 +1,4 @@
-package com.drcome.project;
+package com.drcome.project.config;
 
 import org.springframework.boot.web.server.ErrorPage;
 import org.springframework.boot.web.servlet.server.ConfigurableServletWebServerFactory;

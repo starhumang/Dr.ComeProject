@@ -36,7 +36,7 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
-<style>
+<style scoped>
 .bb {
 	display: inline;
 	width: 200px;
@@ -244,7 +244,9 @@ thead tr:nth-child(3) th {
 									<td style="vertical-align:middle;"><input type="radio" name="doctor"
 										onclick="chooseDoctor()" /></td>
 									<td class="docName" th:text="${doc.doctorName}" style="vertical-align:middle;"></td>
-									<td th:text="${doc.subject}" style="vertical-align:middle;"></td>
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<td th:if="${doc.subject} == ${detailCode.detailCode}" th:text="${detailCode.codeName}" style="vertical-align:middle;"></td>
+									</th:block>
 									<td class="docHol" th:text="${doc.holiday}" style="vertical-align:middle;"></td>
 									<td>
 										<div th:each="drTime : ${doc.times}" class="doctorTime">

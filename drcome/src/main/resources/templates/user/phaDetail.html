@@ -7,7 +7,7 @@
 <meta charset="UTF-8" />
 <title>약국 상세페이지</title>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
-<style>
+<style scoped>
 .head_info {
 	display: flex;
 	justify-content: space-between;
@@ -64,15 +64,13 @@
 										<th style="text-align:left;padding-left:30px;">- 팩스번호</th>
 										<td th:text="${pha.pharmacyFax}"></td>
 									</tr>
-									<th:block th:each="detailCode : ${application.detailCode_i}">
-										<tr th:if="${detailCode.detailCode} == ${pha.holiday}">
-											<th style="text-align:left;padding-left:30px;" >- 휴무일</th>
-											<th:block th:each="detailCode : ${application.detailCode_i}">
+									<tr class="holiday">
+										<th style="text-align:left;padding-left:30px;" >- 휴무일</th>	
+										<th:block th:each="detailCode : ${application.detailCode_i}">
 											<td th:if="${detailCode.detailCode == pha.holiday and #strings.length(pha.holiday) < 3}"  th:text="${detailCode.codeName}" class="oneday"></td>
 											<td th:unless="${detailCode.detailCode == pha.holiday and #strings.length(pha.holiday) < 3}" th:text="${pha.holiday}" class="moreday" style="display:none;"></td>
 										</th:block>
-										</tr>
-									</th:block>
+									</tr>
 									<tr>
 										<th style="text-align:left;padding-left:30px;">- 운영시간</th>
 										<td th:text="|${pha.opentime} ~ ${pha.closetime}|"></td>
@@ -84,7 +82,7 @@
 						<script th:inline="javascript">
 						function dayday(){
 							let holiday = document.querySelector('.holiday');
-							//console.log("holiday", holiday);
+							console.log("holiday", holiday);
 							
 							//요일이 여러개일때의 작업
 							//클래스가 oneday인 td가 없으면 코드를 잘라서 요일로 변환 후 td를 새로 생성해서 append 해주는 작업
@@ -93,9 +91,9 @@
 							console.log(day);//i1,i2,i3
 							let days = day.split(',');
 							let realdays = ''; //월화수
-							//console.log(days.length);
+							console.log(days.length);
 							let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
-							//console.log("dayList=",dayList["i2"])
+							console.log("dayList=",dayList["i2"])
 							days.forEach((ele, index)=>{
 								console.log(dayList[ele]);
 								realdays += dayList[ele] + ' ';

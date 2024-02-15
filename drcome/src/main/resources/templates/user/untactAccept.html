@@ -10,7 +10,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-<style>
+<style scoped>
 .bb {
 	display: inline;
 	width: 200px;
@@ -228,7 +228,9 @@ thead tr:nth-child(3) th {
 									<td style="vertical-align:middle;"><input type="radio" name="doctor"
 										onclick="chooseDoctor()" /></td>
 									<td class="docName" th:text="${doc.doctorName}" style="vertical-align:middle;"></td>
-									<td th:text="${doc.subject}" style="vertical-align:middle;"></td>
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<td th:if="${doc.subject} == ${detailCode.detailCode}" th:text="${detailCode.codeName}" style="vertical-align:middle;"></td>
+									</th:block>
 									<td class="docHol" th:text="${doc.holiday}" style="vertical-align:middle;"></td>
 									<td>
 										<div th:each="drTime : ${doc.times}" class="doctorTime">
@@ -304,8 +306,8 @@ thead tr:nth-child(3) th {
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 					<div class="modal-body" style="padding: 50px 30px 50px 30px;">
-						<h4 style="margin-bottom: 20px;">현재 대기인원은 명이며</h4>
-						<h4 style="margin-bottom: 20px;">예상대기 시간은 입니다.</h4>
+						<h4 style="margin-bottom: 20px;" class="pCount" >현재 대기인원은 명이며</h4>
+						<h4 style="margin-bottom: 20px;" class="wait">예상대기 시간은 입니다.</h4>
 						<hr>
 						<p style="color:red">* 예상대기시간은 달라질 수 있으며 <br/>병원 사정에 따라 대기가 취소될 수 있습니다.</p>
 						<br>
@@ -339,14 +341,14 @@ thead tr:nth-child(3) th {
 			let restday = document.querySelectorAll('.docHol');
 			restday.forEach((ele)=>{
 				let splitRestday = ele.innerText.split(',');
-				console.log("splitRestday", splitRestday);
+				//console.log("splitRestday", splitRestday);
 				splitRestday.forEach((item)=>{
 					let array = dayList[item];
-					console.log("array",array);
-					console.log("curDay",curDay);
+					//console.log("array",array);
+					//console.log("curDay",curDay);
 					if(curDay == array){
 						let tr = ele.closest('tr');
-						console.log(tr);
+						//console.log(tr);
 						tr.style.backgroundColor="lightgray";
 						tr.disabled=true;
 						tr.querySelector('input').disabled=true;
@@ -363,7 +365,15 @@ thead tr:nth-child(3) th {
 			let holiday = tr.querySelector('.docHol').innerText;
 			document.querySelector('.name').innerText=docName; //이름뽑아오기
 		}
-	
+		
+		
+		
+		
+		//아래 함수에서 불러올 자료
+		let waitingPP;  //대기 인원수
+		let canClinicNow; //할 수 있는 가장 빠른예약시간
+		let ClinicYN;//진료시간 넘겼는지 안 남겼는지 여부(false가 넘긴거임))
+		
 		//제출했을때 제출자료 검사하는 함수
 		function checkData(){
 			//검사용
@@ -413,16 +423,105 @@ thead tr:nth-child(3) th {
 				}),
 				success:function(response){
 					console.log('성고옹');
+					console.log(response);
+					
+					waitingPP = response.waitingPP;
+					canClinicNow = response.canClinicNow
+					ClinicYN = response.ClinicYN
+					
+					console.log("waitingPP",waitingPP);
+					console.log("canClinicNow",canClinicNow);
+					console.log("ClinicYN",ClinicYN);
+					
+					
+					document.querySelector('.pCount').innerText = '현재 대기인원은 '+waitingPP+'명이며'
+					let date = new Date;
+					let minutes = date.getMinutes();
+					
+					if(minutes > 30){
+						minutes = 60 - minutes;
+					}else{
+						minutes = 30 -minutes;
+					}
+					console.log("minutes",minutes);
+					let waitingTime = (waitingPP * 30) + minutes;
+										
+					document.querySelector('.wait').innerText = '예상 대기시간은 '+ waitingTime + '분 입니다.'
+					
 				},
 				error:function(jqXHR, textStatus, errorThrown){
-					console.log('작렬히 실패..');
+					console.error("실패애:", textStatus, errorThrown);
+// 					Swal.fire({
+// 			   			  title: "오늘 예약이 꽉 차서 대기할 수 없습니다",
+// 			   			  html: '다음날 다시 시도하시거나 예약을 해 주시기 바랍니다.',
+// 			   			  icon: "error"
+// 			   			});
 				}
 			})
 		}
 		
+		
 		//대기하기
 		function waiting(){
-			
+
+			//가장 가까운 시간대로 비대면 예약 inserts
+			if(ClinicYN){
+				let date = new Date();
+				let hospitalId = [[${hospitalId}]];//병원아이디
+	 			let userId = [[${userId}]]//유저아이디
+				let reserveYear = date.getFullYear(); //년도
+				let reserveMonth = (date.getMonth() + 1).toString().padStart(2, '0'); //월(2자리 고정 빈값엔 0이 들어감)
+				let reserveDay = date.getDate(); //일
+				let symptom = document.querySelector('#textarea').value; //증상
+				let reserveTime = canClinicNow; // 예약시간
+				let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
+				let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
+				console.log("제출항목들 = ",hospitalId," , ",userId," , ",doctorNo," , ",reserveYear," , ",reserveMonth," , ",reserveDay," , ",symptom," , ",reserveTime);
+
+				
+				$.ajax("/untactReserve",{
+					type:"post",
+					contentType:"application/json",
+					data : JSON.stringify({
+						"hospitalId" : hospitalId,
+						"userId" : userId,
+						"doctorNo" : doctorNo,
+						"reserveYear" : reserveYear,
+						"reserveMonth" : reserveMonth,
+						"reserveDay" : reserveDay,
+						"symptom" : symptom,
+						"reserveTime" : reserveTime
+					}),
+					
+					success: function(response){
+						Swal.fire({
+				   			  title: "접수가 완료되었습니다!",
+				   			  html: '화상 진료하기 전 알람을 따로 드리니 <br> 안심하고 기다려주세요',
+				   			  icon: "success"
+				   			}).then(result=>{
+				   				if(result.value){
+				   					window.location.href = "/mypage";
+				   				}
+				   			})
+						
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+					        console.error("에러 발생:", textStatus, errorThrown);
+					     Swal.fire({
+			   			  title: "예약실패",
+			   			  html: '뭔가 문제가 있음ㄴ',
+			   			  icon: "error"
+			   			});
+					}
+				})
+			}else{
+				Swal.fire({
+		   			  title: "오늘 예약이 꽉 차서 대기할 수 <br> 없습니다",
+		   			  html: '다른날 다시 시도해주시기 바랍니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
 		}
 		
 		//예약하기

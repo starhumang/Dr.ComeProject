@@ -114,8 +114,7 @@
 		<select id="checkClinicHistory" resultType="int">
 	    	SELECT COUNT(CLINIC_NO) 
 	        FROM CLINIC
-	        WHERE PATIENT_NO = (SELECT PATIENT_NO FROM PATIENT WHERE USER_ID= #{userId})
-	        AND HOSPITAL_ID = #{hospitalId}
+	        WHERE PATIENT_NO = (SELECT PATIENT_NO FROM PATIENT WHERE USER_ID= #{userId} AND HOSPITAL_ID = #{hospitalId})
     	</select>
     	
     	<!-- 당일 해당 병원에 예약기록이 있는지 확인하기(같은병원 같은시간 예약중복 방지) -->
@@ -192,7 +191,7 @@
                         OR  (TO_CHAR(SYSDATE, 'd') = '5' AND DAY = 'i4') --목요일
                         OR  (TO_CHAR(SYSDATE, 'd') = '6' AND DAY = 'i5') --금요일
                         OR  (TO_CHAR(SYSDATE, 'd') = '7' AND DAY = 'i6') --토요일
-                    )) DOCTOR_MINTIME,
+                    )) AS "DOCTOR_MINTIME",
              (SELECT MAX(TIME)
                     FROM DOCTOR_TIME
                     WHERE DOCTOR_NO = #{doctorNo}
@@ -204,7 +203,7 @@
                         OR  (TO_CHAR(SYSDATE, 'd') = '5' AND DAY = 'i4') --목요일
                         OR  (TO_CHAR(SYSDATE, 'd') = '6' AND DAY = 'i5') --금요일
                         OR  (TO_CHAR(SYSDATE, 'd') = '7' AND DAY = 'i6') --토요일
-                    )) DOCTOR_MAXTIME
+                    )) AS "DOCTOR_MAXTIME"
 			FROM RESERVATION
 			WHERE RESERVE_YEAR =  '20'||SUBSTR(SYSDATE, 0, 2)
 			AND RESERVE_MONTH = SUBSTR(SYSDATE, 4, 2)
@@ -214,7 +213,7 @@
 			AND (SUBSTR(RESERVE_TIME, 1, 2) > TO_CHAR(SYSDATE, 'HH24')
 			    OR (SUBSTR(RESERVE_TIME, 1, 2) = TO_CHAR(SYSDATE, 'HH24') 
 			        AND SUBSTR(RESERVE_TIME, 4, 2) > TO_CHAR(SYSDATE, 'MI')))
-    	
+    				ORDER BY RESERVE_TIME
     	</select>
     	
     	

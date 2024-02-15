@@ -9,8 +9,8 @@
 <script type="text/javascript"
 	th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
 <!-- 주소검색 다음api -->
-<script
-	src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <style scoped>
 .ho:hover {
 	border-radius: 5%;
@@ -413,8 +413,8 @@
                      //로컬스토리지에 담았음
                      window.localStorage.setItem('lat',position.coords.latitude);
                      window.localStorage.setItem('lon',position.coords.longitude);
-                     console.log("curLat=", curLat);
-                     console.log("curLon=", curLon);
+                     //console.log("curLat=", curLat);
+                     //console.log("curLon=", curLon);
                      
                      
       
@@ -425,7 +425,7 @@
                      var coord = new kakao.maps.LatLng(curLat, curLon);
                      var callback = function(result, status) {
                         if (status === kakao.maps.services.Status.OK) {
-                           console.log('현재위치는 = '+ result[0].address.address_name);
+                           //console.log('현재위치는 = '+ result[0].address.address_name);
                            //h3안에 입력해줌
                            document.getElementById("location").innerText = '현재 내 위치 : ' + result[0].address.address_name;
                            //로컬스토리지에 담았음
@@ -453,7 +453,7 @@
          function switchLocation(){
                 new daum.Postcode({
                     oncomplete: function(data) {
-                       console.log(data.address);
+                       //console.log(data.address);
                        document.getElementById("location").innerText = '현재 내 위치 : ' + data.address;
                        //로컬스토리지에 정보 덮어씀
                        window.localStorage.setItem('location',data.address);
@@ -465,8 +465,8 @@
                            if (status === kakao.maps.services.Status.OK) {
                               let newLat = result[0].address.y;
                               let newLon = result[0].address.x;
-                              console.log('바뀐주소Lat = ',result[0].address.y);
-                               console.log('바뀐주소Lon = ',result[0].address.x);
+                              //console.log('바뀐주소Lat = ',result[0].address.y);
+                               //console.log('바뀐주소Lon = ',result[0].address.x);
                                //로컬스토리지에 정보 덮어씀
                                window.localStorage.setItem('lat',result[0].address.y);
                            window.localStorage.setItem('lon',result[0].address.x);
@@ -488,7 +488,7 @@
         	 
         	 //병원
         	 let address = document.querySelectorAll('.address');
-        	 console.log("address=",address);
+        	 //console.log("address=",address);
         	 if(!address){
         		 console.log("강제종료");
         		 return;
@@ -498,7 +498,7 @@
              
              //약국
         	 let phAddress = document.querySelectorAll('.phAddress');
-        	 console.log("phAddress=",phAddress);
+        	 //console.log("phAddress=",phAddress);
         	 if(!phAddress){
         		 console.log("강제종료");
         		 return;
@@ -506,7 +506,7 @@
         	 let pharmacyList = [];
              
          	 function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
-         		console.log("item= ",item);
+         		//console.log("item= ",item);
          		 return new Promise((resolve)=>{
          			 geocoder.addressSearch(item.innerHTML, (result, status)=>{ //item.innerHTML= 주소 그 자체
          				if (status === kakao.maps.services.Status.OK) {
@@ -514,18 +514,18 @@
                             //병원&약국 좌표
                             let hosLat = result[0].address.y;
                             let hosLon = result[0].address.x;
-                            console.log('병원Lat = ',result[0].address.y);
-                            console.log('병원Lon = ',result[0].address.x);
+                            //console.log('병원Lat = ',result[0].address.y);
+                            //console.log('병원Lon = ',result[0].address.x);
                             
                           	//현재위치 좌표
                             let curLat = window.localStorage.getItem('lat');
                             let curLon = window.localStorage.getItem('lon');
-                            console.log('세션Lat = ',curLat);
-                            console.log('세션Lon = ',curLon);
+                            //console.log('세션Lat = ',curLat);
+                            //console.log('세션Lon = ',curLon);
                             
                             //거리계산된 값
                             let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
-                            console.log("총 거리 =", dist);
+                            //console.log("총 거리 =", dist);
                             item.innerText = dist + 'km';
                             
                             if((item.closest('.hospitalItem')) != null){
@@ -555,18 +555,18 @@
          	 //그 새로운 배열map은 promiseFn함수에 address배열에 있는 
          	 //item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
 	         const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
-	         console.log("promises=",promises)
+	         //console.log("promises=",promises)
 	         await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
 			 
 	         //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
 	         //parseFloat()=문자열을 실수로 변경
 	         hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-	         console.log("hospitalList=", hospitalList);
+	         //console.log("hospitalList=", hospitalList);
 	         
 	         //hospitalItem클래스를 가진 div전체(하위요소 포함)
 	         const hospitalListBox = document.querySelector('.here');
 	         
-	         console.log("hospitalListBox=", hospitalListBox); 
+	         //console.log("hospitalListBox=", hospitalListBox); 
 	         
 	         //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된)를 넣어줌
 	         hospitalList.forEach(({parent_node}) =>{
@@ -603,17 +603,17 @@
            function distance(curLat, curLon, hosLat, hosLon){ //현재좌표 - 병원좌표
                const earth_r = 6371 // 지구의 반지름(km)
                const lat = radian( hosLat - curLat ) //위도끼리 뺀 값
-               console.log("위도 뺀 값=", lat)
+               //console.log("위도 뺀 값=", lat)
                const lon = radian( hosLon - curLon ) // 경도끼리 뺀 값
-               console.log("경도 뺀 값=", lon)
+               //console.log("경도 뺀 값=", lon)
                
                const a = Math.sin(lat/2) * Math.sin(lat/2) + //위도
                Math.cos(radian(curLat)) * Math.cos(radian(hosLat)) * // cos
                Math.sin(lon/2) * Math.sin(lon/2); //경도
-               console.log("a =", a);
+               //console.log("a =", a);
 
                const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-               console.log("c 2개의 각도 =", c);
+               //console.log("c 2개의 각도 =", c);
                const distance = earth_r * c // 반지름 x 2개의 각도값
 
                return distance;
@@ -637,9 +637,10 @@
               let closeWeek = []; 
               //배열에 담긴 휴무일(ex [i1, i2, i3)
               closeDay.forEach((ele, idx)=>{
-            	  
-            	 if(ele.length <3){//휴무일이 하나면
-            		 closeWeek.push(day[ele.innerText])
+            	  //console.log('값=',ele.innerText,'길이=',ele.innerText.length)
+            	 if(ele.innerText.length <3){//휴무일이 하나면
+            		 closeWeek.push((day[ele.innerText]))
+            		 //console.log("closeWeek하나짜리=", closeWeek);
             		 
             	 }else{//휴무일이 여러개면
             		 let days = ele.innerText.split(',');
@@ -652,12 +653,12 @@
             	 }
                  
               })
-              //console.log("closeWeek=",closeWeek);
+              //console.log("closeWeek전체=",closeWeek);
               
               //약국
               let closeWeek2 = []; 
               closeDay2.forEach((ele, idx)=>{
-            	 if(ele.length <3){
+            	 if(ele.innerText.length <3){
             		 closeWeek2.push(day[ele.innerText])
             	 }else{
             		 let days = ele.innerText.split(',');
@@ -669,7 +670,7 @@
             		 closeWeek2.push(holiday);
             	 }
               })
-              
+              console.log("closeWeek2전체=",closeWeek2);
               
               //병원리스트의 시간을 배열에 넣음
               let endTime = [];
@@ -704,13 +705,15 @@
                 let closeMinute = parseInt(endTime[i].substr(3, 2)); // 병원 영업 종료 시간 (분)
                 console.log("closeHour=", closeHour);
                 console.log("closeMinute=", closeMinute);
+                console.log("closeWeek[i]=",closeWeek[i].length);
+                console.log("////////////////////////////////")
             
                 if (closeHour < curHour || (closeHour === curHour && closeMinute < curMinute)) {
                     // 병원의 영업 종료 시간이 현재 시간보다 이전이면
                     closeBlocks[i].style.display = "block"; 
                     //console.log('가가');
-                } else if (closeWeek[i].length <3 && closeWeek[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
-                			
+                } else if (closeWeek[i].length == undefined && closeWeek[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
+                	console.log("하루휴무");
                     closeBlocks[i].style.display = "block"; 
                     
                 }else if(closeWeek[i].length > 3){ //휴무일이 여러개인데 오늘이 그 요일임
@@ -748,7 +751,7 @@
 	                  // 병원의 영업 종료 시간이 현재 시간보다 이전이면
 	                  closeBlocks2[i].style.display = "block"; // 또는 다른 스타일을 적용
 	                  //console.log('가가');
-	              }else if (closeWeek[i].length <3 && closeWeek[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
+	              }else if (closeWeek2[i].length == undefined <3 && closeWeek2[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
           			
 	                    closeBlocks2[i].style.display = "block"; 
 	                    

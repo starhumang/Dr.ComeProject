@@ -34,14 +34,14 @@ public class PatientServiceImpl implements PatientService {
 	// 진료기록 totalList
 	@Override
 	public int totalList(PatientVO vo) {
-		
+
 		return mapper.cntList(vo);
 	}
 
 	// 처방전조회
 	@Override
 	public List<PatientVO> getPerscription(PatientVO vo) {
-		
+
 		return mapper.perscription(vo);
 	}
 
@@ -59,10 +59,10 @@ public class PatientServiceImpl implements PatientService {
 
 		int result = 0;
 
-		//약배열
+		// 약
 		List<PatientVO> plist = vo.getPerary();
 
-		// 초진이면 //환자테이블 인서트
+		// 초진이면 환자테이블 인서트
 		if (vo.getVisit().equals("first")) {
 			mapper.patientInsert(vo);
 		}
@@ -91,7 +91,6 @@ public class PatientServiceImpl implements PatientService {
 	// 예약상태 진료완료로 업데이트
 	@Override
 	public int modifyReserve(PatientVO vo) {
-		System.out.println("서비스서비스" + vo);
 
 		return mapper.updateReserve(vo);
 

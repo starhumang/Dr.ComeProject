@@ -11,16 +11,84 @@
 			#btn {
 				margin-bottom: 20px;
 			}
+
 			.head_info {
 				display: flex;
 				justify-content: space-between;
 				margin-top: 30px;
 			}
+
+			#logout {
+				display: flex;
+				justify-content: right;
+				padding-right: 30px;
+			}
 		</style>
 
-		<script>
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+
+		<script th:inline="javascript">
+
+			const userId = [[${session.userId}]];
+
 			function goToModify() {
 				location.href = '/pharmacy/paminfoupdate';
+			}
+
+			function withdraw() {
+				Swal.fire({
+					title: '회원 탈퇴',
+					html: `<p>회원 탈퇴 시 사용자 정보가 모두 삭제됩니다.</p><p>계속하려면 비밀번호를 입력해주세요.</p><input type="password" id="password" class="swal2-input" placeholder="비밀번호를 입력하세요">`,
+					icon: 'warning',
+					showCancelButton: true,
+					confirmButtonColor: '#d33',
+					cancelButtonColor: '#3085d6',
+					confirmButtonText: '탈퇴하기',
+					cancelButtonText: '취소하기',
+				}).then((result) => {
+					if (result.isConfirmed) {
+						// 사용자가 입력한 비밀번호 가져오기
+						const password = document.getElementById('password').value;
+						withdrawProcess(password);
+					}
+				});
+			}
+
+			function withdrawProcess(password) {
+				$.ajax({
+					type: 'GET',
+					url: '/userdelete',
+					data: { userId: userId, password: password },
+					success: function (response) {
+						if (response === -1) {
+							Swal.fire({
+								title: '비밀번호 오류',
+								text: '비밀번호가 일치하지 않습니다.',
+								icon: 'error',
+								confirmButtonColor: '#3085d6',
+							});
+						} else {
+							Swal.fire({
+								title: '탈퇴 성공',
+								text: '회원 탈퇴가 성공적으로 이루어졌습니다.',
+								icon: 'success',
+								confirmButtonColor: '#3085d6',
+							}).then((result) => {
+								if (result.isConfirmed) {
+									location.href = '/';
+								}
+							});
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error(error);
+						Swal.fire({
+							icon: 'error',
+							text: '오류가 발생했습니다.',
+						});
+					},
+				});
 			}
 		</script>
 	</head>
@@ -91,8 +159,13 @@
 					</div>
 					<div style="display: inline-block; text-align: center">
 						<button class="btn btn-secondary" id="btn" onclick="goToModify()">수정하기</button>
+						<button class="btn btn-danger" id="btn" onclick="withdraw()">탈퇴하기</button>
 					</div>
 				</div>
+			</div>
+
+			<div class="user-logout-link" id="logout">
+				<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
 			</div>
 		</div>
 	</body>

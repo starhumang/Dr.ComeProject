@@ -9,6 +9,21 @@
 		<title>사용자 회원가입</title>
 
 		<style>
+			.registered-customers {
+				margin: 0 auto;
+				width: 680px;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.blog-section-title {
+				color: #333;
+				border-left: 2px solid #06bbcc;
+				padding-left: 10px;
+			}
+
 			label {
 				display: inline-block;
 				width: 200px;
@@ -27,11 +42,14 @@
 
 			.input-group input {
 				width: 400px;
-				margin-right: 10px;
 				height: 32px;
 				border: 0;
 				outline: none;
-				padding-left: 10px;
+				box-sizing: border-box;
+			}
+
+			.gender {
+				width: 100px;
 			}
 
 			.input-group button {
@@ -65,28 +83,11 @@
 				margin-bottom: 15px;
 			}
 
-			.btn-upload {
-				width: 150px;
-				height: 30px;
-				background: #fff;
-				border: 1px solid rgb(77, 77, 77);
-				border-radius: 10px;
-				font-weight: 500;
-				display: flex;
-				cursor: pointer;
-				align-items: center;
-				justify-content: center;
-
-				&:hover {
-					background: rgb(77, 77, 77);
-					color: #fff;
-				}
-			}
-
 			#filePreview {
 				max-width: 100%;
 				max-height: 200px;
 				margin-top: 10px;
+				margin-left: 170px;
 				display: none;
 			}
 
@@ -95,19 +96,8 @@
 				align-items: center;
 				margin-bottom: 15px;
 			}
-
-			#verification-section input,
-			#verification-section button {
-				height: 30px;
-			}
-
-			#verification-section button {
-				width: 150px;
-			}
 		</style>
 
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 		<script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
 
@@ -279,7 +269,15 @@
 
 			function checkPhone() {
 				let phone = $('#phone').val().replace(/-/g, '');
-				console.log(phone);
+
+				if (!phone) {
+					Swal.fire({
+						icon: 'error',
+						text: '전화번호를 입력하세요.',
+					});
+					return;
+				}
+
 				let url = '/auth/checkPhone?phoneNum=' + phone;
 				$.ajax({
 					url: url,
@@ -329,20 +327,6 @@
 
 			function checkGender() {
 				let gender = document.querySelector('input[name="gender"]:checked');
-				return true;
-			}
-
-			function checkAgreement() {
-				let agreement = document.getElementById('invalidCheck').checked;
-				let agreementErrorMessage = document.getElementById('agreementErrorMessage');
-
-				if (!agreement) {
-					agreementErrorMessage.innerHTML = '약관에 동의해야 합니다.';
-					agreementErrorMessage.style.color = 'red';
-					return false;
-				}
-
-				agreementErrorMessage.innerHTML = '';
 				return true;
 			}
 
@@ -411,14 +395,19 @@
 					},
 				});
 			}
+
+			function revertForm() {
+				location.href = '/userlogin';
+			}
 		</script>
 	</head>
 
 	<body>
 		<div layout:fragment="content">
-			<form id="userForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
-				<div class="container">
-					<h3>사용자 회원가입</h3>
+			<div class="registered-customers" style="margin-top: 100px">
+				<h3 class="blog-section-title border-left mb-30">사용자 회원가입</h3>
+				<br />
+				<form id="userForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
 					<br />
 					<div class="input-group">
 						<label>아이디</label>
@@ -429,8 +418,18 @@
 							placeholder="아이디를 입력하세요"
 							required
 							oninput="checkId()"
+							style="width: 250px; margin-right: 10px"
 						/>
-						<button type="button" id="checkDupliIdBtn" onclick="checkDupliId()" disabled>중복 확인</button>
+						<button
+							type="button"
+							id="checkDupliIdBtn"
+							onclick="checkDupliId()"
+							disabled
+							class="btn btn-sm btn-secondary shadow-sm"
+							style="display: inline-block; height: 30px"
+						>
+							중복 확인
+						</button>
 						<span id="idErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
@@ -482,29 +481,62 @@
 							required
 							maxlength="13"
 							oninput="autoHyphen(this)"
+							style="width: 250px; margin-right: 10px"
 						/>
-						<button type="button" id="checkPhoneBtn" onclick="checkPhone()">인증번호발송</button>
+						<button
+							type="button"
+							id="checkPhoneBtn"
+							onclick="checkPhone()"
+							class="btn btn-sm btn-secondary shadow-sm"
+						>
+							인증번호 발송
+						</button>
 						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group" id="verification-section">
 						<label>인증번호</label>
-						<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
-						<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
+						<input
+							type="number"
+							id="checkPhoneNum"
+							placeholder="인증번호를 입력하세요"
+							maxlength="4"
+							required
+							style="width: 250px; margin-right: 10px"
+						/>
+						<button
+							type="button"
+							id="checkPhoneNumBtn"
+							onclick="checkPhoneNumber()"
+							class="btn btn-sm btn-secondary shadow-sm"
+						>
+							인증하기
+						</button>
 					</div>
 
 					<div class="input-group">
 						<label>생년월일</label>
-						<input type="date" name="birthday" id="birthDay" required oninput="checkBirthday()" />
+						<input
+							type="date"
+							name="birthday"
+							id="birthDay"
+							required
+							oninput="checkBirthday()"
+							style="width: 200px"
+						/>
 						<span id="birthdayErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group-select">
 						<label>성별</label>
-						<input type="radio" name="gender" id="male" value="M" />
-						<label for="input-group-select">남자</label>
-						<input type="radio" name="gender" id="female" value="F" />
-						<label for="input-group-select">여자</label>
+						<label class="gender">
+							<input type="radio" name="gender" id="male" value="M" />
+							<span>남자</span>
+						</label>
+						<label class="gender">
+							<input type="radio" name="gender" id="female" value="F" />
+							<span>여자</span>
+						</label>
 					</div>
 
 					<div class="input-group">
@@ -513,22 +545,33 @@
 						<img id="filePreview" alt="File Preview" />
 					</div>
 
+					<br />
+
 					<div>
-						<input type="checkbox" id="invalidCheck" required />
+						<input type="checkbox" required />
 						<label class="form-check-label"> 만 17세 이상입니다 </label>
 					</div>
 
+					<br />
+
 					<div>
-						<input type="checkbox" id="invalidCheck" required />
-						동의항목<label class="form-check-label" data-bs-toggle="modal" data-bs-target="#exampleModal">
-							[상세보기]</label
+						<input type="checkbox" required />
+						개인정보 사용 동의<label
+							class="form-check-label"
+							data-bs-toggle="modal"
+							data-bs-target="#exampleModal"
+						>
+							&nbsp;[상세보기]</label
 						>
 					</div>
 
 					<br />
-					<input type="submit" value="회원가입" class="btn btn-danger" id="submitButton" />
-				</div>
-			</form>
+					<div style="text-align: center">
+						<input type="submit" value="회원가입" class="btn btn-danger" id="submitButton" />
+						<input type="button" value="취소하기" onclick="revertForm()" class="btn btn-warning" />
+					</div>
+				</form>
+			</div>
 
 			<!-- Modal -->
 			<div class="modal" tabindex="-1" id="exampleModal">
@@ -564,7 +607,7 @@
 회사는 이에 따라 회원의 개인정보를 파기할 의무가 있습니다.
 
 제 6 조 (개인정보의 제공 및 공유)
-회사는 회원의 동의 없이는 개인정보를 제3자에게 제공하지 않습니다. 단, 아래의 경우에는 예외로 합니다.
+회사는 회원의 동의 없이는 개인정보를 제3자에게 제공하지 않습니다. 아래의 경우에는 예외로 합니다.
 1. 회원이 사전에 동의한 경우 법령의 규정에 의거하는 경우 
 2. 수사 등 공공기관의 요청이 있는 경우 
 

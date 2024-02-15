@@ -46,8 +46,8 @@
                 name="btnradio"
                 id="btnradio1"
                 autocomplete="off"
-                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/user')}"
-                onclick="window.location.href='/admin/user'"
+                value="ACTIVE"
+                checked
               />
               <label
                 class="btn btn-outline-dark"
@@ -64,8 +64,6 @@
                 name="btnradio"
                 id="btnradio2"
                 autocomplete="off"
-                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/userc')}"
-               onclick="window.location.href='/admin/userc'"
               />
               <label class="btn btn-outline-dark" for="btnradio2" 
                 >일반회원</label
@@ -76,8 +74,6 @@
                 name="btnradio"
                 id="btnradio3"
                 autocomplete="off"
-                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/userw')}"
-                onclick="window.location.href='/admin/userw'"
               />
               <label class="btn btn-outline-dark" for="btnradio3" 
                 >탈퇴회원</label
@@ -127,17 +123,6 @@
       </div>
       <!-- 페이징 컴포넌트 -->
       <div aria-label="Page navigation">
-<!--/*     <th:block th:with="basePath">
-        <th:block th:if="${#strings.contains(#httpServletRequest.requestURI, '/admin/user')}">
-            /admin/user
-        </th:block>
-        <th:block th:if="${#strings.contains(#httpServletRequest.requestURI, '/admin/userc')}">
-            /admin/userc
-        </th:block>
-        <th:block th:if="${#strings.contains(#httpServletRequest.requestURI, '/admin/userw')}">
-            /admin/userw
-        </th:block>
-    </th:block> */-->
     <ul class="pagination justify-content-center">
         <li th:class="${list.first ? 'page-item disabled' : 'page-item'}">
             <a class="page-link" th:href="@{/admin/user(pageNo=0)}" tabindex="-1" aria-disabled="true">Previous</a>
@@ -167,7 +152,7 @@
 	      url: "/admin/user",
 	      type: "GET",
 	      success: function (response) {
-	        console.log("ajax 연결 성공", response);
+	        console.log("ajax 연결 성공");
 	      },
 	      error: function(xhr, status, error) {
 	        console.error('Error:', status, error);

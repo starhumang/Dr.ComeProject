@@ -17,4 +17,6 @@ public interface AdminService {
 	public Page<Pharmacy> findBypharmacyStatus(String pstatus, int pageNo, int pageSize);
 	public Hospital updateStatus(String hospitalId);
 	public Pharmacy updatePharmacyStatus(String PharmacyId);
+	
+	public Page<Usertable> findUsersDynamically(String userStatus, int pageNo, int pageSize);
 }

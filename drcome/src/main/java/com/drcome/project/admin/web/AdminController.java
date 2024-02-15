@@ -48,10 +48,11 @@ public class AdminController {
 	 */
    @GetMapping("/admin")
    public String home(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-	Page<Usertable> userlist = aservice.getuserAll(pageNo, 10);
-		model.addAttribute("list", userlist);
-		model.addAttribute("totalCount", userlist.getTotalElements());
-	   
+		
+		Page<Usertable> userlist = aservice.getuserAll(pageNo, 10);
+		model.addAttribute("list", userlist); model.addAttribute("totalCount",
+		userlist.getTotalElements());
+
 	Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
 		model.addAttribute("grantlisth", grantlisth);
 		model.addAttribute("totalCounth", grantlisth.getTotalElements());
@@ -69,13 +70,30 @@ public class AdminController {
     * @param model 화면모델
     * @return admin/adminUser
     */
-   @GetMapping("/admin/user")
-   public String user(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
-      Page<Usertable> userlist = aservice.getuserAll(pageNo, 10);
-      model.addAttribute("list", userlist);
-
-      return "admin/adminUser";
-   }
+   /*
+	 @GetMapping("/admin/user") 
+	 public String user(@RequestParam(required = false, defaultValue = "0") int pageNo, 
+			 			Model model) { 
+		 Page<Usertable> userlist = aservice.getuserAll(pageNo, 10); 
+		 model.addAttribute("list", userlist);
+	
+	return "admin/adminUser"; }*/
+	
+   
+   
+	
+	 @GetMapping("/admin/user") 
+	 public String getUsers(@RequestParam(defaultValue = "ACTIVE") String userStatus,
+			 				@RequestParam(defaultValue = "0") int pageNo, 
+			 				Model model) { 
+		 Page<Usertable> userlist = aservice.findUsersDynamically(userStatus, pageNo, 10);
+		 model.addAttribute("list", userlist); 
+		 return "admin/adminUser"; 
+	}
+   
+   
+   
+   
    
    /**
     * 일반 사용자 일반 회원 목록 조회
@@ -83,13 +101,14 @@ public class AdminController {
     * @param model 화면 모델
     * @return admin/adminUser
     */
+	 /*
    @GetMapping("/admin/userc")
    public String commonuser(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
 	  String ustatus = "a1";
       Page<Usertable> userlist = aservice.getgeneraluser(ustatus, pageNo, 10);
       model.addAttribute("list", userlist);
       return "admin/adminUser";
-   }
+   }*/
    
    /**
     * 일반 사용자 탈퇴 회원 목록 조회
@@ -97,6 +116,7 @@ public class AdminController {
     * @param model 화면 모델
     * @return admin/adminUser
     */
+	 /*
    @GetMapping("/admin/userw")
    public String withdrawaluser(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
 	  String ustatus = "a3";
@@ -104,7 +124,7 @@ public class AdminController {
       model.addAttribute("list", userlist);
       System.out.println("userw"+userlist);
       return "admin/adminUser";
-   }
+   }*/
    
    /**
     * 병원 사용자 목록 조회(승인된 항목)
@@ -210,4 +230,6 @@ public class AdminController {
       System.out.println(count);
       return "admin/adminPharmacyGrant";
    }
+   
+   
 }

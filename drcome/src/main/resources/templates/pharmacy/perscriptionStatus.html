@@ -645,6 +645,7 @@ $("#reperscript").on("click", function () {
             console.log("반환 성공", response);
             $("#returnModal").modal("hide");
             location.reload();
+            //connectWebSocket();
         },
         error: function (error) {
             console.error("반환 실패", error);
@@ -657,4 +658,36 @@ $('#searchBtn').on("click", function() {
 	sendDate(1);
 })
 
+// ------------------------ socket
+let alarmSocket = null;
+function connectWebSocket() {
+	try {
+        // WebSocket 연결
+        alarmSocket = new WebSocket("ws://localhost:80/echo");
+
+        // 연결이 열리면 호출되는 이벤트 핸들러
+        alarmSocket.onopen = function (event) {
+          console.log("약국 취소 알림 : WebSocket 연결이 열렸습니다.");
+
+          if (alarmSocket && alarmSocket.readyState === WebSocket.OPEN) {
+            // 서버로 메시지 전송
+            console.log("약국 - 조제 취소할 거임");
+            const message = uid;
+            alarmSocket.send(message);
+          }
+        };
+        
+        // 연결이 닫혔을 때 호출되는 이벤트 핸들러
+        alarmSocket.onclose = function (event) {
+          console.log("약국 퇴장 WebSocket 연결이 닫혔습니다.");
+        }; 
+
+        // 에러가 발생했을 때 호출되는 이벤트 핸들러
+        alarmSocket.onerror = function (error) {
+          console.error(" 약국... WebSocket 연결 에러:", error);
+        }; ///
+    } catch (error) {
+        console.error("약국... WebSocket 연결 에러:", error);
+      }
+}
 </script>

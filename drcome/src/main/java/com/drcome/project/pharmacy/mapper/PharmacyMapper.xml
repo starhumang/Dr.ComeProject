@@ -353,6 +353,7 @@
 			           c.clinic_date "perscriptionDate",
 			           s.send_status "sendStatus",
 			           s.rejection "rejection",
+			           s.pharmacy_selectno "pharmacySelectno"
 			           ROWNUM AS rn
 			    FROM clinic c 
 			    LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)

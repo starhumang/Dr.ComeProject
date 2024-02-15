@@ -429,15 +429,15 @@ public class HospitalController {
 
 		// 선택 페이지 변환
 		int cpage = Integer.parseInt(page);
-		System.out.println("선택된 페이지" + cpage);
+		//System.out.println("선택된 페이지" + cpage);
 
 		// 페이지네이션(currentpage, total)
 		PageDTO2 dto = new PageDTO2(cpage, total);
-		System.out.println("dtd 객체" + dto);
+		//System.out.println("dtd 객체" + dto);
 
 		List<Map<String, Object>> plist = hospitalService.getNoticeList(cpage, type, keyword, hospitalId);
 
-		System.out.println(plist.size());
+		//System.out.println(plist.size());
 
 		// ajax는 return으로...
 
@@ -452,6 +452,7 @@ public class HospitalController {
 	public String noticeDetail(Principal principal, NoticeVO noticeVO, Model model) {
 		noticeVO.setHospitalId(principal.getName());
 		int noticeNo = noticeVO.getNoticeNo();
+		System.out.println("noticeNo = "+ noticeNo);
 		NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
 		model.addAttribute("noticeNo", noticeNo);
 		model.addAttribute("noticeList", noticeList);

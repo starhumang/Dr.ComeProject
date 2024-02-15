@@ -349,73 +349,73 @@ button:hover {
 		    }
 		    display(curPage);
 		    
-		    function makePaging() {
-		        document.querySelector(".pagination").innerHTML = ""; // 초기화
+// 		    function makePaging() {
+// 		        document.querySelector(".pagination").innerHTML = ""; // 초기화
 		        
-		        // 전체 페이지 수 다시 계산
-		        totalPages = Math.ceil(hoscount / countPerPage);
+// 		        // 전체 페이지 수 다시 계산
+// 		        totalPages = Math.ceil(hoscount / countPerPage);
 		        
-		        // 이전 페이지가 있으면
-		        if (prev) {
-		            let aTag = document.createElement("a");
-		            aTag.setAttribute("href", curPage - 1); // 현재 페이지의 이전 페이지로 이동
-		            aTag.innerHTML = "&laquo";
-		            document.querySelector(".pagination").append(aTag);
-		        }
+// 		        // 이전 페이지가 있으면
+// 		        if (prev) {
+// 		            let aTag = document.createElement("a");
+// 		            aTag.setAttribute("href", curPage - 1); // 현재 페이지의 이전 페이지로 이동
+// 		            aTag.innerHTML = "&laquo";
+// 		            document.querySelector(".pagination").append(aTag);
+// 		        }
 
-		        for (let i = 1; i <= totalPages; i++) { // 전체 페이지 수만큼 반복
-		            let aTag = document.createElement("a");
-		            aTag.setAttribute("href", i); //<a href="1">1</a>
-		            aTag.innerHTML = i;
-		            // active 녹색 주는거
-		            if (i == curPage) {
-		                aTag.className = "active";
-		            }
-		            document.querySelector(".pagination").append(aTag);
-		        } // for 루프 끝
+// 		        for (let i = 1; i <= totalPages; i++) { // 전체 페이지 수만큼 반복
+// 		            let aTag = document.createElement("a");
+// 		            aTag.setAttribute("href", i); //<a href="1">1</a>
+// 		            aTag.innerHTML = i;
+// 		            // active 녹색 주는거
+// 		            if (i == curPage) {
+// 		                aTag.className = "active";
+// 		            }
+// 		            document.querySelector(".pagination").append(aTag);
+// 		        } // for 루프 끝
 		        
-		        // 이후 페이지가 있으면
-		        if (next) {
-		            let aTag = document.createElement("a");
-		            aTag.setAttribute("href", curPage + 1); // 현재 페이지의 다음 페이지로 이동
-		            aTag.innerHTML = "&raquo";
-		            document.querySelector(".pagination").append(aTag);
-		        }
+// 		        // 이후 페이지가 있으면
+// 		        if (next) {
+// 		            let aTag = document.createElement("a");
+// 		            aTag.setAttribute("href", curPage + 1); // 현재 페이지의 다음 페이지로 이동
+// 		            aTag.innerHTML = "&raquo";
+// 		            document.querySelector(".pagination").append(aTag);
+// 		        }
 
-		        // 페이지 숫자 태그에 클릭 이벤트 만들기
-		        document.querySelectorAll(".pagination a").forEach((ele) => {
-		            // 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
-		            ele.addEventListener("click", function(e) {
-		                e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
-		                curPage = parseInt(ele.getAttribute("href")); // href의 값 = curPage
-		                // 현재 페이지에 맞는 병원 리스트 표시
-		                let startIdx = (curPage - 1) * countPerPage;
-		                let endIdx = Math.min(startIdx + countPerPage, hoscount);
-		                sliceHosList = hosList.slice(startIdx, endIdx);
-		                display(curPage); // 페이지 번호에 해당하는 데이터를 불러오는 함수 호출
-		                makePaging(); // 페이지 이동 후 페이징 다시 만들기
+// 		        // 페이지 숫자 태그에 클릭 이벤트 만들기
+// 		        document.querySelectorAll(".pagination a").forEach((ele) => {
+// 		            // 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
+// 		            ele.addEventListener("click", function(e) {
+// 		                e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
+// 		                curPage = parseInt(ele.getAttribute("href")); // href의 값 = curPage
+// 		                // 현재 페이지에 맞는 병원 리스트 표시
+// 		                let startIdx = (curPage - 1) * countPerPage;
+// 		                let endIdx = Math.min(startIdx + countPerPage, hoscount);
+// 		                sliceHosList = hosList.slice(startIdx, endIdx);
+// 		                display(curPage); // 페이지 번호에 해당하는 데이터를 불러오는 함수 호출
+// 		                makePaging(); // 페이지 이동 후 페이징 다시 만들기
 		                
- 		              	//거리순일때
-		    			if(sort = 1){
-		    				restart();
-		    			//가나다순일때
-		    			}else{
-		    				let locs = document.querySelectorAll('.lo');
-		    				let address = document.querySelectorAll('.address');
-		    		    	  locs.forEach((loc)=>{
-		    		    		  loc.style.display = "none";
-		    		    	  });
-		    		    	  address.forEach((address)=>{
-		    		    		  address.style.display = "none";
-		    		    	  });
-		    			}
-		    			console.log("현재정렬2 = ", sort)
+//  		              	//거리순일때
+// 		    			if(sort = 1){
+// 		    				restart();
+// 		    			//가나다순일때
+// 		    			}else{
+// 		    				let locs = document.querySelectorAll('.lo');
+// 		    				let address = document.querySelectorAll('.address');
+// 		    		    	  locs.forEach((loc)=>{
+// 		    		    		  loc.style.display = "none";
+// 		    		    	  });
+// 		    		    	  address.forEach((address)=>{
+// 		    		    		  address.style.display = "none";
+// 		    		    	  });
+// 		    			}
+// 		    			console.log("현재정렬2 = ", sort)
 		                
-		            }); // 클릭 이벤트
-		        }); // forEach
-		    } // makePaging 함수 끝
+// 		            }); // 클릭 이벤트
+// 		        }); // forEach
+// 		    } // makePaging 함수 끝
 
-		    makePaging(); // 초기 페이징 생성
+// 		    makePaging(); // 초기 페이징 생성
 		</script>
 		</div>
 	</div>

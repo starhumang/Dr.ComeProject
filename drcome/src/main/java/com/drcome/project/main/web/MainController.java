@@ -1,5 +1,6 @@
 package com.drcome.project.main.web;
 
+import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,15 +14,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.drcome.project.common.service.PageDTO2;
 import com.drcome.project.main.service.MainService;
 import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
+import com.drcome.project.medical.service.NoticeVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
 
@@ -53,15 +58,21 @@ public class MainController {
 	/* 병원 상세페이지
 	 * @Param HttpServletRequest request = 세션에 담긴 유저아이디
 	 * @Param String hospitalId = 병원아이디
+	 * @Param String page = 페이지번호
 	 * @Model model =  병원정보, 의사장보, 초진기록, 당일예약기록
 	 * return "user/hosDetail"
 	 */
+	String hosId = "";
 	@GetMapping("/hospitalDetail")
-	public String hosInformation(HttpServletRequest request, String hospitalId, Model model) { //String hospitalId 이게 get으로 링크에서 받은 값
+	public String hosInformation(HttpServletRequest request, String hospitalId, 
+								Model model, 
+								@RequestParam(required = false, defaultValue = "1") String page
+					            ) { //String hospitalId 이게 get으로 링크에서 받은 값
 		//병원정보
 		HospitalVO hosInfo = mainService.getHos(hospitalId);
 		//System.out.println("hosInfo"+ hosInfo);
 		model.addAttribute("hosInfo", hosInfo);
+		hosId =hospitalId;
 		
 		//병원의 의사정보
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
@@ -81,10 +92,63 @@ public class MainController {
 		//동일병원 당일 예약(진료받기전까지/ 예약한거 진료받고나면 예약ok)중복방지
 		int reservationHistory = mainService.checkReservationHistory(userId, hospitalId);
 		model.addAttribute("reservationHistory", reservationHistory);
-		System.out.println("reservationHistory="+reservationHistory);
+		//System.out.println("reservationHistory="+reservationHistory);
+		
 		return "user/hosDetail";
 	}
+
+	
+	@GetMapping("/hospitalDetailP")
+	@ResponseBody
+	public Map<String, Object> hosInformation(@RequestParam(required = false, defaultValue = "1") String page,
+								 @RequestParam(required = false, defaultValue = "0") int type) {
+		//공지사항
+		System.out.println("hosId"+hosId);
+		String keyword = "";
+		Map<String, Object> notice = new HashMap();
+		// 리스트 전체 개수
+		int total = hospitalService.noticeCount(type, keyword, hosId);
+		//System.out.println("hospitalId"+hospitalId); 나옴
+		System.out.println("total = "+total);
 		
+		// 선택 페이지 변환
+		int cpage = Integer.parseInt(page);
+		System.out.println("선택된 페이지1 = " + cpage);
+
+		// 페이지네이션(currentpage, total)
+		PageDTO2 dto = new PageDTO2(cpage, total);
+		System.out.println("dtd 객체 = " + dto);
+
+		List<Map<String, Object>> plist = hospitalService.getNoticeList(cpage, type, keyword, hosId);
+		System.out.println("plist = " + plist);
+		System.out.println("plist길이 = " + plist.size());
+
+		// ajax는 return으로...
+
+		notice.put("plist", plist);
+		notice.put("pagedto", dto);
+		
+		return notice; 
+	}
+	
+	
+	// 병원공지사항 단건상세 유저ver
+	@GetMapping("/userNoticeDetail")
+	public String noticeDetail(String hospitalId, NoticeVO noticeVO, Model model) {
+		noticeVO.setHospitalId(hosId);
+		//System.out.println("hospitalId = "+ hosId);
+		int noticeNo = noticeVO.getNoticeNo();
+		//System.out.println("noticeNo = "+ noticeNo);
+		
+		NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
+		model.addAttribute("noticeNo", noticeNo);
+		model.addAttribute("noticeList", noticeList);
+		model.addAttribute("hosId", hosId);
+		//System.out.println("noticeList = "+ noticeList);
+		
+		return "user/userNoticeDetail";
+	}
+	
 	
 	/* 약국 상세페이지
 	 * @Param String pharmacyId = 약국아이디
@@ -154,13 +218,13 @@ public class MainController {
 	
 	
 	/* 진료 완료 후, 내 근처 추천약국 리스트
-	 * @Param String clinicNo = 진료번호
+	 * @@PathVariable String clinicNo = 진료번호
 	 * @Model model = 진료번호, 추천약국리스트
 	 */
-	@GetMapping("/recommendPharmacy")
-	public String PhaList(Model model) {
+	@GetMapping("/recommendPharmacy/{clinicNo}")
+	public String PhaList(@PathVariable("clinicNo") String clinicNo, Model model) {
 		List<PharmacyVO> phaList = mainService.getPhaList(10);
-		model.addAttribute("clinic","20");
+		model.addAttribute("clinic",clinicNo);
 		model.addAttribute("phaList", phaList);
 		return "user/recommendPha";
 	}
@@ -588,6 +652,9 @@ public class MainController {
         
 		return response; 
 	}
+	
+	
+	
 
 
 }

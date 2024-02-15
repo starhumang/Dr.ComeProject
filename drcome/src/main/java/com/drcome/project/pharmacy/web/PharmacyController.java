@@ -171,7 +171,11 @@ public class PharmacyController {
 	}
 	
 	@GetMapping("/pharmacy/paminfoupdate")
-	public String pamUpdateForm() {
+	public String pamUpdateForm(Principal principal, PharmacyVO pharmacyVO, Model model) {
+		String pharmacyId = principal.getName();
+		pharmacyVO.setPharmacyId(pharmacyId);
+		PharmacyVO findVO = pservice.selectPharmacyInfo(pharmacyVO);
+		model.addAttribute("pinfo", findVO);
 		return "pharmacy/pamupdate";
 	}
 	

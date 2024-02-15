@@ -6,306 +6,322 @@
 <head>
 <meta charset="UTF-8" />
 <title>방문예약</title>
-<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+<script type="text/javascript"
+	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
+<script
+	src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+<link
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
+	rel="stylesheet" />
 
 <!-- 달력 -->
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" >
-<link rel="stylesheet" href="resources/css/plugin/datepicker/bootstrap-datepicker.css">
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="resources/css/plugin/datepicker/bootstrap-datepicker.css">
 
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ko.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.js"></script>
-
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.ko.min.js"></script>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/css/bootstrap.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/2.3.2/css/bootstrap-responsive.css">
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.1/js/bootstrap.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 <style>
-
-
-.bb{
-	display:inline;
-	width:200px;
-	height:60px;
-	margin:10px 10px 10px 10px;
+.bb {
+	display: inline;
+	width: 200px;
+	height: 60px;
+	margin: 10px 10px 10px 10px;
 }
-}
-.butt{
-	display:flex;
+
+.butt {
+	display: flex;
 }
 
 .body {
-    color: #000;
-    overflow-x: hidden;
-    height: 100%;
-    padding: 0px !important;
+	color: #000;
+	overflow-x: hidden;
+	height: 100%;
+	padding: 0px !important;
 }
 
 .container-fluid {
-    padding-top: 120px !important;
-    padding-bottom: 120px !important;
+	padding-top: 120px !important;
+	padding-bottom: 120px !important;
 }
 
 .card {
-  box-shadow: 0px 4px 8px 0px #7986CB;
+	box-shadow: 0px 4px 8px 0px #7986CB;
+}
+.input {
+	padding: 10px 20px !important;
+	border: 1px solid #000 !important;
+	border-radius: 10px;
+	box-sizing: border-box;
+	background-color: #616161 !important;
+	color: #fff !important;
+	font-size: 16px;
+	letter-spacing: 1px;
+	width: 180px;
+	display: inline;
 }
 
-.input {
-    padding: 10px 20px !important;
-    border: 1px solid #000 !important;
-    border-radius: 10px;
-    box-sizing: border-box;
-    background-color: #616161 !important;
-    color: #fff !important;
-    font-size: 16px;
-    letter-spacing: 1px;
-    width: 180px;
-    display:inline;
-}
 
 .input:focus {
-    -moz-box-shadow: none !important;
-    -webkit-box-shadow: none !important;
-    box-shadow: none !important;
-    border: 1px solid #512DA8;
-    outline-width: 0;
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+	border: 1px solid #512DA8;
+	outline-width: 0;
 }
 
 ::placeholder {
-    color: #fff;
-    opacity: 1;
+	color: #fff;
+	opacity: 1;
 }
 
 :-ms-input-placeholder {
-    color: #fff;
+	color: #fff;
 }
 
 ::-ms-input-placeholder {
-    color: #fff;
+	color: #fff;
 }
 
 .datepicker {
-  background-color: #000 !important;
-  color: #fff !important;
-  border: none;
-  padding: 10px !important;
+	background-color: #000 !important;
+	color: #fff !important;
+	border: none;
+	padding: 10px !important;
 }
 
 .datepicker-dropdown:after {
-  border-bottom: 6px solid #000;
+	border-bottom: 6px solid #000;
 }
 
 thead tr:nth-child(3) th {
-  color: #fff !important;
-  font-weight: bold;
-  padding-top: 20px;
-  padding-bottom: 10px;
+	color: #fff !important;
+	font-weight: bold;
+	padding-top: 20px;
+	padding-bottom: 10px;
 }
 
 .dow, .old-day, .day, .new-day {
-  width: 40px !important;
-  height: 40px !important;
-  border-radius: 0px !important;
+	width: 40px !important;
+	height: 40px !important;
+	border-radius: 0px !important;
 }
 
-.old-day:hover, .day:hover, .new-day:hover, .month:hover, .year:hover, .decade:hover, .century:hover {
-  border-radius: 6px !important;
-  background-color: #eee;
-  color: #000;
+.old-day:hover, .day:hover, .new-day:hover, .month:hover, .year:hover,
+	.decade:hover, .century:hover {
+	border-radius: 6px !important;
+	background-color: #eee;
+	color: #000;
 }
 
 .active {
-  border-radius: 6px !important;
-  background-image: linear-gradient(#90CAF9, #64B5F6) !important;
-  color: #000 !important;
+	border-radius: 6px !important;
+	background-image: linear-gradient(#90CAF9, #64B5F6) !important;
+	color: #000 !important;
 }
 
 .disabled {
-  color: #616161 !important;
+	color: #616161 !important;
 }
 
 .prev, .next, .datepicker-switch {
-  border-radius: 0 !important;
-  padding: 20px 10px !important;
-  text-transform: uppercase;
-  font-size: 20px;
-  color: #fff !important;
-  opacity: 0.8;
+	border-radius: 0 !important;
+	padding: 20px 10px !important;
+	text-transform: uppercase;
+	font-size: 20px;
+	color: #fff !important;
+	opacity: 0.8;
 }
 
 .prev:hover, .next:hover, .datepicker-switch:hover {
-  background-color: inherit !important;
-  opacity: 1;
+	background-color: inherit !important;
+	opacity: 1;
 }
 
 .cell {
-  border: 1px solid #BDBDBD;
-  margin: 2px;
-  cursor: pointer;
+	border: 1px solid #BDBDBD;
+	margin: 2px;
+	cursor: pointer;
+	margin-bottom: 10px;
+	caret-color:transparent;
 }
 
 .cell:hover {
-  border: 1px solid #3D5AFE;
+	border: 1px solid #3D5AFE;
 }
 
 .cell.select {
-  background-color: #3D5AFE;
-  color: #fff;
+	background-color: #3D5AFE;
+	color: #fff;
 }
 
 .fa-calendar {
-  color: #fff;
-  font-size: 30px;
-  padding-top: 8px;
-  padding-left: 5px;
-  cursor: pointer;
+	color: #fff;
+	font-size: 30px;
+	padding-top: 8px;
+	padding-left: 5px;
+	cursor: pointer;
+}
+.disableDiv{
+	background-color: lightgray;
+	pointer-events:none;
+}
+.pstyle{
+	margin-top:20px;
+	fontsize:20px;
+	color:red;
+	caret-color:transparent;
+}
+.nonecursor{
+	caret-color:transparent;
 }
 </style>
 </head>
 
 <body>
-	<div layout:fragment="content">
-		<h1 style="text-align:center; margin-top:50px; color:gray;">[ 방문예약 ]</h1>
-		<div class="container-fluid" style="margin-bottom:50px; width:75%">
-				
+	<div layout:fragment="content" style="caret-color:transparent;">
+		<h1 style="text-align: center; margin-top: 50px; color: gray;">[ 방문예약 ]</h1>
+		<div class="container-fluid" style="margin-bottom: 50px; width: 75%; text-align:center;">
+
 			<!-- 병원이름 -->
-			<div class="container" style="margin-bottom:50px;">
+			<div class="container" style="margin-bottom: 50px;">
 				<div class="card shadow mb-4">
 					<!-- 소제목 -->
 					<div class="card-header py-3"
 						style="display: flex; align-items: center;">
-						<h5 class="m-0 font-weight-bold text-secondary">
+						<h5 class="m-0 font-weight-bold text-secondary nonecursor">
 							<i class="fas fa-fw fa-hospital"></i>예약하는 병원 :
 						</h5>
-						<h5 class="font-weight-bold me" style="color:#06BBCC; margin : 0 0 0 10px;" th:text="${hosName}"> </h5>
-					</div>						
+						<h5 class="font-weight-bold me nonecursor"
+							style="color: #06BBCC; margin: 0 0 0 10px;" th:text="${hosName}">
+						</h5>
+					</div>
 				</div>
 			</div>
-			
+
 			<!-- 의사정보 -->
-			<div class="container" style="margin-bottom:50px;">
+			<div class="container" style="margin-bottom: 50px;">
 				<div class="card shadow mb-4">
 					<div class="card-header py-3"
-						style="display: flex; align-items: center; ">
-						<h5 class="m-0 font-weight-bold text-secondary">
+						style="display: flex; align-items: center;">
+						<h5 class="m-0 font-weight-bold text-secondary nonecursor">
 							<i class="fas fa-fw fa-user-nurse"></i>선택한 의료진 :
 						</h5>
-						<h5 class="font-weight-bold name" style="color:#06BBCC; margin : 0 0 0 10px;"> </h5>
-					</div>
-					</div>
-					<div class="card-body" style="text-align:center; ">
-						<table class="table">
-							<thead>
-								<tr>
-									<th></th>
-									<th>의사이름</th>
-									<th>담당진료과목</th>
-									<th>휴진일</th>
-									<th>진료일 / 진료시간</th>
-								</tr>
-							</thead>
-							<tbody style="vertical-align:middle;">
-								<th:block th:each="doc : ${docList}">
-									<tr th:if="${#lists.size(docList) > 0}">
-										<td><input type="radio" name="doctor" onclick="chooseDoctor()"/></td>
-										<td class="docName" th:text="${doc.doctorName}"></td>
-										<td th:text="${doc.subject}"></td>
-										<td class="docHol" th:text="${doc.holiday}"></td>
-										<td>
-											<div th:each="drTime : ${doc.times}">
-												[[${drTime.day}]]&nbsp&nbsp
-												[[${drTime.minTime}]] : 00 ~ [[${drTime.maxTime}]] : 00
-											</div>
-										</td>
-									</tr>
-								</th:block>
-							</tbody>
-						</table>
+						<h5 class="font-weight-bold name nonecursor"
+							style="color: #06BBCC; margin: 0 0 0 10px;"></h5>
 					</div>
 				</div>
-			
-				<!-- 날짜 및 시간선택버튼 -->
-				<div class="container" style="margin-bottom:50px;">
-					<div class="card shadow mb-4 body" >
-						
-						<div style="display: flex; justify-content: left; align-items: center;">
+				<div class="card-body" style="text-align: center;">
+					<table class="table">
+						<thead>
+							<tr>
+								<th></th>
+								<th>의사이름</th>
+								<th>담당진료과목</th>
+								<th>휴진일</th>
+								<th>진료일 / 진료시간</th>
+								<th style="display:none;">의사번호</th>
+							</tr>
+						</thead>
+						<tbody style="vertical-align:middle;">
+							<th:block th:each="doc : ${docList}">
+								<tr th:if="${#lists.size(docList) > 0}">
+									<td style="vertical-align:middle;"><input type="radio" name="doctor"
+										onclick="chooseDoctor()" /></td>
+									<td class="docName" th:text="${doc.doctorName}" style="vertical-align:middle;"></td>
+									<td th:text="${doc.subject}" style="vertical-align:middle;"></td>
+									<td class="docHol" th:text="${doc.holiday}" style="vertical-align:middle;"></td>
+									<td>
+										<div th:each="drTime : ${doc.times}" class="doctorTime">
+											[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
+											[[${drTime.maxTime}]] : 00</div>
+									</td>
+									<td style="display:none;" th:text="${doc.doctorNo}" class="doctorNo"></td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+			</div>
+
+			<!-- 날짜 및 시간선택버튼 -->
+			<div class="container" style="margin-bottom: 100px;">
+				<div class="card shadow mb-4 body">
+
+					<div
+						style="display: flex; justify-content: left; align-items: center;">
 						<!-- 제목 -->
-						<div class=" py-3"
-							style="width:550px; padding-left:20px;">
-							<h5 class="m-0 font-weight-bold text-secondary" style=" display:inline;">
-								<i class="fa fa-calendar text-secondary" style="font-size:21px;margin-right:5px;"></i>선택한 날짜 :
+						<div class=" py-3 nonecursor" style="width: 550px; padding-left: 20px; text-align:left;">
+							<h5 class="m-0 font-weight-bold text-secondary"
+								style="display: inline; ">
+								<i class="fa fa-calendar text-secondary"
+									style="font-size: 21px; margin-right: 5px;"></i>선택한 날짜 :
 							</h5>
-							<h5 class="font-weight-bold date" style="display:inline;color:#06BBCC; margin : 0 0 0 10px;"> </h5>
-						</div>
-						<div class=" py-3"
-							style="width:550px; padding-left:20px;">
-							<h5 class="m-0 font-weight-bold text-secondary" style=" display:inline;">
-								<i class="fa fa-clock text-secondary" style="font-size:21px;margin-right:5px;"></i>선택한 시간 :
+							<h5 class="font-weight-bold date"
+								style="display: inline; color: #06BBCC; margin: 0 0 0 10px;">
 							</h5>
-							<h5 class="font-weight-bold time" style="display:inline;color:#06BBCC; margin : 0 0 0 10px;"> </h5>
-							
 						</div>
+						<div class=" py-3 nonecursor" style="width: 550px; padding-left: 20px; text-align:left;">
+							<h5 class="m-0 font-weight-bold text-secondary"
+								style="display: inline; ">
+								<i class="fa fa-clock text-secondary"
+									style="font-size: 21px; margin-right: 5px;"></i>선택한 시간 :
+							</h5>
+							<h5 class="font-weight-bold time"
+								style="display: inline; color: #06BBCC; margin: 0 0 0 10px;">
+							</h5>
+
 						</div>
-						
-					   <!-- 우선 body 부분에 input tag를 하나 만들어준다. -->
-					   <!-- 시작시 기본 날짜 설정은 value를 이용 -->						
-						  <div class="justify-content-center" style="width:100%">
-						    <div style="width:100%;">
-						      <div class="card border-0">
-						        <form autocomplete="off">
-						          <div class="card-header bg-dark"  style="text-align:center;">
-						            <div class="mx-0 mb-0 justify-content-sm-center justify-content-start px-1">
-						              <input type="text" id="datePicker" class="datepicker one" placeholder="날짜를 선택해주세요" name="date" readonly>
-						              <span class="fa fa-calendar"></span>
-						            </div>
-						          </div>
-						          	<div class="card-body p-3 p-sm-5">
-							            <div class="row text-center mx-0" >
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">9:00AM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">9:30AM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">9:45AM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">10:00AM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">10:30AM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">10:45AM</div></div>
-							            </div>
-							            <div class="row text-center mx-0">
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">11:00AM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">11:30AM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">11:45AM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">12:00PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">12:30PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">12:45PM</div></div>
-							            </div>
-							            <div class="row text-center mx-0">
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">1:00PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">1:30PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">1:45PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">2:00PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">2:30PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">2:45PM</div></div>
-							            </div>
-							            <div class="row text-center mx-0">
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">3:00PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">3:30PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">4:15PM</div></div>
-							              <div class="col-md-2 col-4 my-1 px-2"><div class="cell py-1">5:00PM</div></div>
-							            </div>
-						            </div>
-						        </form>
-						      </div>
-						    </div>
-						  </div>
-						
-						<script type="text/javascript"> 
+					</div>
+
+					<!-- 우선 body 부분에 input tag를 하나 만들어준다. -->
+					<!-- 시작시 기본 날짜 설정은 value를 이용 -->
+					<div class="justify-content-center" style="width: 100%">
+						<div style="width: 100%;">
+							<div class="card border-0">
+								<form autocomplete="off">
+									<div class="card-header bg-dark" style="text-align: center;">
+										<div
+											class="mx-0 mb-0 justify-content-sm-center justify-content-start px-1">
+											<input type="text" id="datePicker" class="datepicker one"
+												placeholder="날짜를 선택해주세요" name="date" onchange="changeTime()" > <span
+												class="fa fa-calendar"></span>
+										</div>
+									</div>
+									<div class="card-body p-3 p-sm-5">
+										<div class="row text-center mx-0 showTime">
+<!-- 											여기에 js로 태그 갖다붙임 -->
+										</div>
+									</div>
+								</form>
+							</div>
+						</div>
+					</div>
+
+					<script type="text/javascript"> 
 						
 							//병원 및 의사 휴무일 지정중
 							let docName = null; //이거는 의사선택 전 날짜 못 고르게 하는 장치
 							let hosHoliday = [[${newDate}]]; //병원 쉬는날
+							console.log("hosHoliday : ", hosHoliday)
 							let docHoliday = null; //의사 쉬는날
-							console.log(docHoliday);
+							let restday = []; //병원 + 의사 쉬는날
+							//console.log(docHoliday);
 							
 							
 							//페이지 열었을때 바로 시작되는 함수
@@ -317,74 +333,376 @@ thead tr:nth-child(3) th {
 							
 							//의사 선택
 							function chooseDoctor(){
-								let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
+								let basicHosHoliDay = hosHoliday
+								let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
 								let docName = tr.querySelector('.docName').innerText;
 								let holiday = tr.querySelector('.docHol').innerText;
 								document.querySelector('.name').innerText=docName; //이름뽑아오기
 								document.querySelector('.one').disabled=false; //날짜선택 disabled걸린거 풀기
+								document.querySelector('.one').value = null;
 								
-								let dayList = {"월": 1 ,"화": 2,"수": 3,"목": 4,"금": 5 ,"토": 6,"일" : 7}
-								//let restday = 
-								console.log("restday",restday);
+								let dayList = {"i1": 1 ,"i2": 2,"i3": 3,"i4": 4,"i5": 5 ,"i6": 6,"i7" : 0}
 								
+								let restday = [];
+								//자르기
+								if(holiday.length > 2){
+									//hosHoliday=''
+									let splitHoliday = holiday.split(',');
+									splitHoliday.forEach((ele)=>{
+									let array = [dayList[ele]];
+									basicHosHoliDay = basicHosHoliDay.concat(array);
+									})
+									//hosHoliday.push(hosHoliday);//병원 쉬는날도 같이
+								}else{
+									let array = [dayList[holiday]];
+									basicHosHoliDay = basicHosHoliDay.concat(array);
+									//hosHoliday.push(hosHoliday);//병원 쉬는날도 같이
+								}
+								
+								document.querySelector('.time').innerText= null;
+								document.querySelector('.date').innerText= null;
+								console.log("hosHoliday00",basicHosHoliDay);
+
+								createDatePicker(basicHosHoliDay)//달력설정이 새로 만들어짐
 								
 							}
 							
+							//달력 설정하는 함수
+							function createDatePicker(hosHoliday){
+								
+								$('#datePicker').datepicker("destroy");
+						
+								$('#datePicker')
+							      .datepicker({
+							         format: 'yyyy-mm-dd', //데이터 포맷 형식(yyyy : 년 mm : 월 dd : 일 )
+							         startDate: '1d', //달력에서 선택 할 수 있는 가장 빠른 날짜. 이전으로는 선택 불가능 ( d : 일 m : 달 y : 년 w : 주)
+							         endDate: '+10d', //달력에서 선택 할 수 있는 가장 느린 날짜. 이후로 선택 불가 ( d : 일 m : 달 y : 년 w : 주)
+							         autoclose: true, //사용자가 날짜를 클릭하면 자동 캘린더가 닫히는 옵션
+							         daysOfWeekDisabled: hosHoliday, //선택 불가능한 요일 설정 0 : 일요일 ~ 6 : 토요일
+							         disableTouchKeyboard: false, //모바일에서 플러그인 작동 여부 기본값 false 가 작동 true가 작동 안함.
+							         immediateUpdates: true, //사용자가 보는 화면으로 바로바로 날짜를 변경할지 여부 기본값 :false
+							         multidate: false, //여러 날짜 선택할 수 있게 하는 옵션 기본값 :false
+							         multidateSeparator: ',', //여러 날짜를 선택했을 때 사이에 나타나는 글짜 2019-05-01,2019-06-01
+							         templates: {
+							            leftArrow: '&laquo;',
+							            rightArrow: '&raquo;',
+							         }, //다음달 이전달로 넘어가는 화살표 모양 커스텀 마이징
+							         showWeekDays: true, // 위에 요일 보여주는 옵션 기본값 : true
+							         todayHighlight: true, //오늘 날짜에 하이라이팅 기능 기본값 :false
+							         toggleActive: true, //이미 선택된 날짜 선택하면 기본값 : false인경우 그대로 유지 true인 경우 날짜 삭제
+							         weekStart: 0, //달력 시작 요일 선택하는 것 기본값은 0인 일요일
+							      })
+							      .on('changeDate', function (e) {
+							         //날짜가 변경되고 일어나는 이벤트
+							         let date = document.querySelector('.datepicker').value;
+							         document.querySelector('.date').innerText=date;
+							         // e.date를 찍어보면 Thu Jun 27 2019 00:00:00 GMT+0900 (한국 표준시) 위와 같은 형태로 보인다.
+							      });
+								
+							}
 							
-							
-						   $('#datePicker')
-						      .datepicker({
-						         format: 'yyyy-mm-dd', //데이터 포맷 형식(yyyy : 년 mm : 월 dd : 일 )
-						         startDate: '1d', //달력에서 선택 할 수 있는 가장 빠른 날짜. 이전으로는 선택 불가능 ( d : 일 m : 달 y : 년 w : 주)
-						         endDate: '+1m', //달력에서 선택 할 수 있는 가장 느린 날짜. 이후로 선택 불가 ( d : 일 m : 달 y : 년 w : 주)
-						         autoclose: true, //사용자가 날짜를 클릭하면 자동 캘린더가 닫히는 옵션
-						         datesDisabled: ['2019-06-24', '2019-06-26'], //선택 불가능한 일 설정 하는 배열 위에 있는 format 과 형식이 같아야함.
-						         daysOfWeekDisabled: [hosHoliday], //선택 불가능한 요일 설정 0 : 일요일 ~ 6 : 토요일
-						         disableTouchKeyboard: false, //모바일에서 플러그인 작동 여부 기본값 false 가 작동 true가 작동 안함.
-						         immediateUpdates: true, //사용자가 보는 화면으로 바로바로 날짜를 변경할지 여부 기본값 :false
-						         multidate: false, //여러 날짜 선택할 수 있게 하는 옵션 기본값 :false
-						         multidateSeparator: ',', //여러 날짜를 선택했을 때 사이에 나타나는 글짜 2019-05-01,2019-06-01
-						         templates: {
-						            leftArrow: '&laquo;',
-						            rightArrow: '&raquo;',
-						         }, //다음달 이전달로 넘어가는 화살표 모양 커스텀 마이징
-						         showWeekDays: true, // 위에 요일 보여주는 옵션 기본값 : true
-						         todayHighlight: true, //오늘 날짜에 하이라이팅 기능 기본값 :false
-						         toggleActive: true, //이미 선택된 날짜 선택하면 기본값 : false인경우 그대로 유지 true인 경우 날짜 삭제
-						         weekStart: 0, //달력 시작 요일 선택하는 것 기본값은 0인 일요일
-						      })
-						      .on('changeDate', function (e) {
-						         //날짜가 변경되고 일어나는 이벤트
-						         let date = document.querySelector('.datepicker').value;
-						         document.querySelector('.date').innerText=date;
-						         // e.date를 찍어보면 Thu Jun 27 2019 00:00:00 GMT+0900 (한국 표준시) 위와 같은 형태로 보인다.
-						      });
-							
-				
+							//해당 의사의 전체 진료시간 보여주는 함수
+							async function changeTime(){
+								let tr = document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
+								let doctorTime = tr.querySelectorAll('.doctorTime');
+								let reserveday = document.querySelector('input[name="date"]').value; //선택한 날짜
+								let doctorReserveTimeList = [];//이미 예약된 시간 담을 배열
+								//선택한 날짜
+								let date  = new Date(reserveday);
+								//현재날짜 현재시간
+								let nowDate = new Date();
+								let hours = nowDate.getHours();
+								let week = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];//선택한 날짜의 요일
+								//console.log(week);//ex.월
+								let days = {};//진료 오픈시간 종료시간 들어있음
+								console.log(date,",",nowDate);
+								
+								//의사 요일별 진료시간 계산
+								for(let i=0; i < doctorTime.length; i++){
+									let docweek = (doctorTime[i].innerText).substr(0,1); //의사의 진료일
+									if(week == docweek){ //예약하는 요일과 의사의 진료요일이 일치하면 진료시간을 담겠따.										
+										days = {	"open" : (doctorTime[i].innerText).substr(4,2),
+													"close": (doctorTime[i].innerText).substr(14,2)
+												}
+									}
+								}
+								//console.log("진료 시간:", days);
+								//console.log((days["close"] - days["open"]));
+								
+								//해당 의사의 이미 예약된 시간리스트 요청
+								let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
+								let reserveYear = reserveday.substr(0,4);//예약년도
+								let reserveMonth = reserveday.substr(5,2);//예약월
+								let reserveDate = reserveday.substr(8,2);//예약일
+								await $.ajax("/reserveList",{
+									type:"post",
+									contentType:"application/json",
+									data : JSON.stringify({
+										"doctorNo" : doctorNo,
+										"reserveYear" : reserveYear,
+										"reserveMonth" : reserveMonth,
+										"reserveDay" : reserveDate,
+									}),
+									success:function(response){
+										//console.log("response", response);
+										response.forEach(ele=> doctorReserveTimeList.push(ele['reserveTime']));
+										console.log("이미 예약된 시간 =",doctorReserveTimeList);
+
+									}
+								})
+								
+								//새로 만들 태그들
+								let newDiv =null;
+								let innerDiv1 =null;
+								let innerDiv2 =null;
+								let showTimeDiv = document.querySelector('.showTime');
+								
+								//만약 새로 클릭시 기존에 만든 태그들 다 삭제
+								let removeDivs = document.querySelectorAll('.remove');
+								removeDivs.forEach(item=> item.remove());
+								
+								//요일별 시간에 대한 시간버튼 만들기
+								for(let i = 0; i < (days["close"] - days["open"]); i++){
+									
+									//큰 div
+									newDiv = document.createElement("div");
+									newDiv.className = "col-md-2 col-4 my-1 px-2 remove";
+									
+									//정각
+									innerDiv1 = document.createElement("div");
+									innerDiv1.className = "cell py-1 remove";
+									innerDiv1.textContent = (parseInt(days["open"]) + i) + ":00";
+									//이미 지니간 날짜 & 지나간 시간이면 클릭 못하게
+									if(date.getDate() == nowDate.getDate() && parseInt(days["open"]) + i <= hours){
+										console.log("맞음");
+										innerDiv1.classList.add('disableDiv');
+									}
+									
+									//만약 만들어진 시간중에 이미 예약된 시간이 있으면 클릭못하게 처리(위의 ajax요청에 대한 응답)
+									for(let ele of doctorReserveTimeList){
+										//console.log("ele",ele);
+										//console.log("innerDiv1.textContent",innerDiv1.textContent);
+										if(innerDiv1.textContent == ele){
+											innerDiv1.classList.add('disableDiv');
+										}
+									}
+									
+									//클릭이벤트 색상변경 + 선택한 시간 보여주기
+									innerDiv1.addEventListener("click", function(event){
+										document.querySelector('.time').innerText=event.target.textContent;
+										document.querySelectorAll('.cell:not(.disableDiv)').forEach(function(div) {
+								            div.style.backgroundColor = "white";
+								        });
+										event.target.style.backgroundColor="#06BBCC";
+									})
+									
+									//30분
+									innerDiv2 = document.createElement("div");
+									innerDiv2.className = "cell py-1 remove";
+									innerDiv2.textContent = (parseInt(days["open"]) + i) + ":30";
+									//이미 지니간 날짜 & 지나간 시간이면 클릭 못하게
+									if(date.getDate() == nowDate.getDate() && parseInt(days["open"]) + i <= hours){
+										innerDiv2.classList.add('disableDiv');
+									}
+									
+									for(let ele of doctorReserveTimeList){
+										//console.log("ele",ele);
+										//console.log("innerDiv1.textContent",innerDiv1.textContent);
+										if(innerDiv2.textContent == ele){
+											innerDiv2.classList.add('disableDiv');
+										}
+									}
+									
+									//클릭이벤트 색상변경 + 선택한 시간 보여주기
+									innerDiv2.addEventListener("click", function(event){
+										document.querySelector('.time').innerText=event.target.textContent;
+										document.querySelectorAll('.cell:not(.disableDiv)').forEach(function(div) {
+								            div.style.backgroundColor = "white";
+								        });
+										event.target.style.backgroundColor="#06BBCC";
+									})
+									
+									
+									//큰 div안에 두개 다 append
+									newDiv.appendChild(innerDiv1);
+									newDiv.appendChild(innerDiv2);
+									
+									//최종 append
+									showTimeDiv.appendChild(newDiv);
+								}
+								//안내글
+								let p = document.createElement("p");
+								p.textContent = "* 당일 예약 시, 현재시간 기준 30분 이후 시간부터 예약이 가능합니다.";
+								p.className="pstyle remove";
+								
+								showTimeDiv.appendChild(p);
+								
+							}
+					
+						 
 						</script>
+				</div>
+			</div>
+
+			<!-- 증상적는곳 -->
+			<div class="container" style="margin-bottom: 100px;">
+				<div class="card shadow mb-4">
+					<div class="card-header py-3 nonecursor"
+						style="display: flex; align-items: center;">
+						<h5 class="m-0 font-weight-bold text-secondary">
+							<i class="fas fa-fw fa-check"
+								style="font-size: 21px; margin-right: 5px;"></i>증상을 적어주세요(필수)
+						</h5>
+					</div>
+					<div class="card-body"
+						style="display: flex; justify-content: center; align-items: center;">
+						<textarea id="textarea"style="width:1500px; height:200px; resize:none; caret-color:black;"></textarea>
 					</div>
 				</div>
-				
-				<!-- 증상적는곳 -->
-				<div class="container" style="margin-bottom:50px;">
-					<div class="card shadow mb-4">
-						<div class="card-header py-3"
-							style="display: flex; align-items: center;">
-							<h5 class="m-0 font-weight-bold text-secondary">
-								<i class="fas fa-fw fa-check" style="font-size:21px;margin-right:5px;"></i>증상을 적어주세요
-							</h5>
-							<h5 class="m-0 font-weight-bold text-secondary me"> </h5>
-						</div>
-						<div class="card-body"
-							style="display: flex; justify-content: center; align-items: center;">
+			</div>
+			
+			<!-- 주의사항 -->
+			<div class="container nonecursor" style="margin-bottom: 50px;">
+				<div class="card shadow mb-4">
+					<div class="card-header py-3"
+						style="display: flex; align-items: center;">
+						<h5 class="m-0 font-weight-bold" style="color:red;">
+							<i class="fas fa-fw fa-exclamation-triangle"
+								style="font-size: 21px; margin-right: 5px; "></i>내원 전 주의사항(반드시 읽고 동의해주시기 바랍니다)
+						</h5>
+					</div>
+					<div class="card-body"
+						style="display: flex; justify-content: center; align-items: center; background-color:#F8F8F8">
+						<div style="width:1500px; height:300px; resize:none; font-size:16.5px;  vertical-align:middle;">
+							<ol style="text-align:left;">
+								<li style="margin-bottom:10px;">검진을 위한 고객은 내원 전 반드시 전날 저녁 7시부터 방문까지 금식해주시길 바라며 사탕, 술, 담배 등도 일정 금하셔야 합니다.</li>
+								<li style="margin-bottom:10px;">이미 기존에 복용하시는 약이 있으신 경우 반드시 들고 오시어 의사와 상의해주시기 바랍니다.</li>
+								<li style="margin-bottom:10px;">예약을 완료한 경우 내원하기 며칠전에 병원측에서 연락이 가며, 문제가 생겨 방문하지 못하는 경우 미리 연락주시기 바랍니다.</li>
+								<li style="margin-bottom:10px;">원활한 예약 및 진료를 위해 고객님의 기입하신 정보는 해당 병원으로 전송되며 이는 진료상의 자료로 쓰일 수 있음을 알려드립니다.</li>
+								<li style="margin-bottom:10px;">전염병 및 기타 비말을 통한 전염이 가능한 질환에 감염되신 분들은 방문 전, 반드시 병원측에 고지하셔야하며 이를 따르지 않을 시  법적 처벌을 받을 수 있습니다.</li>
+								<li style="margin-bottom:10px;">예약제도를 도입하고 있는 것은 고객의 편리를 제공하는 것이며 병원측의 사정에 따라 진료시간이 조금 늦춰질 수 있음을 양해부탁드립니다.</li>
+								<li style="margin-bottom:10px;">만 17세 미만의 고객분들은 보호자와 함께 방문해주시길 바랍니다.</li>
+							</ol>
 						</div>
 					</div>
 				</div>
-				
-			</div>				
+			</div>
+			<br>
+			<br>
+			<p style="font-size:20px; color:red; font-weight:bold;">위의 주의사항을 충분히 숙지하셨고, 이에 동의하십니까?</p>
+			<button type="button" class="bb btn btn-primary" onclick="insertReservation()"
+					style="width:300px; height:100px;font-size:20px;background-color: #06BBCC; border:none;">
+				동의하고 제출하기</button>
 		</div>
-
-
+	<script th:inline="javascript">
+		//신청했을때 insert시키는 함수
+		function insertReservation(){
+			//검사용
+			let hospital = document.querySelector('.me').innerText;//병원이 지정되었는가?
+			let doctor = document.querySelector('.name').innerText;//의사를 지정했는가?
+			let date = document.querySelector('.date').innerText;//날짜가 정해졌는가?
+			let time = document.querySelector('.time').innerText;//시간이 정해졌는가?
+			let textarea = document.querySelector('#textarea').value;//증상을 적었는가?
+			console.log("선택항목들 = ",hospital," , ",doctor," , ",date," , ",time," , ",textarea);
+			
+			//의사검사
+			if(doctor !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "의료진을 선택해주세요",
+		   			  html: '아직 진료받을 의료진을 선택하지 않으셨습니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
+			//날짜검사
+			if(date !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "날짜를 선택해주세요",
+		   			  html: '진료받으실 날짜를 선택해주시기 바랍니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
+			//시간검사
+			if(time !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "시간을 선택해주세요",
+		   			  html: '진료받으실 시간을 선택해주시기 바랍니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
+			//증상검사
+			if(textarea !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "증상을 입력해주세요",
+		   			  html: '필수로 작성하셔야되는 항목입니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
+			
+			
+			//제출할 것
+			let hospitalId = [[${hospitalId}]];//병원아이디
+			let userId = [[${userId}]]//유저아이디
+			let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
+			let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
+			let reserveYear = date.substr(0,4);//예약년도
+			let reserveMonth = date.substr(5,2);//예약월
+			let reserveDay = date.substr(8,2);//예약일
+			let symptom = textarea//증상
+			let reserveTime = time;//예약시간
+			console.log("제출항목들 = ",hospitalId," , ",userId," , ",doctorNo," , ",reserveYear," , ",reserveMonth," , ",reserveDay," , ",symptom);
+			
+			$.ajax("/contactReserve",{
+				type:"post",
+				contentType:"application/json",
+				data : JSON.stringify({
+					"hospitalId" : hospitalId,
+					"userId" : userId,
+					"doctorNo" : doctorNo,
+					"reserveYear" : reserveYear,
+					"reserveMonth" : reserveMonth,
+					"reserveDay" : reserveDay,
+					"symptom" : symptom,
+					"reserveTime" : reserveTime
+				}),
+				
+				success: function(response){
+					Swal.fire({
+			   			  title: "예약이 완료되었습니다!",
+			   			  html: '예약내역은 마이페이지에서 확인가능합니다~',
+			   			  icon: "success"
+			   			}).then(result=>{
+			   				if(result.value){
+			   					window.location.href = "/mypage";
+			   				}
+			   			})
+					
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+				        console.error("에러 발생:", textStatus, errorThrown);
+				     Swal.fire({
+		   			  title: "예약실패",
+		   			  html: '뭔가 문제가 있음ㄴ',
+		   			  icon: "error"
+		   			});
+				}
+			})
+		}
+	
+	</script>
+	</div>
+	
 </body>
 
 </html>

@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
 
+import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
@@ -44,4 +45,14 @@ public interface MainService {
 	
 	//방문예약 (insert)
 	public int insertContactReservation(ReservationVO reservationVo);
+	
+	//비대면예약 (insert)
+	public int insertUntactReservation(ReservationVO reservationVo);
+	
+	//선택한 의사의 예약시간뽑기(클릭못하게 처리)
+	public List<ReservationVO> findreserveListToChoice(ReservationVO reservationVo);
+	
+	//한 의사에 대한 오늘날짜의 현재시간 이후 모든 예약리스트
+	public List<ReservationVO> findWaitingList(DoctorVO doctorVO);
+	
 }

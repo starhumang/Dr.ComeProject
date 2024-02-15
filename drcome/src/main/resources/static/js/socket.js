@@ -5,8 +5,8 @@ let socket = io("http://localhost:3000/", {
 console.log(socket.connected);
 
 const myPeer = new Peer({
-  host: "localhost",
-  port: "3001", //PeerJS 서버가 실행되고 있는 포트
+	host: 'localhost',
+	port: '3001', //PeerJS 서버가 실행되고 있는 포트
 });
 
 const peers = {};

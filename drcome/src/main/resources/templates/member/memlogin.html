@@ -60,14 +60,16 @@
 				margin-bottom: 10px;
 			}
 
+			#inputForm > p {
+				width: 80%;
+				text-align: left;
+				margin: 10px auto;
+			}
+
 			a {
 				color: #06bbcc;
 				text-decoration: none;
 			}
-
-			/* a:hover {
-				text-decoration: underline;
-			} */
 
 			.jointext {
 				color: #051fb4;
@@ -75,14 +77,7 @@
 			}
 		</style>
 
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
-
 		<script>
-			$('form').on('submit', (e) => {
-				e.preventDefault();
-			});
-
 			function scsAlert(content) {
 				Swal.fire({
 					icon: 'success',
@@ -136,10 +131,10 @@
 	</head>
 	<body>
 		<div layout:fragment="content">
-			<div class="registered-customers">
+			<div class="registered-customers" style="margin-top: 100px">
 				<h3 class="blog-section-title border-left mb-30">Dr.Come</h3>
 				<form style="text-align: center" method="post">
-					<div class="login-account p-30 box-shadow">
+					<div class="login-account p-30 box-shadow" id="inputForm">
 						<p>아이디</p>
 						<input type="text" name="username" />
 						<p>비밀번호</p>

@@ -9,6 +9,21 @@
 		<title>의료기관 회원가입</title>
 
 		<style>
+			.registered-customers {
+				margin: 0 auto;
+				width: 800px;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.blog-section-title {
+				color: #333;
+				border-left: 2px solid #06bbcc;
+				padding-left: 10px;
+			}
+
 			label {
 				display: inline-block;
 				width: 200px;
@@ -27,33 +42,19 @@
 
 			.input-group input {
 				width: 400px;
-				margin-right: 10px;
 				height: 32px;
 				border: 0;
 				outline: none;
-				padding-left: 10px;
+				box-sizing: border-box;
 			}
 
 			.input-group button {
 				width: 150px;
 			}
 
-			.input-group-select {
-				display: flex;
-				align-items: center;
-				margin-bottom: 15px;
-			}
-
 			.error-message {
 				color: red;
 				font-size: 0.8em;
-			}
-
-			#filePreview {
-				max-width: 100%;
-				max-height: 150px;
-				margin-top: 10px;
-				display: none;
 			}
 
 			.modal {
@@ -72,24 +73,21 @@
 				overflow-y: auto;
 			}
 
+			#filePreview {
+				max-width: 100%;
+				max-height: 150px;
+				margin-top: 10px;
+				margin-left: 270px;
+				display: none;
+			}
+
 			#verification-section {
 				display: none;
 				align-items: center;
 				margin-bottom: 15px;
 			}
-
-			#verification-section input,
-			#verification-section button {
-				height: 30px;
-			}
-
-			#verification-section button {
-				width: 150px;
-			}
 		</style>
 
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 		<script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
 		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
@@ -297,7 +295,15 @@
 
 			function checkPhone() {
 				let phone = $('#ceophone').val().replace(/-/g, '');
-				console.log(phone);
+
+				if (!phone) {
+					Swal.fire({
+						icon: 'error',
+						text: '전화번호를 입력하세요.',
+					});
+					return;
+				}
+
 				let url = '/auth/checkPhone?phoneNum=' + phone;
 				$.ajax({
 					url: url,
@@ -500,22 +506,46 @@
 					},
 				});
 			}
+
+			function revertForm() {
+				location.href = '/userlogin';
+			}
 		</script>
 	</head>
 
 	<body>
 		<div layout:fragment="content">
-			<form id="medicalForm" enctype="multipart/form-data" method="post">
-				<div class="container">
-					<h3>의료기관 회원가입</h3>
+			<div class="registered-customers" style="margin-top: 100px">
+				<h3 class="blog-section-title border-left mb-30">의료기관 회원가입</h3>
+				<br />
+				<div class="text-center">
+					<span onclick="isHospital()">병원 사용자</span>
+					<span>|</span>
+					<span onclick="isPharmacy()">약국 사용자</span>
+				</div>
+				<form id="medicalForm" enctype="multipart/form-data" method="post">
 					<br />
-					<a onclick="isHospital()">병원가입</a>
-					<a onclick="isPharmacy()">약국가입</a>
 					<br />
 					<div class="input-group">
 						<label>아이디</label>
-						<input type="text" id="mid" placeholder="아이디를 입력하세요" required oninput="checkId()" />
-						<button type="button" id="midcheck" onclick="checkDupliId()" disabled>중복 확인</button>
+						<input
+							type="text"
+							id="mid"
+							placeholder="아이디를 입력하세요"
+							required
+							oninput="checkId()"
+							style="width: 350px; margin-right: 10px"
+						/>
+						<button
+							type="button"
+							id="midcheck"
+							onclick="checkDupliId()"
+							disabled
+							class="btn btn-sm btn-secondary shadow-sm"
+							style="display: inline-block; height: 30px"
+						>
+							중복 확인
+						</button>
 						<span id="idErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
@@ -551,14 +581,16 @@
 
 					<div class="input-group">
 						<label id="addlabel">병원 주소</label>
-						<input type="text" id="madd" required />
-						<input
+						<input type="text" id="madd" required style="width: 350px; margin-right: 10px" />
+						<button
 							type="button"
 							id="maddcheck"
-							class="btn btn-warning"
-							value="주소검색"
+							class="btn btn-sm btn-secondary shadow-sm"
+							style="display: inline-block; height: 30px"
 							onclick="searchAdd()"
-						/>
+						>
+							주소 검색
+						</button>
 					</div>
 
 					<div class="input-group">
@@ -632,7 +664,7 @@
 
 					<div class="input-group">
 						<label>오픈 시간</label>
-						<select id="otime">
+						<select id="otime" class="form-select form-select-sm" aria-label=".form-select-sm example">
 							<option selected>선택하세요</option>
 							<th:block th:each="detailCode : ${application.detailCode_k}">
 								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
@@ -642,7 +674,7 @@
 
 					<div class="input-group">
 						<label>마감 시간</label>
-						<select id="ctime">
+						<select id="ctime" class="form-select form-select-sm" aria-label=".form-select-sm example">
 							<option selected>선택하세요</option>
 							<th:block th:each="detailCode : ${application.detailCode_k}">
 								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
@@ -666,15 +698,39 @@
 							required
 							maxlength="13"
 							oninput="autoHyphen(this)"
+							style="width: 350px; margin-right: 10px"
 						/>
-						<button type="button" id="checkPhoneBtn" onclick="checkPhone()">인증번호발송</button>
+						<button
+							type="button"
+							id="checkPhoneBtn"
+							onclick="checkPhone()"
+							class="btn btn-sm btn-secondary shadow-sm"
+							style="display: inline-block; height: 30px"
+						>
+							인증번호발송
+						</button>
 						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group" id="verification-section">
 						<label>인증번호</label>
-						<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
-						<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
+						<input
+							type="number"
+							id="checkPhoneNum"
+							placeholder="인증번호를 입력하세요"
+							maxlength="4"
+							required
+							style="width: 350px; margin-right: 10px"
+						/>
+						<button
+							type="button"
+							id="checkPhoneNumBtn"
+							onclick="checkPhoneNumber()"
+							class="btn btn-sm btn-secondary shadow-sm"
+							style="display: inline-block; height: 30px"
+						>
+							인증하기
+						</button>
 					</div>
 
 					<div class="input-group">
@@ -686,19 +742,37 @@
 							required
 							maxlength="12"
 							oninput="autoHyphenNum(this)"
+							style="width: 350px; margin-right: 10px"
 						/>
-						<button type="button" id="licensecheck" onclick="checkLicense()">인증하기</button>
+						<button
+							type="button"
+							id="licensecheck"
+							onclick="checkLicense()"
+							class="btn btn-sm btn-secondary shadow-sm"
+							style="display: inline-block; height: 30px"
+						>
+							인증하기
+						</button>
 					</div>
 
 					<div>
-						<input type="checkbox" id="invalidCheck" required />
-						동의항목<label class="form-check-label" onclick="openModal()"> [상세보기]</label>
+						<input type="checkbox" required />
+						개인정보 사용 동의<label
+							class="form-check-label"
+							data-bs-toggle="modal"
+							data-bs-target="#exampleModal"
+						>
+							&nbsp;[상세보기]</label
+						>
 					</div>
 
 					<br />
-					<input type="button" value="회원가입" onclick="submitForm()" class="btn btn-danger" />
-				</div>
-			</form>
+					<div style="text-align: center">
+						<input type="button" value="회원가입" onclick="submitForm()" class="btn btn-danger" />
+						<input type="button" value="취소하기" onclick="revertForm()" class="btn btn-warning" />
+					</div>
+				</form>
+			</div>
 
 			<!-- Modal -->
 			<div class="modal" tabindex="-1" id="exampleModal">
@@ -734,7 +808,7 @@
 회사는 이에 따라 회원의 개인정보를 파기할 의무가 있습니다.
 
 제 6 조 (개인정보의 제공 및 공유)
-회사는 회원의 동의 없이는 개인정보를 제3자에게 제공하지 않습니다. 단, 아래의 경우에는 예외로 합니다.
+회사는 회원의 동의 없이는 개인정보를 제3자에게 제공하지 않습니다. 아래의 경우에는 예외로 합니다.
 1. 회원이 사전에 동의한 경우 법령의 규정에 의거하는 경우 
 2. 수사 등 공공기관의 요청이 있는 경우 
 

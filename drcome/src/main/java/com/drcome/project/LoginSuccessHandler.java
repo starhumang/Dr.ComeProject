@@ -31,7 +31,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
 		
 		// 세션에 필요한 값 담기
 		UserDetailVO userDetailVO = (UserDetailVO) auth.getPrincipal();
-
+		
 		HttpSession session = request.getSession();
 		session.setAttribute("userId", userDetailVO.getUsername()); // 아이디
 		session.setAttribute("userGrade", userDetailVO.getGrade()); // 권한
@@ -44,7 +44,7 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
         } else if (userDetailVO.getGrade().equals("ROLE_HOSPITAL")) {
             redirectUrl = "/hospital";
         } else if (userDetailVO.getGrade().equals("ROLE_PHARMACY")) {
-            redirectUrl = "/pharmacy";
+            redirectUrl = "/pharmacy/status";
         }
 
         // 응답으로 리다이렉트할 URL 전달

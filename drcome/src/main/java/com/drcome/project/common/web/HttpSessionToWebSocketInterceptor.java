@@ -1,4 +1,4 @@
-package com.drcome.project;
+package com.drcome.project.common.web;
 
 import java.util.Map;
 

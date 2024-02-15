@@ -8,7 +8,7 @@
 <title>Search</title>
 <script type="text/javascript"
 	th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
-<style>
+<style scoped>
 .head_info {
 	display: flex;
 	justify-content: space-between;
@@ -34,6 +34,25 @@ button {
 
 button:hover {
 	color: #06BBCC;
+}
+.pagination a {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 0 2px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #36b9cc;
+  color: #fff;
+  /* border: 1px solid #4e73df; */
+}
+
+.pagination a:hover {
+  background-color: #bfc5d8;
 }
 </style>
 </head>
@@ -100,12 +119,22 @@ button:hover {
 						</tr>
 					</tbody>
 				</table>
+				
+			<!-- 페이징 버튼 -->
+			<div>
+				<div class="pagination" style="display: flex; justify-content: center; margin: 50px 0;">
+				</div>	
+			</div>
+			
 			</div>
 
 			<script th:inline="javascript">
+			let sort = 0;
 		//현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
 	    //5. 병원주소를 좌표로 바꿈
 	    async function restart(){
+	    	console.log("현재정렬3 = ", sort)
+	    	sort=1;
 	    	document.querySelector(".na").style.color='#06BBCC';
 	  	  	document.querySelector(".ga").style.color='black';
 		   	 var geocoder = new kakao.maps.services.Geocoder();
@@ -120,7 +149,7 @@ button:hover {
 			   	address.forEach((add)=>{
 			   		add.style.display = "block";
 		    	  });
-		   	 console.log("address=",address);
+		   	 //console.log("address=",address);
 		   	 if(!address){
 		   		 console.log("강제종료");
 		   		 return;
@@ -130,22 +159,22 @@ button:hover {
 		   	 let hospitalList = [];
 		        
 		    	 function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
-		    		console.log("item= ",item);
+		    		//console.log("item= ",item);
 		    		 return new Promise((resolve)=>{
 		    			 geocoder.addressSearch(item.innerHTML, (result, status)=>{ //item.innerHTML= 주소 그 자체
 		    				if (status === kakao.maps.services.Status.OK) {
-		    					console.log("카카오맵에서 찾았음")
+		    					//console.log("카카오맵에서 찾았음")
 		                       //병원 좌표
 		                       let hosLat = result[0].address.y;
 		                       let hosLon = result[0].address.x;
-		                       console.log('병원Lat = ',result[0].address.y);
-		                       console.log('병원Lon = ',result[0].address.x);
+		                       //console.log('병원Lat = ',result[0].address.y);
+		                       //console.log('병원Lon = ',result[0].address.x);
 		                       
 		                     	//현재위치 좌표
 		                       let curLat = window.localStorage.getItem('lat');
 		                       let curLon = window.localStorage.getItem('lon');
-		                       console.log('세션Lat = ',curLat);
-		                       console.log('세션Lon = ',curLon);
+		                       //console.log('세션Lat = ',curLat);
+		                       //console.log('세션Lon = ',curLon);
 		                       
 		                       //거리계산된 값
 		                       let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
@@ -179,18 +208,18 @@ button:hover {
 		    	 //그 새로운 배열map은 promiseFn함수에 address배열에 있는 
 		    	 //item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
 		        const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
-		        console.log("promises=",promises)
+		        //console.log("promises=",promises)
 		        await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
 				 
 		        //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
 		        //parseFloat()=문자열을 실수로 변경
 		        hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-		        console.log("hospitalList=", hospitalList);
+		        //console.log("hospitalList=", hospitalList);
 		        
 		        //hospitalItem클래스를 가진 div전체(하위요소 포함)
 		        const hospitalListBox = document.querySelector('.here');
 		        
-		        console.log("hospitalListBox=", hospitalListBox); 
+		        //console.log("hospitalListBox=", hospitalListBox); 
 		        
 		        //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된)를 넣어줌
 		        hospitalList.forEach(({parent_node}) =>{
@@ -218,22 +247,21 @@ button:hover {
 		      function distance(curLat, curLon, hosLat, hosLon){ //현재좌표 - 병원좌표
 		          const earth_r = 6371 // 지구의 반지름(km)
 		          const lat = radian( hosLat - curLat ) //위도끼리 뺀 값
-		          console.log("위도 뺀 값=", lat)
+		          //console.log("위도 뺀 값=", lat)
 		          const lon = radian( hosLon - curLon ) // 경도끼리 뺀 값
-		          console.log("경도 뺀 값=", lon)
+		          //console.log("경도 뺀 값=", lon)
 		          
 		          const a = Math.sin(lat/2) * Math.sin(lat/2) + //위도
 		          Math.cos(radian(curLat)) * Math.cos(radian(hosLat)) * // cos
 		          Math.sin(lon/2) * Math.sin(lon/2); //경도
-		          console.log("a =", a);
+		          //console.log("a =", a);
 		
 		          const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-		          console.log("c 2개의 각도 =", c);
+		          //console.log("c 2개의 각도 =", c);
 		          const distance = earth_r * c // 반지름 x 2개의 각도값
 		
 		          return distance;
 		      }
-		      //restart();
 		      
 		      //가나다순
 		      window.onload = function(){
@@ -243,21 +271,151 @@ button:hover {
 		    		  address.style.display = "none";
 		    	  });
 		    	  
-		    	  let locs = document.querySelectorAll('.lo')
+		    	  let locs = document.querySelectorAll('.lo') //병원리스트의 거리
 		    	  locs.forEach((loc)=>{
 		    		  loc.style.display = "none";
 		    	  });
 		    	  
 		    	  ga.style.color='#06BBCC';
 			  	  document.querySelector(".na").style.color='black';
+			  	  console.log("현재정렬1 = ", sort)
 			  	  
 		    	  function changeSort(){
 				  	  window.location.reload();
+				  	  sort = 2;
 		      	  }
 		    	  ga.onclick = changeSort;
 		    	  
 		      } 
 			  
+		      
+		  	//페이징
+		  	let ga = document.querySelector(".ga");
+		    //전체 병원수
+		    let hosList = [[${subject}]];
+		    let hoscount = hosList.length
+		    //한 페이지에 보여줄 병원수
+		    let countPerPage = 5;
+		    //전체 페이지 수
+			let totalPages = Math.ceil(hoscount / countPerPage);
+		    //현재페이지
+		    let curPage = 1;
+		    //이전페이지 여부
+		    let prev = curPage > 1;
+		    //다음페이지 여부
+		    let next = curPage < totalPages;
+		    
+		    let startPage = (curPage - 1) * countPerPage; //배열 0부터
+	    	let endPage = Math.min(startPage + countPerPage ,hoscount) //배열 4까지 보여줌(짜피 아래에서 slice쓰기 때문에 여기선 숫자가 1씩 더 큼)
+	    	let sliceHosList = hosList.slice(startPage,endPage); //slice(5,10) -> 5,6,7,8,9까지 보여줌 // 한 페이지에 보여줄 병원
+	    	console.log("startPage=",startPage);
+	    	console.log("endPCount=",endPage);
+	    	console.log("sliceHosList =",sliceHosList);
+		    	
+	    	
+		    //병원리스트 표시하는 함수
+		    function display(curPage) {//현재페이지
+		    	
+		    	let hospitalList = document.querySelector('.here');
+		    	hospitalList.innerHTML ='';
+		    	
+		    	sliceHosList.forEach((hos)=>{
+		    		//배열이 비어있지 않을때
+		    		if(hoscount != 0){
+		    			const tr = document.createElement('tr');
+		    			tr.classList.add('ho', 'hospitalItem')//기존클래스 추가
+		    			tr.onclick = () =>{ location.href = `hospitalDetail?hospitalId=${hos.hospitalId}` }; // 클릭 시 이동 
+			    		
+		    			//거리순일때
+		    			if(sort = 1){
+		    				tr.innerHTML=
+	 			    			`<td>${hos.hospitalName}</td>
+	 			    			<td>${hos.phone}</td> 
+	 			    			<td>${hos.opentime} ~ ${hos.closetime}</td>
+	 			    			<td>${hos.address}</td>
+	 			    			<td style="font-weight: bold;" class="address">${hos.address}</td>`;
+		    			//가나다순일때
+		    			}else{
+		    				tr.innerHTML=
+	 			    			`<td>${hos.hospitalName}</td>
+	 			    			<td>${hos.phone}</td> 
+	 			    			<td>${hos.opentime} ~ ${hos.closetime}</td>
+	 			    			<td>${hos.address}</td>`;
+		    			} 			
+							
+						hospitalList.appendChild(tr);
+		    		}
+		    	});
+		    }
+		    display(curPage);
+		    
+		    function makePaging() {
+		        document.querySelector(".pagination").innerHTML = ""; // 초기화
+		        
+		        // 전체 페이지 수 다시 계산
+		        totalPages = Math.ceil(hoscount / countPerPage);
+		        
+		        // 이전 페이지가 있으면
+		        if (prev) {
+		            let aTag = document.createElement("a");
+		            aTag.setAttribute("href", curPage - 1); // 현재 페이지의 이전 페이지로 이동
+		            aTag.innerHTML = "&laquo";
+		            document.querySelector(".pagination").append(aTag);
+		        }
+
+		        for (let i = 1; i <= totalPages; i++) { // 전체 페이지 수만큼 반복
+		            let aTag = document.createElement("a");
+		            aTag.setAttribute("href", i); //<a href="1">1</a>
+		            aTag.innerHTML = i;
+		            // active 녹색 주는거
+		            if (i == curPage) {
+		                aTag.className = "active";
+		            }
+		            document.querySelector(".pagination").append(aTag);
+		        } // for 루프 끝
+		        
+		        // 이후 페이지가 있으면
+		        if (next) {
+		            let aTag = document.createElement("a");
+		            aTag.setAttribute("href", curPage + 1); // 현재 페이지의 다음 페이지로 이동
+		            aTag.innerHTML = "&raquo";
+		            document.querySelector(".pagination").append(aTag);
+		        }
+
+		        // 페이지 숫자 태그에 클릭 이벤트 만들기
+		        document.querySelectorAll(".pagination a").forEach((ele) => {
+		            // 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
+		            ele.addEventListener("click", function(e) {
+		                e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
+		                curPage = parseInt(ele.getAttribute("href")); // href의 값 = curPage
+		                // 현재 페이지에 맞는 병원 리스트 표시
+		                let startIdx = (curPage - 1) * countPerPage;
+		                let endIdx = Math.min(startIdx + countPerPage, hoscount);
+		                sliceHosList = hosList.slice(startIdx, endIdx);
+		                display(curPage); // 페이지 번호에 해당하는 데이터를 불러오는 함수 호출
+		                makePaging(); // 페이지 이동 후 페이징 다시 만들기
+		                
+ 		              	//거리순일때
+		    			if(sort = 1){
+		    				restart();
+		    			//가나다순일때
+		    			}else{
+		    				let locs = document.querySelectorAll('.lo');
+		    				let address = document.querySelectorAll('.address');
+		    		    	  locs.forEach((loc)=>{
+		    		    		  loc.style.display = "none";
+		    		    	  });
+		    		    	  address.forEach((address)=>{
+		    		    		  address.style.display = "none";
+		    		    	  });
+		    			}
+		    			console.log("현재정렬2 = ", sort)
+		                
+		            }); // 클릭 이벤트
+		        }); // forEach
+		    } // makePaging 함수 끝
+
+		    makePaging(); // 초기 페이징 생성
 		</script>
 		</div>
 	</div>

@@ -82,7 +82,13 @@ public class PatientController {
 		model.addAttribute("pInfo", findVO);
 
 		return "doctor/untactClinic";
+	}
 
+	// 비대면 진료 - 환자
+	@GetMapping("untactPatient/{reserveNo}")
+	public String untactPatient(@PathVariable("reserveNo") String reserveNo, PatientVO vo, Model model) {
+		model.addAttribute("rNo", reserveNo);
+		return "doctor/untactPatient";
 	}
 
 	/**

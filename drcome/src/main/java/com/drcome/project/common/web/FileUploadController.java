@@ -1,4 +1,4 @@
-package com.drcome.project;
+package com.drcome.project.common.web;
 
 import java.util.List;
 
@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+
+import com.drcome.project.common.service.FileUploadService;
 
 @Controller
 public class FileUploadController {

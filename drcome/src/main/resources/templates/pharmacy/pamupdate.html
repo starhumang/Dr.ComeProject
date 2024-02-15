@@ -9,6 +9,12 @@
 		<title>약국 회원 정보 수정</title>
 
 		<style>
+			.head_info {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30px;
+			}
+
 			label {
 				display: inline-block;
 				width: 200px;
@@ -200,7 +206,15 @@
 
 			function checkPhone() {
 				let phone = $('#ceophone').val().replace(/-/g, '');
-				console.log(phone);
+
+				if (!phone) {
+					Swal.fire({
+						icon: 'error',
+						text: '전화번호를 입력하세요.',
+					});
+					return;
+				}
+
 				let url = '/auth/checkPhone?phoneNum=' + phone;
 				$.ajax({
 					url: url,
@@ -335,208 +349,255 @@
 					},
 				});
 			}
+
+			function revertForm() {
+				location.href = '/pharmacy/info';
+			}
 		</script>
 	</head>
 
 	<body>
 		<div layout:fragment="content">
-			<form id="medicalForm" method="post">
-				<div class="container">
-					<h3>약국 회원 정보 수정</h3>
-					<div class="input-group">
-						<label>아이디</label>
-						<input
-							type="text"
-							id="mid"
-							required
-							th:value="${pharmacy.pharmacyId}"
-							readonly
-							class="onlyread"
-						/>
-					</div>
-
-					<div class="input-group">
-						<label>비밀번호</label>
-						<input
-							type="password"
-							id="mpw"
-							placeholder="비밀번호를 입력하세요"
-							required
-							oninput="checkPassword()"
-						/>
-						<span id="pwErrorMessage" class="error-message" style="display: block"></span>
-					</div>
-
-					<div class="input-group">
-						<label>비밀번호 확인</label>
-						<input
-							type="password"
-							id="mpwcheck"
-							placeholder="비밀번호를 다시 입력하세요"
-							required
-							oninput="checkPasswordMatch()"
-						/>
-						<span id="rePasswordErrorMessage" class="error-message" style="display: block"></span>
-					</div>
-
-					<div class="input-group">
-						<label id="namelabel">약국 이름</label>
-						<input
-							type="text"
-							id="mname"
-							required
-							th:value="${pharmacy.pharmacyName}"
-							readonly
-							class="onlyread"
-						/>
-					</div>
-
-					<div class="input-group">
-						<label id="addlabel">약국 주소</label>
-						<input
-							type="text"
-							id="madd"
-							required
-							th:value="${pharmacy.address}"
-							readonly
-							class="onlyread"
-						/>
-					</div>
-
-					<div class="input-group">
-						<label>전화번호</label>
-						<input
-							type="tel"
-							id="mphone"
-							placeholder="전화번호를 입력하세요"
-							required
-							maxlength="12"
-							oninput="autoHyphen(this)"
-							th:value="${pharmacy.pharmacyPhone}"
-						/>
-					</div>
-
-					<div class="input-group" id="faxnum">
-						<label>팩스번호</label>
-						<input
-							type="tel"
-							id="mfax"
-							placeholder="팩스번호를 입력하세요"
-							required
-							maxlength="12"
-							oninput="autoHyphen(this)"
-							th:value="${pharmacy.pharmacyFax}"
-						/>
-					</div>
-
-					<div class="input-group">
-						<label>대표 사진</label>
-						<input type="file" id="mimg" />
-						<p id="pharmacyImg" th:text="${pharmacy.pharmacyImg}" style="display: none"></p>
-						<img id="filePreview" alt="File Preview" />
-					</div>
-
-					<div class="input-group">
-						<label>휴무일</label>
-						<th:block th:each="detailCode : ${application.detailCode_i}">
-							<input
-								type="checkbox"
-								id="holiday"
-								th:value="${detailCode.detailCode}"
-								style="
-									width: 20px;
-									height: 20px;
-									border: 2px solid #3498db;
-									border-radius: 5px;
-									margin-right: 10px;
-									cursor: pointer;
-									display: flex;
-									align-items: center;
-									justify-content: center;
-									transition: background-color 0.3s;
-								"
-							/>
-							<label
-								th:for="${'hday' + detailCode.detailCode}"
-								th:text="${detailCode.codeName}"
-								style="width: 50px"
-							></label>
-							<br />
-						</th:block>
-					</div>
-
-					<div class="input-group">
-						<label>오픈 시간</label>
-						<select id="otime">
-							<option selected>[[${pharmacy.opentime}]]</option>
-							<th:block th:each="detailCode : ${application.detailCode_k}">
-								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
-							</th:block>
-						</select>
-					</div>
-
-					<div class="input-group">
-						<label>마감 시간</label>
-						<select id="ctime">
-							<option selected>[[${pharmacy.closetime}]]</option>
-							<th:block th:each="detailCode : ${application.detailCode_k}">
-								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
-							</th:block>
-						</select>
-					</div>
-
-					<hr />
-
-					<div class="input-group">
-						<label id="ceonamelabel">대표자 이름</label>
-						<input
-							type="text"
-							id="ceoname"
-							required
-							th:value="${pharmacy.ceoName}"
-							readonly
-							class="onlyread"
-						/>
-					</div>
-
-					<div class="input-group">
-						<label id="ceophonelabel">대표자 전화번호</label>
-						<input
-							type="tel"
-							id="ceophone"
-							placeholder="전화번호를 입력하세요"
-							required
-							maxlength="13"
-							oninput="autoHyphen(this)"
-							th:value="${pharmacy.ceoPhone}"
-						/>
-						<button type="button" id="checkPhoneBtn" onclick="checkPhone()">인증번호발송</button>
-						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
-					</div>
-
-					<div class="input-group" id="verification-section">
-						<label>인증번호</label>
-						<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
-						<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
-					</div>
-
-					<div class="input-group">
-						<label>사업자등록번호</label>
-						<input
-							type="text"
-							id="ceolicense"
-							maxlength="12"
-							required
-							th:value="${pharmacy.ceoLicense}"
-							readonly
-							class="onlyread"
-						/>
-					</div>
-
-					<br />
-					<input type="button" value="수정하기" onclick="submitForm()" class="btn btn-danger" />
+			<div class="container-fluid">
+				<div class="head_info" th:each="pinfo : ${pinfo}">
+					<h4 th:text="${pinfo.pharmacyName}"></h4>
 				</div>
-			</form>
+
+				<p>pharmacy Update</p>
+
+				<div class="card shadow mb-4">
+					<div
+						class="card-header py-3"
+						style="display: flex; justify-content: space-between; align-items: center"
+					>
+						<h6 class="m-0 font-weight-bold text-secondary">
+							<i class="fas fa-fw fa-capsules"></i> 약국 정보
+						</h6>
+					</div>
+
+					<div class="card-body" style="display: flex; justify-content: center; align-items: center">
+						<form id="medicalForm" method="post">
+							<div class="input-group">
+								<label>아이디</label>
+								<input
+									type="text"
+									id="mid"
+									required
+									th:value="${pharmacy.pharmacyId}"
+									readonly
+									class="onlyread"
+								/>
+							</div>
+
+							<div class="input-group">
+								<label>비밀번호</label>
+								<input
+									type="password"
+									id="mpw"
+									placeholder="비밀번호를 입력하세요"
+									required
+									oninput="checkPassword()"
+								/>
+								<span id="pwErrorMessage" class="error-message" style="display: block"></span>
+							</div>
+
+							<div class="input-group">
+								<label>비밀번호 확인</label>
+								<input
+									type="password"
+									id="mpwcheck"
+									placeholder="비밀번호를 다시 입력하세요"
+									required
+									oninput="checkPasswordMatch()"
+								/>
+								<span id="rePasswordErrorMessage" class="error-message" style="display: block"></span>
+							</div>
+
+							<div class="input-group">
+								<label id="namelabel">약국 이름</label>
+								<input
+									type="text"
+									id="mname"
+									required
+									th:value="${pharmacy.pharmacyName}"
+									readonly
+									class="onlyread"
+								/>
+							</div>
+
+							<div class="input-group">
+								<label id="addlabel">약국 주소</label>
+								<input
+									type="text"
+									id="madd"
+									required
+									th:value="${pharmacy.address}"
+									readonly
+									class="onlyread"
+								/>
+							</div>
+
+							<div class="input-group">
+								<label>전화번호</label>
+								<input
+									type="tel"
+									id="mphone"
+									placeholder="전화번호를 입력하세요"
+									required
+									maxlength="12"
+									oninput="autoHyphen(this)"
+									th:value="${pharmacy.pharmacyPhone}"
+								/>
+							</div>
+
+							<div class="input-group" id="faxnum">
+								<label>팩스번호</label>
+								<input
+									type="tel"
+									id="mfax"
+									placeholder="팩스번호를 입력하세요"
+									required
+									maxlength="12"
+									oninput="autoHyphen(this)"
+									th:value="${pharmacy.pharmacyFax}"
+								/>
+							</div>
+
+							<div class="input-group">
+								<label>대표 사진</label>
+								<input type="file" id="mimg" />
+								<p id="pharmacyImg" th:text="${pharmacy.pharmacyImg}" style="display: none"></p>
+								<img id="filePreview" alt="File Preview" />
+							</div>
+
+							<div class="input-group">
+								<label>휴무일</label>
+								<th:block th:each="detailCode : ${application.detailCode_i}">
+									<input
+										type="checkbox"
+										id="holiday"
+										th:value="${detailCode.detailCode}"
+										style="
+											width: 20px;
+											height: 20px;
+											border: 2px solid #3498db;
+											border-radius: 5px;
+											margin-right: 10px;
+											cursor: pointer;
+											display: flex;
+											align-items: center;
+											justify-content: center;
+											transition: background-color 0.3s;
+										"
+									/>
+									<label
+										th:for="${'hday' + detailCode.detailCode}"
+										th:text="${detailCode.codeName}"
+										style="width: 50px"
+									></label>
+									<br />
+								</th:block>
+							</div>
+
+							<div class="input-group">
+								<label>오픈 시간</label>
+								<select id="otime">
+									<option selected>[[${pharmacy.opentime}]]</option>
+									<th:block th:each="detailCode : ${application.detailCode_k}">
+										<option
+											th:value="${detailCode.codeName}"
+											th:text="${detailCode.codeName}"
+										></option>
+									</th:block>
+								</select>
+							</div>
+
+							<div class="input-group">
+								<label>마감 시간</label>
+								<select id="ctime">
+									<option selected>[[${pharmacy.closetime}]]</option>
+									<th:block th:each="detailCode : ${application.detailCode_k}">
+										<option
+											th:value="${detailCode.codeName}"
+											th:text="${detailCode.codeName}"
+										></option>
+									</th:block>
+								</select>
+							</div>
+
+							<hr />
+
+							<div class="input-group">
+								<label id="ceonamelabel">대표자 이름</label>
+								<input
+									type="text"
+									id="ceoname"
+									required
+									th:value="${pharmacy.ceoName}"
+									readonly
+									class="onlyread"
+								/>
+							</div>
+
+							<div class="input-group">
+								<label id="ceophonelabel">대표자 전화번호</label>
+								<input
+									type="tel"
+									id="ceophone"
+									placeholder="전화번호를 입력하세요"
+									required
+									maxlength="13"
+									oninput="autoHyphen(this)"
+									th:value="${pharmacy.ceoPhone}"
+								/>
+								<button
+									type="button"
+									id="checkPhoneBtn"
+									onclick="checkPhone()"
+									class="btn btn-sm btn-info shadow-sm"
+									style="width: 120px"
+								>
+									인증번호발송
+								</button>
+								<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
+							</div>
+
+							<div class="input-group" id="verification-section">
+								<label>인증번호</label>
+								<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
+								<button
+									type="button"
+									id="checkPhoneNumBtn"
+									class="btn btn-sm btn-info shadow-sm"
+									style="width: 120px"
+									onclick="checkPhoneNumber()"
+								>
+									인증하기
+								</button>
+							</div>
+
+							<div class="input-group">
+								<label>사업자등록번호</label>
+								<input
+									type="text"
+									id="ceolicense"
+									maxlength="12"
+									required
+									th:value="${pharmacy.ceoLicense}"
+									readonly
+									class="onlyread"
+								/>
+							</div>
+
+							<br />
+							<div style="text-align: center">
+								<input type="button" value="수정하기" onclick="submitForm()" class="btn btn-danger" />
+								<input type="button" value="취소하기" onclick="revertForm()" class="btn btn-warning" />
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
 
 			<!-- Modal -->
 			<div class="modal" tabindex="-1" id="exampleModal">

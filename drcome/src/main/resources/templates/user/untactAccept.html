@@ -1,10 +1,593 @@
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>Insert title here</title>
-</head>
-<body>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
 
+<head>
+<meta charset="UTF-8" />
+<title>실시간 비대면 상담접수</title>
+<script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<style scoped>
+.bb {
+	display: inline;
+	width: 200px;
+	height: 60px;
+	margin: 10px 10px 10px 10px;
+}
+
+.butt {
+	display: flex;
+}
+
+.body {
+	color: #000;
+	overflow-x: hidden;
+	height: 100%;
+	padding: 0px !important;
+}
+
+.container-fluid {
+	padding-top: 120px !important;
+	padding-bottom: 120px !important;
+}
+
+.card {
+	box-shadow: 0px 4px 8px 0px #7986CB;
+}
+.input {
+	padding: 10px 20px !important;
+	border: 1px solid #000 !important;
+	border-radius: 10px;
+	box-sizing: border-box;
+	background-color: #616161 !important;
+	color: #fff !important;
+	font-size: 16px;
+	letter-spacing: 1px;
+	width: 180px;
+	display: inline;
+}
+
+
+.input:focus {
+	-moz-box-shadow: none !important;
+	-webkit-box-shadow: none !important;
+	box-shadow: none !important;
+	border: 1px solid #512DA8;
+	outline-width: 0;
+}
+
+::placeholder {
+	color: #fff;
+	opacity: 1;
+}
+
+:-ms-input-placeholder {
+	color: #fff;
+}
+
+::-ms-input-placeholder {
+	color: #fff;
+}
+
+.datepicker {
+	background-color: #000 !important;
+	color: #fff !important;
+	border: none;
+	padding: 10px !important;
+}
+
+.datepicker-dropdown:after {
+	border-bottom: 6px solid #000;
+}
+
+thead tr:nth-child(3) th {
+	color: #fff !important;
+	font-weight: bold;
+	padding-top: 20px;
+	padding-bottom: 10px;
+}
+
+.dow, .old-day, .day, .new-day {
+	width: 40px !important;
+	height: 40px !important;
+	border-radius: 0px !important;
+}
+
+.old-day:hover, .day:hover, .new-day:hover, .month:hover, .year:hover,
+	.decade:hover, .century:hover {
+	border-radius: 6px !important;
+	background-color: #eee;
+	color: #000;
+}
+
+.active {
+	border-radius: 6px !important;
+	background-image: linear-gradient(#90CAF9, #64B5F6) !important;
+	color: #000 !important;
+}
+
+.disabled {
+	color: #616161 !important;
+}
+
+.prev, .next, .datepicker-switch {
+	border-radius: 0 !important;
+	padding: 20px 10px !important;
+	text-transform: uppercase;
+	font-size: 20px;
+	color: #fff !important;
+	opacity: 0.8;
+}
+
+.prev:hover, .next:hover, .datepicker-switch:hover {
+	background-color: inherit !important;
+	opacity: 1;
+}
+
+.cell {
+	border: 1px solid #BDBDBD;
+	margin: 2px;
+	cursor: pointer;
+	margin-bottom: 10px;
+	caret-color:transparent;
+}
+
+.cell:hover {
+	border: 1px solid #3D5AFE;
+}
+
+.cell.select {
+	background-color: #3D5AFE;
+	color: #fff;
+}
+
+.fa-calendar {
+	color: #fff;
+	font-size: 30px;
+	padding-top: 8px;
+	padding-left: 5px;
+	cursor: pointer;
+}
+.disableDiv{
+	background-color: lightgray;
+	pointer-events:none;
+}
+.pstyle{
+	margin-top:20px;
+	fontsize:20px;
+	color:red;
+	caret-color:transparent;
+}
+.nonecursor{
+	caret-color:transparent;
+}
+.btnstyle{
+	width:130px;
+	height:50px;
+	margin: 10px 5px 10px 5px;
+	font-size : 17px;
+	color:white;
+}
+.btnstyle:hover{
+	color:black;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content" style="caret-color:transparent;">
+		<h1 style="text-align: center; margin-top: 50px; color: gray;">[ 실시간 비대면 상담접수 ]</h1>
+		<div class="container-fluid" style="margin-bottom: 50px; width: 75%; text-align:center;">
+
+			<!-- 병원이름 -->
+			<div class="container" style="margin-bottom: 50px;">
+				<div class="card shadow mb-4">
+					<!-- 소제목 -->
+					<div class="card-header py-3"
+						style="display: flex; align-items: center;">
+						<h5 class="m-0 font-weight-bold text-secondary nonecursor">
+							<i class="fas fa-fw fa-hospital"></i>예약하는 병원 :
+						</h5>
+						<h5 class="font-weight-bold me nonecursor"
+							style="color: #06BBCC; margin: 0 0 0 10px;" th:text="${hosName}">
+						</h5>
+					</div>
+				</div>
+			</div>
+
+			<!-- 의사정보 -->
+			<div class="container" style="margin-bottom: 50px;">
+				<div class="card shadow mb-4">
+					<div class="card-header py-3"
+						style="display: flex; align-items: center;">
+						<h5 class="m-0 font-weight-bold text-secondary nonecursor">
+							<i class="fas fa-fw fa-user-nurse"></i>선택한 의료진 :
+						</h5>
+						<h5 class="font-weight-bold name nonecursor"
+							style="color: #06BBCC; margin: 0 0 0 10px;"></h5>
+					</div>
+				</div>
+				<div class="card-body" style="text-align: center;">
+					<table class="table">
+						<thead>
+							<tr>
+								<th></th>
+								<th>의사이름</th>
+								<th>담당진료과목</th>
+								<th>휴진일</th>
+								<th>진료일 / 진료시간</th>
+								<th style="display:none;">의사번호</th>
+							</tr>
+						</thead>
+						<tbody style="vertical-align:middle;">
+							<th:block th:each="doc : ${docList}">
+								<tr th:if="${#lists.size(docList) > 0}">
+									<td style="vertical-align:middle;"><input type="radio" name="doctor"
+										onclick="chooseDoctor()" /></td>
+									<td class="docName" th:text="${doc.doctorName}" style="vertical-align:middle;"></td>
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<td th:if="${doc.subject} == ${detailCode.detailCode}" th:text="${detailCode.codeName}" style="vertical-align:middle;"></td>
+									</th:block>
+									<td class="docHol" th:text="${doc.holiday}" style="vertical-align:middle;"></td>
+									<td>
+										<div th:each="drTime : ${doc.times}" class="doctorTime">
+											[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
+											[[${drTime.maxTime}]] : 00</div>
+									</td>
+									<td style="display:none;" th:text="${doc.doctorNo}" class="doctorNo"></td>
+								</tr>
+							</th:block>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		<!-- 증상적는곳 -->
+		<div class="container" style="margin-bottom: 100px;">
+			<div class="card shadow mb-4">
+				<div class="card-header py-3 nonecursor"
+					style="display: flex; align-items: center;">
+					<h5 class="m-0 font-weight-bold text-secondary">
+						<i class="fas fa-fw fa-check"
+							style="font-size: 21px; margin-right: 5px;"></i>증상을 적어주세요(필수)
+					</h5>
+				</div>
+				<div class="card-body"
+					style="display: flex; justify-content: center; align-items: center;">
+					<textarea id="textarea"style="width:1500px; height:200px; resize:none; caret-color:black;"></textarea>
+				</div>
+			</div>
+		</div>
+		
+		<!-- 주의사항 -->
+		<div class="container nonecursor" style="margin-bottom: 50px;">
+			<div class="card shadow mb-4">
+				<div class="card-header py-3"
+					style="display: flex; align-items: center;">
+					<h5 class="m-0 font-weight-bold" style="color:red;">
+						<i class="fas fa-fw fa-exclamation-triangle"
+							style="font-size: 21px; margin-right: 5px; "></i>비대면 화상진료 전 주의사항(반드시 읽고 동의해주시기 바랍니다)
+					</h5>
+				</div>
+				<div class="card-body"
+					style="display: flex; justify-content: center; align-items: center; background-color:#F8F8F8">
+					<div style="width:1500px; height:300px; resize:none; font-size:16.5px;  vertical-align:middle;">
+						<ol style="text-align:left;">
+							<li style="margin-bottom:10px;">화상회의 진료 전 원활한 상담이 가능한 환경을 만들어 주시기 바랍니다.(카메라, 마이크, 화질 등을 확인해주시기 바랍니다.)</li>
+							<li style="margin-bottom:10px;">이미 기존에 복용하시는 약과 더불어 추가로 복용하시는 약이 있으시면 반드시 의사와 상의하여 진료하시기 바랍니다.</li>
+							<li style="margin-bottom:10px;">예약 완료 후, 문제가 생겨 상담을 하지 못하게 된 경우 병원에 연락주시기 바랍니다.(잦은 예약부도시 불이익을 받을 수 있습니다.)</li>
+							<li style="margin-bottom:10px;">원활한 예약 및 진료를 위해 고객님의 기입하신 정보는 해당 병원으로 전송되며 이는 진료상의 자료로 쓰일 수 있음을 알려드립니다.</li>
+							<li style="margin-bottom:10px;">예약제도를 도입하고 있는 것은 고객의 편리를 제공하는 것이며 병원측의 사정에 따라 진료시간이 조금 늦춰질 수 있음을 양해부탁드립니다.</li>
+							<li style="margin-bottom:10px;">만 17세 미만의 고객분들은 보호자와 함께 방문해주시길 바랍니다.</li>
+							<li style="margin-bottom:10px;">인터넷 연결 등의 사유로 진료 도중 화상연결이 끊어진 경우 병원측에서 연락이 먼저 올때까지 기다려 주시기 바랍니다.</li>
+							
+						</ol>
+					</div>
+				</div>
+			</div>
+		</div>
+		<br>
+		<br>
+		<p style="font-size:20px; color:red; font-weight:bold;">위의 주의사항을 충분히 숙지하셨고, 이에 동의하십니까?</p>
+		<button class="bb btn btn-primary" data-bs-toggle="modal" onclick="checkData()"
+				style="width:300px; height:100px;font-size:20px;background-color: #06BBCC; border:none;">
+			동의하고 제출하기</button>
+							
+	</div>
+	
+	<!-- Modal -->
+		<div class="modal" tabindex="-1" id="exampleModal" data-bs-backdrop="static"  >
+			<div class="modal-dialog">
+				<div class="modal-content" style="text-align: center; width:550px;" >
+					<!--  width:700px; height:700px; -->
+					<div class="modal-header" style="text-align:center;">
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+					<div class="modal-body" style="padding: 50px 30px 50px 30px;">
+						<h4 style="margin-bottom: 20px;" class="pCount" >현재 대기인원은 명이며</h4>
+						<h4 style="margin-bottom: 20px;" class="wait">예상대기 시간은 입니다.</h4>
+						<hr>
+						<p style="color:red">* 예상대기시간은 달라질 수 있으며 <br/>병원 사정에 따라 대기가 취소될 수 있습니다.</p>
+						<br>
+						<br>
+						<h3 style="color:#06BBCC;">다음 중 하나를 선택해 주십시오</h3>
+						<br>
+						<div>
+							<button type="button" class="btn btn-success rounded-pill px-3 btnstyle" onclick="waiting()">대기하기</button>
+							<button type="button" class="btn btn-warning rounded-pill px-3 btnstyle" onclick="reserve()">예약하기</button>
+							<button type="button" class="btn btn-danger rounded-pill px-3 btnstyle" onclick="exit()">나가기</button>
+						</div>
+						<br>
+						<hr>
+						<br>
+						<ul style="text-align:left;">
+							<li style="margin-bottom:10px;">대기하기 : 현장 접수와 같은 개념으로 나의 차례가 될때까지 기다립니다. 이 창을 나가더라도 기다리기는 유지됩니다. </li>
+							<li style="margin-bottom:10px;">나가기 : 현재 화면에서 나가지며 다른 병원에 예약이나 실시간 접수를 요청 할 수 있습니다. 적어놓은 내용은 나가기를 누르는 순간 파기되고 병원으로 전송되지 않습니다. </li>
+							<li style="margin-bottom:10px;">예약하기 : 비대면 예약하기 창으로 페이지가 전환됩니다. </li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	<script th:inline="javascript">
+		
+		//오늘과 의사 쉬는날 비교후 disabled로 선택못하게
+		function doctorRestday(){
+			let nowDate = new Date();
+			let curDay = nowDate.getDay();
+			let dayList = {"i1": 1 ,"i2": 2,"i3": 3,"i4": 4,"i5": 5 ,"i6": 6,"i7" : 0}
+			let restday = document.querySelectorAll('.docHol');
+			restday.forEach((ele)=>{
+				let splitRestday = ele.innerText.split(',');
+				//console.log("splitRestday", splitRestday);
+				splitRestday.forEach((item)=>{
+					let array = dayList[item];
+					//console.log("array",array);
+					//console.log("curDay",curDay);
+					if(curDay == array){
+						let tr = ele.closest('tr');
+						//console.log(tr);
+						tr.style.backgroundColor="lightgray";
+						tr.disabled=true;
+						tr.querySelector('input').disabled=true;
+					} 
+				});
+			});
+		}
+		doctorRestday();
+		
+		//의사 선택해서 이름띄우기
+		function chooseDoctor(){
+			let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
+			let docName = tr.querySelector('.docName').innerText;
+			let holiday = tr.querySelector('.docHol').innerText;
+			document.querySelector('.name').innerText=docName; //이름뽑아오기
+		}
+		
+		
+		
+		
+		//아래 함수에서 불러올 자료
+		let waitingPP;  //대기 인원수
+		let canClinicNow; //할 수 있는 가장 빠른예약시간
+		let ClinicYN;//진료시간 넘겼는지 안 남겼는지 여부(false가 넘긴거임))
+		
+		//제출했을때 제출자료 검사하는 함수
+		function checkData(){
+			//검사용
+			let hospital = document.querySelector('.me').innerText;//병원이 지정되었는가?
+			let doctor = document.querySelector('.name').innerText;//의사를 지정했는가?
+			let textarea = document.querySelector('#textarea').value;//증상을 적었는가?
+			console.log("선택항목들 = ",hospital," , ",doctor," , ",textarea);
+			
+			//의사검사
+			if(doctor !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "의료진을 선택해주세요",
+		   			  html: '아직 진료받을 의료진을 선택하지 않으셨습니다.',
+		   			  icon: "error"
+		   			});
+				//document.querySelector('.modal').style.display='none';
+				//document.querySelector('.modal-backdrop').style.display='none';
+				return;
+			}
+			
+			//증상검사
+			if(textarea !=''){
+				console.log("완료");
+			}else{
+				Swal.fire({
+		   			  title: "증상을 입력해주세요",
+		   			  html: '필수로 작성하셔야되는 항목입니다.',
+		   			  icon: "error"
+		   			});
+				//document.querySelector('.modal').style.display='none';
+				//document.querySelector('.modal-backdrop').style.display='none';
+				return;
+			}
+			//다 완료되면 모달열기
+			$('#exampleModal').modal("show");
+			
+			let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
+			let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
+			console.log("doctorNo",doctorNo);
+			$.ajax("/waitingList",{
+				type :"post",
+				contentType :"application/json",
+				data : JSON.stringify({
+					"doctorNo" : doctorNo,
+				}),
+				success:function(response){
+					console.log('성고옹');
+					console.log(response);
+					
+					waitingPP = response.waitingPP;
+					canClinicNow = response.canClinicNow
+					ClinicYN = response.ClinicYN
+					
+					console.log("waitingPP",waitingPP);
+					console.log("canClinicNow",canClinicNow);
+					console.log("ClinicYN",ClinicYN);
+					
+					
+					document.querySelector('.pCount').innerText = '현재 대기인원은 '+waitingPP+'명이며'
+					let date = new Date;
+					let minutes = date.getMinutes();
+					
+					if(minutes > 30){
+						minutes = 60 - minutes;
+					}else{
+						minutes = 30 -minutes;
+					}
+					console.log("minutes",minutes);
+					let waitingTime = (waitingPP * 30) + minutes;
+										
+					document.querySelector('.wait').innerText = '예상 대기시간은 '+ waitingTime + '분 입니다.'
+					
+				},
+				error:function(jqXHR, textStatus, errorThrown){
+					console.error("실패애:", textStatus, errorThrown);
+// 					Swal.fire({
+// 			   			  title: "오늘 예약이 꽉 차서 대기할 수 없습니다",
+// 			   			  html: '다음날 다시 시도하시거나 예약을 해 주시기 바랍니다.',
+// 			   			  icon: "error"
+// 			   			});
+				}
+			})
+		}
+		
+		
+		//대기하기
+		function waiting(){
+
+			//가장 가까운 시간대로 비대면 예약 inserts
+			if(ClinicYN){
+				let date = new Date();
+				let hospitalId = [[${hospitalId}]];//병원아이디
+	 			let userId = [[${userId}]]//유저아이디
+				let reserveYear = date.getFullYear(); //년도
+				let reserveMonth = (date.getMonth() + 1).toString().padStart(2, '0'); //월(2자리 고정 빈값엔 0이 들어감)
+				let reserveDay = date.getDate(); //일
+				let symptom = document.querySelector('#textarea').value; //증상
+				let reserveTime = canClinicNow; // 예약시간
+				let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
+				let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
+				console.log("제출항목들 = ",hospitalId," , ",userId," , ",doctorNo," , ",reserveYear," , ",reserveMonth," , ",reserveDay," , ",symptom," , ",reserveTime);
+
+				
+				$.ajax("/untactReserve",{
+					type:"post",
+					contentType:"application/json",
+					data : JSON.stringify({
+						"hospitalId" : hospitalId,
+						"userId" : userId,
+						"doctorNo" : doctorNo,
+						"reserveYear" : reserveYear,
+						"reserveMonth" : reserveMonth,
+						"reserveDay" : reserveDay,
+						"symptom" : symptom,
+						"reserveTime" : reserveTime
+					}),
+					
+					success: function(response){
+						Swal.fire({
+				   			  title: "접수가 완료되었습니다!",
+				   			  html: '화상 진료하기 전 알람을 따로 드리니 <br> 안심하고 기다려주세요',
+				   			  icon: "success"
+				   			}).then(result=>{
+				   				if(result.value){
+				   					window.location.href = "/mypage";
+				   				}
+				   			})
+						
+					},
+					error: function(jqXHR, textStatus, errorThrown) {
+					        console.error("에러 발생:", textStatus, errorThrown);
+					     Swal.fire({
+			   			  title: "예약실패",
+			   			  html: '뭔가 문제가 있음ㄴ',
+			   			  icon: "error"
+			   			});
+					}
+				})
+			}else{
+				Swal.fire({
+		   			  title: "오늘 예약이 꽉 차서 대기할 수 <br> 없습니다",
+		   			  html: '다른날 다시 시도해주시기 바랍니다.',
+		   			  icon: "error"
+		   			});
+				return;
+			}
+		}
+		
+		//예약하기
+		function reserve(){
+			let hospitalId = [[${hospitalId}]]
+			window.location.href="/untactReserve?hospitalId="+hospitalId;
+		}
+		
+		//나가기
+		function exit(){
+			let hospitalId = [[${hospitalId}]]
+			window.location.href="/hospitalDetail?hospitalId="+hospitalId;
+		}
+			
+			//제출할 것
+// 			let hospitalId = [[${hospitalId}]];//병원아이디
+// 			let userId = [[${userId}]]//유저아이디
+// 			let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
+// 			let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
+// 			let reserveYear = date.substr(0,4);//예약년도
+// 			let reserveMonth = date.substr(5,2);//예약월
+// 			let reserveDay = date.substr(8,2);//예약일
+// 			let symptom = textarea//증상
+// 			let reserveTime = time;//예약시간
+// 			console.log("제출항목들 = ",hospitalId," , ",userId," , ",doctorNo," , ",reserveYear," , ",reserveMonth," , ",reserveDay," , ",symptom);
+			
+// 			$.ajax("/untactReserve",{
+// 				type:"post",
+// 				contentType:"application/json",
+// 				data : JSON.stringify({
+// 					"hospitalId" : hospitalId,
+// 					"userId" : userId,
+// 					"doctorNo" : doctorNo,
+// 					"reserveYear" : reserveYear,
+// 					"reserveMonth" : reserveMonth,
+// 					"reserveDay" : reserveDay,
+// 					"symptom" : symptom,
+// 					"reserveTime" : reserveTime
+// 				}),
+				
+// 				success: function(response){
+// 					Swal.fire({
+// 			   			  title: "예약이 완료되었습니다!",
+// 			   			  html: '예약내역은 마이페이지에서 확인가능합니다~',
+// 			   			  icon: "success"
+// 			   			}).then(result=>{
+// 			   				if(result.value){
+// 			   					window.location.href = "/mypage";
+// 			   				}
+// 			   			})
+					
+// 				},
+// 				error: function(jqXHR, textStatus, errorThrown) {
+// 				        console.error("에러 발생:", textStatus, errorThrown);
+// 				     Swal.fire({
+// 		   			  title: "예약실패",
+// 		   			  html: '뭔가 문제가 있음ㄴ',
+// 		   			  icon: "error"
+// 		   			});
+// 				}
+// 			})
+		
+	
+	</script>
+	</div>
+	
 </body>
+
 </html>

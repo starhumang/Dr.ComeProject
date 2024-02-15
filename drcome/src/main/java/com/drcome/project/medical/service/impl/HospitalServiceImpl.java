@@ -1,6 +1,5 @@
 package com.drcome.project.medical.service.impl;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -13,7 +12,9 @@ import com.drcome.project.medical.repository.HospitalRepository;
 import com.drcome.project.medical.service.DoctorTimeVO;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
+import com.drcome.project.medical.service.NoticeAttachVO;
 import com.drcome.project.medical.service.NoticeVO;
+import com.drcome.project.medical.service.QnaVO;
 
 @Service
 public class HospitalServiceImpl implements HospitalService {
@@ -44,21 +45,32 @@ public class HospitalServiceImpl implements HospitalService {
 		List<Map<String, Object>> listQnAX = hospitalMapper.selectQnAX(hospitalId);
 		return listQnAX;
 	}
-	
 
 	/* 환자리스트 */
 	// 환자 조회
 	@Override
-	public List<Map<String, Object>> getPaientList(String hospitalId) {
-		List<Map<String, Object>> listPa = hospitalMapper.selectPatientList(hospitalId);
+	public List<Map<String, Object>> getPaientList(Map<String, Object> map) {
+		List<Map<String, Object>> listPa = hospitalMapper.selectPatientList(map);
 		return listPa;
+	}
+	
+	// 환자 페이징
+	@Override
+	public int patientCount(Map<String, Object> map) {
+		return hospitalMapper.patientCount(map);
 	}
 
 	// 환자 상세 조회
 	@Override
-	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo) {
-		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(hospitalId, patientNo);
+	public List<Map<String, Object>> getPaientDetailList(Map<String, Object> map) {
+		List<Map<String, Object>> listPaDe = hospitalMapper.selectPatientDetailList(map);
 		return listPaDe;
+	}
+	
+	// 환자 상세 페이징
+	@Override
+	public int patientInfoCount(Map<String, Object> map) {
+		return hospitalMapper.patientInfoCount(map);
 	}
 
 	// 환자 진료내역 단건 조회
@@ -90,46 +102,89 @@ public class HospitalServiceImpl implements HospitalService {
 		return listReserveDr;
 	}
 	//Dr리스트
-
 	@Override
 	public List<Map<String, Object>> getDrAllList(String hospitalId) {
 		List<Map<String, Object>> listDrAll = hospitalMapper.allDrList(hospitalId);
 		return listDrAll;
 	}
 	
+	//선택 약국 받아오기
+	@Override
+	public List<Map<String, Object>> selectPharList(Map<String, Object> map) {
+		List<Map<String, Object>> listPhar = hospitalMapper.selectPharList(map);
+		return listPhar;
+	}
+	
 	/* QnA */
 	// QnA 전체
 	@Override
-	public List<Map<String, Object>> getQnaList(String hospitalId) {
-		List<Map<String, Object>> listQnaAll = hospitalMapper.selectQnaList(hospitalId);
+	public List<Map<String, Object>> getQnaList(Map<String, Object> map) {
+		List<Map<String, Object>> listQnaAll = hospitalMapper.selectQnaList(map);
 		return listQnaAll;
+	}
+	
+	// QnA 페이징
+	@Override
+	public int qnaCount(Map<String, Object> map) {
+		return hospitalMapper.qnaCount(map);
 	}
 
 	// QnA 단건상세
 	@Override
-	public List<Map<String, Object>> getQnaInfo(String hospitalId, Integer qnaNo) {
-		List<Map<String, Object>> qnaInfo = hospitalMapper.selectQnaInfo(hospitalId, qnaNo);
+	public QnaVO getQnaInfo(QnaVO qnaVO) {
+		QnaVO qnaInfo = hospitalMapper.selectQnaInfo(qnaVO);
 		return qnaInfo;
+	}
+	// Answer 단건상세
+	@Override
+	public QnaVO getAnsInfo(QnaVO qnaVO) {
+		QnaVO ansInfo = hospitalMapper.selectAnsInfo(qnaVO);
+		return ansInfo;
+	}
+	
+	// select 첨부파일 보기
+	@Override
+	public List<NoticeAttachVO> selectQnaAtt(NoticeAttachVO attVO) {
+		List<NoticeAttachVO> qnaAtt = hospitalMapper.selectQnaAtt(attVO);
+		return qnaAtt;
+	}
+	
+	// Answer 등록
+	@Override
+	public int insertQnaAns(QnaVO qnaVO) {
+		return hospitalMapper.insertQnaAns(qnaVO);
+	}
+
+	// 기존 QnA 상테 업데이트
+	@Override
+	public int updateQnaStatus(QnaVO qnaVO) {
+		return hospitalMapper.updateQnaStatus(qnaVO);
+	}
+
+	// Answer 첨부파일 등록
+	@Override
+	public int insertAttachQnaAns(QnaVO qnaVO) {
+		return hospitalMapper.insertAttachQnaAns(qnaVO);
 	}
 
 	/* 공지사항 */
 	// 공지사항 전체
 	@Override
-	public List<Map<String, Object>> getNoticeList(int page, String hospitalId) {
-		List<Map<String, Object>> listNoticeAll = hospitalMapper.selectNoticeList(page, hospitalId);
+	public List<Map<String, Object>> getNoticeList(int page, int type, String keyword, String hospitalId) {
+		List<Map<String, Object>> listNoticeAll = hospitalMapper.selectNoticeList(page, type, keyword, hospitalId);
 		return listNoticeAll;
 	}
-
+	
 	// 공지사항 페이징
 	@Override
-	public int noticeCount(String hospitalId) {
-		return hospitalMapper.noticeCount(hospitalId);
+	public int noticeCount(int type, String keyword, String hospitalId) {
+		return hospitalMapper.noticeCount(type, keyword, hospitalId);
 	}
-
+	
 	// 공지사항 단건상세
 	@Override
-	public List<NoticeVO> getNoticeDetail(String hospitalId, Integer noticeNo) {
-		List<NoticeVO> noticeInfo = hospitalMapper.selectNoList(hospitalId, noticeNo);
+	public NoticeVO getNoticeDetail(NoticeVO noticeVO) {
+		NoticeVO noticeInfo = hospitalMapper.selectNoList(noticeVO);
 		return noticeInfo;
 	}
 
@@ -138,31 +193,30 @@ public class HospitalServiceImpl implements HospitalService {
 	public int insertNoticeInfo(NoticeVO vo) {
 		return hospitalMapper.insertNotice(vo);
 	}
-
 	@Override
 	public int insertAttach(NoticeVO vo) {
 		return hospitalMapper.insertAttach(vo);
 	}
 	
-	// 공지사항 검색
+	// 공지사항 수정 + 첨부파일
 	@Override
-	public List<NoticeVO> searchNotice(int type, String keyword, String hospitalId) {
-        if (type == 1) {
-            return hospitalMapper.searchNoticeByTitle(keyword, hospitalId);
-        } else if (type == 2) {
-        	 return hospitalMapper.searchNoticeByContent(keyword, hospitalId);
-        } else {
-            // 예외 처리 또는 기본값 반환
-            return Collections.emptyList();
-        }
+	public int updateNotice(NoticeVO vo) {
+//		int result = 0;
+//		int noticeNo = vo.getNoticeNo();
+//		result = hospitalMapper.deleteAttachment(noticeNo);
+		return hospitalMapper.updateNotice(vo);
+	}
+	@Override
+	public int deleteAttachment(int noticeNo) {
+		return hospitalMapper.deleteAttachment(noticeNo);
 	}
 	
-
+	// 공지사항 삭제 + 첨부파일도 같이
 	@Override
-	public int searchNoticeCount(String hospitalId, String keyword) {
-		return hospitalMapper.searchNoticeCount(hospitalId, keyword);
+	public void deleteNotice(NoticeVO vo) {
+		hospitalMapper.deleteNotice(vo);		
 	}
-
+	
 	/* 병원프로필 */
 	// 병원 단건조회(id로)
 	@Override

@@ -9,6 +9,7 @@ import com.drcome.project.main.mapper.MainMapper;
 import com.drcome.project.main.service.ClinicVO;
 import com.drcome.project.main.service.MainService;
 import com.drcome.project.main.service.ReservationVO;
+import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
@@ -76,6 +77,26 @@ public class MainServiceImpl implements MainService {
 		int result = mainMapper.insertContactReservation(reservationVo);
 		return result;
 	}
+	
+	@Override
+	public int insertUntactReservation(ReservationVO reservationVo) {
+		int result = mainMapper.insertUntactReservation(reservationVo);
+		return result;
+	}
+
+	@Override
+	public List<ReservationVO> findreserveListToChoice(ReservationVO reservationVo) {
+		return mainMapper.findreserveListToChoice(reservationVo);
+	}
+
+	@Override
+	public List<ReservationVO> findWaitingList(DoctorVO doctorVO) {
+		return mainMapper.findWaitingList(doctorVO);
+	}
+
+	
+
+	
 
 
 

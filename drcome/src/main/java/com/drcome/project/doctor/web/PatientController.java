@@ -19,6 +19,7 @@ import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.common.service.AlarmDao;
 import com.drcome.project.common.service.AlarmService;
 import com.drcome.project.common.service.PageDTO;
+import com.drcome.project.doctor.mapper.PatientMapper;
 import com.drcome.project.doctor.service.PatientService;
 import com.drcome.project.doctor.service.PatientVO;
 import com.drcome.project.medical.service.HospitalService;
@@ -41,6 +42,9 @@ public class PatientController {
 
 	@Autowired
 	AlarmService alarmService;
+	
+	@Autowired
+	PatientMapper mapper;
 
 	// 공통 병원 정보 따로 빼기
 	@ModelAttribute("hospitalSel")
@@ -208,4 +212,19 @@ public class PatientController {
 		return patientService.modifyReserve(vo);
 	}
 
+	
+	
+	/**
+	 * 대면 결제대기버튼 누를시 상태업데이트 
+	 * @param vo reserveNo
+	 * @return service
+	 */
+	@PostMapping("/updatePayment")
+	@ResponseBody
+	public int updatePayment(PatientVO vo) {
+		System.out.println("Ddddddddddddd" + vo);
+		return mapper.updatePayment(vo);
+	}
+	
+	
 }// end class

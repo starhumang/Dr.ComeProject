@@ -112,27 +112,26 @@
         <!--title-->
         <div class="title" style="background-color: #06bbcc; padding: 5px">
 
-              <!--on off-->
-              <div class="d-flex justify-content-center align-items-center">
-                <!-- 마이크 버튼 -->
-                <button class="btn btn-secondary" onclick="toggleAudio()" style="margin-right: 5px;">
-                  <i id="micIcon" class="bi bi-mic"></i>
-                </button>
-                <!-- 비디오 버튼 -->
-                <button class="btn btn-secondary" onclick="toggleVideo()">
-                  <i id="cameraIcon" class="bi bi-camera-video"></i>
-                </button>
-              </div>   
-              <!--on off-->
-          <h3
-            style="
+          <!--on off-->
+          <div class="d-flex justify-content-center align-items-center" style="margin-left: 10px;">
+            <!-- 마이크 버튼 -->
+            <button class="btn btn-secondary" onclick="toggleAudio()" style="margin-right: 5px;">
+              <i id="micIcon" class="bi bi-mic"></i>
+            </button>
+            <!-- 비디오 버튼 -->
+            <button class="btn btn-secondary" onclick="toggleVideo()">
+              <i id="cameraIcon" class="bi bi-camera-video"></i>
+            </button>
+          </div>
+          <!--on off-->
+
+          <h3 style="
               width: 70%;
               text-align: center;
               margin-bottom: 0;
               padding-left: 120px;
               color: white;
-            "
-          >
+            ">
             비대면 진료중
           </h3>
 
@@ -222,6 +221,8 @@
             <!--진료기록-->
           </div>
           <!--왼쪽-->
+
+  
 
           <!--오른쪽-->
           <div id="right" style="width: 49%">

@@ -26,6 +26,9 @@ public interface PharmacyMapper {
 	/*처방전 미리보기*/
 	public int updaterejection(PharmacySelectVO vo);
 	
+	/* 반환 시, 상태 업데이트 */
+	public int updateProduceStatus(PharmacySelectVO vo);
+	
 	//-----Total Count-----
 	
 	/* 약국별 처방 현황 페이징 */

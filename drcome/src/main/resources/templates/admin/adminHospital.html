@@ -44,8 +44,8 @@
 		                name="btnradio"
 		                id="btnradio1"
 		                autocomplete="off"
-		                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/hospital')}"
-		                onclick="window.location.href='/admin/hospital'"
+		                onclick="location.href='/admin/hospital?hospitalStatus=b2'"
+                		th:checked="${#strings.equals(param.hospitalStatus, 'b2')}"
 		              />
 		              <label
 		                class="btn btn-outline-dark"
@@ -62,8 +62,8 @@
 		                name="btnradio"
 		                id="btnradio2"
 		                autocomplete="off"
-		                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/hospitalw')}"
-		                onclick="window.location.href='/admin/hospitalw'"
+		                onclick="location.href='/admin/hospital?hospitalStatus=b3'"
+                		th:checked="${#strings.equals(param.hospitalStatus, 'b3')}"
 		              />
 		              <label class="btn btn-outline-dark" for="btnradio2" 
 		                >영업종료</label>
@@ -118,13 +118,13 @@
         <nav aria-label="Page navigation">
             <ul class="pagination justify-content-center">
                 <li th:class="${clist.first ? 'page-item disabled' : 'page-item'}">
-				    <a class="page-link" th:href="@{${#strings.contains(#httpServletRequest.requestURI, '/admin/hospital') ? '/admin/hospital' : '/admin/hospitalw'}(pageNo=0)}" tabindex="-1" aria-disabled="true">Previous</a>
+				    <a class="page-link" th:href="@{/admin/hospital(pageNo=0, hospitalStatus=${param.hospitalStatus})}" tabindex="-1" aria-disabled="true">Previous</a>
 				</li>
                 <li th:each="i : ${#numbers.sequence(0, clist.totalPages - 1)}" th:class="${i == clist.number ? 'page-item active' : 'page-item'}">
-				    <a class="page-link" th:href="@{${#strings.contains(#httpServletRequest.requestURI, '/admin/hospital') ? '/admin/hospital' : '/admin/hospitalw'}(pageNo=${i})}" th:text="${i + 1}"></a>
+				    <a class="page-link" th:href="@{/admin/hospital(pageNo=${i}, hospitalStatus=${param.hospitalStatus})}" th:text="${i + 1}"></a>
 				</li>
 				<li th:class="${clist.last ? 'page-item disabled' : 'page-item'}">
-				    <a class="page-link" th:href="@{${#strings.contains(#httpServletRequest.requestURI, '/admin/hospital') ? '/admin/hospital' : '/admin/hospitalw'}(pageNo=${clist.totalPages - 1})}">Next</a>
+				    <a class="page-link" th:href="@{/admin/hospital(pageNo=${clist.totalPages - 1}, hospitalStatus=${param.hospitalStatus})}">Next</a>
 				</li>
             </ul>
         </nav>

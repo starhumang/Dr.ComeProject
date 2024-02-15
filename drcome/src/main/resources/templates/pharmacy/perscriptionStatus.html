@@ -484,7 +484,7 @@ $("#datepicker").on("change", function () {
     console.log("선택된 날짜:", $(this).val());
     dateValue = $(this).val();
     console.log("ajax로 보낼 날짜", dateValue);
-    sendDate();
+    sendDate(page);
   });
 
 $(document).ready(function() {

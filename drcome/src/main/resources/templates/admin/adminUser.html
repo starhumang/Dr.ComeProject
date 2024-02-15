@@ -46,7 +46,6 @@
                 name="btnradio"
                 id="btnradio1"
                 autocomplete="off"
-                value="ACTIVE"
                 onclick="location.href='/admin/user'"
                 th:checked="${#strings.equals(param.userStatus, null)}"
               />
@@ -147,83 +146,5 @@
   </body>
 </html>
 <script th:inline="javascript">
-  $(document).ready(function () {
-    alluser();
-  });
 
-  function alluser() {
-	  $.ajax({
-	      url: "/admin/user",
-	      type: "GET",
-	      success: function (response) {
-	        console.log("ajax 연결 성공");
-	      },
-	      error: function(xhr, status, error) {
-	        console.error('Error:', status, error);
-	      },
-        /*  var list = response.list; // 서버에서 반환한 JSON 데이터의 list 속성을 가져옴
-            if(list) {
-                console.log(1111, list);
-                var userListTbody = $('#tbody');
-                userListTbody.empty();
-                for (var i = 0; i < list.length; i++) {
-                    var alluser = list[i];
-                    var status = '';
-                    if (alluser.grade === 'USER' && alluser.userStatus !== 'a2') {
-                        status = '일반회원';
-                    } else if (alluser.grade === 'ADMIN') {
-                        status = '관리자';
-                    } else if (alluser.userStatus === 'a2') {
-                        status = '탈퇴회원';
-                    }
-                    var alluserTr = '<tr>' +
-                        '<td>' + alluser.userId + '</td>' +
-                        '<td>' + alluser.userName + '</td>' +
-                        '<td>' + alluser.userPhone + '</td>' +
-                        '<td>' + formatDate(new Date(alluser.userBirthday)) + '</td>' +
-                        '<td>' + alluser.gender + '</td>' +
-                        '<td>' + status + '</td>' +
-                        '<td>' + formatDate(new Date(alluser.joindate)) + '</td>' +
-                        '</tr>';
-                    userListTbody.append(alluserTr);
-                }
-            } else {
-                console.log('No list found in response');
-            }
-        },
-        error: function(xhr, status, error) {
-            console.error('Error:', status, error);
-        } */
-      
-    });
-  }
-
-  function commonuser() {}
-
-  function withdrawaluser() {}
-
-  /* 날짜 변환 */
-function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    return `${year}-${month}-${day}`;
-}
-  
-/* 페이징 처리 */
-function Pagination() {}
-
-
-  /* //라디오 버튼 클릭 시
-$('input[name="btnradio"]').change(function() {
-    if ($('#btnradio1').is(':checked')) {
-    	alluser();
-    } else if ($('#btnradio2').is(':checked')) {
-    	commonuser();
-    } else if ($('#btnradio3').is(':checked')) {
-    	withdrawaluser();
-    }
-    sendAjaxRequest();  // AJAX 요청 수행
-}); */
 </script>

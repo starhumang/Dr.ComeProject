@@ -92,6 +92,22 @@ public class PharmacyServiceImpl implements PharmacyService{
 		return result;
 	}
 
+	@Override
+	public Map<String, Object> updateproduce(PharmacySelectVO pharmacyselectVO) {
+		Map<String, Object> map = new HashMap<>();
+		boolean isSuccessed = false;
+
+		int result = mapper.updateProduceStatus(pharmacyselectVO);
+		if (result == 1) {
+			isSuccessed = true;
+		}
+
+		map.put("result", isSuccessed);
+		map.put("target", pharmacyselectVO);
+		
+		return map;
+	}
+
 
 	/*
 	 * @Override public List<Map<String, Object>> getperPage(int pageNo, int

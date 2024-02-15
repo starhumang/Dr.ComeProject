@@ -113,20 +113,10 @@ public class PharmacyController {
 		// result map
 		Map<String, Object> map = new HashMap();
 		
-		/*
-		 * map.put("page", parammap.get("page")); map.put("pharmacyId",
-		 * parammap.get("pharmacyId")); map.put("date", date); map.put("keyword",
-		 * parammap.get("keyword")); map.put("type", parammap.get("type"));
-		 * System.out.println("map" + map);
-		 */
-		
-		
 		// 리스트 전체갯수 가져오기
 		int total = pservice.percount(parammap, date);
 		System.out.println("토탈" + total);
-		
-		
-		// 선택된 페이지 인트로 변환
+
 
 		// 페이지네이션(currentpage, total)
 		PageDTO dto = new PageDTO(page, total);
@@ -137,10 +127,7 @@ public class PharmacyController {
 		List<Map<String, Object>> plist = pservice.selectPrescriptionList(parammap, date);
 		
 		System.out.println(plist.size());
-		
-		// ajax는 return으로 
-//		model.addAttribute("plist", plist);
-//		model.addAttribute("dto", dto);
+
 		
 		map.put("plist", plist); 
 		map.put("pagedto", dto); 
@@ -156,9 +143,12 @@ public class PharmacyController {
 	 */
 	@PostMapping("/pharmacy/rejection")
 	@ResponseBody
-	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, PharmacySelectVO pharmacyselectVO) {
+	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, 
+											   PharmacySelectVO pharmacyselectVO) {
 		System.out.println(pharmacyselectVO);
 		pharmacyselectVO.setPharmacyId(id);
+		//pservice.updateproduce(pharmacyselectVO);
+		
 		return pservice.updaterejection(pharmacyselectVO);
 	}
 	

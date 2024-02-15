@@ -111,6 +111,13 @@
 		 WHERE clinic_no = #{clinicNo}
 		   AND pharmacy_id = #{pharmacyId}
 	</update>
+	
+	<!-- 처방전 반환 produce_status -->
+	<update id="updateProduceStatus" parameterType="PharmacySelectVO">
+		UPDATE pharmacy_select
+		   SET produce_status = 'j2'
+		 WHERE pharmacy_selectno = #{pharmacySelectno}
+	</update>
 	<!-- 약국 페이징(처방현황) -->
 	<!-- <select id="percount" resultType="java.lang.Integer">
 	    SELECT COUNT(*)

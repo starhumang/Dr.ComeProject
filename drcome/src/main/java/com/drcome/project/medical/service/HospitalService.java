@@ -1,6 +1,5 @@
 package com.drcome.project.medical.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,12 +17,28 @@ public interface HospitalService {
 	//QnA답변X
 	public List<Map<String, Object>> getQnAX(String hospitalId);
 	
+	/* 환자리스트 */
+	//환자 조회
+	public List<Map<String, Object>> getPaientList(String hospitalId);
+	
+	//환자 상세 진료내역 조회
+	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo);
+
+	//환자 진료내역 단건 조회
+	public Map<String, Object> getPaientClinicInfo(String hospitalId, Integer patientNo, Integer clinicNo);
+	
+	//환자 진료내역 단건 처방전 조회
+	public List<Map<String, Object>> getpaientPillInfo(Integer clinicNo);
+	
 	/* 예약내역 - clinic */
 	//Main
 	public List<Map<String, Object>> getRerveList(String hospitalId, String date, String reserveKindstatus);
 	
 	//Dr
-	public List<Map<String, Object>> getReserveDrList(String hospitalId, Integer doctorNo);
+	public List<Map<String, Object>> getReserveDrList(String hospitalId, Integer doctorNo, String date, String reserveKindstatus);
+	
+	//Dr리스트
+	public List<Map<String, Object>> getDrAllList(String hospitalId);
 	
 	/* QnA */
 	//QnA 전체
@@ -44,6 +59,11 @@ public interface HospitalService {
 	public int insertNoticeInfo(NoticeVO vo);
 	public int insertAttach(NoticeVO vo);
 	
+	//공지사항 검색
+	public List<NoticeVO> searchNotice(int type, String hospitalId, String keyword);
+	
+	public int searchNoticeCount(String hospitalId, String keyword);
+	
 	/* 병원프로필 */
 	//병원 단건조회(id로)
 	public Hospital findByhospitalId(String hospitalId);
@@ -51,12 +71,16 @@ public interface HospitalService {
 	//병원-의사 조회
 	public List<DoctorVO> getDoctorAll(String hospitalId);
 	
-	/* 환자리스트 */
-	//환자 조회
-	public List<Map<String, Object>> getPaientList(String hospitalId);
+	// 의사 번호 조회
+	public int getCurrentDoctorNo();
 	
-	//환자 상세 진료내역 조회
-	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo);
-
-
+	// 의사 정보 조회
+	public DoctorVO selectDoctor(int doctorNo);
+	
+	// 의사 등록
+	public int insertDoctor(DoctorVO vo);
+	
+	// 의사 수정
+	public int updateDoctor(DoctorVO vo);
+	
 }

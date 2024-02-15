@@ -2,13 +2,17 @@ package com.drcome.project.mem.service;
 
 import java.util.Map;
 
+import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.HospitalVO;
+import com.drcome.project.pharmacy.PharmacyVO;
 
 public interface UserMemberService {
 	
 	int insertUserMember(UserMemberVO vo);
 	
 	int insertHosMember(HospitalVO vo);
+	
+	int insertPamMember(PharmacyVO vo);
 	
 	public MemVO getMember(String id);
 	
@@ -25,4 +29,8 @@ public interface UserMemberService {
 	int updatePw(MemVO vo);
 	
 	int updateUserInfo(UserMemberVO vo);
+	
+	int updateHosInfo(HospitalVO vo);
+	
+	int updatePamInfo(PharmacyVO vo);
 }

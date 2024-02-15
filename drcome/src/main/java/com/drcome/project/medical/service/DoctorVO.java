@@ -14,5 +14,5 @@ public class DoctorVO {
 	private String hospitalId;
 	private Integer doctorTimeno;
 	
-	List<DoctorTimeVO> times;
+	private List<DoctorTimeVO> times;
 }

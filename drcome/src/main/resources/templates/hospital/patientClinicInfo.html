@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}">
+
+<head>
+<meta charset="UTF-8">
+<title>patientList</title>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.clinic-pInfo, .clinic-content, .clinic-drug {
+	padding: 1.0rem 1.5rem;
+}
+
+.pillTbl {
+	padding: 0 1.0rem;
+}
+
+.clinic-title {
+	background-color: lightgray;
+	margin-bottom: 1rem;
+}
+
+p {
+	margin-bottom: 0;
+}
+
+table>thead {
+	border-bottom: 1px double #edeef1;
+	border-bottom-width: medium;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<div class="head_info">
+				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<p>
+					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+				</p>
+			</div>
+			<p style="margin-bottom: 3rem;">Patient Detail</p>
+			<div class="container container-sm">
+				<div class="card shadow mb-4">
+					<div class="card-header py-3">
+						<h6 class="m-0 font-weight-bold text-primary text-right">진료코드
+							[[${patientInfo.clinicNo}]] / [[${patientInfo.reserveKindstatus}]]</h6>
+					</div>
+					<div class="card-body">
+						<div class="text-center"></div>
+						<div class="clinic-pInfo">
+							<div class="clinic-title">
+								<i class="fas fa-fw fa-child"></i> <span>환자정보</span>
+							</div>
+							<table class="table table-borderless table-light text-center"
+								style="color: #000;">
+								<tr>
+									<th>이름</th>
+									<td>[[${patientInfo.userName}]]</td>
+									<th>성별</th>
+									<td>[[${patientInfo.gender}]]</td>
+									<th>생년월일</th>
+									<td>[[${#dates.format(patientInfo.userBirthday,
+										'yyyy-MM-dd')}]]</td>
+									<th>진료구분</th>
+									<td>[[${patientInfo.reserveKindstatus}]]</td>
+								</tr>
+							</table>
+						</div>
+						<div class="clinic-content">
+							<div class="clinic-title">
+								<i class="fas fa-fw fa-notes-medical"></i> <span>진단내용</span>
+							</div>
+							<p>[[${patientInfo.clinicSymptom}]]</p>
+							<p style="color: blue;">*특이사항 : [[${patientInfo.specificity}]]</p>
+						</div>
+						<div class="clinic-drug">
+							<div class="clinic-title">
+								<i class="fas fa-fw fa-prescription-bottle"></i> <span>약처방</span>
+							</div>
+							<div class="pillTbl">
+								<table class="table table-borderless table-hover text-center">
+									<thead>
+										<tr>
+											<th>약품명</th>
+											<th>투약량</th>
+											<th>횟수</th>
+											<th>일수</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each=" cp : ${patientPill} ">
+											<td th:text="${cp.medicineName}">아스피린</td>
+											<td th:text="${cp.dosage}">30</td>
+											<td th:text="|${cp.doseCnt} 번|">3</td>
+											<td th:text="|${cp.doseDay} 일|">3</td>
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+				</div>
+
+				<!-- 뒤로버튼 -->
+				<div style="text-align: right;">
+					<a
+						th:href="@{/hospital/patientList/patientDetail(patientNo=${patientInfo.patientNo})}"
+						class="btn btn-dark">뒤로</a>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</body>
+</html>

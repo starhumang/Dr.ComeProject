@@ -20,12 +20,28 @@ public interface HospitalMapper {
 	//QnA답변X
 	public List<Map<String, Object>> selectQnAX(String hospitalId);
 	
+	/* 환자리스트 */
+	//환자 조회
+	public List<Map<String, Object>> selectPatientList(String hospitalId);
+	
+	//환자 진료 상세 조회
+	public List<Map<String, Object>> selectPatientDetailList(String hospitalId, Integer patientNo);
+	
+	//환자 진료내역 단건 조회
+	public Map<String, Object> selectPatientInfo(String hospitalId, Integer patientNo, Integer clinicNo);
+	
+	//환자 진료내역 단건 처방전 조회
+	public List<Map<String, Object>> selectPillList(Integer clinicNo);
+	
 	/* 예약내역 - clinic */
 	//Main
 	public List<Map<String, Object>> selectReserveMain(String hospitalId, String date, String reserveKindstatus);
 	
 	//Dr
-	public List<Map<String, Object>> selectReserveDr(String hospitalId, Integer doctorNo);
+	public List<Map<String, Object>> selectReserveDr(String hospitalId, Integer doctorNo, String date, String reserveKindstatus);
+	
+	//Dr리스트
+	public List<Map<String, Object>> allDrList(String hospitalId);
 	
 	/* QnA */
 	//QnA 전체
@@ -45,18 +61,34 @@ public interface HospitalMapper {
 	public int insertNotice(NoticeVO vo);
 	public int insertAttach(NoticeVO vo);
 	
+	//공지사항 검색
+	public List<NoticeVO> searchNoticeByTitle(@Param("hospitalId") String hospitalId, @Param("keyword") String keyword);
+	public List<NoticeVO> searchNoticeByContent(@Param("hospitalId") String hospitalId, @Param("keyword") String keyword);
+	public int searchNoticeCount(@Param("keyword") String keyword, @Param("hospitalId") String hospitalId);
+	
 	/* 병원프로필 */
 	//병원-의사 조회
 	public List<DoctorVO> selectDrList(String hospitalId);
 	
-	/* 환자리스트 */
-	//환자 조회
-	public List<Map<String, Object>> selectPatientList(String hospitalId);
-	
-	//환자 진료 상세 조회
-	public List<Map<String, Object>> selectPatientDetailList(String hospitalId, Integer patientNo);
-	
 	/* ------- Total Count ------- */
 	/* 공지사항 리스트 페이징 */
 	public int noticeCount(@Param("hospitalId") String hospitalId);
+	
+	/* 의사 번호 조회 */
+	public int getCurrentDoctorNo();
+	
+	/* 의사 정보 조회 */
+	public DoctorVO selectDoctor(int doctorNo);
+	
+	/* 의사 등록 */
+	public int insertDoctor(DoctorVO vo);
+	
+	/* 의사 시간 등록 */
+	public int insertDoctorTime(int doctorNo, String day, String timeSlot);
+	
+	/* 의사 수정 */
+	public int updateDoctor(DoctorVO vo);
+	
+	/* 의사 시간 삭제 */
+	public int deleteDoctorTime(int doctorNo);
 }

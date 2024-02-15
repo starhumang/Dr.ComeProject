@@ -1,89 +1,58 @@
 <!DOCTYPE html>
-<html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{hospital/hospitalLayout}"
->
-  <head>
-    <meta charset="UTF-8" />
-    <title>noticeList</title>
-    <style>
-      .head_info {
-        display: flex;
-        justify-content: space-between;
-        margin-top: 30px;
-      }
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{hospital/hospitalLayout}">
 
-      .search {
-        display: flex;
-        justify-content: flex-end;
-        margin-bottom: 40px;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <title>noticeList</title>
+  <style>
+    .head_info {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 30px;
+    }
 
-      .catCal {
-        display: flex;
-        justify-content: space-between;
-        margin: 15px 0;
-      }
+    .catCal {
+      display: flex;
+      justify-content: space-between;
+      margin: 15px 0;
+    }
 
-      input[type="radio"] {
-        display: none;
-      }
+    .selDr {
+      display: flex;
+      justify-content: space-between;
+    }
 
-      input[type="radio"]:checked + label {
-        background-color: #5a5c69;
-        color: #fff;
-      }
-    </style>
-  </head>
+    input[type="radio"] {
+      display: none;
+    }
 
-  <body>
-    <div layout:fragment="content">
-      <div class="container-fluid">
-        <div class="head_info">
-          <h4 th:text="${hospitalSel.hospitalName}"></h4>
-          <p>
-            <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
-            <span
-              th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+    input[type="radio"]:checked+label {
+      background-color: #5a5c69;
+      color: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div layout:fragment="content">
+    <div class="container-fluid">
+      <div class="head_info">
+        <h4 th:text="${hospitalSel.hospitalName}"></h4>
+        <p>
+          <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+          <span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
             ></span>
           </p>
         </div>
-        <p>Reservation Dr</p>
-        <div class="search">
-          <!-- drop -->
-          <div style="margin-right: 5px">
-            <select class="custom-select" aria-label="Default select example">
-              <option selected>검색유형</option>
-              <option value="1">제목</option>
-              <option value="2">내용</option>
-            </select>
-          </div>
 
-          <!-- 검색 -->
-          <div>
-            <div class="input-group">
-              <button
-                class="btn btn-info"
-                type="button"
-                style="
-                  border-top-right-radius: 0;
-                  border-bottom-right-radius: 0;
-                "
-              >
-                <i class="fas fa-search fa-sm"></i>
-              </button>
-              <input
-                type="text"
-                class="form-control bg-light border-1 small"
-                placeholder="검색어를 입력하세요."
-                aria-label="Search"
-                aria-describedby="basic-addon2"
-              />
-              <div class="input-group-append">
-                <button class="btn btn-info" type="button">검색하기</button>
-              </div>
-            </div>
+        <div class="selDr">
+          <p>Reservation Dr</p>
+          <div class="selDrDrop">
+            담당의 :
+            <select id="doctorNo">
+              <option value=""></option>
+            </select>
           </div>
         </div>
 
@@ -139,9 +108,8 @@
           </div>
         </div>
 
-        <p>으사이름 : [[${reserveDrList[0].doctorName}]]</p>
         <div>
-          <table class="table table-hover">
+          <table id="reserveDrListTable" class="table table-hover">
             <thead>
               <tr>
                 <th>예약코드</th>
@@ -155,58 +123,246 @@
                 <th>진료상태</th>
               </tr>
             </thead>
-            <tbody>
-              <tr th:each="rdl : ${reserveDrList}">
-                <td th:text="${rdl.reserveNo}"></td>
-                <td th:text="${rdl.userName}"></td>
-                <td
-                  th:text="${#dates.format(rdl.userBirthday, 'yyyy-MM-dd')}"
-                ></td>
-                <td th:text="${rdl.gender}"></td>
-                <td th:text="${rdl.userPhone}"></td>
-                <td th:text="|${rdl.reserveTime} : 00|"></td>
-                <td th:text="${rdl.doctorName}"></td>
-
-                <td th:if="${ rdl.reserveKindstatus == 'c1' }">대면</td>
-                <td th:unless="${ rdl.reserveKindstatus == 'c1' }">비대면</td>
-                <td>
-                  <button
-                    th:onclick="enter([[${rdl.reserveNo}]],'user2');"
-                    class="btn btn-dark"
-                  >
-                    입장
-                  </button>
-                </td>
-              </tr>
-            </tbody>
+            <tbody></tbody>
           </table>
         </div>
       </div>
 
       <script>
-        document.getElementById("date").value = new Date()
-          .toISOString()
-          .substring(0, 10);
+        //입장하기
+        function enter(rno, uid, rt) {
+          //console.log(rno, uid, rt);
 
-        function enter(rno, uid) {
-          let obj = {
+          //비대면 진료면 알람테이블 인서트하고 입장하기상태 업뎃침 
+          if(rt==="c2"){
+            //알람테이블에 들어갈 객체 
+            let obj = {
+            reserveNo:rno,
             userId: uid,
             contentCode: "enterRoom",
             prefix: "진료실에 입장",
-          };
+            };
 
-          $.ajax("/saveAlarm", {
+            $.ajax("/saveAlarm", {
             type: "post",
             data: JSON.stringify(obj),
             dataType: "json",
             contentType: "application/json",
-          })
+            })
             .done((result) => {
-              console.log(result); //알람테이블 인서트 성공했으면//페이지 이동
-              location.href = `/untactClinic?reserveNo=${rno}&userId=${uid}`;
+             //result == 1  성공했으면 페이지 이동 
+              if(result>0){
+                location.href = `/untactClinic?reserveNo=${rno}`;
+              }
             }) //.done
             .fail((err) => console.log(err));
-        } //진료실 입장하기 버튼
+
+          } else {
+              //대면이면 그냥 입장 
+             location.href = `/clinic?reserveNo=${rno}`;
+          }
+        } // 입장하기 
+
+        $(document).ready(function () {
+          var doctorNo = null;
+          // 의사목록 ajax
+          function loadDoctorList() {
+            $.ajax({
+              url: "/hospital/clinicDr/allDr",
+              type: "GET",
+              success: function (DrAllList) {
+                if (DrAllList) {
+                  var select = $("#doctorNo");
+                  select.empty();
+                  $.each(DrAllList, function (index, doctor) {
+                    select.append(
+                      '<option value="' +
+                        doctor.doctorNo +
+                        '">' +
+                        doctor.doctorName +
+                        "</option>"
+                    );
+                  });
+                  // 맨 처음 의사의 번호 가져오기
+                  doctorNo = DrAllList[0].doctorNo;
+                  // 페이지 로드 시 기본 의사에 대한 예약 목록을 가져오도록 함수 호출
+                  sendAjaxRequest();
+                } else {
+                  console.log("No doctors found");
+                }
+              },
+              error: function (xhr, status, error) {
+                console.error("Error fetching doctors:", error);
+              },
+            });
+          }
+
+          // 페이지 로드 시 의사 목록을 불러옴
+          loadDoctorList();
+
+          // 날짜 처리 함수
+          function formatDate(date) {
+            var year = date.getFullYear();
+            var month = (date.getMonth() + 1).toString().padStart(2, "0");
+            var day = date.getDate().toString().padStart(2, "0");
+            return `${year}-${month}-${day}`;
+          }
+
+          todayDate = new Date().toISOString().substring(0, 10);
+          var inputToday = $("#date").val(todayDate); // 입력 요소에 오늘 날짜 설정
+          var finalDay = inputToday.val().replace(/-/g, "");
+          console.log(finalDay);
+          var reserveStatus = null;
+          console.log(reserveStatus);
+
+          sendAjaxRequest();
+
+          // AJAX 요청을 수행하는 함수
+          function sendAjaxRequest() {
+            $.ajax({
+              url: "/hospital/clinicDr/ajax",
+              type: "GET",
+              data: {
+                date: finalDay,
+                reserveKindstatus: reserveStatus,
+                doctorNo: doctorNo,
+              },
+              success: function (reserveDrList) {
+                if (reserveDrList) {
+                  // reserveDrList가 존재하는지 확인
+                  console.log(reserveDrList);
+                  var reserveDrListTbody = $("#reserveDrListTable tbody");
+                  reserveDrListTbody.empty();
+                  for (var i = 0; i < reserveDrList.length; i++) {
+                    var reserve = reserveDrList[i];
+                    var rs = reserve.reserveStatus;
+                    var rt = reserve.reserveKindstatus;
+                    var reserveStatusText = "";
+                    var btnDisabled = "";
+                    var btnclass = "";
+
+                    //e1이면 진료대기// e4면 진료완료
+                    if (rs === "e1") {
+                      reserveStatusText = "진료대기";
+                      btnDisabled = "disabled";
+                      btnclass = "class = 'btn btn-secondary'";
+                    } else if (rs === "e4" || rs === "e5" ) {
+                      reserveStatusText = "진료완료";
+                      btnDisabled = "disabled";
+                      btnclass = "class = 'btn btn-light'";
+                    }
+
+                    //현재시간
+                    var currentTimeHour = new Date()
+                      .toLocaleTimeString("ko-KR", {
+                        hour12: false,
+                        hour: "numeric",
+                        minute: "numeric",
+                      })
+                      .slice(0, 2);
+
+                    //예약시간
+                    var reserveTimeHour = reserve.reserveTime.slice(0, 2);
+                    //console.log("예약시간" + reserveTimeHour);
+                    //console.log("현재시간" + currentTimeHour);
+
+                    //예약시간이고, 예약대기 e1 이고 대면진료 c1 라면
+                    if (
+                      currentTimeHour === reserveTimeHour &&
+                      rt === "c1" &&
+                      rs === "e1"
+                    ) {
+                      reserveStatusText = "대면 진료하기";
+                      btnDisabled = "";
+                      btnclass = "class = 'btn btn-primary'";
+                    }
+
+                    //예약시간이고  예약대기 e1이고  비대면진료 c2 라면
+                    if (
+                      currentTimeHour === reserveTimeHour &&
+                      rt === "c2" &&
+                      rs === "e1"
+                    ) {
+                      reserveStatusText = "비대면 진료하기";
+                      btnDisabled = "";
+                      btnclass = "class = 'btn btn-primary'";
+                    }
+
+                    var reserveTr =
+                      "<tr>" +
+                      "<td>" +
+                      reserve.reserveNo +
+                      "</td>" +
+                      "<td>" +
+                      reserve.userName +
+                      "</td>" +
+                      "<td>" +
+                      formatDate(new Date(reserve.userBirthday)) +
+                      "</td>" +
+                      "<td>" +
+                      reserve.gender +
+                      "</td>" +
+                      "<td>" +
+                      reserve.userPhone +
+                      "</td>" +
+                      "<td>" +
+                      reserve.reserveTime +
+                      "</td>" +
+                      "<td>" +
+                      reserve.doctorName +
+                      "</td>" +
+                      "<td>" +
+                      (reserve.reserveKindstatus === "c1" ? "대면" : "비대면") +
+                      "</td>" +
+                      "<td>" +
+                      "<button onclick='enter(" + reserve.reserveNo + ", \"" + reserve.userId + "\", \"" + rt + "\")' " +
+                      btnDisabled +
+                      " " +
+                      btnclass +
+                      ">" +
+                      reserveStatusText +
+                      "</button>" +
+                      "</td>" +
+                      "</tr>";
+
+                    reserveDrListTbody.append(reserveTr);
+                  }
+                } else {
+                  console.log("No reserveDrList found in response");
+                }
+              },
+            });
+          }
+
+          // 라디오 버튼 클릭 시
+          $('input[name="btnradio"]').change(function () {
+            if ($("#btnradio1").is(":checked")) {
+              reserveStatus = null;
+            } else if ($("#btnradio2").is(":checked")) {
+              reserveStatus = "c2";
+            } else if ($("#btnradio4").is(":checked")) {
+              reserveStatus = "c1";
+            }
+            finalDay = $("#date").val().replace(/-/g, ""); // 선택된 날짜를 finalDay 변수에 저장
+            sendAjaxRequest(); // AJAX 요청 수행
+          });
+
+          // 날짜 선택 시
+          $("#date").change(function () {
+            $("#btnradio1").prop("checked", true); // #btnradio1로 초기화
+            reserveStatus = null; // reserveStatus 초기화
+            finalDay = $("#date").val().replace(/-/g, "");
+            sendAjaxRequest(); // AJAX 요청 수행
+          });
+
+          $("#doctorNo").change(function () {
+            $("#btnradio1").prop("checked", true); // #btnradio1로 초기화
+            reserveStatus = null; // reserveStatus 초기화
+            doctorNo = $(this).val();
+            console.log("Selected Doctor No:", doctorNo); // 확인용 로그
+            sendAjaxRequest();
+          });
+        });
       </script>
     </div>
   </body>

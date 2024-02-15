@@ -188,11 +188,13 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
         <script src="/js/socket.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-        <link
-          href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
-          rel="stylesheet"
-        />
+        <script th:inline="javascript">
+					let rNo = [[${rNo}]];
+					function payment() {
+						location.href = '/payment/' + rNo;
+					}
+		</script>
+
 
         <script th:inline="javascript"></script>
       </div>

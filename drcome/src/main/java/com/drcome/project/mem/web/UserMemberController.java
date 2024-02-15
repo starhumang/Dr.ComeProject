@@ -1,6 +1,7 @@
 package com.drcome.project.mem.web;
 
 import com.drcome.project.common.service.FileUploadService;
+import com.drcome.project.doctor.service.PatientVO;
 import com.drcome.project.main.service.ClinicPayVO;
 import com.drcome.project.main.service.PaymentVO;
 import com.drcome.project.main.service.ReservationVO;
@@ -371,6 +372,13 @@ public class UserMemberController {
 		model.addAttribute("reserveMyList", rInfo);
 
 		return "member/usermypage";
+	}
+	
+	// 비대면 진료 - 환자
+	@GetMapping("untactPatient/{reserveNo}")
+	public String untactPatient(@PathVariable("reserveNo") String reserveNo, PatientVO vo, Model model) {
+		model.addAttribute("rNo", reserveNo);
+		return "doctor/untactPatient";
 	}
 
 	/**

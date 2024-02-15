@@ -8,15 +8,47 @@
 <title>patientList</title>
 <style>
 .head_info {
-   display: flex;
-   justify-content: space-between;
-   margin-top: 30px;
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
 }
 
 .search {
-   display: flex;
-   justify-content: flex-end;
-   margin-bottom: 40px;
+	display: flex;
+	margin-bottom: 2.5rem;
+	text-align: right;
+	justify-content: flex-end;
+}
+input[type="radio"] {
+	display: none;
+}
+
+input[type="radio"]:checked+label {
+	background-color: #5a5c69;
+	color: #fff;
+}
+.selRadio {
+	display: flex;
+	justify-content: space-between;
+}
+.pagination a {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 0 2px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #36b9cc;
+  color: #fff;
+  /* border: 1px solid #4e73df; */
+}
+
+.pagination a:hover {
+  background-color: #bfc5d8;
 }
 </style>
 </head>
@@ -31,59 +63,181 @@
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>patient list</p>
+			<p>patient</p>
 			<div class="search">
 				<!-- drop -->
-				<div style="margin-right: 5px;">
-					<select class="custom-select" aria-label="Default select example">
-						<option selected>검색유형</option>
-						<option value="1">환자번호</option>
-						<option value="2">환자이름</option>
-					</select>
-				</div>
-
-				<!-- 검색 -->
-				<div>
-					<div class="input-group">
-						<button class="btn btn-info" type="button"
-							style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
-							<i class="fas fa-search fa-sm"></i>
-						</button>
-						<input type="text" class="form-control bg-light border-1 small"
-							placeholder="검색어를 입력하세요." aria-label="Search"
-							aria-describedby="basic-addon2">
-						<div class="input-group-append">
-							<button class="btn btn-info" type="button">검색하기</button>
-						</div>
-					</div>
-				</div>
+			    <div class="input-group" style="width: 40%;">
+			        <select id="type" class="custom-select" aria-label="Default select example" style="border-radius: 0.35rem;">
+			        	<option value="">검색유형</option>
+			            <option value="1">환자번호</option>
+			            <option value="2">환자이름</option>
+			        </select>
+			        <p class="btn btn-info" style="border-top-right-radius: 0; border-bottom-right-radius: 0; margin-left: 0.3rem; margin-bottom: 0;">
+			            <i class="fas fa-search fa-sm"></i>
+			        </p>
+			        <input type="text" id="keyword" class="form-control bg-light border-1 small" placeholder="검색어를 입력하세요." aria-label="Search" aria-describedby="basic-addon2" style="width: 30%;"/>
+			        <button id="searchBtn" class="btn btn-info" type="button" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">검색하기</button>
+			    </div>
 			</div>
 
 			<!-- 환자리스트 -->
+			<!-- table -->
 			<div>
 				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>환자번호</th>
-							<th>환자이름</th>
-							<th>생년월일</th>
-							<th>성별</th>
-							<th>환자Tel</th>
-							<th>진료 및 예약</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="pl : ${palist}">
-							<td th:text="${pl.patientNo}"></td>
-							<td th:text="${pl.userName}"></td>
-							<td th:text="${#dates.format(pl.userBirthday, 'yyyy-MM-dd')}"></td>
-							<td th:text="${pl.gender}"></td>
-							<td th:text="${pl.userPhone}"></td>
-							<td><a th:href="@{/hospital/patientList/patientDetail(patientNo=${pl.patientNo})}" class="btn btn-sm btn-outline-warning">상세보기</a></td>
-						</tr>
-					</tbody>
 				</table>
+				
 			</div>
+			
+			<!-- 페이징 버튼 -->
+			<div>
+				<div class="pagination" style="display: flex; justify-content: center; margin: 50px 0;">
+				</div>	
+			</div>
+
+			<script>
+			    //ajax로 페이지 열린 후에 페이징 한 거 받아오기...
+			    let page = 1;
+
+			    // Ajax 요청을 보내는 함수
+			    function sendP(page) {
+			    	var type = $('#type').val();
+			    	var keyword = $('#keyword').val();
+			    	
+			        $.ajax({
+			            url: '/hospital/patientListP',
+			            type: 'GET',
+			            data: { 
+			            	page: page,
+			            	keyword: keyword,
+			            	type: type,
+			            },
+			            dataType: 'json',
+			        }).done(function(response) {
+			            // 응답을 받으면 처리합니다.
+			            var patientList = $('#patientList');
+			            patientList.empty();
+			
+			            $.each(response.plist, function(index, item) {
+			            	patientList.append('<div>' + item.title + '</div>');
+			            });
+			
+			            // 페이지네이션 정보를 사용하여 페이지네이션을 구현할 수 있습니다.
+			            console.log("pagedto" + response.pagedto);
+			            // 받은 JSON 데이터를 사용하여 테이블 생성
+			            createTable(response.plist);
+			            makePaging(response.pagedto);
+			
+			        }).fail(function(xhr, status, error) {
+			            // 요청이 실패한 경우 에러 처리를 합니다.
+			            console.error("error" + error);
+			        });
+			    }
+			
+			    // 페이지 로드 시 첫 번째 페이지 데이터를 가져옵니다.
+			    $(document).ready(function() {
+			        sendP(page);
+			    });
+			
+			    // 날짜 처리 함수
+			    function formatDate(dateString) {
+			        var date = new Date(dateString);
+			        var year = date.getFullYear();
+			        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+			        var day = date.getDate().toString().padStart(2, '0');
+			
+			        return `${year}-${month}-${day}`;
+			    }
+			
+			    // 페이징 함수
+			    function makePaging(dto = {}) {
+			        document.querySelector(".pagination").innerHTML = ""; // 초기화
+			        console.log("dto", dto);
+			        // 이전 페이지가 있으면
+			        if (dto.prev) {
+			            let aTag = document.createElement("a");
+			            aTag.setAttribute("href", dto.startPage - 1); // 11페이지에서 << 누르면 10페이지로 가게끔
+			            aTag.innerHTML = "&laquo";
+			            document.querySelector(".pagination").append(aTag);
+			        }
+			
+			        for (let i = dto.startPage; i <= dto.endPage; i++) {
+			            let aTag = document.createElement("a");
+			            aTag.setAttribute("href", i); //<a href="1">1</a>
+			            aTag.innerHTML = i;
+			            // active 녹색 주는거
+			            if (i == page) {
+			                aTag.className = "active";
+			            }
+			            document.querySelector(".pagination").append(aTag);
+			        } // 포
+			
+			        // 이후 페이지가 있으면
+			        if (dto.next) {
+			            let aTag = document.createElement("a");
+			            aTag.setAttribute("href", dto.endPage + 1);
+			            aTag.innerHTML = "&raquo";
+			            document.querySelector(".pagination").append(aTag);
+			        }
+			
+			        // 페이지 숫자 태그에 클릭 이벤트 만들기
+			        document.querySelectorAll(".pagination a").forEach((ele) => {
+			            // 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
+			            ele.addEventListener("click", function(e) {
+			                e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
+			                page = ele.getAttribute("href"); // href의 값 = page
+			                sendP(page); // 페이지 번호에 해당하는 데이터를 불러오는 함수 호출
+			            }); // 클릭 이벤트
+			        }); // 포이치
+			    }
+			
+			    // content를 줄임말로 표시하는 함수
+			    function shortenContent(content, maxLength) {
+			        if (content.length > maxLength) {
+			            return content.substring(0, maxLength) + '...';
+			        } else {
+			            return content;
+			        }
+			    }
+			    // 동적으로 테이블 생성 함수
+			    function createTable(plist) {
+			        $(".table").empty();
+			        var table = document.querySelector('.table');
+			        var thead = $("<thead>").appendTo(table);
+			        var tbody = $("<tbody>").appendTo(table);
+			
+			        var headerRow = $("<tr>").appendTo(thead);
+			        var headers = ["환자번호", "환자이름", "생년월일", "성별", "환자Tel", "진료 및 예약"];
+			
+			        $.each(headers, function(index, text) {
+			            $("<th>").text(text).appendTo(headerRow);
+			        });
+			
+			        $.each(plist, function(index, item) {
+			            var row = $("<tr>").appendTo(tbody);
+			            row.append(`<td>${item.patientNo}</td>`);
+			            row.append(`<td>${item.userName}</td>`);
+			            row.append(`<td>${formatDate(new Date(item.userBirthday))}</td>`);
+			            row.append(`<td>${item.gender}</td>`);
+			            row.append(`<td>${item.phone}</td>`);
+			            row.append(`<td><button class="btn btn-warning">진료내역</button></td>`);
+			        });
+			
+			        //상세페이지로 넘어가기
+			        $(".table tbody").on("click", "tr", function() {
+			            var patientNo = $(this).find("td:first").text();
+			
+			            window.location.href = '/hospital/patientList/patientDetail?patientNo=' + patientNo;
+			        });
+			
+			        // tr 요소에 마우스 오버 시에 손가락 모양으로 마우스 커서를 변경
+			        $(".table tbody tr").css("cursor", "pointer");
+			    }
+			    
+			    //검색버튼 이벤트 만들기
+			    $('#searchBtn').on("click", function() {
+			    	sendP(1);
+			    })
+			</script>
 		</div>
 	</div>
 </body>

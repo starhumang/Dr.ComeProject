@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>결제 페이지</title>
+
+		<style>
+			.pay_what {
+				display: flex;
+				justify-content: center;
+				margin-bottom: 30px;
+			}
+			.pay_list input[type='radio'] {
+				display: none;
+			}
+			.pay_list > .pay > span {
+				width: 140px;
+			}
+			.pay_list > .pay input[type='radio']:checked + span {
+				display: inline-block;
+				padding: 10px 15px;
+				margin: 5px;
+				border: 1px solid #808080;
+				border-radius: 5px;
+				background-color: #f0f0f0;
+				color: gray;
+				text-align: center;
+				cursor: pointer;
+			}
+			.pay_list > .pay input[type='radio'] + span {
+				display: inline-block;
+				padding: 10px 15px;
+				margin: 5px;
+				border-radius: 5px;
+				background-color: #c4e1c3;
+				color: rgb(87, 87, 87);
+				text-align: center;
+				cursor: pointer;
+			}
+			.pay_list > .pay > input[type='radio']:hover + span {
+				background-color: #739171;
+				color: #ffffff;
+			}
+			.payEnd {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+			.payEnd > .payEndBtn {
+				width: 40%;
+				height: 50px;
+				background-color: #778899;
+				color: #fff;
+				border: none;
+				border-radius: 10px;
+			}
+			.payEnd > .payEndBtn:hover {
+				width: 40%;
+				height: 50px;
+				background-color: #d1d1d1;
+				border: none;
+				border-radius: 10px;
+			}
+		</style>
+
+		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+		<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+
+		<script th:inline="javascript">
+			var IMP = window.IMP;
+			IMP.init('imp43228827');
+
+			var rInfo = [[${rInfo}]];
+
+			var selectedPayElement = '';
+			var checkedPay = '';
+
+			function updateSelectedPay() {
+				selectedPayElement = document.querySelector('input[name="payMethod"]:checked + span');
+				var selectedPayText = selectedPayElement ? selectedPayElement.textContent : '';
+				document.getElementById('selectedPay').textContent = selectedPayText;
+
+				checkedPay = document.querySelector('input[name="payMethod"]:checked').value;
+			}
+
+			//결제 api
+			function paySubmit() {
+				console.log(IMP);
+				console.log(checkedPay);
+				var payTotal;
+				if (rInfo.reserveKindstatus === 'c1') {
+					payTotal = 5000;
+				} else if (rInfo.reserveKindstatus === 'c2') {
+					payTotal = 10000;
+				}
+				//결제 요청
+				IMP.request_pay(
+					{
+						pg: checkedPay,
+						pay_method: 'card',
+						merchant_uid: 'merchant_' + new Date().getTime(), //주문번호
+						name: '진료비',
+						amount: payTotal,
+						buyer_name: 'user1',
+						buyer_tel: '010-1234-5678', //연락처
+					},
+					function (resp) {
+						if (resp.success) {
+							var payResp = resp.pay_method;
+							console.log(payResp);
+							console.log(resp)
+
+							//gotoOrder(payResp);
+						} else {
+							let msg = '결제에 실패하였습니다.';
+							msg += ' : ' + resp.error_msg;
+							console.log(msg);
+						}
+					}
+				);
+			}
+
+			//예약정보 DB에 담기 위한 함수(form데이터 submit) - 결제방법(payMthd)을 가지고옴
+			function gotoOrder(payMthd) {
+				var formData = new FormData($('#orderForm')[0]);
+				$.ajax({
+					url: '/my/orderFormSubmit',
+					type: 'POST',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function (result) {
+						//3️⃣번째 : 결제정보를 DB에 담기위한 함수(예약번호, 결제방법 가지고 넘어감)
+						saveRsvtPay(result, payMthd);
+					},
+					error: function (err) {
+						//수정
+						swal('앗!', '결제정보를 저장하지 못했습니다.', 'error');
+					},
+				});
+				//form데이터 submit
+				$('#orderForm').submit();
+			}
+
+			//3️⃣번째 : 결제정보를 DB에 담기위한 함수(예약번호, 결제방법 가지고 넘어옴)
+			function saveRsvtPay(result, payMthd) {
+				//결제금액, 결제방법, 예약번호를 변수에 담음
+				let payment = {
+					payAmt: $('#rsvtPay').val(),
+					payMthd: payMthd,
+					rsvtNo: result,
+				};
+				//ajax로 예약번호를 컨트롤러에 전달
+				$.ajax({
+					url: '/my/insertRsvtPayment',
+					type: 'post',
+					data: JSON.stringify(payment),
+					contentType: 'application/json; charset=utf-8',
+					success: function (rsvtNo) {
+						swal('성공!', '예약이 정상적으로 완료되었습니다.', 'success').then(function () {
+							//예약완료 페이지로 이동(예약번호 파라미터)
+							location.href = '/my/rsvtComplete/' + rsvtNo;
+						});
+					},
+					error: function (err) {
+						swal('앗!', '결제 실패..', 'error');
+					},
+				});
+			}
+		</script>
+	</head>
+
+	<body>
+		<div layout:fragment="content">
+			<div class="container-fluid">
+				<p th:text="${rInfo}"></p>
+				<div class="head_info">
+					<p>
+						<i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+						<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					</p>
+				</div>
+				<div class="pay_what">
+					<div class="pay_list">
+						<label class="pay">
+							<input type="radio" name="payMethod" value="html5_inicis" onchange="updateSelectedPay()" />
+							<span>카드결제</span>
+						</label>
+						<label class="pay">
+							<input type="radio" name="payMethod" value="kakaopay" onchange="updateSelectedPay()" />
+							<span>카카오페이</span>
+						</label>
+						<label class="pay">
+							<input type="radio" name="payMethod" value="tosspay" onchange="updateSelectedPay()" />
+							<span>토스</span>
+						</label>
+						<p>
+							>> 결제수단을 선택해주세요 :
+							<span id="selectedPay" style="color: #de490f"></span>
+						</p>
+					</div>
+				</div>
+				<div class="payEnd">
+					<h6 style="color: gray">주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</h6>
+					<button class="payEndBtn" onclick="paySubmit()">결제하기</button>
+				</div>
+				<button
+					class="btn btn-dark rounded-pill px-3"
+					style="
+						border-radius: 30%;
+						text-align: center;
+						vertical-align: top;
+						width: 100px;
+						height: 50px;
+						position: fixed;
+						bottom: 80px;
+						right: 80px;
+						font-size: 20px;
+						z-index: 999;
+					"
+				>
+					Top
+				</button>
+			</div>
+		</div>
+	</body>
+</html>

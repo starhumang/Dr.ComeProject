@@ -111,15 +111,27 @@
       <div class="container-fluid">
         <!--title-->
         <div class="title" style="background-color: #06bbcc; padding: 5px">
-          <h3
-            style="
-              width: 80%;
+
+          <!--on off-->
+          <div class="d-flex justify-content-center align-items-center" style="margin-left: 10px;">
+            <!-- 마이크 버튼 -->
+            <button class="btn btn-secondary" onclick="toggleAudio()" style="margin-right: 5px;">
+              <i id="micIcon" class="bi bi-mic"></i>
+            </button>
+            <!-- 비디오 버튼 -->
+            <button class="btn btn-secondary" onclick="toggleVideo()">
+              <i id="cameraIcon" class="bi bi-camera-video"></i>
+            </button>
+          </div>
+          <!--on off-->
+
+          <h3 style="
+              width: 70%;
               text-align: center;
               margin-bottom: 0;
               padding-left: 120px;
               color: white;
-            "
-          >
+            ">
             비대면 진료중
           </h3>
 
@@ -131,7 +143,11 @@
                 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
               ></span>
             </p>
-            <button class="btn btn-dark" style="margin-right: 15px">
+            <button
+              onclick="endClinic()"
+              class="btn btn-dark"
+              style="margin-right: 15px"
+            >
               진료종료
             </button>
           </div>
@@ -153,14 +169,11 @@
             </div>
             <!--비디오-->
 
-            <!--진료기록초진 재진여부 조건 달아야함 -->
+            <!--진료기록-->
             <div
               id="clinic"
               style="width: 100%; justify-content: center; margin-top: 20%"
             >
-              <!--초진
-              <div id="firstV">초진입니다</div>-->
-
               <!--재진-->
               <div id="secondV">
                 <!--제목-->
@@ -209,6 +222,8 @@
           </div>
           <!--왼쪽-->
 
+  
+
           <!--오른쪽-->
           <div id="right" style="width: 49%">
             <!--기본정보-->
@@ -252,8 +267,9 @@
             </div>
             <!--기본정보-->
 
-            <!--진료form-->
+            <!--진료-->
             <div>
+              <!--제목-->
               <div style="margin-bottom: 15px">
                 <i class="bi bi-pencil-square fa-lg"></i>
                 <span>
@@ -271,16 +287,23 @@
                   </h5>
                 </span>
               </div>
-
+              <!--제목-->
+              <!--폼-->
               <form name="clinicForm">
-                <!--예약번호 받아와야함-->
-                <input type="hidden" name="reserveNo" value="4" />
-                <!--병원아이디 th:value="${session.userId}" 수정해야함 -->
-                <input type="hidden" name="hospitalId" th:value="krrlo" />
-                <!-- 초진/재진여부 수정 했을껄  -->
+                <input
+                  type="hidden"
+                  name="reserveNo"
+                  th:value="${pInfo.reserveNo}"
+                />
+                <input
+                  type="hidden"
+                  name="hospitalId"
+                  th:value="${session.userId}"
+                />
+                <!-- 초진/재진여부 -->
                 <input type="hidden" name="visit" />
-                <!--유저아이디 값 받아와야함 수정수정 -->
-                <input type="hidden" name="userId" value="user1" />
+                <!--유저아이디 -->
+                <input type="hidden" name="userId" th:value="${pInfo.userId}" />
                 <!--필수-->
                 <div style="margin-bottom: 20px">
                   <label style="color: #858796; font-size: 1rem">
@@ -425,8 +448,9 @@
                   </button>
                 </div>
               </form>
+              <!--폼-->
             </div>
-            <!--진료form-->
+            <!--진료-->
           </div>
           <!--오른쪽-->
         </div>
@@ -492,11 +516,35 @@
           rel="stylesheet"
         />
 
-        <script>
-          //소켓서버 연결
+        <script th:inline="javascript">
+          //아이디  //예약번호
+          let uid = [[ ${pInfo.userId} ]];
+          let rno = [[ ${pInfo.reserveNo} ]];
+          // console.log("나와라~!rno)
+
+          //진료종료시 진료완료로 업데이트
+          function endClinic() {
+            $.ajax({
+              url: `/updateStatus?reserveNo=${rno}`,
+              method: "POST",
+            })
+              .done((result) => {
+               
+                if (result > 0) {
+                  location.href = `/hospital/clinicDr`;
+                }
+              })
+              .fail((err) => {
+                console.log(err);
+              });
+          }
+
+
+          //알람소켓서버 연결
           $(document).ready(function () {
             connectWebSocket();
           });
+
           let alarmSocket = null;
           function connectWebSocket() {
             try {
@@ -510,7 +558,7 @@
                 if (alarmSocket && alarmSocket.readyState === WebSocket.OPEN) {
                   // 서버로 메시지 전송
                   console.log("의사가 메세지 전송 ㅎㅎ");
-                  const message = "user2";
+                  const message = uid;
                   alarmSocket.send(message);
                 }
               }; ///
@@ -518,17 +566,13 @@
               // 연결이 닫혔을 때 호출되는 이벤트 핸들러
               alarmSocket.onclose = function (event) {
                 console.log("의사 퇴장 WebSocket 연결이 닫혔습니다.");
-              }; ///
+              }; 
 
               // 에러가 발생했을 때 호출되는 이벤트 핸들러
               alarmSocket.onerror = function (error) {
                 console.error(" 의사... WebSocket 연결 에러:", error);
-                setTimeout(function () {
-                  console.log("다시 연결을 시도합니다.");
-                  connectWebSocket();
-                }, reconnectInterval);
               }; ///
-            } catch (error) {
+              } catch (error) {
               console.error("의사... WebSocket 연결 에러:", error);
             }
           }
@@ -545,8 +589,7 @@
             trList.forEach((tr) => {
               tr.remove();
             });
-            //값 담아와야한다..
-            let uid = "user1";
+
             //리스트 조회
             $.ajax(`/clist?page=${pg}&uid=${uid}`)
               .done((result) => {
@@ -738,7 +781,7 @@
             return pary;
           }
 
-          //처방전 유무 체크
+          //처방전 유무 체크박스
           let cb = document.querySelector("#check_btn");
           cb.addEventListener("change", (event) => {
             const checked = event.target.checked;
@@ -751,7 +794,7 @@
             }
           });
 
-          //처방전상세보기 진료 no받아와야함
+          //처방전상세보기
           function viewPer(no) {
             console.log(no);
             const modalTable = $("#modalTable");
@@ -888,6 +931,22 @@
               } //for
             };
           }
+
+              //on off 토글버튼
+              function toggleVideo() {
+              const tracks = myScreen.getVideoTracks();
+              tracks.forEach(track => {
+              track.enabled = !track.enabled;
+              });
+              
+              }
+
+              function toggleAudio() {
+              const tracks = myScreen.getAudioTracks();
+              tracks.forEach(track => {
+              track.enabled = !track.enabled;
+              });
+              }
         </script>
       </div>
       <!--container-fluid-->

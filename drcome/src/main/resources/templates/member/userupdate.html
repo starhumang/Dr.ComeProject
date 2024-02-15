@@ -6,7 +6,7 @@
 >
 	<head>
 		<meta charset="UTF-8" />
-		<title>사용자 회원가입</title>
+		<title>사용자 회원 정보 수정</title>
 
 		<style>
 			label {
@@ -181,12 +181,15 @@
 					type: 'get',
 				})
 					.done((resp) => {
-						// alert('인증번호 발송');
-						scsAlert('인증번호 발송');
 						console.log(resp);
 						console.log(resp.checkNum);
-						verificationCode = resp.checkNum;
-						document.getElementById('verification-section').style.display = 'flex';
+						if (resp.checkNum != '중복') {
+							scsAlert('인증번호 발송');
+							verificationCode = resp.checkNum;
+							document.getElementById('verification-section').style.display = 'flex';
+						} else {
+							errAlert('이미 등록된 전화번호입니다.');
+						}
 					})
 					.fail((err) => {
 						console.log(err);

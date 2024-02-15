@@ -15,10 +15,10 @@
 
 .search {
 	display: flex;
+	margin-bottom: 2.5rem;
+	text-align: right;
 	justify-content: flex-end;
-	margin-bottom: 40px;
 }
-
 input[type="radio"] {
 	display: none;
 }
@@ -27,11 +27,34 @@ input[type="radio"]:checked+label {
 	background-color: #5a5c69;
 	color: #fff;
 }
+.selRadio {
+	display: flex;
+	justify-content: space-between;
+}
+.pagination a {
+  display: inline-block;
+  padding: 5px 10px;
+  margin: 0 2px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  color: #333;
+  text-decoration: none;
+}
+
+.pagination a.active {
+  background-color: #36b9cc;
+  color: #fff;
+  /* border: 1px solid #4e73df; */
+}
+
+.pagination a:hover {
+  background-color: #bfc5d8;
+}
 </style>
 </head>
 
 <body>
-	<div layout:fragment="content">
+	<div layout:fragment="content" style="min-height: 926px;">
 		<div class="container-fluid">
 			<div class="head_info">
 				<h4 th:text="${hospitalSel.hospitalName}"></h4>
@@ -40,93 +63,272 @@ input[type="radio"]:checked+label {
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>Q&A list</p>
+			<p>Q&A</p>
 			<div class="search">
 				<!-- drop -->
-				<div style="margin-right: 5px;">
-					<select class="custom-select" aria-label="Default select example">
-						<option selected>검색유형</option>
-						<option value="1">환자번호</option>
-						<option value="2">환자이름</option>
-					</select>
-				</div>
-
-				<!-- 검색 -->
-				<div>
-					<div class="input-group">
-						<button class="btn btn-info" type="button"
-							style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
-							<i class="fas fa-search fa-sm"></i>
-						</button>
-						<input type="text" class="form-control bg-light border-1 small"
-							placeholder="검색어를 입력하세요." aria-label="Search"
-							aria-describedby="basic-addon2">
-						<div class="input-group-append">
-							<button class="btn btn-info" type="button">검색하기</button>
-						</div>
-					</div>
-				</div>
+			    <div class="input-group" style="width: 40%;">
+			        <select id="type" class="custom-select" aria-label="Default select example" style="border-radius: 0.35rem;">
+			        	<option value="">검색유형</option>
+			            <option value="1">제목</option>
+			            <option value="2">아이디</option>
+			        </select>
+			        <p class="btn btn-info" style="border-top-right-radius: 0; border-bottom-right-radius: 0; margin-left: 0.3rem; margin-bottom: 0;">
+			            <i class="fas fa-search fa-sm"></i>
+			        </p>
+			        <input type="text" id="keyword" class="form-control bg-light border-1 small" placeholder="검색어를 입력하세요." aria-label="Search" aria-describedby="basic-addon2" style="width: 30%;"/>
+			        <button id="searchBtn" class="btn btn-info" type="button" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">검색하기</button>
+			    </div>
 			</div>
 
-			<!-- 카테고리 선택 -->
-			<div class="btn-group" role="group"
-				aria-label="Basic radio toggle button group"
-				style="margin-bottom: 20px;">
-				<input type="radio" class="btn-check" name="btnradio" id="btnradio1"
-					autocomplete="off" checked> <label
-					class="btn btn-outline-dark" for="btnradio1"
-					style="border-top-left-radius: 0.35rem; border-bottom-left-radius: 0.35rem;">전체보기</label>
-				<input type="radio" class="btn-check" name="btnradio" id="btnradio2"
-					autocomplete="off"> <label class="btn btn-outline-dark"
-					for="btnradio2">진료문의</label> <input type="radio" class="btn-check"
-					name="btnradio" id="btnradio3" autocomplete="off"> <label
-					class="btn btn-outline-dark" for="btnradio3">예약문의</label> <input
-					type="radio" class="btn-check" name="btnradio" id="btnradio4"
-					autocomplete="off"> <label class="btn btn-outline-dark"
-					for="btnradio4">기타문의</label>
+			<div class="selRadio">
+				<!-- 카테고리 선택 -->
+				<div class="btn-group" role="group"
+					aria-label="Basic radio toggle button group"
+					style="margin-bottom: 20px;">
+					<input type="radio" class="btn-check" name="categoryStatus" id="g0" value=""
+						autocomplete="off" checked> <label
+						class="btn btn-outline-dark" for="g0"
+						style="border-top-left-radius: 0.35rem; border-bottom-left-radius: 0.35rem;">전체보기</label>
+					<input type="radio" class="btn-check" name="categoryStatus" value="g1" id="g1"
+						autocomplete="off"> <label class="btn btn-outline-dark"
+						for="g1">진료문의</label>
+					<input type="radio" class="btn-check" 
+						name="categoryStatus" value="g2" id="g2" autocomplete="off"> <label
+						class="btn btn-outline-dark" for="g2">예약문의</label>
+					<input
+						type="radio" class="btn-check" name="categoryStatus" value="g3" id="g3"
+						autocomplete="off"> <label class="btn btn-outline-dark"
+						for="g3">기타문의</label>
+				</div>
+				
+				<!-- 답변상태 선택 -->
+				<div class="btn-group" role="group"
+					aria-label="Basic radio toggle button group"
+					style="margin-bottom: 20px;">
+					<input type="radio" class="btn-check" name="ansStatus" id="j0" value=""
+						autocomplete="off" checked> <label
+						class="btn btn-outline-dark" for="j0"
+						style="border-top-left-radius: 0.35rem; border-bottom-left-radius: 0.35rem;">전체보기</label>
+					<input type="radio" class="btn-check" name="ansStatus" id="j1" value="j1"
+						autocomplete="off"> <label
+						class="btn btn-outline-dark" for="j1">답변대기</label>
+					<input type="radio" class="btn-check" name="ansStatus" value="j2" id="j2"
+						autocomplete="off"> <label class="btn btn-outline-dark"
+						for="j2">답변완료</label>
+				</div>
 			</div>
+			
 
 			<!-- QnA 리스트 -->
+			<!-- table -->
 			<div>
 				<table class="table table-hover">
-					<thead>
-						<tr>
-							<th>No.</th>
-							<th>작성자</th>
-							<th>제목</th>
-							<th>카테고리</th>
-							<th>작성일자</th>
-							<th>수정일자</th>
-							<th>답변상태</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr th:each="qlist : ${qnaAllList}" th:onclick="'window.location.href=' + @{/hospital/qnaList/qnaDetail(qnaNo=${qlist.qnaNo})}" style="cursor: pointer;">
-							<td th:text="${qlist.qnaNo}"></td>
-							<td th:text="${qlist.userId}"></td>
-							<td th:text="${qlist.title}"></td>
-							<td th:text="${qlist.categoryStatus}"></td>
-							<td th:text="${#dates.format(qlist.wDate, 'yyyy-MM-dd')}"></td>
-							<td th:if="${qlist['uDate'] == null}">-</td>
-							<td th:unless="${qlist['uDate'] == null}">
-							[[${#dates.format(qlist['uDate'], 'yyyy-MM-dd')}]]]</td>
-							<td th:text="${qlist.ansStatus}"></td>
-						</tr>
-					</tbody>
 				</table>
+				
 			</div>
+			
+			<!-- 페이징 버튼 -->
+			<div>
+				<div class="pagination" style="display: flex; justify-content: center; margin: 50px 0;">
+				</div>	
+			</div>
+			
+			<script>
+			    //ajax로 페이지 열린 후에 페이징 한 거 받아오기...
+			    let page = 1;
+			    
+		        $("input[name='categoryStatus']").click(function(){
+		            // 선택된 라디오 버튼의 값을 가져오기
+		            $("input[name='ansStatus']").filter("[value='']").prop('checked', true); // ansStatus 라디오 버튼이 value가 빈 문자열인 경우 체크
+		            $("input[name='ansStatus']").filter("[value='']").val(''); // ansStatus 라디오 버튼이 value가 빈 문자열로 설정
+		            //$('#type').val("")
+		            sendP(1)
+		           
+		        });
+		        
+		        $("input[name='ansStatus']").click(function(){
+		            // 선택된 라디오 버튼의 값을 가져오기
+		            sendP(1)
+		            //$('#type').val("")
+		           
+		        });
+			    // Ajax 요청을 보내는 함수
+			    function sendP(page) {
+			    	var type = $('#type').val();
+			    	var keyword = $('#keyword').val();
+			    	var categoryStatus = $("input[name='categoryStatus']:checked").val();
+			    	var ansStatus = $("input[name='ansStatus']:checked").val();
+			    	
+			        $.ajax({
+			            url: '/hospital/qnaListP',
+			            type: 'GET',
+			            data: { 
+			            	page: page,
+			            	keyword: keyword,
+			            	type: type,
+			            	categoryStatus: categoryStatus,
+			            	ansStatus: ansStatus
+			            },
+			            dataType: 'json',
+			        }).done(function(response) {
+			            // 응답을 받으면 처리합니다.
+			            var qnaList = $('#qnaList');
+			            qnaList.empty();
+			
+			            $.each(response.plist, function(index, item) {
+			            	qnaList.append('<div>' + item.title + '</div>');
+			            });
+			
+			            // 페이지네이션 정보를 사용하여 페이지네이션을 구현할 수 있습니다.
+			            console.log("pagedto" + response.pagedto);
+			            // 받은 JSON 데이터를 사용하여 테이블 생성
+			            createTable(response.plist);
+			            makePaging(response.pagedto);
+			
+			        }).fail(function(xhr, status, error) {
+			            // 요청이 실패한 경우 에러 처리를 합니다.
+			            console.error("error" + error);
+			        });
+			    }
+			
+			    // 페이지 로드 시 첫 번째 페이지 데이터를 가져옵니다.
+			    $(document).ready(function() {
+			        sendP(page);
+			    });
+			
+			    // 날짜 처리 함수
+			    function formatDate(dateString) {
+			        var date = new Date(dateString);
+			        var year = date.getFullYear();
+			        var month = (date.getMonth() + 1).toString().padStart(2, '0');
+			        var day = date.getDate().toString().padStart(2, '0');
+			
+			        return `${year}-${month}-${day}`;
+			    }
+			
+			    // 페이징 함수
+			    function makePaging(dto = {}) {
+			        document.querySelector(".pagination").innerHTML = ""; // 초기화
+			        console.log("dto", dto);
+			        // 이전 페이지가 있으면
+			        if (dto.prev) {
+			            let aTag = document.createElement("a");
+			            aTag.setAttribute("href", dto.startPage - 1); // 11페이지에서 << 누르면 10페이지로 가게끔
+			            aTag.innerHTML = "&laquo";
+			            document.querySelector(".pagination").append(aTag);
+			        }
+			
+			        for (let i = dto.startPage; i <= dto.endPage; i++) {
+			            let aTag = document.createElement("a");
+			            aTag.setAttribute("href", i); //<a href="1">1</a>
+			            aTag.innerHTML = i;
+			            // active 녹색 주는거
+			            if (i == page) {
+			                aTag.className = "active";
+			            }
+			            document.querySelector(".pagination").append(aTag);
+			        } // 포
+			
+			        // 이후 페이지가 있으면
+			        if (dto.next) {
+			            let aTag = document.createElement("a");
+			            aTag.setAttribute("href", dto.endPage + 1);
+			            aTag.innerHTML = "&raquo";
+			            document.querySelector(".pagination").append(aTag);
+			        }
+			
+			        // 페이지 숫자 태그에 클릭 이벤트 만들기
+			        document.querySelectorAll(".pagination a").forEach((ele) => {
+			            // 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
+			            ele.addEventListener("click", function(e) {
+			                e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
+			                page = ele.getAttribute("href"); // href의 값 = page
+			                sendP(page); // 페이지 번호에 해당하는 데이터를 불러오는 함수 호출
+			            }); // 클릭 이벤트
+			        }); // 포이치
+			    }
+			
+			    // content를 줄임말로 표시하는 함수
+			    function shortenContent(content, maxLength) {
+			        if (content.length > maxLength) {
+			            return content.substring(0, maxLength) + '...';
+			        } else {
+			            return content;
+			        }
+			    }
+			    
+			    // 동적으로 테이블 생성 함수
+			    function createTable(plist) {
+			        $(".table").empty();
+			        var table = document.querySelector('.table');
+			        var thead = $("<thead>").appendTo(table);
+			        var tbody = $("<tbody>").appendTo(table);
+			
+			        var headerRow = $("<tr>").appendTo(thead);
+			        var headers = ["No.", "작성자", "제목", "카테고리", "작성일자", "수정일자", "답변상태"];
+			
+			        $.each(headers, function(index, text) {
+			            $("<th>").text(text).appendTo(headerRow);
+			        });
+			
+			        $.each(plist, function(index, item) {
+			            var row = $("<tr>").appendTo(tbody);
+			            row.append(`<td>${item.qnaNo}</td>`);
+			            row.append(`<td>${item.userId}</td>`);
+			            row.append(`<td>${item.title}</td>`);
+			            row.append(`<td>${item.categoryStatus}</td>`);
+			            row.append(`<td>${formatDate(new Date(item.wdate))}</td>`);
+			            row.append(`<td>${item.udate ? formatDate(item.udate) : '-'}</td>`);
+			            row.append(`<td>${item.ansStatus}</td>`);
+			            row.append(`<td style="display: none;">${item.ansCode}</td>`);
+			        });
+			
+			        $(".table tbody").on("click", "tr", function() {
+			            var ansCode = $(this).find("td:last").text(); // ansCode 값만 가져오기
+			            var qnaNo = $(this).find("td:first").text(); // qnaNo 값 가져오기
+
+			            // AJAX 요청을 통해 서버에 데이터 전송
+			            $.ajax({
+			                url: '/hospital/qnaList/qnaDetail',
+			                method: 'GET',
+			                data: {
+			                    ansCode: ansCode,
+			                    qnaNo: qnaNo
+			                },
+			                success: function(response) {
+			                    // 성공적으로 응답을 받았을 때 처리
+			                    console.log("서버 응답:", response);
+			                    // 원하는 동작을 수행
+			                },
+			                error: function(xhr, status, error) {
+			                    // 오류 발생 시 처리
+			                    console.error("오류:", error);
+			                    // 오류에 대한 적절한 처리
+			                }
+			            });
+
+			            // 쿼리 스트링 조작
+			            var queryString = '';
+			                queryString += '?qnaNo=' + qnaNo;
+			            if (ansCode !== '' && ansCode !== 'undefined') {
+			                queryString += '&ansCode=' + ansCode;
+			            } else {
+			            }
+
+			            window.location.href = '/hospital/qnaList/qnaDetail' + queryString;
+			        });
+
+			
+			        // tr 요소에 마우스 오버 시에 손가락 모양으로 마우스 커서를 변경
+			        $(".table tbody tr").css("cursor", "pointer");
+			    }
+			    
+			    //검색버튼 이벤트 만들기
+			    $('#searchBtn').on("click", function() {
+			    	sendP(1);
+			    })
+			</script>
 		</div>
-		<script>
-			document.addEventListener( "DOMContentLoaded", function() {
-				var rows = document.querySelectorAll("tbody tr");
-				rows.forEach(function(row) {
-					row.addEventListener("click", function() {
-						var qnaNo = this.querySelector("td:first-child").innerText;
-						window.location.href = '/hospital/qnaList/qnaDetail?qnaNo='+ qnaNo;
-					});
-				});
-			});
-		</script>
 	</div>
 </body>
 </html>

@@ -170,13 +170,12 @@ public class PatientController {
 	}
 	
 	/**
-	 * 
+	 * 진료기록저장
 	 * @param reserveNo, clinicSymptom specificity payYn perscriptionYn hospitalId visit userId
 	 *			perary=[{dosage , doseCnt ,doseDay, medicineNo},{}]
 	 * @return service
 	 */
 
-	// 진료기록 저장
 	@PostMapping("saveClinic")
 	@ResponseBody
 	public int saveInfo(@RequestBody PatientVO vo) {

@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -157,10 +158,10 @@ public class MainController {
 	 * @Param String clinicNo = 진료번호
 	 * @Model model = 진료번호, 추천약국리스트
 	 */
-	@GetMapping("/recommendPharmacy")
-	public String PhaList(Model model) {
+	@GetMapping("/recommendPharmacy/{clinicNo}")
+	public String PhaList(@PathVariable("clinicNo") String clinicNo, Model model) {
 		List<PharmacyVO> phaList = mainService.getPhaList(10);
-		model.addAttribute("clinic","20");
+		model.addAttribute("clinic", clinicNo);
 		model.addAttribute("phaList", phaList);
 		return "user/recommendPha";
 	}

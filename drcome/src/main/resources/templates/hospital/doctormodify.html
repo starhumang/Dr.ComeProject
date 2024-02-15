@@ -196,9 +196,12 @@
 									/>
 								</div>
 
-								<div class="input-group" id="subject">
+								<div class="input-group" id="subject" style="width: 500px">
 									<label>대표 진료 과목</label>
-									<select id="sub">
+									<select
+										id="sub"
+										class="custom-select custom-select-sm form-control form-control-sm"
+									>
 										<option selected th:value="${drInfo.subject}">
 											<th:block th:each="detailCode : ${application.detailCode_h}">
 												<span

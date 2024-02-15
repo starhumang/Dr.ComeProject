@@ -52,41 +52,6 @@
 				width: 100px;
 			}
 
-			/* .input-group-select input[type='radio'] {
-				display: none;
-			}
-
-			.input-group-select > .gender > span {
-				width: 100px;
-			}
-
-			.input-group-select > .gender input[type='radio']:checked + span {
-				display: inline-block;
-				padding: 10px 15px;
-				margin: 5px;
-				border: 1px solid #808080;
-				border-radius: 5px;
-				background-color: #f0f0f0;
-				color: gray;
-				text-align: center;
-				cursor: pointer;
-			}
-
-			.input-group-select > .gender input[type='radio'] + span {
-				display: inline-block;
-				padding: 10px 15px;
-				margin: 5px;
-				border-radius: 5px;
-				background-color: #c4e1c3;
-				color: rgb(87, 87, 87);
-				text-align: center;
-				cursor: pointer;
-			}
-			.input-group-select > .gender > input[type='radio']:hover + span {
-				background-color: #739171;
-				color: #ffffff;
-			} */
-
 			.input-group button {
 				width: 150px;
 			}
@@ -304,7 +269,15 @@
 
 			function checkPhone() {
 				let phone = $('#phone').val().replace(/-/g, '');
-				console.log(phone);
+
+				if (!phone) {
+					Swal.fire({
+						icon: 'error',
+						text: '전화번호를 입력하세요.',
+					});
+					return;
+				}
+
 				let url = '/auth/checkPhone?phoneNum=' + phone;
 				$.ajax({
 					url: url,
@@ -431,7 +404,7 @@
 
 	<body>
 		<div layout:fragment="content">
-			<div class="registered-customers">
+			<div class="registered-customers" style="margin-top: 100px">
 				<h3 class="blog-section-title border-left mb-30">사용자 회원가입</h3>
 				<br />
 				<form id="userForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
@@ -634,7 +607,7 @@
 회사는 이에 따라 회원의 개인정보를 파기할 의무가 있습니다.
 
 제 6 조 (개인정보의 제공 및 공유)
-회사는 회원의 동의 없이는 개인정보를 제3자에게 제공하지 않습니다. 단, 아래의 경우에는 예외로 합니다.
+회사는 회원의 동의 없이는 개인정보를 제3자에게 제공하지 않습니다. 아래의 경우에는 예외로 합니다.
 1. 회원이 사전에 동의한 경우 법령의 규정에 의거하는 경우 
 2. 수사 등 공공기관의 요청이 있는 경우 
 

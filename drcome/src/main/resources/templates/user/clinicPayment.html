@@ -90,6 +90,16 @@
 		<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
 		<script th:inline="javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				var payTotal;
+				if (cInfo.pay === 'Y') {
+					payTotal = 5000;
+				} else if (cInfo.pay === 'N') {
+					payTotal = 10000;
+				}
+				document.getElementById('totalAmount').textContent = payTotal;
+			});
+
 			var IMP = window.IMP;
 			IMP.init('imp43228827');
 
@@ -112,12 +122,6 @@
 
 			//결제 api
 			function paySubmit() {
-				var payTotal;
-				if (cInfo.pay === 'Y') {
-					payTotal = 5000;
-				} else if (cInfo.pay === 'N') {
-					payTotal = 10000;
-				}
 				//결제 요청
 				IMP.request_pay(
 					{
@@ -178,9 +182,6 @@
 	<body>
 		<div layout:fragment="content">
 			<h1 style="text-align: center; margin-bottom: 50px; margin-top: 50px; color: gray">- Payment -</h1>
-			<p>[[${cInfo}]]</p>
-			<p>[[${myInfo}]]</p>
-			<p>[[${rNo}]]</p>
 			<div class="container-fluid">
 				<div class="container" style="margin-bottom: 50px">
 					<div class="card shadow mb-4">
@@ -224,7 +225,7 @@
 					</div>
 				</div>
 				<div class="container" style="text-align: center">
-					<p>총 결제 금액: 10000</p>
+					<p>총 결제 금액: <span id="totalAmount"></span></p>
 				</div>
 				<div class="pay_what">
 					<div class="pay_list">
@@ -240,33 +241,19 @@
 							<input type="radio" name="payMethod" value="tosspay" onchange="updateSelectedPay()" />
 							<span>토스</span>
 						</label>
-						<p>
-							>> 결제수단을 선택해주세요 :
-							<span id="selectedPay" style="color: #de490f"></span>
-						</p>
 					</div>
 				</div>
+				<div class="container" style="text-align: center">
+					<p>
+						>> 결제수단을 선택해주세요 :
+						<span id="selectedPay" style="color: #de490f"></span>
+					</p>
+				</div>
+				<br />
 				<div class="payEnd">
 					<!-- <h6 style="color: gray">주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</h6> -->
 					<button class="payEndBtn" onclick="paySubmit()">결제하기</button>
 				</div>
-				<button
-					class="btn btn-dark rounded-pill px-3"
-					style="
-						border-radius: 30%;
-						text-align: center;
-						vertical-align: top;
-						width: 100px;
-						height: 50px;
-						position: fixed;
-						bottom: 80px;
-						right: 80px;
-						font-size: 20px;
-						z-index: 999;
-					"
-				>
-					Top
-				</button>
 			</div>
 		</div>
 	</body>

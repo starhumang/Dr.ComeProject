@@ -206,7 +206,15 @@
 
 			function checkPhone() {
 				let phone = $('#ceophone').val().replace(/-/g, '');
-				console.log(phone);
+
+				if (!phone) {
+					Swal.fire({
+						icon: 'error',
+						text: '전화번호를 입력하세요.',
+					});
+					return;
+				}
+
 				let url = '/auth/checkPhone?phoneNum=' + phone;
 				$.ajax({
 					url: url,

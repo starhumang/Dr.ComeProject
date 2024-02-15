@@ -18,9 +18,9 @@ function connectWebSocket(uid) {
 			let $socketAlert = $('div#socketAlert');
 			$socketAlert.css('display', 'block');
 			$socketAlert.html(event.data);
-
-			var v_alarmIcon = document.querySelector('#alarmIcon');
-			v_alarmIcon.style.display = 'inline';
+			setTimeout(function () {
+				$socketAlert.css('display', 'none');
+			}, 5000);
 		};
 
 		// 연결이 닫혔을 때 호출되는 이벤트 핸들러

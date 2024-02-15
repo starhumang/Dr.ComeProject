@@ -94,7 +94,6 @@ public class UserMemberController {
 	@GetMapping("/auth/findId")
 	@ResponseBody
 	public String findId(@RequestParam String userName, @RequestParam String phone) {
-
 		String userId = userMemService.findId(userName, phone);
 
 		if (userId == null) {
@@ -189,12 +188,13 @@ public class UserMemberController {
 	@ResponseBody
 	public Map<String, Object> userJoin(UserMemberVO mVO) {
 		Map<String, Object> response = new HashMap<>();
+		// 비밀번호 암호화
 		String userPw = mVO.getUserPw();
 		userPw = bCryptPasswordEncoder.encode(userPw);
 		mVO.setUserPw(userPw);
 
+		// 이미지 업로드
 		List<String> imageList = fileUploadService.uploadFiles(mVO.getUploadFiles());
-
 		String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
 		mVO.setIdentification(uploadedFileName);
 
@@ -241,15 +241,15 @@ public class UserMemberController {
 
 		// 병원
 		if (isHospital) {
+			// 비밀번호 암호화
 			String hospitalPw = hVO.getHospitalPw();
 			hospitalPw = bCryptPasswordEncoder.encode(hospitalPw);
 			hVO.setHospitalPw(hospitalPw);
 
+			// 이미지 업로드
 			List<String> imageList = fileUploadService.uploadFiles(hVO.getUploadFiles());
-			String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
+			String uploadedFileName = imageList.get(0);
 			hVO.setHospitalImg(uploadedFileName);
-
-			System.out.println(hVO);
 
 			try {
 				int cnt = userMemService.insertHosMember(hVO);
@@ -268,15 +268,15 @@ public class UserMemberController {
 		}
 		// 약국
 		else {
+			// 비밀번호 암호화
 			String pharmacyPw = pVO.getPharmacyPw();
 			pharmacyPw = bCryptPasswordEncoder.encode(pharmacyPw);
 			pVO.setPharmacyPw(pharmacyPw);
 
+			// 이미지 업로드
 			List<String> imageList = fileUploadService.uploadFiles(pVO.getUploadFiles());
 			String uploadedFileName = imageList.get(0);
 			pVO.setPharmacyImg(uploadedFileName);
-
-			System.out.println(pVO);
 
 			try {
 				int cnt = userMemService.insertPamMember(pVO);
@@ -354,34 +354,54 @@ public class UserMemberController {
 		return userMemService.deleteUser(userId, password, auth);
 	}
 
-	// 마이페이지
+	/**
+	 * 마이페이지 화면으로 이동
+	 * @param id: 세션에 저장된 사용자 아이디
+	 * @param model
+	 * @return String: URL
+	 */
 	@GetMapping("/mypage")
 	public String myPage(@SessionAttribute(name = "userId", required = false) String id, Model model) {
+		// 사용자 정보
 		UserMemberVO myprofile = memMapper.selectMem(id);
 		model.addAttribute("profile", myprofile);
 		
+		// 예약 정보
 		List<ReservationVO> rInfo = memMapper.selectUserReserveInfo(id);		
 		model.addAttribute("reserveMyList", rInfo);
 
 		return "member/usermypage";
 	}
 
-	// 결제 페이지
+	/**
+	 * 결제 페이지로 이동
+	 * @param ReserveNo: 예약 번호
+	 * @param id: 세션에 저장된 사용자 아이디
+	 * @param model
+	 * @return String: URL
+	 */
 	@GetMapping("/payment/{ReserveNo}")
 	public String payment(@PathVariable("ReserveNo") String ReserveNo, @SessionAttribute(name = "userId", required = false) String id, Model model) {
+		// 예약 번호
 		int reserveNo = Integer.parseInt(ReserveNo);
 		model.addAttribute("rNo", reserveNo);
 		
+		// 예약 정보
 		ClinicPayVO cInfo = memMapper.selectClinicPay(reserveNo);
 		model.addAttribute("cInfo", cInfo);
 		
+		// 사용자 정보
 		UserMemberVO myInfo = memMapper.selectMem(id);
 		model.addAttribute("myInfo", myInfo);
 		
 		return "user/clinicPayment";
 	}
 	
-	// 결제 기능
+	/**
+	 * 결제 기능
+	 * @param vo: 결제 정보 VO
+	 * @return Map<String, Object>: result와 msg에 결과 값을 담아서 반환
+	 */
 	@PostMapping("/payment/updateReserve")
 	@ResponseBody
 	public Map<String, Object> updateReserve(PaymentVO vo){		

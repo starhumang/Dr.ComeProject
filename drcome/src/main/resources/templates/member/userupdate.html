@@ -102,9 +102,6 @@
 			}
 		</style>
 
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
-
 		<script type="text/javascript">
 			let verificationCode = 0;
 
@@ -182,7 +179,15 @@
 
 			function checkPhone() {
 				let phone = $('#phone').val().replace(/-/g, '');
-				console.log(phone);
+
+				if (!phone) {
+					Swal.fire({
+						icon: 'error',
+						text: '전화번호를 입력하세요.',
+					});
+					return;
+				}
+
 				let url = '/auth/checkPhone?phoneNum=' + phone;
 				$.ajax({
 					url: url,
@@ -258,7 +263,7 @@
 
 	<body>
 		<div layout:fragment="content">
-			<div class="registered-customers">
+			<div class="registered-customers" style="margin-top: 100px">
 				<h3 class="blog-section-title border-left mb-30">회원 정보 수정</h3>
 				<br />
 				<form id="userForm" onsubmit="submitForm(event)" method="post">

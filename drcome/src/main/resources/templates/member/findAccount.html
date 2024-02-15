@@ -127,7 +127,15 @@
 
 			function checkPhonePw() {
 				let phone = $('#phonePw').val().replace(/-/g, '');
-				console.log(phone);
+
+				if (!phone) {
+					Swal.fire({
+						icon: 'error',
+						text: '전화번호를 입력하세요.',
+					});
+					return;
+				}
+
 				let url = '/auth/checkAuthPhone?phoneNum=' + phone;
 				$.ajax({
 					url: url,
@@ -221,7 +229,7 @@
 	<body>
 		<div layout:fragment="content">
 			<div class="container">
-				<div class="registered-customers">
+				<div class="registered-customers" style="margin-top: 100px">
 					<h3 class="blog-section-title border-left mb-30">내 정보 찾기</h3>
 					<br />
 					<div class="text-center">

@@ -217,7 +217,7 @@
 	
 	
 	<!-- 페이징 -->
-	<select id="selectPrescriptionList" resultType="Map">
+	<!-- <select id="selectPrescriptionList" resultType="Map">
 	  <![CDATA[
 	      SELECT *
 			FROM (
@@ -255,8 +255,8 @@
 			)   
 			WHERE rn > (#{page} - 1) * 5
 	  ]]>
-	</select>
-	<select id="selectLastPerList" resultType="Map">
+	</select> -->
+	<!-- <select id="selectLastPerList" resultType="Map">
 	  <![CDATA[
 	      SELECT *
 			FROM (
@@ -294,11 +294,88 @@
 			)   
 			WHERE rn > (#{page} - 1) * 5
 	  ]]>
-	</select>
+	</select> -->
 	
 	
 	<!-- 총 리스트 갯수 -->
 	<!-- 약국 페이징(처방현황) -->
+	<!-- <select id="percount" resultType="int">
+		SELECT COUNT(*)
+		  FROM clinic c 
+		  LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
+		  JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
+		  JOIN hospital h ON c.hospital_id = h.hospital_id
+		  JOIN reservation r ON c.reserve_no = r.reserve_no
+		  JOIN doctor d ON r.doctor_no = d.doctor_no
+		  JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+		 WHERE s.print_status = '출력대기'
+		   AND s.send_status = 'Y'
+		   AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
+		   AND s.rejection IS NULL
+		   AND s.pharmacy_id = #{pharmacyId}
+	</select> -->
+	<!-- 약국 페이징(처방내역) -->
+	<!-- <select id="perLastcount" resultType="int">
+		SELECT COUNT(*)
+		  FROM clinic c 
+		  LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
+		  JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
+          JOIN hospital h ON c.hospital_id = h.hospital_id
+          JOIN reservation r ON c.reserve_no = r.reserve_no
+          JOIN doctor d ON r.doctor_no = d.doctor_no
+          JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+          WHERE s.print_status = '출력완료'
+          AND s.send_status = 'Y'
+          AND to_char(c.clinic_date, 'yyyy-MM-dd' ) = #{date}
+          AND s.rejection IS NULL
+          AND s.pharmacy_id = #{pharmacyId}
+	</select> -->	
+	
+	<!-- 처방현황 -->
+	<select id="selectPrescriptionList" resultType="Map">
+	  
+	      SELECT *
+			FROM (
+			    SELECT 
+			           c.patient_no "patientNo",
+			           c.clinic_no "clinicNo",
+			           c.hospital_id "hospitalId",
+			           c.reserve_no "reserveNo",
+			           c.perscription_yn "perscriptionYn",
+			           a.user_id "patientUserId",
+			           u.user_name "userName",
+			           u.birthday "userBirthday",
+			           u.phone "userPhone",
+			           h.hospital_name "hospitalName",
+			           h.phone "hospitalPhone",
+			           d.doctor_name "doctorName",
+			           s.print_status "printStatus",
+			           c.clinic_date "perscriptionDate",
+			           s.send_status "sendStatus",
+			           s.rejection "rejection",
+			           s.pharmacy_selectno "pharmacySelectno"
+			           ROWNUM AS rn
+			    FROM clinic c 
+			    LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
+			    JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
+			    JOIN hospital h ON c.hospital_id = h.hospital_id
+			    JOIN reservation r ON c.reserve_no = r.reserve_no
+			    JOIN doctor d ON r.doctor_no = d.doctor_no
+			    JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+			    WHERE s.print_status = '출력대기'
+			    AND s.send_status = 'Y'
+			    AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
+			    AND s.rejection IS NULL
+			    AND s.pharmacy_id = #{pharmacyId}
+			    <include refid="searchP"></include>
+			    <![CDATA[
+			    AND ROWNUM <= #{page} * 5
+			     ]]>
+			)   
+			WHERE rn > (#{page} - 1) * 5
+	 
+	</select>
+    <!-- 약국 페이징(처방현황) -->
 	<select id="percount" resultType="int">
 		SELECT COUNT(*)
 		  FROM clinic c 
@@ -313,6 +390,50 @@
 		   AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
 		   AND s.rejection IS NULL
 		   AND s.pharmacy_id = #{pharmacyId}
+		 <include refid="searchP"></include>
+	</select>
+	<!-- 처방내역 -->
+	<select id="selectLastPerList" resultType="Map">
+
+	      SELECT *
+			FROM (
+			    SELECT 
+			           c.patient_no "patientNo",
+			           c.clinic_no "clinicNo",
+			           c.hospital_id "hospitalId",
+			           c.reserve_no "reserveNo",
+			           c.perscription_yn "perscriptionYn",
+			           a.user_id "patientUserId",
+			           u.user_name "userName",
+			           u.birthday "userBirthday",
+			           u.phone "userPhone",
+			           h.hospital_name "hospitalName",
+			           h.phone "hospitalPhone",
+			           d.doctor_name "doctorName",
+			           s.print_status "printStatus",
+			           c.clinic_date "perscriptionDate",
+			           s.send_status "sendStatus",
+			           s.rejection "rejection",
+			           ROWNUM AS rn
+			    FROM clinic c 
+			    LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
+			    JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
+			    JOIN hospital h ON c.hospital_id = h.hospital_id
+			    JOIN reservation r ON c.reserve_no = r.reserve_no
+			    JOIN doctor d ON r.doctor_no = d.doctor_no
+			    JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+			    WHERE s.print_status = '출력완료'
+			    AND s.send_status = 'Y'
+			    AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
+			    AND s.rejection IS NULL
+			    AND s.pharmacy_id = #{pharmacyId}
+			    <include refid="searchP"></include>
+			    	  <![CDATA[
+			    AND ROWNUM <= #{page} * 5
+			    	  ]]>
+			)   
+			WHERE rn > (#{page} - 1) * 5
+
 	</select>
 	<!-- 약국 페이징(처방내역) -->
 	<select id="perLastcount" resultType="int">
@@ -326,8 +447,27 @@
           JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
           WHERE s.print_status = '출력완료'
           AND s.send_status = 'Y'
-          AND to_char(c.clinic_date, 'yyyy-MM-dd' ) = #{date}
+          AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
           AND s.rejection IS NULL
           AND s.pharmacy_id = #{pharmacyId}
+          <include refid="searchP"></include>
 	</select>
+
+   <!-- 약국 공통 if search 쿼리 -->
+   <sql id="searchP">
+      <if test="keyword != null and keyword != ''">
+            <if test="type == 1">
+              AND user_name LIKE '%'|| #{keyword} ||'%'
+            </if>
+            <if test="type == 2">
+             AND hospital_name LIKE '%'|| #{keyword} ||'%'
+            </if>
+       </if>
+   </sql>
+   
+   <update id="printupdate" parameterType="int">
+   	UPDATE pharmacy_select 
+   	   SET print_status = '출력완료' 
+   	 WHERE pharmacy_selectno = #{pharmacySelectno}
+   </update>
 </mapper>

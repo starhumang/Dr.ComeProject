@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>결제 페이지</title>
+
+		<style>
+			.head_info {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30px;
+			}
+
+			.right {
+				width: 60%;
+			}
+
+			.pay_what {
+				display: flex;
+				justify-content: center;
+				margin-bottom: 30px;
+			}
+
+			.pay_list input[type='radio'] {
+				display: none;
+			}
+
+			.pay_list > .pay > span {
+				width: 140px;
+			}
+
+			.pay_list > .pay input[type='radio']:checked + span {
+				display: inline-block;
+				padding: 10px 15px;
+				margin: 5px;
+				border: 1px solid #808080;
+				border-radius: 5px;
+				background-color: #f0f0f0;
+				color: gray;
+				text-align: center;
+				cursor: pointer;
+			}
+
+			.pay_list > .pay input[type='radio'] + span {
+				display: inline-block;
+				padding: 10px 15px;
+				margin: 5px;
+				border-radius: 5px;
+				background-color: #c4e1c3;
+				color: rgb(87, 87, 87);
+				text-align: center;
+				cursor: pointer;
+			}
+
+			.pay_list > .pay > input[type='radio']:hover + span {
+				background-color: #739171;
+				color: #ffffff;
+			}
+
+			.payEnd {
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+			}
+
+			.payEnd > .payEndBtn {
+				width: 40%;
+				height: 50px;
+				background-color: #778899;
+				color: #fff;
+				border: none;
+				border-radius: 10px;
+			}
+
+			.payEnd > .payEndBtn:hover {
+				width: 40%;
+				height: 50px;
+				background-color: #d1d1d1;
+				border: none;
+				border-radius: 10px;
+			}
+		</style>
+
+		<script src="https://cdn.iamport.kr/v1/iamport.js"></script>
+		<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
+
+		<script th:inline="javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				var payTotal;
+				if (cInfo.pay === 'Y') {
+					payTotal = 5000;
+				} else if (cInfo.pay === 'N') {
+					payTotal = 10000;
+				}
+				document.getElementById('totalAmount').textContent = payTotal;
+			});
+
+			var IMP = window.IMP;
+			IMP.init('imp43228827');
+
+			var cInfo = [[${cInfo}]];
+
+			var myInfo = [[${myInfo}]];
+
+			var rNo = [[${rNo}]];
+
+			var selectedPayElement = '';
+			var checkedPay = '';
+
+			function updateSelectedPay() {
+				selectedPayElement = document.querySelector('input[name="payMethod"]:checked + span');
+				var selectedPayText = selectedPayElement ? selectedPayElement.textContent : '';
+				document.getElementById('selectedPay').textContent = selectedPayText;
+
+				checkedPay = document.querySelector('input[name="payMethod"]:checked').value;
+			}
+
+			//결제 api
+			function paySubmit() {
+				//결제 요청
+				IMP.request_pay(
+					{
+						pg: checkedPay,
+						pay_method: 'card',
+						merchant_uid: 'pm_' + new Date().getTime(),
+						name: cInfo.hospitalName,
+						amount: payTotal,
+						buyer_name: myInfo.userId,
+						buyer_tel: myInfo.phone,
+					},
+					function (resp) {
+						if (resp.success) {
+							console.log(resp);
+							updateReserve(resp);
+						} else {
+							alert('결제에 실패하였습니다.');
+							let msg = resp.error_msg;
+							console.log(msg);
+						}
+					}
+				);
+			}
+
+			// 예약 테이블 업데이트 + 결제 테이블 인서트 + 진료 테이블 업데이트
+			function updateReserve(resp) {
+				let formData = new FormData();
+
+				formData.append('reserveNo', rNo);
+				formData.append('orderNum', resp.merchant_uid);
+				formData.append('amount', resp.paid_amount);
+				formData.append('userId', resp.buyer_name);
+				formData.append('paymentMethod', resp.pg_provider);
+
+				$.ajax({
+					url: '/payment/updateReserve',
+					type: 'post',
+					data: formData,
+					processData: false,
+					contentType: false,
+					success: function (res) {
+						if (res.result == true) {
+							alert(res.msg);
+							location.href = '/mypage';
+						} else {
+							alert(res.msg);
+						}
+					},
+					error: function (err) {
+						alert('오류가 발생했습니다. 관리자에게 문의하세요.');
+						console.log(err);
+					},
+				});
+			}
+		</script>
+	</head>
+
+	<body>
+		<div layout:fragment="content">
+			<h1 style="text-align: center; margin-bottom: 50px; margin-top: 50px; color: gray">- Payment -</h1>
+			<div class="container-fluid">
+				<div class="container" style="margin-bottom: 50px">
+					<div class="card shadow mb-4">
+						<div
+							class="card-header py-3"
+							style="display: flex; justify-content: space-between; align-items: center"
+						>
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-user-nurse"></i>결제 정보
+							</h5>
+						</div>
+
+						<div class="card-body" style="display: flex; justify-content: center; align-items: center">
+							<table class="table" style="text-align: center">
+								<tr>
+									<th style="text-align: left; width: 200px; padding-left: 30px">- 진료번호</th>
+									<td th:text="${cInfo.clinicNo}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 병원이름</th>
+									<td th:text="${cInfo.hospitalName}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 담당의사</th>
+									<td th:text="${cInfo.DoctorName}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 진료과목</th>
+									<td th:text="${cInfo.subject}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 환자이름</th>
+									<td th:text="${cInfo.userName}"></td>
+								</tr>
+								<tr>
+									<th style="text-align: left; padding-left: 30px">- 진료일자</th>
+									<td th:text="${#dates.format(cInfo.clinicDate, 'yyyy-MM-dd')}"></td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+				<div class="container" style="text-align: center">
+					<p>총 결제 금액: <span id="totalAmount"></span></p>
+				</div>
+				<div class="pay_what">
+					<div class="pay_list">
+						<label class="pay">
+							<input type="radio" name="payMethod" value="html5_inicis" onchange="updateSelectedPay()" />
+							<span>카드결제</span>
+						</label>
+						<label class="pay">
+							<input type="radio" name="payMethod" value="kakaopay" onchange="updateSelectedPay()" />
+							<span>카카오페이</span>
+						</label>
+						<label class="pay">
+							<input type="radio" name="payMethod" value="tosspay" onchange="updateSelectedPay()" />
+							<span>토스</span>
+						</label>
+					</div>
+				</div>
+				<div class="container" style="text-align: center">
+					<p>
+						>> 결제수단을 선택해주세요 :
+						<span id="selectedPay" style="color: #de490f"></span>
+					</p>
+				</div>
+				<br />
+				<div class="payEnd">
+					<!-- <h6 style="color: gray">주문 내용을 확인하였으며, 정보 제공 등에 동의합니다.</h6> -->
+					<button class="payEndBtn" onclick="paySubmit()">결제하기</button>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

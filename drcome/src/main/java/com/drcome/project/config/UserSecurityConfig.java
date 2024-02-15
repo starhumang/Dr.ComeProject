@@ -1,4 +1,4 @@
-package com.drcome.project;
+package com.drcome.project.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -11,20 +11,20 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
+import com.drcome.project.mem.web.FailureHandler;
+import com.drcome.project.mem.web.LoginSuccessHandler;
+
 @Configuration
 @EnableWebSecurity
 public class UserSecurityConfig {
 
 	private final LoginSuccessHandler loginSuccessHandler;
 	private final FailureHandler failureHandler;
-	private final CustomAuthenticationProvider customAuthenticationProvider;
 
 	@Autowired
-	public UserSecurityConfig(LoginSuccessHandler loginSuccessHandler, FailureHandler failureHandler,
-			CustomAuthenticationProvider customAuthenticationProvider) {
+	public UserSecurityConfig(LoginSuccessHandler loginSuccessHandler, FailureHandler failureHandler) {
 		this.loginSuccessHandler = loginSuccessHandler;
 		this.failureHandler = failureHandler;
-		this.customAuthenticationProvider = customAuthenticationProvider;
 	}
 
 	@Bean
@@ -33,13 +33,12 @@ public class UserSecurityConfig {
 	}
 
 	@Bean
-
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
 		http.csrf().disable();
 		http.authorizeHttpRequests((requests) -> requests
 //				.antMatchers("/**").permitAll()
-				.antMatchers("/", "/home", "/userjoin", "/medicaljoin", "/findAccount", "/auth/**", "/echo").permitAll() // 나중에
+				.antMatchers("/", "/home", "/userlogin", "/userjoin", "/medicaljoin", "/findAccount", "/auth/**", "/echo").permitAll() // 나중에
 																															// 이걸로
 																															// 바꿔야함
 				.antMatchers("/admin/**").hasAnyRole("ADMIN") // 얘도

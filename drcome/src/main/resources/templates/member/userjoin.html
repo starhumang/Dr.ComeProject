@@ -9,6 +9,21 @@
 		<title>사용자 회원가입</title>
 
 		<style>
+			.registered-customers {
+				margin: 0 auto;
+				width: 680px;
+				background-color: #fff;
+				padding: 20px;
+				border-radius: 8px;
+				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+			}
+
+			.blog-section-title {
+				color: #333;
+				border-left: 2px solid #06bbcc;
+				padding-left: 10px;
+			}
+
 			label {
 				display: inline-block;
 				width: 200px;
@@ -27,12 +42,14 @@
 
 			.input-group input {
 				width: 400px;
-				margin-right: 10px;
 				height: 32px;
 				border: 0;
 				outline: none;
-				padding-left: 10px;
-				background-color: rgb(233, 233, 233);
+				box-sizing: border-box;
+			}
+
+			.gender {
+				width: 100px;
 			}
 
 			.input-group button {
@@ -52,6 +69,12 @@
 				display: flex !important;
 				align-items: center;
 				justify-content: center;
+				max-width: 800px;
+				width: 80%;
+			}
+
+			.modal-content {
+				overflow-y: auto;
 			}
 
 			.input-group-select {
@@ -60,28 +83,11 @@
 				margin-bottom: 15px;
 			}
 
-			.btn-upload {
-				width: 150px;
-				height: 30px;
-				background: #fff;
-				border: 1px solid rgb(77, 77, 77);
-				border-radius: 10px;
-				font-weight: 500;
-				display: flex;
-				cursor: pointer;
-				align-items: center;
-				justify-content: center;
-
-				&:hover {
-					background: rgb(77, 77, 77);
-					color: #fff;
-				}
-			}
-
 			#filePreview {
 				max-width: 100%;
-				max-height: 150px;
+				max-height: 200px;
 				margin-top: 10px;
+				margin-left: 170px;
 				display: none;
 			}
 
@@ -90,20 +96,10 @@
 				align-items: center;
 				margin-bottom: 15px;
 			}
-
-			#verification-section input,
-			#verification-section button {
-				height: 30px;
-			}
-
-			#verification-section button {
-				width: 150px;
-			}
 		</style>
 
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 		<script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/camanjs/4.1.2/caman.full.min.js"></script>
 
 		<script type="text/javascript">
 			let verificationCode = 0;
@@ -116,32 +112,30 @@
 						e.preventDefault();
 					}
 				});
-				handleFilePreview();
 
 				let fileInput = document.getElementById('myImg');
+				let filePreview = document.getElementById('filePreview');
 
 				fileInput.addEventListener('change', function () {
 					const file = this.files[0];
-
 					if (file) {
 						loadImage(
 							file,
 							function (img) {
 								const canvas = document.createElement('canvas');
 								const ctx = canvas.getContext('2d');
-
-								canvas.width = 200;
+								canvas.width = 300;
 								canvas.height = 200;
-
 								ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-								canvas.toBlob(
-									function (blob) {
-										console.log(blob);
-									},
-									'image/jpg',
-									0.7
-								);
+								// CamanJS를 사용하여 이미지 블러 처리
+								Caman(canvas, function () {
+									this.stackBlur(5); // 블러 효과 적용, 파라미터는 블러 강도
+									this.render(function () {
+										// 블러 처리된 이미지를 프리뷰로 보여줌
+										filePreview.src = canvas.toDataURL();
+										filePreview.style.display = 'block';
+									});
+								});
 							},
 							{
 								maxWidth: 200,
@@ -275,7 +269,15 @@
 
 			function checkPhone() {
 				let phone = $('#phone').val().replace(/-/g, '');
-				console.log(phone);
+
+				if (!phone) {
+					Swal.fire({
+						icon: 'error',
+						text: '전화번호를 입력하세요.',
+					});
+					return;
+				}
+
 				let url = '/auth/checkPhone?phoneNum=' + phone;
 				$.ajax({
 					url: url,
@@ -328,61 +330,45 @@
 				return true;
 			}
 
-			function checkAgreement() {
-				let agreement = document.getElementById('invalidCheck').checked;
-				let agreementErrorMessage = document.getElementById('agreementErrorMessage');
-
-				if (!agreement) {
-					agreementErrorMessage.innerHTML = '약관에 동의해야 합니다.';
-					agreementErrorMessage.style.color = 'red';
-					return false;
-				}
-
-				agreementErrorMessage.innerHTML = '';
-				return true;
-			}
-
 			function openModal() {
 				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
 				myModal.show();
-			}
-
-			function uploadImg() {
-				let formData = new FormData();
-				let inputFile = document.querySelector('#myImg').files[0];
-				for (var i = 0; i < inputFile.length; i++) {
-					console.log(inputFile[i]);
-					formData.append('uploadFiles', files[i]);
-				}
-			}
-
-			function handleFilePreview() {
-				let fileInput = document.getElementById('myImg');
-				let filePreview = document.getElementById('filePreview');
-
-				fileInput.addEventListener('change', function () {
-					const file = this.files[0];
-
-					if (file) {
-						const reader = new FileReader();
-
-						reader.onload = function (e) {
-							filePreview.src = e.target.result;
-							filePreview.style.display = 'block';
-						};
-
-						reader.readAsDataURL(file);
-					} else {
-						filePreview.style.display = 'none';
-					}
-				});
 			}
 
 			function submitForm(event) {
 				event.preventDefault();
 
 				const formData = new FormData(document.getElementById('userForm'));
+				let fileInput = document.querySelector('#myImg');
+				let file = fileInput.files[0];
 
+				loadImage(
+					file,
+					function (img) {
+						const canvas = document.createElement('canvas');
+						const ctx = canvas.getContext('2d');
+						canvas.width = 300;
+						canvas.height = 200;
+						ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+						Caman(canvas, function () {
+							this.stackBlur(5);
+							this.render(function () {
+								canvas.toBlob(function (blob) {
+									formData.append('uploadFiles', blob);
+									submitFormData(formData);
+								});
+							});
+						});
+					},
+					{
+						maxWidth: 200,
+						maxHeight: 200,
+						contain: true,
+					}
+				);
+			}
+
+			function submitFormData(formData) {
 				$.ajax({
 					url: '/userjoin',
 					type: 'post',
@@ -409,14 +395,19 @@
 					},
 				});
 			}
+
+			function revertForm() {
+				location.href = '/userlogin';
+			}
 		</script>
 	</head>
 
 	<body>
 		<div layout:fragment="content">
-			<form id="userForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
-				<div class="container">
-					<h3>사용자 회원가입</h3>
+			<div class="registered-customers" style="margin-top: 100px">
+				<h3 class="blog-section-title border-left mb-30">사용자 회원가입</h3>
+				<br />
+				<form id="userForm" onsubmit="submitForm(event)" enctype="multipart/form-data" method="post">
 					<br />
 					<div class="input-group">
 						<label>아이디</label>
@@ -427,8 +418,18 @@
 							placeholder="아이디를 입력하세요"
 							required
 							oninput="checkId()"
+							style="width: 250px; margin-right: 10px"
 						/>
-						<button type="button" id="checkDupliIdBtn" onclick="checkDupliId()" disabled>중복 확인</button>
+						<button
+							type="button"
+							id="checkDupliIdBtn"
+							onclick="checkDupliId()"
+							disabled
+							class="btn btn-sm btn-secondary shadow-sm"
+							style="display: inline-block; height: 30px"
+						>
+							중복 확인
+						</button>
 						<span id="idErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
@@ -480,29 +481,62 @@
 							required
 							maxlength="13"
 							oninput="autoHyphen(this)"
+							style="width: 250px; margin-right: 10px"
 						/>
-						<button type="button" id="checkPhoneBtn" onclick="checkPhone()">인증번호발송</button>
+						<button
+							type="button"
+							id="checkPhoneBtn"
+							onclick="checkPhone()"
+							class="btn btn-sm btn-secondary shadow-sm"
+						>
+							인증번호 발송
+						</button>
 						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group" id="verification-section">
 						<label>인증번호</label>
-						<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" required />
-						<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()">인증하기</button>
+						<input
+							type="number"
+							id="checkPhoneNum"
+							placeholder="인증번호를 입력하세요"
+							maxlength="4"
+							required
+							style="width: 250px; margin-right: 10px"
+						/>
+						<button
+							type="button"
+							id="checkPhoneNumBtn"
+							onclick="checkPhoneNumber()"
+							class="btn btn-sm btn-secondary shadow-sm"
+						>
+							인증하기
+						</button>
 					</div>
 
 					<div class="input-group">
 						<label>생년월일</label>
-						<input type="date" name="birthday" id="birthDay" required oninput="checkBirthday()" />
+						<input
+							type="date"
+							name="birthday"
+							id="birthDay"
+							required
+							oninput="checkBirthday()"
+							style="width: 200px"
+						/>
 						<span id="birthdayErrorMessage" class="error-message" style="display: block"></span>
 					</div>
 
 					<div class="input-group-select">
 						<label>성별</label>
-						<input type="radio" name="gender" id="male" value="M" />
-						<label for="input-group-select">남자</label>
-						<input type="radio" name="gender" id="female" value="F" />
-						<label for="input-group-select">여자</label>
+						<label class="gender">
+							<input type="radio" name="gender" id="male" value="M" />
+							<span>남자</span>
+						</label>
+						<label class="gender">
+							<input type="radio" name="gender" id="female" value="F" />
+							<span>여자</span>
+						</label>
 					</div>
 
 					<div class="input-group">
@@ -511,28 +545,78 @@
 						<img id="filePreview" alt="File Preview" />
 					</div>
 
+					<br />
+
 					<div>
-						<input type="checkbox" id="invalidCheck" required />
+						<input type="checkbox" required />
 						<label class="form-check-label"> 만 17세 이상입니다 </label>
 					</div>
 
+					<br />
+
 					<div>
-						<input type="checkbox" id="invalidCheck" required />
-						동의항목<label class="form-check-label" onclick="openModal()"> [상세보기]</label>
+						<input type="checkbox" required />
+						개인정보 사용 동의<label
+							class="form-check-label"
+							data-bs-toggle="modal"
+							data-bs-target="#exampleModal"
+						>
+							&nbsp;[상세보기]</label
+						>
 					</div>
 
 					<br />
-					<input type="submit" value="회원가입" class="btn btn-danger" id="submitButton" />
-				</div>
-			</form>
+					<div style="text-align: center">
+						<input type="submit" value="회원가입" class="btn btn-danger" id="submitButton" />
+						<input type="button" value="취소하기" onclick="revertForm()" class="btn btn-warning" />
+					</div>
+				</form>
+			</div>
 
 			<!-- Modal -->
 			<div class="modal" tabindex="-1" id="exampleModal">
 				<div class="modal-dialog">
 					<div class="modal-content">
 						<div class="modal-body">
-							<p>대충 개인정보약관 내용</p>
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							<pre>
+서비스 이용을 위한 개인정보 수집 및 이용에 대한 동의
+								
+제 1 조 (목적)
+본 약관은 회원(이하 "회원"이라 합니다)이 회원가입을 하여 서비스를 이용함에 있어 
+회사가 회원으로부터 수집하는 개인정보의 보호 및 이용에 대해 규정함을 목적으로 합니다.
+
+제 2 조 (수집하는 개인정보의 항목)
+회사는 회원가입, 상담, 서비스 제공 등을 위해 아래와 같은 개인정보를 수집하고 있습니다.
+필수항목: 이름, 생년월일, 아이디, 비밀번호, 전화번호, 주소, 성별, 신분증 사진
+
+제 3 조 (개인정보의 수집 및 이용 목적)
+회사는 수집한 개인정보를 다음의 목적을 위해 활용합니다.
+1. 회원가입 및 관리
+2. 서비스 제공 및 이용자 식별
+3. 본인 확인 및 부정이용 방지
+4. 고객문의 응대 및 불만처리
+
+제 4 조 (개인정보의 보유 및 이용 기간)
+회사는 회원이 서비스를 탈퇴하거나 회원자격을 상실할 경우, 
+수집된 개인정보를 지체 없이 파기합니다. 
+단, 관련 법령에 의해 보존할 필요가 있는 경우에는 해당 기간 동안 보관하며, 
+그 외의 경우에는 지체 없이 파기합니다.
+
+제 5 조 (동의 철회 및 개인정보 파기)
+회원은 개인정보의 수집, 이용에 대한 동의를 철회할 수 있으며, 
+회사는 이에 따라 회원의 개인정보를 파기할 의무가 있습니다.
+
+제 6 조 (개인정보의 제공 및 공유)
+회사는 회원의 동의 없이는 개인정보를 제3자에게 제공하지 않습니다. 아래의 경우에는 예외로 합니다.
+1. 회원이 사전에 동의한 경우 법령의 규정에 의거하는 경우 
+2. 수사 등 공공기관의 요청이 있는 경우 
+
+위와 같이 회원가입 시 개인정보 수집 및 이용에 동의하신다면 
+"동의" 버튼을 클릭하여 회원가입을 진행해 주시기 바랍니다.
+							</pre
+							>
+
+							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 						</div>
 					</div>
 				</div>

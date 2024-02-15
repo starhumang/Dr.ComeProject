@@ -9,7 +9,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.drcome.project.pharmacy.MedicineVO;
 import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 import com.drcome.project.pharmacy.mapper.PharmacyMapper;
@@ -29,29 +28,28 @@ public class PharmacyServiceImpl implements PharmacyService{
 	
 	/* 약국별 처방 현황(현재 날짜) */
 	@Override
-	public List<Map<String, Object>> selectPrescriptionList(int page, String date, String pharmacyId) {
+	public List<Map<String, Object>> selectPrescriptionList(Map<String, Object> map, String date) {
 		
 		List<Map<String, Object>> listmap = null;
 		Date currentDate = new Date();
-		System.out.println(currentDate);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		String perdate = dateFormat.format(currentDate);
-        System.out.println(perdate);
+		map.put("date", date);
 		
 		if(date.equals(perdate)) {
-			listmap = mapper.selectPrescriptionList(page, date, pharmacyId);
+			listmap = mapper.selectPrescriptionList(map);
 		} 
 		else {
-			listmap = mapper.selectLastPerList(page, date, pharmacyId);
+			listmap = mapper.selectLastPerList( map);
 		}
 		return listmap;
 	}
 	
 	/* 약 주성분 검색 */
-	@Override
-	public List<MedicineVO> findMedicine(String keyword) {
-		return mapper.searchMedicine(keyword);
-	}
+	/*
+	 * @Override public List<MedicineVO> findMedicine(String keyword) { return
+	 * mapper.searchMedicine(keyword); }
+	 */
 	
 	// 처방전조회
 	@Override
@@ -77,24 +75,23 @@ public class PharmacyServiceImpl implements PharmacyService{
 	}
 
 	@Override
-	public int percount(String date, String pharmacyId) {
+	public int percount(Map<String, Object> map, String date) {
 		
-		Date currentDate = new Date();
-		System.out.println(currentDate);
+		Date currentDate = new Date(); System.out.println(currentDate);
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-		String perdate = dateFormat.format(currentDate);
-        System.out.println(perdate);
+		String perdate = dateFormat.format(currentDate); System.out.println(perdate);
 		
-        int result = 0;
-		if(date.equals(perdate)) {
-			result = mapper.percount(date, pharmacyId);
-		} 
-		else {
-			result = mapper.perLastcount(date, pharmacyId);
-		}
+		int result = 0; 
+		map.put("date", date);
+		
+		if(date.equals(perdate)) { 
+			result = mapper.percount(map); 
+		} else { 
+			result = mapper.perLastcount(map); }
 		
 		return result;
 	}
+
 
 	/*
 	 * @Override public List<Map<String, Object>> getperPage(int pageNo, int

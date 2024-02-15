@@ -1,4 +1,4 @@
-package com.drcome.project;
+package com.drcome.project.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -10,6 +10,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import com.drcome.project.mem.web.FailureHandler;
+import com.drcome.project.mem.web.LoginSuccessHandler;
 
 @Configuration
 @EnableWebSecurity

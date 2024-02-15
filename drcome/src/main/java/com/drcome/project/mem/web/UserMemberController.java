@@ -1,6 +1,6 @@
 package com.drcome.project.mem.web;
 
-import com.drcome.project.FileUploadService;
+import com.drcome.project.common.service.FileUploadService;
 import com.drcome.project.main.service.ClinicPayVO;
 import com.drcome.project.main.service.PaymentVO;
 import com.drcome.project.main.service.ReservationVO;

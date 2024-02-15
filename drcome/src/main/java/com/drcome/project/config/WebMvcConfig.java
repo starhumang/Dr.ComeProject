@@ -1,4 +1,4 @@
-package com.drcome.project;
+package com.drcome.project.config;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package com.drcome.project;
+package com.drcome.project.common.service;
 
 import java.io.File;
 import java.io.IOException;

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
-import com.drcome.project.FileUploadService;
+import com.drcome.project.common.service.FileUploadService;
 import com.drcome.project.common.service.PageDTO;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.mem.service.UserMemberService;

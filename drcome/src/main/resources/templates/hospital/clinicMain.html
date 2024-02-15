@@ -204,11 +204,20 @@
                             let prescriptionButton = document.createElement("button");
                             prescriptionButton.textContent = "처방전 전송";
                             prescriptionButton.className = "btn btn-primary";
+                            prescriptionButton.id = "sendPh";
 
                             let prescriptionTd = document.createElement("td");
                             prescriptionTd.appendChild(prescriptionButton);
 
                             reserveTr.appendChild(prescriptionTd);
+                        }else {
+                            let prescriptionButton = document.createElement("p");
+                              prescriptionButton.textContent = "-";
+
+                              let prescriptionTd = document.createElement("td");
+                              prescriptionTd.appendChild(prescriptionButton);
+
+                              reserveTr.appendChild(prescriptionTd);
                         }
 
                       reserveListTbody.append(reserveTr);
@@ -270,6 +279,17 @@
           
 
             });
+          
+          //처방전 전송 버튼에 페이지 열리게
+           $(document).on("click", "#sendPh", function(event) {
+    
+           var trElement = $(this).closest('tr');
+           var firstTdValue = trElement.find('td:first').text();
+			console.log(firstTdValue);
+			
+			 window.location.href = '/hospital/selPharmacyList?reserveNo=' + firstTdValue;
+           });
+
         </script>
       </div>
     </div>

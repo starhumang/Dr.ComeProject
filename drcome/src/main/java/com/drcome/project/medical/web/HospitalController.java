@@ -252,15 +252,30 @@ public class HospitalController {
 	//선택 약국 가져오기
 	@GetMapping("/hospital/selPharmacyList")
 	public String selPharmacyList(Principal principal,
-													 @RequestParam Map<String, Object> param,
-													 Model model) {
+								  @RequestParam Map<String, Object> param,
+								  Model model) {
 		
 		String hospitalId = principal.getName();
 		param.put("hospitalId", hospitalId);
 		
+		System.out.println("param"+ param);
 		List<Map<String, Object>> pharList = hospitalService.selectPharList(param);
-		model.addAttribute("pharList", pharList);
 		
+		//pharList 중에 clinicNo 값을 우선 Object에 들어있기에 String으로 바꾼 후,
+	    Object clinicNoObject = pharList.get(0).get("clinicNo");
+	    String test2 = String.valueOf(clinicNoObject);
+	    
+	    //이걸 다시 int로 형변환
+	    int clinicNo =Integer.parseInt(test2);
+	    
+	    //첫 번째 clinicNo를 사용하여 getpaientPillInfo 메서드 호출
+	    List<Map<String, Object>> perscrip = hospitalService.getpaientPillInfo(clinicNo);
+		
+		model.addAttribute("pharList", pharList);
+		model.addAttribute("perscrip", perscrip);
+		
+		System.out.println("pharList"+ pharList);
+		System.out.println("perscrip"+ perscrip);
 		return "hospital/selPharmacyList";
 	}
 
@@ -318,7 +333,7 @@ public class HospitalController {
 						  @ModelAttribute NoticeAttachVO attVO,
 						  Model model) {
 		
-		   // QnA 정보 가져오기
+		// QnA 정보 가져오기
 	    QnaVO qnaInfo = hospitalService.getQnaInfo(qnaVO);
 	    if (qnaInfo != null) {
 	        model.addAttribute("qnaInfo", qnaInfo);

@@ -222,7 +222,6 @@
 		 WHERE clinic_no = #{clinicNo}
 	</select>
 	
-	
 	<!-- 진료실 -->
 	<select id="selectReserveDr" resultType="Map">
          SELECT r.RESERVE_NO "reserveNo"
@@ -267,6 +266,7 @@
 	<!-- 처방전 선택 약국 List -->
 	<select id ="selectPharList" resultType="Map">
 		SELECT 
+				c.clinic_no "clinicNo",
 		        c.patient_no "patientNo",
 		        c.clinic_no "clinicNo",
 		        c.hospital_id "hospitalId",
@@ -275,17 +275,18 @@
 		        p.pharmacy_name "pharmacyName",
 		        p.pharmacy_phone "pharmacyPhone",
 		        s.send_status "sendStatus",
-		        s.rejection "rejection"
+		        s.rejection "rejection",
+		        s.pharmacy_selectno "pharmacySelectno",
+		        r.reserve_no "reservationNo"
 		  FROM clinic c 
 		  LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
 		  JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
 		  JOIN hospital h ON c.hospital_id = h.hospital_id
 		  JOIN reservation r ON c.reserve_no = r.reserve_no
-		  JOIN doctor d ON r.doctor_no = d.doctor_no
 		  JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
 		  JOIN pharmacy p ON s.pharmacy_id = p.pharmacy_id
-		 WHERE c.clinic_no = #{clinicNo}
-		   AND h.hospital_id = #{hospitalId}
+		 WHERE r.reserve_no = #{reserveNo}
+		 AND h.hospital_id = #{hospitalId}
 	</select>
 	
 	<!-- QnA -->
@@ -321,7 +322,6 @@
 		 WHERE rn > (#{page} - 1) * 10
 	</select>
 
-	
 	<!-- QnA 페이징-->
 	<select id="qnaCount" resultType="int">
 		SELECT COUNT(*)
@@ -408,7 +408,35 @@
 		        #{fileName},
 		        #{qnaNo}
 		        )
-	</insert>	
+	</insert>
+	
+	<!-- user QnA Insert -->
+	<!-- QnA 답변 Insert -->
+	<insert id="insertQnaMem" parameterType="QnaVO">
+		<selectKey keyProperty="qnaNo" order="BEFORE" resultType="int">
+		  select nvl(max(qna_no), 0)+1 
+		  from qna
+		</selectKey>
+			INSERT INTO qna (qna_no,
+			                 wdate,
+                             title,
+			                 content,
+                             user_id,
+			                 hospital_id,
+                             category_status,
+                             ans_status
+			                 )
+			VALUES (#{qnaNo},
+			        sysdate,
+                    #{title},
+			        #{content},
+			        #{userId},
+                    #{hospitalId},
+                    #{categoryStatus},
+                    'j1'
+			        )
+	</insert>
+	<!--  첨부파일 Insert(위에꺼 쓰기) -->	
 
 	<!-- 공지사항 -->
 	<!-- 공지사항 전체 -->

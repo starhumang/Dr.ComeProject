@@ -77,8 +77,8 @@
 	</select>
 	<select id="reserveList" resultType="Map">
 		SELECT TO_CHAR(TO_DATE(reserve_year || '-' || reserve_month || '-' || reserve_day || ' ' || reserve_time, 'YYYY-MM-DD HH24:MI'), 'YYYY-MM-DD HH24:MI') as "start"
-			   ,hospital_id as "title"
-		  FROM reservation
+			   ,(select hospital_name from hospital where hospital_id = r.hospital_id) as "title"
+		  FROM reservation r
 		 WHERE user_id = #{userId}
 	</select>
 </mapper>

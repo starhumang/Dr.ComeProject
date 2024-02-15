@@ -42,6 +42,9 @@ public interface HospitalService {
 	//Dr리스트
 	public List<Map<String, Object>> getDrAllList(String hospitalId);
 	
+	//약국 리스트 받아오기
+	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
+	
 	/* QnA */
 	//QnA 전체
 	public List<Map<String, Object>> getQnaList(Map<String, Object> map);
@@ -52,6 +55,9 @@ public interface HospitalService {
 	
 	//Answer 단건상세
 	public QnaVO getAnsInfo(QnaVO qnaVO);
+	
+	//QnA 파일 가져오기
+	public List<NoticeAttachVO> selectQnaAtt(NoticeAttachVO attVO);
 	
 	//QnA 답변 인서트 + 첨부파일 인서트 + 기존 QnA 상태 업데이트
 	public int insertQnaAns(QnaVO qnaVO);

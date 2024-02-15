@@ -6,6 +6,7 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.drcome.project.medical.service.DoctorVO;
+import com.drcome.project.medical.service.NoticeAttachVO;
 import com.drcome.project.medical.service.NoticeVO;
 import com.drcome.project.medical.service.QnaVO;
 
@@ -44,6 +45,9 @@ public interface HospitalMapper {
 	//Main
 	public List<Map<String, Object>> selectReserveMain(String hospitalId, String date, String reserveKindstatus);
 	
+	//약국 리스트 받아오기
+	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
+	
 	//Dr
 	public List<Map<String, Object>> selectReserveDr(String hospitalId, Integer doctorNo, String date, String reserveKindstatus);
 	
@@ -67,6 +71,9 @@ public interface HospitalMapper {
 	public int insertQnaAns(QnaVO qnaVO);
 	public int updateQnaStatus(QnaVO qnaVO);
 	public int insertAttachQnaAns(QnaVO qnaVO);
+	
+	//QnA 파일 가져오기
+	public List<NoticeAttachVO> selectQnaAtt(NoticeAttachVO attVO);
 	
 	/* 공지사항 */
 	//공지사항 전체

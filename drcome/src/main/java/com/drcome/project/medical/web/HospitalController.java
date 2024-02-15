@@ -32,6 +32,7 @@ import com.drcome.project.medical.service.DoctorTimeVO;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
+import com.drcome.project.medical.service.NoticeAttachVO;
 import com.drcome.project.medical.service.NoticeVO;
 import com.drcome.project.medical.service.QnaVO;
 import com.drcome.project.mem.mapper.UserMemberMapper;
@@ -230,6 +231,7 @@ public class HospitalController {
 		return "hospital/clinicDr";
 	}
 	
+	//main-ajax
 	@GetMapping("/hospital/clinicDr/ajax")
 	@ResponseBody
 	public List<Map<String, Object>> clinicReserveDr1(Principal principal, String hospitalId, Integer doctorNo, String date, String reserveKindstatus, Model model) {
@@ -238,12 +240,28 @@ public class HospitalController {
 		return reserveDrList;
 	}
 	
+	//Dr-ajax
 	@GetMapping("/hospital/clinicDr/allDr")
 	@ResponseBody
 	public List<Map<String, Object>> allDrList(Principal principal, String hospitalId) {
 		hospitalId = principal.getName();
 		List<Map<String, Object>> DrAllList = hospitalService.getDrAllList(hospitalId);
 		return DrAllList;
+	}
+	
+	//선택 약국 가져오기
+	@GetMapping("/hospital/selPharmacyList")
+	public String selPharmacyList(Principal principal,
+													 @RequestParam Map<String, Object> param,
+													 Model model) {
+		
+		String hospitalId = principal.getName();
+		param.put("hospitalId", hospitalId);
+		
+		List<Map<String, Object>> pharList = hospitalService.selectPharList(param);
+		model.addAttribute("pharList", pharList);
+		
+		return "hospital/selPharmacyList";
 	}
 
 	/* QnA */
@@ -292,34 +310,37 @@ public class HospitalController {
 		return map;
 	}
 	
-	// QnA 단건상세
+	// QnA 단건상세 + 첨부파일 가져오기 = 1:1
 	@GetMapping("/hospital/qnaList/qnaDetail")
 	public String qnaInfo(Principal principal,
 						  String hospitalId,
 						  @ModelAttribute QnaVO qnaVO,
+						  @ModelAttribute NoticeAttachVO attVO,
 						  Model model) {
 		
-	    if (qnaVO.getAnsCode() == null && !"undefined".equals(qnaVO.getAnsCode())) {
-	        QnaVO qnaInfo = hospitalService.getQnaInfo(qnaVO);
-	        if (qnaInfo != null) {
-	            model.addAttribute("qnaInfo", qnaInfo);
-	        }
-	    } else {
-	        QnaVO qnaInfo = hospitalService.getQnaInfo(qnaVO);
-	        if (qnaInfo != null) {
-	            model.addAttribute("qnaInfo", qnaInfo);
-	        }
-	        
+		   // QnA 정보 가져오기
+	    QnaVO qnaInfo = hospitalService.getQnaInfo(qnaVO);
+	    if (qnaInfo != null) {
+	        model.addAttribute("qnaInfo", qnaInfo);
+	    }
+	    
+	    // 첨부파일 가져오기
+	    List<NoticeAttachVO> qnaAtt = hospitalService.selectQnaAtt(attVO);
+	    model.addAttribute("qnaAtt", qnaAtt);
+	    
+	    // 답변 정보가 있는 경우
+	    if (qnaVO.getAnsCode() != null && !"undefined".equals(qnaVO.getAnsCode())) {
+	        // 답변 정보 가져오기
 	        QnaVO ansInfo = hospitalService.getAnsInfo(qnaVO);
 	        if (ansInfo != null) {
 	            model.addAttribute("ansInfo", ansInfo);
 	        }
 	    }
-
-	        // 결과를 보여줄 뷰 페이지의 이름을 반환
-	        return "hospital/qnaDetail";
+	    
+	    // 결과를 보여줄 뷰 페이지의 이름을 반환
+	    return "hospital/qnaDetail";
 	}
-	
+
 	// QnA 답변 등록 - FORM
 	@GetMapping("/hospital/qnaAnsForm")
 	public String insertQnaAnsForm(@RequestParam String qnaNo, Model model) {

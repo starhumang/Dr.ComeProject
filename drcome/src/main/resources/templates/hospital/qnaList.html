@@ -309,10 +309,10 @@ input[type="radio"]:checked+label {
 
 			            // 쿼리 스트링 조작
 			            var queryString = '';
-			            if (ansCode !== '' && ansCode !== 'undefined') {
-			                queryString += '?ansCode=' + ansCode;
-			            } else {
 			                queryString += '?qnaNo=' + qnaNo;
+			            if (ansCode !== '' && ansCode !== 'undefined') {
+			                queryString += '&ansCode=' + ansCode;
+			            } else {
 			            }
 
 			            window.location.href = '/hospital/qnaList/qnaDetail' + queryString;

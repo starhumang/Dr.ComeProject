@@ -12,6 +12,7 @@ import com.drcome.project.medical.repository.HospitalRepository;
 import com.drcome.project.medical.service.DoctorTimeVO;
 import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
+import com.drcome.project.medical.service.NoticeAttachVO;
 import com.drcome.project.medical.service.NoticeVO;
 import com.drcome.project.medical.service.QnaVO;
 
@@ -101,11 +102,17 @@ public class HospitalServiceImpl implements HospitalService {
 		return listReserveDr;
 	}
 	//Dr리스트
-
 	@Override
 	public List<Map<String, Object>> getDrAllList(String hospitalId) {
 		List<Map<String, Object>> listDrAll = hospitalMapper.allDrList(hospitalId);
 		return listDrAll;
+	}
+	
+	//선택 약국 받아오기
+	@Override
+	public List<Map<String, Object>> selectPharList(Map<String, Object> map) {
+		List<Map<String, Object>> listPhar = hospitalMapper.selectPharList(map);
+		return listPhar;
 	}
 	
 	/* QnA */
@@ -133,6 +140,13 @@ public class HospitalServiceImpl implements HospitalService {
 	public QnaVO getAnsInfo(QnaVO qnaVO) {
 		QnaVO ansInfo = hospitalMapper.selectAnsInfo(qnaVO);
 		return ansInfo;
+	}
+	
+	// select 첨부파일 보기
+	@Override
+	public List<NoticeAttachVO> selectQnaAtt(NoticeAttachVO attVO) {
+		List<NoticeAttachVO> qnaAtt = hospitalMapper.selectQnaAtt(attVO);
+		return qnaAtt;
 	}
 	
 	// Answer 등록
@@ -266,6 +280,5 @@ public class HospitalServiceImpl implements HospitalService {
         }
 		return count;
 	}
-
 
 }

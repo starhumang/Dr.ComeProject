@@ -47,9 +47,6 @@
 			<p>QnA Detail</p>
 
 			<!-- qna 단건 -->
-			<div>
-			<p>[[${qnaInfo}]]</p>
-			
 				<div th:if="${qnaInfo}">
 				    <table class="table table-bordered">
 				        <thead>
@@ -68,9 +65,7 @@
 				            </tr>
 				            <tr>
 				                <th class="text-center table-light">제목</th>
-				                <td th:text="${qnaInfo.title}" colspan="5"></td>
-				                <th class="text-center table-light">첨부파일</th>
-				                <td class="text-center" th:text="${qnaInfo.fileName}"></td>
+				                <td th:text="${qnaInfo.title}" colspan="8"></td>
 				            </tr>
 				        </thead>
 				        <tbody>
@@ -80,9 +75,17 @@
 				                        style="white-space: pre-wrap; border: none;">
 				                </pre></td>
 				            </tr>
+				            <!-- qnaAtt 리스트를 순회하며 각 첨부 파일 정보를 표시 -->
+				            <tr>
+				                <th>첨부파일</th>
+				                <td  colspan="7">
+				                    <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == qnaInfo.qnaNo}" th:text="${attach.fileName}"></span>
+				                </td>
+				            </tr>
 				        </tbody>
 				    </table>
 				</div>
+				
 				<!-- ans 단건 -->
 				<div th:if="${ansInfo}">
 					<div class="ansTitle">
@@ -101,12 +104,6 @@
 				                    th:text="${#dates.format(ansInfo['udate'], 'yyyy-MM-dd')}"></td>
 				                <td th:if="${ansInfo['udate'] == null}">-</td>
 				            </tr>
-				            <tr>
-				                <th class="text-center table-light">첨부파일</th>
-				                <td class="text-center" colspan="3">
-										
-				                </td>
-				            </tr>
 				        </thead>
 				        <tbody>
 				            <tr>
@@ -114,6 +111,12 @@
 				                    valign="top" height="200"><pre
 				                        style="white-space: pre-wrap; border: none;">
 				                </pre></td>
+				            </tr>
+				            <tr>
+				                <th>첨부파일</th>
+				                <td  colspan="3">
+				                    <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == ansInfo.qnaNo}" th:text="${attach.fileName}"></span>
+				                </td>
 				            </tr>
 				        </tbody>
 				    </table>

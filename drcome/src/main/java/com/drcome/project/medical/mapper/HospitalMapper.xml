@@ -262,6 +262,30 @@
 		 WHERE hospital_id = #{hospitalId}
 	</select>
 	
+	<!-- 처방전 선택 약국 List -->
+	<select id ="selectPharList" resultType="Map">
+		SELECT 
+		        c.patient_no "patientNo",
+		        c.clinic_no "clinicNo",
+		        c.hospital_id "hospitalId",
+		        c.clinic_date "perscriptionDate",
+		        a.user_id "patientUserId",
+		        p.pharmacy_name "pharmacyName",
+		        p.pharmacy_phone "pharmacyPhone",
+		        s.send_status "sendStatus",
+		        s.rejection "rejection"
+		  FROM clinic c 
+		  LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
+		  JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
+		  JOIN hospital h ON c.hospital_id = h.hospital_id
+		  JOIN reservation r ON c.reserve_no = r.reserve_no
+		  JOIN doctor d ON r.doctor_no = d.doctor_no
+		  JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+		  JOIN pharmacy p ON s.pharmacy_id = p.pharmacy_id
+		 WHERE c.clinic_no = #{clinicNo}
+		   AND h.hospital_id = #{hospitalId}
+	</select>
+	
 	<!-- QnA -->
 	<!-- QnA 전체 -->
 	<select id ="selectQnaList" resultType="Map">
@@ -324,20 +348,25 @@
 	</sql>
 	
 	<!-- QnA 상세 -->
-
-
 	<select id ="selectQnaInfo" resultType="QnaVO">
 		SELECT * FROM qna
 		<where>
 	        <if test="ansCode != null">
 	            ans_code = #{ansCode}
 	        </if>
-	        <if test="ansCode == null or qnaNo != null">
+	        <if test="ansCode == null">
 	            qna_no = #{qnaNo}
 	        </if>
 		</where>
 	</select>
-
+	
+	<!-- qna 첨부파일(하나임) 가져오기 -->
+	<select id = "selectQnaAtt" resultType = "NoticeAttachVO">
+		SELECT file_name, qna_no
+		  FROM attachment
+		  WHERE qna_no = #{qnaNo}
+		  OR qna_no = #{ansCode}
+	</select>
 	
 	<!-- Answer select -->
 	<select id="selectAnsInfo" resultType="QnaVO">

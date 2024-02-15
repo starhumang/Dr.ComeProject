@@ -19,10 +19,12 @@ public interface HospitalService {
 	
 	/* 환자리스트 */
 	//환자 조회
-	public List<Map<String, Object>> getPaientList(String hospitalId);
+	public List<Map<String, Object>> getPaientList(Map<String, Object> map);
+	public int patientCount(Map<String, Object> map);
 	
 	//환자 상세 진료내역 조회
-	public List<Map<String, Object>> getPaientDetailList(String hospitalId, Integer patientNo);
+	public List<Map<String, Object>> getPaientDetailList(Map<String, Object> map);
+	public int patientInfoCount(Map<String, Object> map);
 
 	//환자 진료내역 단건 조회
 	public Map<String, Object> getPaientClinicInfo(String hospitalId, Integer patientNo, Integer clinicNo);
@@ -40,29 +42,46 @@ public interface HospitalService {
 	//Dr리스트
 	public List<Map<String, Object>> getDrAllList(String hospitalId);
 	
+	//약국 리스트 받아오기
+	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
+	
 	/* QnA */
 	//QnA 전체
-	public List<Map<String, Object>> getQnaList(String hospitalId);
+	public List<Map<String, Object>> getQnaList(Map<String, Object> map);
+	public int qnaCount(Map<String, Object> map);
 	
 	//QnA 단건상세
-	public List<Map<String, Object>> getQnaInfo(String hospitalId, Integer qnaNo);
+	public QnaVO getQnaInfo(QnaVO qnaVO);
+	
+	//Answer 단건상세
+	public QnaVO getAnsInfo(QnaVO qnaVO);
+	
+	//QnA 파일 가져오기
+	public List<NoticeAttachVO> selectQnaAtt(NoticeAttachVO attVO);
+	
+	//QnA 답변 인서트 + 첨부파일 인서트 + 기존 QnA 상태 업데이트
+	public int insertQnaAns(QnaVO qnaVO);
+	public int updateQnaStatus(QnaVO qnaVO);
+	public int insertAttachQnaAns(QnaVO qnaVO);
 	
 	/* 공지사항 */
 	//공지사항 전체	
-	public List<Map<String, Object>> getNoticeList(int page, String hospitalId);
+	public List<Map<String, Object>> getNoticeList(int page, int type, String keyword, String hospitalId);
+	public int noticeCount(int type, String keyword, String hospitalId);
 	
-	public int noticeCount(String hospitalId);
 	//공지사항 단건상세
-	public List<NoticeVO> getNoticeDetail(String hospitalId, Integer noticeNo);
+	public NoticeVO getNoticeDetail(NoticeVO noticeVO);
 	
 	//공지사항 등록
 	public int insertNoticeInfo(NoticeVO vo);
 	public int insertAttach(NoticeVO vo);
 	
-	//공지사항 검색
-	public List<NoticeVO> searchNotice(int type, String hospitalId, String keyword);
+	//공지사항 수정
+	public int updateNotice(NoticeVO vo);
+	public int deleteAttachment(int noticeNo);
 	
-	public int searchNoticeCount(String hospitalId, String keyword);
+	//공지사항 삭제
+	public void deleteNotice(NoticeVO vo);
 	
 	/* 병원프로필 */
 	//병원 단건조회(id로)
@@ -82,5 +101,5 @@ public interface HospitalService {
 	
 	// 의사 수정
 	public int updateDoctor(DoctorVO vo);
-	
+
 }

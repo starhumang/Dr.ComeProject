@@ -22,12 +22,14 @@
 		</style>
 
 		<script>
-			function goToModify() {
-				location.href = '/hospital/hosinfoupdate';
+			function goToModify(doctorNo) {
+			    location.href = '/hospital/doctorupdate/' + doctorNo;
 			}
 			function goToDinsert() {
 				location.href = '/hospital/doctorinsert';
 			}
+			
+			console.log(doctorNo);
 		</script>
 	</head>
 
@@ -123,8 +125,7 @@
 							<i class="fas fa-fw fa-user-nurse"></i>의사정보
 						</h5>
 						<div class="btn1">
-							<button class="btn btn-sm btn-warning shadow-sm" onclick="goToDinsert()">등록하기</button>
-							<button class="btn btn-sm btn-info shadow-sm">수정하기</button>
+							<button class="btn btn-sm btn-warning shadow-sm" onclick="goToDinsert()">의사 등록하기</button>
 						</div>
 					</div>
 					<div class="card-body">
@@ -137,6 +138,7 @@
 									<th>휴진일</th>
 									<th>진료일 / 진료시간</th>
 									<th>면허증</th>
+									<th>수정하기</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -153,6 +155,7 @@
 											</div>
 										</td>
 										<td th:text="${doc.doctorLicense}"></td>
+										<td><button class="btn btn-sm btn-info shadow-sm" th:onclick="goToModify([[${doc.doctorNo}]])">수정하기</button></td>
 									</tr>
 								</th:block>
 							</tbody>

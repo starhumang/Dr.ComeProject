@@ -19,22 +19,22 @@ public class AlarmServiceImpl implements AlarmService {
 	@Autowired
 	PatientMapper pmapper;
 
-	// 알람 인서트후 입장하기로 업데이트
+	//알람테이블 인서트 + 입장하기로 상태 업데이트 
 	@Transactional
 	@Override
 	public int saveAlarm(AlarmDao dao) {
-		System.out.println("입장하기로업데이트");
+		//System.out.println("입장하기로업데이트");
 		// 알람인서트
 		int result = mapper.insertAlarm(dao);
 
 		if (result > 0) {
-			// 입장하기로업데이트
+			// 입장하기로 업데이트
 			result = pmapper.updateEnter(dao);
 		}
 		return result;
 	}
 
-	// 알람조회
+	// 알람조회 
 	@Override
 	public int checkAlarm(String uid) {
 		return mapper.selectAlarm(uid);

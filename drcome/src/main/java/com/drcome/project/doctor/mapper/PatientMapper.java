@@ -44,4 +44,7 @@ public interface PatientMapper {
 
 	// 입장하기로 업데이트
 	public int updateEnter(AlarmDao dao);
+	
+	// 결제완료로 업데이트 
+	public int updatePayment(PatientVO vo);
 }

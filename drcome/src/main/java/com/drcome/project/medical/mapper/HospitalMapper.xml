@@ -66,7 +66,8 @@
 	<!-- 예약내역 -->
 	<!-- 메인 -->
 	<select id="selectReserveMain" resultType="Map">
-	    SELECT r.RESERVE_NO "reserveNo"
+	    SELECT c.perscription_yn "perscriptionYn"
+	         , r.RESERVE_NO "reserveNo"
 	         ,r.reserve_status "reserveStatus"
 	         , u.birthday "userBirthday"
 	         , u.gender "gender"
@@ -77,6 +78,7 @@
 	         , d.doctor_name "doctorName"
 	         , r.reserve_kindstatus "reserveKindstatus"
 	      FROM reservation r
+	      LEFT JOIN clinic c ON c.reserve_no = r.reserve_no
 	      JOIN doctor d ON r.doctor_no = d.doctor_no AND r.hospital_id = d.hospital_id
 	      JOIN usertable u ON u.user_id = r.user_id
 	     WHERE r.hospital_id = #{hospitalId}

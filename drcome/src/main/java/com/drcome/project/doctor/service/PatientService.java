@@ -22,7 +22,7 @@ public interface PatientService {
 	// 진료기록 insert
 	public int insertClinic(PatientVO vo);
 
-	// 예약상태 업데이트
+	// 예약상태 진료완료로 업데이트
 	public int modifyReserve(PatientVO vo);
 
 }

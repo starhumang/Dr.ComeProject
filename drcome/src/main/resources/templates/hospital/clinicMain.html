@@ -209,7 +209,17 @@
                             prescriptionTd.appendChild(prescriptionButton);
 
                             reserveTr.appendChild(prescriptionTd);
+                        }else {
+                            let prescriptionButton = document.createElement("p");
+                              prescriptionButton.textContent = "-";
+                             
+
+                              let prescriptionTd = document.createElement("td");
+                              prescriptionTd.appendChild(prescriptionButton);
+
+                              reserveTr.appendChild(prescriptionTd);
                         }
+
 
                       reserveListTbody.append(reserveTr);
                     }

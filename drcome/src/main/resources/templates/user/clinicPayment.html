@@ -90,8 +90,8 @@
 		<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
 		<script th:inline="javascript">
+			var payTotal;
 			document.addEventListener('DOMContentLoaded', function () {
-				var payTotal;
 				if (cInfo.pay === 'Y') {
 					payTotal = 5000;
 				} else if (cInfo.pay === 'N') {

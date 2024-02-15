@@ -1,5 +1,6 @@
 package com.drcome.project.doctor.web;
 
+import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,15 +19,22 @@ import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.common.service.AlarmDao;
 import com.drcome.project.common.service.AlarmService;
 import com.drcome.project.common.service.PageDTO;
+import com.drcome.project.doctor.mapper.PatientMapper;
 import com.drcome.project.doctor.service.PatientService;
 import com.drcome.project.doctor.service.PatientVO;
 import com.drcome.project.medical.service.HospitalService;
+
+/**
+ * 
+ * 환자 진료 컨트롤러 클래스
+ * 
+ * @author 이주은
+ */
 
 @Controller
 public class PatientController {
 
 	@Autowired
-//	HospitalRepository repo;
 	HospitalService hospitalService;
 
 	@Autowired
@@ -34,27 +42,46 @@ public class PatientController {
 
 	@Autowired
 	AlarmService alarmService;
+	
+	@Autowired
+	PatientMapper mapper;
 
 	// 공통 병원 정보 따로 빼기
 	@ModelAttribute("hospitalSel")
-	public Hospital getServerTime() {
-		String hospitalId = "krrlo";
+	public Hospital getServerTime(Principal principal) {
+		String hospitalId = principal.getName();
 		Hospital hosSel = hospitalService.findByhospitalId(hospitalId);
 		return hosSel;
 	}
 
-	// 비대면진료페이지 - 의사
+	/**
+	 * 의사 알람 테이블 인서트 + 입장하기 상태로 업데이트 진행
+	 * 
+	 * @param dao (reserveNo , userId , contentCode , prefix)
+	 * @return alarmService
+	 */
+	@PostMapping("saveAlarm")
+	@ResponseBody
+	public int saveAlarm(@RequestBody AlarmDao dao) {
+
+		return alarmService.saveAlarm(dao);
+
+	}
+
+	/**
+	 * 비대면 진료페이지 의사화면
+	 * 
+	 * @param vo  reserveNo
+	 * @return 비대면 진료 페이지로 이동
+	 */
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
 
-		// System.out.println("너뭐야????????????????????? " + vo); // 예약번호, 유저아이디 들어옴
-		// 기본정보
+		// 기본정보 조회 reserveNo로
 		PatientVO findVO = patientService.getPatientInfo(vo);
 		model.addAttribute("pInfo", findVO);
-		// System.out.println("pInfo" + findVO);
-		// System.out.println(findVO);
-		return "doctor/untactClinic";
 
+		return "doctor/untactClinic";
 	}
 
 	// 비대면 진료 - 환자
@@ -62,41 +89,56 @@ public class PatientController {
 	public String untactPatient(@PathVariable("reserveNo") String reserveNo, PatientVO vo, Model model) {
 		model.addAttribute("rNo", reserveNo);
 		return "doctor/untactPatient";
-
 	}
 
-	// 대면진료페이지
+	/**
+	 * 대면 진료 페이지
+	 * 
+	 * @param vo   reserveNo
+	 * @param model
+	 * @return 대면 진료 페이지로 이동
+	 */
 	@GetMapping("clinic")
 	public String getInfo(PatientVO vo, Model model) {
+
+		// 기본정보 조회 reserveNo로
 		PatientVO findVO = patientService.getPatientInfo(vo);
 		model.addAttribute("pInfo", findVO);
-		// System.out.println("pInfo" + findVO);
-		// System.out.println(findVO);
 		return "doctor/clinic";
 
 	}
 
-	// 알람 테이블 인서트 + 입장하기로 업데이트
-	@PostMapping("saveAlarm")
-	@ResponseBody
-	public int saveAlarm(@RequestBody AlarmDao dao) {
-		System.out.println("알람 daoooooooooooo " + dao);
-		return alarmService.saveAlarm(dao);
+	/**
+	 * 아직 미완성..
+	 * 
+	 * @param vo
+	 * @param model
+	 * @return
+	 */
+	@GetMapping("untactPatient")
+	public String untactPatient(PatientVO vo, Model model) {
+
+		return "doctor/untactPatient";
 
 	}
 
-	// 진료기록 불러오기
+	/**
+	 * 진료기록 불러오기 + 페이징 
+	 * @param principal  병원아이디 
+	 * @param page		  선택한 페이지
+	 * @param uid		  유저아이디
+	 * @return map (list,dto)
+	 */
 	@GetMapping("clist")
 	@ResponseBody
-	public Map<String, Object> clinicList(String page, String uid) {
+	public Map<String, Object> clinicList(Principal principal, String page, String uid) {
 
-		System.out.println(page + uid);
 		PatientVO vo = new PatientVO();
 
 		vo.setUserId(uid);
-		vo.setHospitalId("krrlo");
+		vo.setHospitalId(principal.getName());
 
-		// 리스트 전체갯수 가져오기
+		// 전체갯수 가져오기
 		int total = patientService.totalList(vo);
 		System.out.println("토탈" + total);
 
@@ -108,54 +150,87 @@ public class PatientController {
 		PageDTO dto = new PageDTO(cpage, total);
 		System.out.println("dtd 객체 " + dto);
 
-		// 진료기록리스트
+		// 진료기록리스트 (vo : userId hospitalId)
 		List<PatientVO> clinicList = patientService.getClinicList(cpage, vo);
 
-		System.out.println(clinicList.size());
-
 		Map<String, Object> map = new HashMap<>();
-		map.put("list", clinicList); // 댓글리스트 넘기고
+		map.put("list", clinicList); // 리스트 넘기고
 		map.put("dto", dto); // 페이지 정보담긴 애도 보냄
 
 		return map;
 
 	}
-
-	// 처방전 조회
+	
+	/**
+	 * 처방전 조회 
+	 * @param no clinicNo 
+	 * @return service
+	 */
 	@GetMapping("perscription/{no}")
 	@ResponseBody
 	public List<PatientVO> perscriptionInfo(@PathVariable Integer no) {
+
 		PatientVO vo = new PatientVO();
 		vo.setClinicNo(no);
-		// System.out.println(vo);
+
 		return patientService.getPerscription(vo);
 	}
 
-	// 약검색
+	
+	/**
+	 * 약검색
+	 * @param vo medicineName
+	 * @return service
+	 */
 	@GetMapping("medicine")
 	@ResponseBody
 	public List<PatientVO> msearch(PatientVO vo) {
-		// System.out.println(vo);
+
 		return patientService.getmnameList(vo);
 
 	}
+	
+	/**
+	 * 
+	 * @param reserveNo, clinicSymptom specificity payYn perscriptionYn hospitalId visit userId
+	 *			perary=[{dosage , doseCnt ,doseDay, medicineNo},{}]
+	 * @return service
+	 */
 
 	// 진료기록 저장
 	@PostMapping("saveClinic")
 	@ResponseBody
 	public int saveInfo(@RequestBody PatientVO vo) {
-		System.out.println("진료기록저장될ㅇㅇㅇㅇㅇㅇㅇㅇㅇ" + vo);
+		//System.out.println("dddddddddddddd" + vo);
 		return patientService.insertClinic(vo);
 	}
 
-	// 진료종료시 상태 업데이트
+	
+	/**
+	 * 진료종료시 상태 업데이트
+	 * @param vo reserveNo
+	 * @return service
+	 */
 	@PostMapping("/updateStatus")
 	@ResponseBody
 	public int updateStatus(PatientVO vo) {
 
-		int cnt = patientService.modifyReserve(vo);
-
-		return cnt;
+		return patientService.modifyReserve(vo);
 	}
 
+	
+	
+	/**
+	 * 대면 결제대기버튼 누를시 상태업데이트 
+	 * @param vo reserveNo
+	 * @return service
+	 */
+	@PostMapping("/updatePayment")
+	@ResponseBody
+	public int updatePayment(PatientVO vo) {
+		System.out.println("Ddddddddddddd" + vo);
+		return mapper.updatePayment(vo);
+	}
+	
+	
 }// end class

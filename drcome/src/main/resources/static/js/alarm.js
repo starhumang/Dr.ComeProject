@@ -1,5 +1,5 @@
 var alarmSocket = null;
-var reconnectInterval = 5000; // 다시 연결하는 간격 (밀리초)
+
 
 function connectWebSocket(uid) {
 	try {
@@ -22,6 +22,7 @@ function connectWebSocket(uid) {
 			// 	$socketAlert.css('display', 'none');
 			// }, 5000);
 		};
+
 
 		// 연결이 닫혔을 때 호출되는 이벤트 핸들러
 		alarmSocket.onclose = function (event) {

@@ -217,5 +217,14 @@
 		reserve_status = 'e3'
 		where reserve_no = #{reserveNo}
 	</update>
+	
+	
+	<!-- 결제완료로 업데이트 -->
+	<update id="updatePayment" parameterType="PatientVO">
+		update reservation
+		set
+		reserve_status = 'e5'
+		where reserve_no = #{reserveNo}
+	</update>
 
 </mapper>

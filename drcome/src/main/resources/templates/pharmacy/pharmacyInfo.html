@@ -11,10 +11,17 @@
 			#btn {
 				margin-bottom: 20px;
 			}
+
 			.head_info {
 				display: flex;
 				justify-content: space-between;
 				margin-top: 30px;
+			}
+
+			#logout {
+				display: flex;
+				justify-content: right;
+				padding-right: 30px;
 			}
 		</style>
 
@@ -155,6 +162,10 @@
 						<button class="btn btn-danger" id="btn" onclick="withdraw()">탈퇴하기</button>
 					</div>
 				</div>
+			</div>
+
+			<div class="user-logout-link" id="logout">
+				<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
 			</div>
 		</div>
 	</body>

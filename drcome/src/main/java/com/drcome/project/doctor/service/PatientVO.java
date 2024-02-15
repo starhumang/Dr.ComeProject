@@ -21,7 +21,6 @@ public class PatientVO {
 	private String specificity;
 	private String payYn;
 	private int paymentNo;
-	// reserveNo는위에
 	private String perscriptionYn;
 	private String clinicDate;
 	private String hospitalId;

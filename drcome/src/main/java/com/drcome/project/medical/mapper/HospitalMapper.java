@@ -6,7 +6,9 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Param;
 
 import com.drcome.project.medical.service.DoctorVO;
+import com.drcome.project.medical.service.NoticeAttachVO;
 import com.drcome.project.medical.service.NoticeVO;
+import com.drcome.project.medical.service.QnaVO;
 
 public interface HospitalMapper {
 	
@@ -22,10 +24,16 @@ public interface HospitalMapper {
 	
 	/* 환자리스트 */
 	//환자 조회
-	public List<Map<String, Object>> selectPatientList(String hospitalId);
+	public List<Map<String, Object>> selectPatientList(Map<String, Object> map);
+	
+	/* 환자리스트 페이징 */
+	public int patientCount(Map<String, Object> map);
 	
 	//환자 진료 상세 조회
-	public List<Map<String, Object>> selectPatientDetailList(String hospitalId, Integer patientNo);
+	public List<Map<String, Object>> selectPatientDetailList(Map<String, Object> map);
+	
+	/* 환자리스트 페이징 */
+	public int patientInfoCount(Map<String, Object> map); 
 	
 	//환자 진료내역 단건 조회
 	public Map<String, Object> selectPatientInfo(String hospitalId, Integer patientNo, Integer clinicNo);
@@ -37,6 +45,9 @@ public interface HospitalMapper {
 	//Main
 	public List<Map<String, Object>> selectReserveMain(String hospitalId, String date, String reserveKindstatus);
 	
+	//약국 리스트 받아오기
+	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
+	
 	//Dr
 	public List<Map<String, Object>> selectReserveDr(String hospitalId, Integer doctorNo, String date, String reserveKindstatus);
 	
@@ -45,35 +56,50 @@ public interface HospitalMapper {
 	
 	/* QnA */
 	//QnA 전체
-	public List<Map<String, Object>> selectQnaList(String hospitalId);
+	public List<Map<String, Object>> selectQnaList(Map<String, Object> map);
+	
+	/* QnA 리스트 페이징 */
+	public int qnaCount(Map<String, Object> map);
 	
 	//QnA 단건상세
-	public List<Map<String, Object>> selectQnaInfo(String hospitalId, Integer qnaNo);
+	public QnaVO selectQnaInfo(QnaVO qnaVO);
+	
+	//Ans 단건상세
+	public QnaVO selectAnsInfo(QnaVO qnaVO);
+	
+	//QnA 답변 인서트 + 첨부파일 인서트 + 기존 QnA 상태 업데이트
+	public int insertQnaAns(QnaVO qnaVO);
+	public int updateQnaStatus(QnaVO qnaVO);
+	public int insertAttachQnaAns(QnaVO qnaVO);
+	
+	//QnA 파일 가져오기
+	public List<NoticeAttachVO> selectQnaAtt(NoticeAttachVO attVO);
 	
 	/* 공지사항 */
 	//공지사항 전체
-	public List<Map<String, Object>> selectNoticeList(@Param("page") int page, @Param("hospitalId") String hospitalId);
+	public List<Map<String, Object>> selectNoticeList(@Param("page") int page, @Param("type") int type, @Param("keyword") String keyword, @Param("hospitalId") String hospitalId);
+	
+	/* 공지사항 리스트 페이징 */
+	public int noticeCount(@Param("type") int type, @Param("keyword") String keyword, @Param("hospitalId") String hospitalId);
 	
 	//공지사항 단건상세
-	public List<NoticeVO> selectNoList(String hospitalId, Integer noticeNo);
+	public NoticeVO selectNoList(NoticeVO noticeVO);
 	
 	//공지사항 등록 + 첨부파일 등록
 	public int insertNotice(NoticeVO vo);
 	public int insertAttach(NoticeVO vo);
+
+	//공지사항 수정 + 첨부파일 수정or등록
+	public int updateNotice(NoticeVO vo);
+	public int deleteAttachment(int noticeNo);
 	
-	//공지사항 검색
-	public List<NoticeVO> searchNoticeByTitle(@Param("hospitalId") String hospitalId, @Param("keyword") String keyword);
-	public List<NoticeVO> searchNoticeByContent(@Param("hospitalId") String hospitalId, @Param("keyword") String keyword);
-	public int searchNoticeCount(@Param("keyword") String keyword, @Param("hospitalId") String hospitalId);
-	
+	//공지사항 삭제
+	public int deleteNotice(NoticeVO vo);
+
 	/* 병원프로필 */
 	//병원-의사 조회
 	public List<DoctorVO> selectDrList(String hospitalId);
-	
-	/* ------- Total Count ------- */
-	/* 공지사항 리스트 페이징 */
-	public int noticeCount(@Param("hospitalId") String hospitalId);
-	
+
 	/* 의사 번호 조회 */
 	public int getCurrentDoctorNo();
 	
@@ -91,4 +117,5 @@ public interface HospitalMapper {
 	
 	/* 의사 시간 삭제 */
 	public int deleteDoctorTime(int doctorNo);
+
 }

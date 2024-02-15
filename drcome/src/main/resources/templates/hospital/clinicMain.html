@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{hospital/hospitalLayout}">
-<head>
-<meta charset="UTF-8" />
-<title>noticeList</title>
-<style>
-.head_info {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 30px;
-}
-.catCal {
-	display: flex;
-	justify-content: space-between;
-	margin: 15px 0;
-}
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{hospital/hospitalLayout}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>noticeList</title>
+    <style>
+      .head_info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
+      .catCal {
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0;
+      }
       input[type="radio"] {
         display: none;
       }
@@ -27,17 +29,19 @@
     </style>
   </head>
 
-<body>
-	<div layout:fragment="content">
-		<div class="container-fluid">
-			<div class="head_info">
-				<h4 th:text="${hospitalSel.hospitalName}"></h4>
-				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
-						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
-				</p>
-			</div>
-			<p>Reservation</p>
+  <body>
+    <div layout:fragment="content">
+      <div class="container-fluid">
+        <div class="head_info">
+          <h4 th:text="${hospitalSel.hospitalName}"></h4>
+          <p>
+            <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+            <span
+              th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+            ></span>
+          </p>
+        </div>
+        <p>Reservation</p>
 
         <!-- 카테고리 & 달력선택 -->
         <div class="catCal">
@@ -92,11 +96,9 @@
         </div>
 
         <div>
-          <table class="table table-hover">
+          <table id="reserveListTable" class="table table-hover">
             <thead>
               <tr>
-                <th>확인용 주으니가 추가</th>
-                <th>유저아이디</th>
                 <th>예약코드</th>
                 <th>환자이름</th>
                 <th>생년월일</th>
@@ -109,125 +111,167 @@
                 <th>처방전</th>
               </tr>
             </thead>
-            <tbody>
-              <tr th:each="rl : ${reserveList}">
-                <td th:text="${rl.reserveStatus}"></td>
-                <td th:text="${rl.userId}"></td>
-                <td th:text="${rl.reserveNo}"></td>
-                <td th:text="${rl.userName}"></td>
-                <td
-                  th:text="${#dates.format(rl.userBirthday, 'yyyy-MM-dd')}"
-                ></td>
-                <td th:text="${rl.gender}"></td>
-                <td th:text="${rl.userPhone}"></td>
-                <td th:text="${rl.reserveTime}"></td>
-                <td th:text="${rl.doctorName}"></td>
+            <tbody></tbody>
+          </table>
+        </div>
 
-                <td th:if="${ rl.reserveKindstatus == 'c1' }">대면</td>
-                <td th:unless="${ rl.reserveKindstatus == 'c1' }">비대면</td>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+        <link
+        href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
+        rel="stylesheet"
+      />
 
-			<div>
-				<table id="reserveListTable" class="table table-hover">
-					<thead>
-						<tr>
-							<th>예약코드</th>
-							<th>환자이름</th>
-							<th>생년월일</th>
-							<th>성별</th>
-							<th>환자Tel</th>
-							<th>예약시간</th>
-							<th>담당의</th>
-							<th>구분</th>
-							<th>진료상태</th>
-							<th>처방전</th>
-						</tr>
-					</thead>
-					<tbody>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<script>
-		    $(document).ready(function() {
-		        // 날짜 처리 함수
-		        function formatDate(date) {
-		            var year = date.getFullYear();
-		            var month = (date.getMonth() + 1).toString().padStart(2, '0');
-		            var day = date.getDate().toString().padStart(2, '0');
-		            return `${year}-${month}-${day}`;
-		        }
-		        
-		        
-		        todayDate = new Date().toISOString().substring(0, 10);
-		        var inputToday = $('#date').val(todayDate); // 입력 요소에 오늘 날짜 설정
-		        var finalDay = inputToday.val().replace(/-/g, '');
-		        console.log(finalDay);
-		        var reserveStatus = null;
-		        console.log(reserveStatus);
+        <script>
+          $(document).ready(function () {
+            // 날짜 처리 함수
+            function formatDate(date) {
+              var year = date.getFullYear();
+              var month = (date.getMonth() + 1).toString().padStart(2, "0");
+              var day = date.getDate().toString().padStart(2, "0");
+              return `${year}-${month}-${day}`;
+            }
 
-		        sendAjaxRequest();
-		        
-		        // AJAX 요청을 수행하는 함수
-		        function sendAjaxRequest() {
-		            $.ajax({
-		                url: '/hospital/clinicMain/ajax',
-		                type: 'GET',
-		                data: {
-		                    date: finalDay,
-		                    reserveKindstatus: reserveStatus
-		                },
-		                success: function(reserveList) {
-		                    if(reserveList) {  // reserveList가 존재하는지 확인
-		                        console.log(reserveList);
-		                        var reserveListTbody = $('#reserveListTable tbody');
-		                        reserveListTbody.empty();
-		                        for (var i = 0; i < reserveList.length; i++) {
-		                            var reserve = reserveList[i];
-		                            var reserveTr = '<tr>' +
-		                                '<td>' + reserve.reserveNo + '</td>' +
-		                                '<td>' + reserve.userName + '</td>' +
-		                                '<td>' + formatDate(new Date(reserve.userBirthday)) + '</td>' +
-		                                '<td>' + reserve.gender + '</td>' +
-		                                '<td>' + reserve.userPhone + '</td>' +
-		                                '<td>' + reserve.reserveTime + ' : 00</td>' +
-		                                '<td>' + reserve.doctorName + '</td>' +
-		                                '<td>' + (reserve.reserveKindstatus === 'c1' ? '대면' : '비대면') + '</td>' +
-		                                '<td><button class="btn btn-dark">진료대기</button></td>' +
-		                                '<td><button class="btn btn-light">처방전</button></td>' +
-		                                '</tr>';
-		                            reserveListTbody.append(reserveTr);
-		                        }
-		                    } else {
-		                        console.log('No reserveList found in response');
-		                    }
-		                }
+            todayDate = new Date().toISOString().substring(0, 10);
+            var inputToday = $("#date").val(todayDate); // 입력 요소에 오늘 날짜 설정
+            var finalDay = inputToday.val().replace(/-/g, "");
+            console.log(finalDay);
+            var reserveStatus = null;
+            console.log(reserveStatus);
 
-		            });
-		        }
+            sendAjaxRequest();
 
-		        // 라디오 버튼 클릭 시
-		        $('input[name="btnradio"]').change(function() {
-		            if ($('#btnradio1').is(':checked')) {
-		                reserveStatus = null;
-		            } else if ($('#btnradio2').is(':checked')) {
-		                reserveStatus = "c2";
-		            } else if ($('#btnradio4').is(':checked')) {
-		                reserveStatus = "c1";
-		            }
-		            finalDay = $('#date').val().replace(/-/g, ''); // 선택된 날짜를 finalDay 변수에 저장
-		            sendAjaxRequest();  // AJAX 요청 수행
-		        });
+            // AJAX 요청을 수행하는 함수
+            function sendAjaxRequest() {
+              $.ajax({
+                url: "/hospital/clinicMain/ajax",
+                type: "GET",
+                data: {
+                  date: finalDay,
+                  reserveKindstatus: reserveStatus,
+                },
+                success: function (reserveList) {
+                  if (reserveList) {
+                    // reserveList가 존재하는지 확인
+                    console.log(reserveList);
+                    var reserveListTbody = $("#reserveListTable tbody");
+                    reserveListTbody.empty();
 
-		        // 날짜 선택 시
-		        $('#date').change(function() {
-		            $('#btnradio1').prop('checked', true); // #btnradio1로 초기화
-		            reserveStatus = null; // reserveStatus 초기화
-		            finalDay = $('#date').val().replace(/-/g, '');
-		            sendAjaxRequest();  // AJAX 요청 수행
-		        });
-		    });
+                    for (var i = 0; i < reserveList.length; i++) {
+                      var reserve = reserveList[i];
+                      var rt = reserve.reserveKindstatus;
+                      var rs = reserve.reserveStatus;
+                      var reserveStatusText = "";
+                      var btnclass = "";
+                      var btnDisabled = "";
 
-		</script>
-	</div>
-</body>
+                      if (rs === "e1") {
+                        reserveStatusText = "진료대기";
+                        btnclass = "class = 'btn btn-secondary'";
+                        btnDisabled = "disabled";
+                      } else if (rs === "e4" && rt === "c2") {
+                        reserveStatusText = "진료완료";
+                        btnclass = "class = 'btn btn-light'";
+                        btnDisabled = "disabled";
+                      } else if (rs === "e4" && rt === "c1") {
+                        reserveStatusText = "결제완료 처리하기";
+                        btnclass = "class = 'btn btn-warning update'";
+                        
+                      } else if (rs ==="e5"){
+                        reserveStatusText = "결제완료";
+                        btnDisabled = "disabled";
+                        btnclass = "class = 'btn btn-danger'";
+                      } else { 
+                        reserveStatusText = "진료중";
+                        btnclass = "class = 'btn btn-light'";
+                        btnDisabled = "disabled";
+                      }
+
+                      let reserveTr = document.createElement("tr");
+
+                      reserveTr.innerHTML = 
+                        "<td>" + reserve.reserveNo + "</td>" +
+                        "<td>" + reserve.userName + "</td>" +
+                        "<td>" + formatDate(new Date(reserve.userBirthday)) + "</td>" +
+                        "<td>" + reserve.gender + "</td>" +
+                        "<td>" + reserve.userPhone + "</td>" +
+                        "<td>" + reserve.reserveTime + "</td>" +
+                        "<td>" + reserve.doctorName + "</td>" +
+                        "<td>" + (reserve.reserveKindstatus === "c1" ? "대면" : "비대면") + "</td>" +
+                        "<td><button " + btnclass + btnDisabled + ">" + reserveStatusText + "</button></td>";
+
+                       
+                        if (rs === "e5" && reserve.perscriptionYn === "Y") {
+                            let prescriptionButton = document.createElement("button");
+                            prescriptionButton.textContent = "처방전 전송";
+                            prescriptionButton.className = "btn btn-primary";
+
+                            let prescriptionTd = document.createElement("td");
+                            prescriptionTd.appendChild(prescriptionButton);
+
+                            reserveTr.appendChild(prescriptionTd);
+                        }
+
+                      reserveListTbody.append(reserveTr);
+                    }
+                  } else {
+                    console.log("No reserveList found in response");
+                  }
+                },
+              });
+            }
+
+            // 라디오 버튼 클릭 시
+            $('input[name="btnradio"]').change(function () {
+              if ($("#btnradio1").is(":checked")) {
+                reserveStatus = null;
+              } else if ($("#btnradio2").is(":checked")) {
+                reserveStatus = "c2";
+              } else if ($("#btnradio4").is(":checked")) {
+                reserveStatus = "c1";
+              }
+              finalDay = $("#date").val().replace(/-/g, ""); // 선택된 날짜를 finalDay 변수에 저장
+              sendAjaxRequest(); // AJAX 요청 수행
+            });
+
+            // 날짜 선택 시
+            $("#date").change(function () {
+              $("#btnradio1").prop("checked", true); // #btnradio1로 초기화
+              reserveStatus = null; // reserveStatus 초기화
+              finalDay = $("#date").val().replace(/-/g, "");
+              sendAjaxRequest(); // AJAX 요청 수행
+            });
+          });
+
+          //대면환자 결제대기 눌렀을때 결제완료로 상태업데이트 
+          $(document).on("click", ".update", function(event) {
+    
+           var trElement = $(this).closest('tr');
+           var firstTdValue = trElement.find('td:first').text();
+           // console.log("첫 번째 td 값: " + firstTdValue);
+           
+            $.ajax({
+              url: `/updatePayment?reserveNo=${firstTdValue}`,
+              method: "POST",
+            })
+              .done((result) => {
+                if (result == 1) {
+                  Swal.fire({
+                    title: "결제완료 처리 되었습니다.",
+                    icon: "success",
+                  });
+                }
+                setTimeout(function() {
+                location.href = `/hospital/clinicMain`;
+                }, 1000);
+              })
+              .fail((err) => {
+                console.log(err);
+              });
+          
+
+            });
+        </script>
+      </div>
+    </div>
+  </body>
 </html>

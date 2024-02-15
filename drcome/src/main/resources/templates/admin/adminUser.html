@@ -47,7 +47,8 @@
                 id="btnradio1"
                 autocomplete="off"
                 value="ACTIVE"
-                checked
+                onclick="location.href='/admin/user'"
+                th:checked="${#strings.equals(param.userStatus, null)}"
               />
               <label
                 class="btn btn-outline-dark"
@@ -64,6 +65,8 @@
                 name="btnradio"
                 id="btnradio2"
                 autocomplete="off"
+                onclick="location.href='/admin/user?userStatus=a1'"
+                th:checked="${#strings.equals(param.userStatus, 'a1')}"
               />
               <label class="btn btn-outline-dark" for="btnradio2" 
                 >일반회원</label
@@ -74,6 +77,8 @@
                 name="btnradio"
                 id="btnradio3"
                 autocomplete="off"
+                onclick="location.href='/admin/user?userStatus=a3'"
+                th:checked="${#strings.equals(param.userStatus, 'a3')}"
               />
               <label class="btn btn-outline-dark" for="btnradio3" 
                 >탈퇴회원</label
@@ -108,10 +113,9 @@
 					<td th:text="${usertable.phone}"></td>
 					<td th:text="${#dates.format(usertable.birthday, 'yyyy-MM-dd')}"></td>
 					<td th:text="${usertable.gender}"></td>
-					<td
-						th:if="${usertable.grade == 'USER' && usertable.userStatus != 'a2  '}">일반회원</td>
-					<td th:if="${usertable.grade == 'ADMIN'}">관리자</td>
-					<td th:if="${usertable.userStatus == 'a2  '}">탈퇴회원</td>
+					<td th:if="${usertable.userStatus == 'a1'}">일반회원</td>
+					<td th:if="${usertable.userStatus == 'a2'}">관리자</td>
+					<td th:if="${usertable.userStatus == 'a3'}">탈퇴회원</td>
 					<td
 						th:text="${#dates.format(usertable.joindate, 'yyyy-MM-dd')}"></td>
 				</tr>
@@ -125,17 +129,17 @@
       <div aria-label="Page navigation">
     <ul class="pagination justify-content-center">
         <li th:class="${list.first ? 'page-item disabled' : 'page-item'}">
-            <a class="page-link" th:href="@{/admin/user(pageNo=0)}" tabindex="-1" aria-disabled="true">Previous</a>
+            <a class="page-link" th:href="@{/admin/user(pageNo=0, userStatus=${param.userStatus})}" tabindex="-1" aria-disabled="true">Previous</a>
         </li>
         <li th:each="i : ${#numbers.sequence(0, list.totalPages - 1)}"
             th:class="${i == list.number ? 'page-item active' : 'page-item'}">
             <a class="page-link"
-               th:href="@{/admin/user(pageNo=${i})}"
+               th:href="@{/admin/user(pageNo=${i}, userStatus=${param.userStatus})}"
                th:text="${i + 1}"></a>
         </li>
         <li th:class="${list.last ? 'page-item disabled' : 'page-item'}">
             <a class="page-link"
-               th:href="@{/admin/user(pageNo=${list.totalPages - 1})}">Next</a>
+               th:href="@{/admin/user(pageNo=${list.totalPages - 1}, userStatus=${param.userStatus})}">Next</a>
         </li>
     </ul>
 </div>

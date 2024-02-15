@@ -353,7 +353,7 @@
 			           c.clinic_date "perscriptionDate",
 			           s.send_status "sendStatus",
 			           s.rejection "rejection",
-			           s.pharmacy_selectno "pharmacySelectno"
+			           s.pharmacy_selectno "pharmacySelectno",
 			           ROWNUM AS rn
 			    FROM clinic c 
 			    LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
@@ -362,7 +362,7 @@
 			    JOIN reservation r ON c.reserve_no = r.reserve_no
 			    JOIN doctor d ON r.doctor_no = d.doctor_no
 			    JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
-			    WHERE s.print_status = '출력대기'
+			    WHERE s.print_status = 'd1'
 			    AND s.send_status = 'Y'
 			    AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
 			    AND s.rejection IS NULL
@@ -385,7 +385,7 @@
 		  JOIN reservation r ON c.reserve_no = r.reserve_no
 		  JOIN doctor d ON r.doctor_no = d.doctor_no
 		  JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
-		 WHERE s.print_status = '출력대기'
+		 WHERE s.print_status = 'd1'
 		   AND s.send_status = 'Y'
 		   AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
 		   AND s.rejection IS NULL
@@ -422,7 +422,7 @@
 			    JOIN reservation r ON c.reserve_no = r.reserve_no
 			    JOIN doctor d ON r.doctor_no = d.doctor_no
 			    JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
-			    WHERE s.print_status = '출력완료'
+			    WHERE s.print_status = 'd2'
 			    AND s.send_status = 'Y'
 			    AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
 			    AND s.rejection IS NULL
@@ -445,7 +445,7 @@
           JOIN reservation r ON c.reserve_no = r.reserve_no
           JOIN doctor d ON r.doctor_no = d.doctor_no
           JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
-          WHERE s.print_status = '출력완료'
+          WHERE s.print_status = 'd2'
           AND s.send_status = 'Y'
           AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
           AND s.rejection IS NULL
@@ -467,7 +467,7 @@
    
    <update id="printupdate" parameterType="int">
    	UPDATE pharmacy_select 
-   	   SET print_status = '출력완료' 
+   	   SET print_status = 'd2' 
    	 WHERE pharmacy_selectno = #{pharmacySelectno}
    </update>
 </mapper>

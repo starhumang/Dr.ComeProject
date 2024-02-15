@@ -11,6 +11,7 @@ public class PharmacySelectVO {
 	String produceStatus;
 	String rejection;
 	String sendStatus;
+	String userId;
 	
 	//처방전 가져오기
 	private String medicineName;

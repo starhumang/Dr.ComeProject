@@ -47,21 +47,20 @@ public class AdminController {
 	 * @return admin/home
 	 */
    @GetMapping("/admin")
-   public String home(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model) {
+   public String home(@RequestParam(required = false, defaultValue = "0") int pageNo, Model model, String ustatus) {
 		
-		Page<Usertable> userlist = aservice.getuserAll(pageNo, 10);
-		model.addAttribute("list", userlist); model.addAttribute("totalCount",
-		userlist.getTotalElements());
+		Page<Usertable> userlist = aservice.getuserAll("a1", pageNo, 10);
+		model.addAttribute("totalCount", userlist.getTotalElements());
 
-	Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
+		Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
 		model.addAttribute("grantlisth", grantlisth);
 		model.addAttribute("totalCounth", grantlisth.getTotalElements());
       
-	Page<Pharmacy> grantlistp = aservice.findBypharmacyStatus("b1", pageNo, 5);
+		Page<Pharmacy> grantlistp = aservice.findBypharmacyStatus("b1", pageNo, 5);
 		model.addAttribute("grantlistp", grantlistp);
 		model.addAttribute("totalCountp", grantlistp.getTotalElements());
       
-      return "admin/home";
+		return "admin/home";
    }
    
    /**
@@ -83,18 +82,15 @@ public class AdminController {
    
 	
 	 @GetMapping("/admin/user") 
-	 public String getUsers(@RequestParam(defaultValue = "ACTIVE") String userStatus,
+	 public String getUsers(String userStatus,
 			 				@RequestParam(defaultValue = "0") int pageNo, 
 			 				Model model) { 
-		 Page<Usertable> userlist = aservice.findUsersDynamically(userStatus, pageNo, 10);
+		 Page<Usertable> userlist = aservice.getuserAll(userStatus, pageNo, 10);
 		 model.addAttribute("list", userlist); 
 		 return "admin/adminUser"; 
 	}
    
-   
-   
-   
-   
+
    /**
     * 일반 사용자 일반 회원 목록 조회
     * @param pageNo 페이징 조건

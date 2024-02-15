@@ -33,6 +33,27 @@
 		user_id
 		=#{uid} and check_code='X' and content_code='enterRoom'
 	</select>
+	
+	<insert id="insertAlarmPharmacy" parameterType="AlarmDao">
+		INSERT into alarm(alarm_no
+						  , user_id
+						  , content_code
+						  , prefix
+						  , pharmacy_selectno)
+		VALUES (alarm_no_seq.NEXTVAL
+				,#{userId}
+			,#{contentCode}
+			,#{prefix}
+			,#{pharmacySelectno})
+	</insert>
+	
+	<select id="selectAlarmPharmacy" resultType="int">
+		SELECT count(*)
+		  FROM alarm
+		 WHERE user_id = #{uid}
+		   AND check_code='X'
+		   AND content_code = 'canclePharmacy'
+	</select>
 
 
 </mapper>

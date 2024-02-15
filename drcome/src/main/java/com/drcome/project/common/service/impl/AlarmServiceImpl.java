@@ -40,4 +40,16 @@ public class AlarmServiceImpl implements AlarmService {
 		return mapper.selectAlarm(uid);
 	}
 
+	// 약국 반환 알람테이블 insert
+	@Override
+	public int saveAlarmPharmacy(AlarmDao dao) {
+		return mapper.insertAlarmPharmacy(dao);
+	}
+
+	// 약국 반환 알람 조회
+	@Override
+	public int checkAlarmPharmacy(String uid) {
+		return mapper.selectAlarmPharmacy(uid);
+	}
+
 }

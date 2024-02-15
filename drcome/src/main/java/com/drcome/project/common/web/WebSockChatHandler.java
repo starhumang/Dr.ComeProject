@@ -54,23 +54,84 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 
 		// 의사or환자가 담아보낸 아이디 출력
 		payload = message.getPayload();
-		System.out.println("의사 or 환자가 보낸 환자아이디 " + payload);
+		System.out.println("받은 메세지 ======================" + payload);
+		
+		// , 기준으로 짤라서 첫번째 = 유저아이디 두번쨰 = 취소사유 세번쨰 셀렉트넘버 서브스트링이나 스플릿
+		String[] parts = payload.split("\\,");
+		
+		String acontent = null;
+        String auserId = null;
+        String aselectno = null;
+        
+        if(parts.length >= 3) {
+        	auserId = parts[0];
+            acontent = parts[1];
+            aselectno = parts[2];
 
-		int cnt = alarm.checkAlarm(payload);
-
-		System.out.println("알람조회결과는여?" + cnt);
-
-		if (cnt > 0) {
-			for (WebSocketSession sess : sessions) {
-				if (sess.getAttributes().get("userId").equals(payload)) {
+            System.out.println(acontent);  // 알람 내용
+            System.out.println(auserId); // 알람받을 회원 아이디
+            System.out.println(aselectno);  // 취소된 약국 선택 번호
+        } else {
+        	auserId = payload;
+        }
+        
+		// 의사 카운트
+		int cnt = alarm.checkAlarm(auserId);
+		// 약국 카운트
+		int cntp = alarm.checkAlarmPharmacy(auserId);
+        
+        for (WebSocketSession sess : sessions) {
+			// 여기 equals 뒤에 페이로드는 , 기준으로 짤라서 첫번째 = 유저아이디
+			if (sess.getAttributes().get("userId").equals(auserId)) {
+				if (cntp > 0) {
+					TextMessage sendMsg = new TextMessage("취소 사유:" + acontent + "번호: " + aselectno);
+					sess.sendMessage(sendMsg);
+					System.out.println("보냈음!!!!!!!!!!!!!!!!!!!!!!");
+				} else if (cnt > 0) {					
 					TextMessage sendMsg = new TextMessage(sess.getAttributes().get("userId") + "님..진료실..입장하세요..");
-					System.out.println(sess.getAttributes().get("userId") + "님..진료실..입장하세요..");
 					sess.sendMessage(sendMsg);
 				}
-
 			}
+		}
 
-		} // if
+//		// 의사 카운트
+//		int cnt = alarm.checkAlarm(auserId);
+//
+//		System.out.println("알람조회결과는여?" + cnt);
+//
+//		if (cnt > 0) {
+//			for (WebSocketSession sess : sessions) {
+//				// 여기 equals 뒤에 페이로드는 , 기준으로 짤라서 첫번째 = 유저아이디
+//				if (sess.getAttributes().get("userId").equals(auserId)) {
+//					// new TextMessage 안에는 , 기준 두번쨰 세번째
+//					TextMessage sendMsg = new TextMessage(sess.getAttributes().get("userId") + "님..진료실..입장하세요..");
+//					System.out.println("보내는말: "+ sendMsg);
+//					sess.sendMessage(sendMsg);
+//				}
+//
+//			}
+//		} // if
+//		
+//		// 약국 카운트
+//		int cntp = alarm.checkAlarmPharmacy(auserId);
+//		
+//		System.out.println("약국 알람조회결과는여?" + cntp);
+//		
+//		System.out.println("아이디:" + auserId);
+//		
+//		if (cntp > 0) {
+//			for (WebSocketSession sess : sessions) {
+//				// 여기 equals 뒤에 페이로드는 , 기준으로 짤라서 첫번째 = 유저아이디
+//				if (sess.getAttributes().get("userId").equals(auserId)) {
+//					// new TextMessage 안에는 , 기준 두번쨰 세번째
+//					TextMessage sendMsg = new TextMessage("약국 취소 사유: " + acontent);
+//					System.out.println("보내는말: "+ sendMsg);
+//					sess.sendMessage(sendMsg);
+//				}
+//
+//			}
+//		} // if
+		
 
 	}/// handleTextMessage
 

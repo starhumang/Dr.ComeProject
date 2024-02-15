@@ -8,4 +8,5 @@ public class NoticeAttachVO {
 	private String fileName;
 	private Integer noticeNo;
 	private Integer qnaNo;
+	private Integer ansCode;
 }

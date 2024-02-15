@@ -31,7 +31,7 @@ public class UserMemberVO {
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private Date birthday;
 	
-	private char gender;
+	private String gender;
 	private String identification;
 	
 	@JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")

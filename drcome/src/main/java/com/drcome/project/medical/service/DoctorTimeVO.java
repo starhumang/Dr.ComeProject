@@ -1,6 +1,7 @@
 package com.drcome.project.medical.service;
 
 import java.util.Date;
+import java.util.List;
 
 import lombok.Data;
 
@@ -11,4 +12,6 @@ public class DoctorTimeVO {
 	private String minTime;
 	private String maxTime;
 	private Date registerDate;
+	
+    private List<String> timeArray;
 }

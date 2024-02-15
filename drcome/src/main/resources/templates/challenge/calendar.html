@@ -5,41 +5,74 @@
 <head>
 <meta charset="UTF-8">
 <title>Challenge</title>
-<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
-<!-- <script>
-document.addEventListener('DOMContentLoaded', function() {
-	var calendarEl = document.getElementById('calendar');
-	var calendar = new FullCalendar.Calendar(calendarEl, {
-		initialView: 'dayGridMonth'
-	});
-	calendar.render();
-});
-</script> -->
-<script th:inline="javascript">
+<style>
+/* 일요일 날짜 빨간색 */
+.fc-day-sun a {
+  color: red;
+  text-decoration: none;
+}
 
+/* 토요일 날짜 파란색 */
+.fc-day-sat a {
+  color: blue;
+  text-decoration: none;
+}
+/* 이벤트 아이콘 스타일 */
+.event-icon {
+  margin-right: 5px; /* 아이콘과 텍스트 사이의 간격 조정 */
+}
+</style>
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<script th:inline="javascript">
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     var calendar = new FullCalendar.Calendar(calendarEl, {
     	events:   [[${successToDo}]],
         initialView: 'dayGridMonth',
+        eventDidMount: function(info) {
+            var eventTitle = info.event.title;
+            var iconClass = '';
+            var textColor = '';
+            // title이 'success'이면 체크 아이콘과 연두색 텍스트, 'fail'이면 엑스 아이콘과 빨간색 텍스트를 사용합니다.
+            if (eventTitle === 'success') {
+                iconClass = 'fas fa-check-circle'; // Font Awesome 체크 아이콘
+                textColor = 'green'; // 연두색 텍스트
+                info.el.style.background = 'none';
+                info.el.style.border = 'none';
+            } else if (eventTitle === 'fail') {
+                iconClass = 'fas fa-times-circle'; // Font Awesome 엑스 아이콘
+                textColor = 'red'; // 빨간색 텍스트
+                info.el.style.background = 'none';
+                info.el.style.border = 'none';
+            }  else {
+                // success나 fail이 아닌 경우, 시간을 "20:00" 형식으로 변경합니다.
+                var eventTime = new Date(info.event.start);
+                var hours = eventTime.getHours() < 10 ? '0' + eventTime.getHours() : eventTime.getHours();
+                var minutes = eventTime.getMinutes() < 10 ? '0' + eventTime.getMinutes() : eventTime.getMinutes();
+                var timeString = hours + ':' + minutes;
+                var titleString = info.event.title;
+                info.el.innerText = timeString + ' ' + titleString;
+                info.el.style.color = 'black';
+                return;
+            }
+            // 이벤트 제목을 감싸는 span 요소를 생성합니다.
+            var titleWrapper = document.createElement('span');
+            // 아이콘을 생성하고 클래스를 추가합니다.
+            var iconElement = document.createElement('i');
+            iconElement.className = 'event-icon ' + iconClass;
+            // 이벤트 텍스트의 색상을 설정합니다.
+            titleWrapper.style.color = textColor;
+            // 이벤트 요소에 아이콘과 제목을 추가합니다.
+            titleWrapper.appendChild(iconElement);
+            titleWrapper.appendChild(document.createTextNode(info.event.title)); // 이벤트 제목을 추가합니다.
+            info.el.innerHTML = ''; // 이벤트 요소의 내용을 초기화합니다.
+            info.el.appendChild(titleWrapper); // 이벤트 요소에 새로운 내용을 추가합니다.
+        },  
         dateClick: function(info) {
             var clickedDate = info.dateStr;
             //info.dayEl.style.backgroundColor = '#f5f5f5'; // 클릭한 날짜에 스타일 적용 예시
             console.log('선택날짜: ' + clickedDate);
-            /* $.ajax({
-                type: "GET",
-                url: "/todolist/{date}",
-                data: {
-                    date: clickedDate
-                },
-                success: function(response) {
-                    // AJAX 요청이 성공했을 때 수행할 동작
-                    console.log('Ajax 성공');
-                },
-                error: function(error) {
-                    console.error('Ajax 실패', error);
-                }
-            }); */
+
             var newURL = "todolist/" + clickedDate;
             window.location.href = newURL;
         }

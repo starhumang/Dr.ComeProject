@@ -5,10 +5,33 @@
 
 <mapper
 	namespace="com.drcome.project.mem.mapper.UserMemberMapper">
-
+	
+	<!-- 사용자 조회 - 시큐리티용 -->
+	<select id="getMember" resultType="MemVo">
+		SELECT user_id
+			 , user_pw
+			 , user_name
+			 , 'ROLE_' || grade as grade
+			 , user_status
+		FROM user_login_view
+		WHERE user_id = #{id}
+	</select>
+	
+	<!-- 일반 사용자 조회 - 마이페이지용 -->
+	<select id="selectMem" resultType="UserMemberVO">
+		SELECT user_id
+			 , user_name
+			 , phone
+			 , birthday
+			 , gender
+			 , identification
+		FROM usertable
+		WHERE user_id =	#{id}
+	</select>
+	
+	<!-- 일반 사용자 회원 가입 -->
 	<insert id="insertUserMember"
 		parameterType="UserMemberVO">
-        <![CDATA[
         INSERT INTO usertable (user_id
         					, user_pw
         					, user_name
@@ -16,37 +39,18 @@
         					, birthday
         					, gender
         					, identification)
-        VALUES
-        (#{userId}, #{userPw}, #{userName}, #{phone}, #{birthday}, #{gender}, #{identification})
-        ]]>
+        VALUES (#{userId}
+        		, #{userPw}
+        		, #{userName}
+        		, #{phone}
+        		, #{birthday}
+        		, #{gender}
+        		, #{identification})
 	</insert>
-
-	<select id="getMember" resultType="MemVo">
-		SELECT user_id
-		, user_pw
-		,
-		user_name
-		, 'ROLE_' || grade as grade
-		FROM user_login_view
-		WHERE user_id
-		= #{id}
-	</select>
-
-	<select id="selectMem" resultType="UserMemberVO">
-		SELECT user_id
-		, user_name
-		, phone
-		, birthday
-		, gender
-		, identification
-		FROM usertable
-		WHERE user_id =
-		#{id}
-	</select>
-
+	
+	<!-- 병원 사용자 회원 가입 -->
 	<insert id="insertHosMember"
 		parameterType="HospitalVO">
-	<![CDATA[
         INSERT INTO hospital (hospital_id
         					, hospital_pw
         					, hospital_name
@@ -60,32 +64,75 @@
         					, holiday
         					, opentime
         					, closetime)
-        VALUES
-        (#{hospitalId}, #{hospitalPw}, #{hospitalName}, #{address}, #{phone}, #{hospitalImg}, #{mainSubject}, #{directorName}, #{directorPhone}, #{directorLicense}, #{holiday}, #{opentime}, #{closetime})
-        ]]>
+        VALUES (#{hospitalId}
+        		, #{hospitalPw}
+        		, #{hospitalName}
+        		, #{address}
+        		, #{phone}
+        		, #{hospitalImg}
+        		, #{mainSubject}
+        		, #{directorName}
+        		, #{directorPhone}
+        		, #{directorLicense}
+        		, #{holiday}
+        		, #{opentime}
+        		, #{closetime})
 	</insert>
 	
+	<!-- 약국 사용자 회원 가입 -->
+	<insert id="insertPamMember"
+		parameterType="PharmacyVO">
+        INSERT INTO pharmacy (pharmacy_id
+        					, pharmacy_pw
+        					, pharmacy_name
+        					, address
+        					, pharmacy_phone
+        					, pharmacy_fax
+        					, pharmacy_img
+        					, ceo_name
+        					, ceo_phone
+        					, ceo_license
+        					, holiday
+        					, opentime
+        					, closetime)
+        VALUES (#{pharmacyId}
+        		, #{pharmacyPw}
+        		, #{pharmacyName}
+        		, #{address}
+        		, #{pharmacyPhone}
+        		, #{pharmacyFax}
+        		, #{pharmacyImg}
+        		, #{ceoName}
+        		, #{ceoPhone}
+        		, #{ceoLicense}
+        		, #{holiday}
+        		, #{opentime}
+        		, #{closetime})
+	</insert>
+	
+	<!-- 아이디 중복 체크 -->
+	<select id="checkId" resultType="int" parameterType="String">
+		SELECT COUNT(user_id)
+		FROM user_login_view
+		WHERE user_id = #{id}
+	</select>
+	
+	<!-- 전화번호 중복 체크 -->
 	<select id="checkPhone" resultType="int" parameterType="String">
 		SELECT COUNT(phone)
 		FROM user_login_view
 		WHERE phone = #{phone}
 	</select>
 
-	<select id="checkId" resultType="int" parameterType="String">
-		SELECT COUNT(user_id)
-		FROM user_login_view
-		WHERE user_id = #{id}
-	</select>
-
+	<!-- 아이디 찾기 -->
 	<select id="findId" resultType="String" parameterType="String">
-		SELECT
-		user_id
+		SELECT user_id
 		FROM user_detail_view
 		WHERE user_name = #{userName}
-		AND phone =
-		#{phone}
+		AND phone =	#{phone}
 	</select>
-
+	
+	<!-- 비밀번호 찾기 - 변경 -->
 	<update id="updatePw" parameterType="MemVO">
 		<choose>
 			<when test="grade == 'ROLE_USER' or grade == 'ROLE_ADMIN'">
@@ -106,11 +153,136 @@
 		</choose>
 	</update>
 	
+	<!-- 일반 사용자 정보 변경 -->
 	<update id="updateUserInfo" parameterType="MemVO">
 		UPDATE usertable
 		SET  user_pw = #{userPw}
 			,phone = #{phone}
 		WHERE user_id = #{userId}
 	</update>
-
+	
+	<!-- 병원 사용자 정보 변경 -->
+	<update id="updateHosInfo" parameterType="HospitalVO">
+		UPDATE hospital
+		SET hospital_pw = #{hospitalPw}
+		  , phone = #{phone}
+		  , hospital_img = #{hospitalImg}
+		  , director_phone = #{directorPhone}
+		  , holiday = #{holiday}
+		  , opentime = #{opentime}
+		  , closetime = #{closetime}
+		WHERE hospital_id = #{hospitalId}
+	</update>
+	
+	<!-- 약국 사용자 정보 변경 -->
+	<update id="updatePamInfo" parameterType="PharmacyVO">
+		UPDATE pharmacy
+		SET pharmacy_pw = #{pharmacyPw}
+		  , pharmacy_phone = #{pharmacyPhone}
+		  , pharmacy_fax = #{pharmacyFax}
+		  , pharmacy_img = #{pharmacyImg}
+		  , ceo_phone = #{ceoPhone}
+		  , holiday = #{holiday}
+		  , opentime = #{opentime}
+		  , closetime = #{closetime}
+		WHERE pharmacy_id = #{pharmacyId}
+	</update>
+		
+	<!-- 회원 탈퇴 -->
+	<update id="deleteUser" parameterType="MemVO">
+		<choose>
+			<when test="grade == 'ROLE_USER' or grade == 'ROLE_ADMIN'">
+				UPDATE usertable
+				SET user_status = 'a3'
+				WHERE user_id = #{userId}
+			</when>
+			<when test="grade == 'ROLE_HOSPITAL'">
+				UPDATE hospital
+				SET user_status = 'a3'
+				WHERE hospital_id = #{userId}
+			</when>
+			<when test="grade == 'ROLE_PHARMACY'">
+				UPDATE pharmacy
+				SET user_status = 'a3'
+				WHERE pharmacy_id = #{userId}
+			</when>
+		</choose>
+	</update>
+	
+	<!-- 예약 조회 -->
+	<select id="selectUserReserveInfo" resultType="ReservationVO">
+		SELECT r.RESERVE_NO "reserveNo"
+             , r.symptom "symptom"
+             , r.reserve_year || '-' || r.reserve_month || '-' || r.reserve_day "reserveDate"
+             , r.reserve_time "reserveTime"
+             , h.hospital_name "hospitalName"
+             , h.phone "hospitalPhone"
+             , d.doctor_name "doctorName"
+             , r.reserve_kindstatus "reserveKindstatus"
+             , r.reserve_status "reserveStatus"
+       	FROM reservation r
+			JOIN doctor d ON r.doctor_no = d.doctor_no AND r.hospital_id = d.hospital_id
+			JOIN usertable u ON u.user_id = r.user_id
+        	JOIN hospital h ON h.hospital_id = r.hospital_id
+		WHERE u.user_id = #{userId}
+		GROUP BY r.RESERVE_NO
+               , r.symptom
+               , r.reserve_year || '-' || r.reserve_month || '-' || r.reserve_day
+               , h.hospital_name
+               , h.phone
+               , r.reserve_time
+               , d.doctor_name
+               , r.reserve_kindstatus
+               , r.reserve_status
+        ORDER BY r.reserve_time, r.reserve_no
+	</select>
+	
+	<!-- 결제 정보 -->
+	<select id="selectClinicPay" resultType="ClinicPayVO">
+		SELECT c.clinic_no
+			 , h.hospital_name
+			 , d.doctor_name
+			 , d.subject
+			 , u.user_name
+			 , c.clinic_date
+			 , c.pay_yn AS pay
+		FROM reservation r
+			JOIN clinic c ON r.reserve_no = c.reserve_no
+			JOIN hospital h ON r.hospital_id = h.hospital_id
+			JOIN doctor d ON r.doctor_no = d.doctor_no
+			JOIN usertable u ON r.user_id = u.user_id
+		WHERE r.reserve_no = #{reserveNo}
+	</select>
+	
+	<!-- 결제 - 예약 테이블 상태 업데이트 -->
+	<update id="updateReserve" parameterType="int">
+		UPDATE reservation
+		SET reserve_status = 'e5'
+		WHERE reserve_no = #{reserveNo}
+	</update>
+		
+	<!-- 결제 - 결제 테이블 인서트 -->
+	<insert id="insertPayment" parameterType="PaymentVO">
+		<selectKey keyProperty="paymentNo" resultType="int" order="BEFORE">
+			SELECT NVL(max(payment_no), 0) + 1
+			FROM payment
+		</selectKey>
+		INSERT INTO payment (payment_no
+							, order_num
+							, amount
+							, user_id
+							, payment_method)
+		VALUES ( #{paymentNo}
+				, #{orderNum}
+				, #{amount}
+				, #{userId}
+				, #{paymentMethod} )
+	</insert>
+	
+	<!-- 결제 - 진료 테이블 업데이트 -->
+	<insert id="updatePayment">
+		UPDATE clinic 
+		SET payment_no = #{paymentNo}
+		where reserve_no = #{reserveNo}
+	</insert>
 </mapper>

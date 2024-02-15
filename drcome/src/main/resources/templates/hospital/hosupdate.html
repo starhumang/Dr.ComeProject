@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>병원 회원 정보 수정</title>
+
+		<style>
+			.head_info {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30px;
+			}
+
+			.left {
+				display: flex;
+				flex-direction: column;
+				padding-right: 40px;
+			}
+
+			label {
+				display: inline-block;
+				width: 200px;
+				margin-bottom: 5px;
+			}
+
+			.input-group {
+				align-items: center;
+				margin-bottom: 15px;
+			}
+
+			.input-group input,
+			.input-group button {
+				height: 30px;
+			}
+
+			.input-group input {
+				width: 400px;
+				margin-right: 10px;
+				height: 32px;
+				border: 0;
+				outline: none;
+				padding-left: 10px;
+			}
+
+			.input-group button {
+				width: 150px;
+			}
+
+			.input-group-select {
+				display: flex;
+				align-items: center;
+				margin-bottom: 15px;
+			}
+
+			.error-message {
+				color: red;
+				font-size: 0.8em;
+			}
+
+			#filePreview {
+				max-width: 100%;
+				max-height: 150px;
+				margin-top: 10px;
+				display: none;
+			}
+
+			.modal {
+				text-align: center;
+			}
+
+			.modal-dialog {
+				display: flex !important;
+				align-items: center;
+				justify-content: center;
+			}
+
+			#verification-section {
+				display: none;
+				align-items: center;
+				margin-bottom: 15px;
+			}
+
+			#verification-section input,
+			#verification-section button {
+				height: 30px;
+			}
+
+			#verification-section button {
+				width: 150px;
+			}
+
+			.onlyread {
+				background-color: #ccc;
+			}
+		</style>
+
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+		<script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+
+		<script type="text/javascript">
+			document.addEventListener('DOMContentLoaded', function () {
+				const medicalForm = document.getElementById('medicalForm');
+
+				medicalForm.addEventListener('keydown', function (e) {
+					if (e.key === 'Enter') {
+						e.preventDefault();
+					}
+				});
+				handleFilePreview();
+
+				let fileInput = document.getElementById('mimg');
+
+				fileInput.addEventListener('change', function () {
+					const file = this.files[0];
+
+					if (file) {
+						loadImage(
+							file,
+							function (img) {
+								const canvas = document.createElement('canvas');
+								const ctx = canvas.getContext('2d');
+
+								canvas.width = 200;
+								canvas.height = 200;
+
+								ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+								canvas.toBlob(
+									function (blob) {
+										console.log(blob);
+									},
+									'image/jpg',
+									0.7
+								);
+							},
+							{
+								maxWidth: 200,
+								maxHeight: 200,
+								contain: true,
+							}
+						);
+					}
+				});
+			});
+
+			function scsAlert(content) {
+				Swal.fire({
+					icon: 'success',
+					text: content,
+				});
+			}
+
+			function errAlert(content) {
+				Swal.fire({
+					icon: 'error',
+					text: content,
+				});
+			}
+
+			var formData = new FormData();
+
+			function checkPassword() {
+				let password = document.getElementById('mpw').value;
+				let passwordErrorMessage = document.getElementById('pwErrorMessage');
+
+				if (password === '') {
+					passwordErrorMessage.innerHTML = '비밀번호를 입력하세요.';
+					passwordErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				let passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+				if (!passwordRegex.test(password)) {
+					passwordErrorMessage.innerHTML =
+						'비밀번호는 최소 8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다.';
+					passwordErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				passwordErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function checkPasswordMatch() {
+				let password = document.getElementById('mpw').value;
+				let rePassword = document.getElementById('mpwcheck').value;
+				let rePasswordErrorMessage = document.getElementById('rePasswordErrorMessage');
+
+				if (password !== rePassword) {
+					rePasswordErrorMessage.innerHTML = '비밀번호가 일치하지 않습니다.';
+					rePasswordErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				rePasswordErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			const autoHyphen = (target) => {
+				target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+			};
+
+			const autoHyphenNum = (target) => {
+				target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{3})(\d{2})(\d{5})$/, `$1-$2-$3`);
+			};
+
+			function checkPhone() {
+				let phone = $('#ceophone').val().replace(/-/g, '');
+
+				if (!phone) {
+					Swal.fire({
+						icon: 'error',
+						text: '전화번호를 입력하세요.',
+					});
+					return;
+				}
+
+				let url = '/auth/checkPhone?phoneNum=' + phone;
+				$.ajax({
+					url: url,
+					type: 'get',
+				})
+					.done((resp) => {
+						console.log(resp);
+						console.log(resp.checkNum);
+						if (resp.checkNum != '중복') {
+							scsAlert('인증번호 발송');
+							verificationCode = resp.checkNum;
+							document.getElementById('verification-section').style.display = 'flex';
+						} else {
+							errAlert('이미 등록된 전화번호입니다.');
+						}
+					})
+					.fail((err) => {
+						console.log(err);
+					});
+			}
+
+			function checkPhoneNumber() {
+				let enteredCode = document.getElementById('checkPhoneNum').value;
+
+				if (enteredCode == verificationCode) {
+					scsAlert('인증 완료');
+					return true;
+				} else {
+					errAlert('인증 번호가 일치하지 않습니다.');
+					return false;
+				}
+			}
+
+			function checkAgreement() {
+				let agreement = document.getElementById('invalidCheck').checked;
+				let agreementErrorMessage = document.getElementById('agreementErrorMessage');
+
+				if (!agreement) {
+					agreementErrorMessage.innerHTML = '약관에 동의해야 합니다.';
+					agreementErrorMessage.style.color = 'red';
+					return false;
+				}
+
+				agreementErrorMessage.innerHTML = '';
+				return true;
+			}
+
+			function handleFilePreview() {
+				let fileInput = document.getElementById('mimg');
+				let filePreview = document.getElementById('filePreview');
+
+				fileInput.addEventListener('change', function () {
+					const file = this.files[0];
+
+					if (file) {
+						const reader = new FileReader();
+
+						reader.onload = function (e) {
+							filePreview.src = e.target.result;
+							filePreview.style.display = 'block';
+						};
+
+						reader.readAsDataURL(file);
+					} else {
+						filePreview.style.display = 'none';
+					}
+				});
+			}
+
+			function openModal() {
+				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+				myModal.show();
+			}
+
+			function submitForm() {
+				let userId = document.getElementById('mid').value;
+				let password = document.getElementById('mpw').value;
+				let phoneNumber = document.getElementById('mphone').value;
+				let inputFile = document.getElementById('mimg').files[0];
+				let hospitalImg = document.getElementById('hospitalImg').innerText;
+				let holidays = document.querySelectorAll('input[type="checkbox"][id="holiday"]:checked');
+				let holidayValues = Array.from(holidays).map(function (checkbox) {
+					return checkbox.value;
+				});
+				let openTime = document.getElementById('otime').value;
+				let closeTime = document.getElementById('ctime').value;
+				let ceoPhone = document.getElementById('ceophone').value;
+
+				console.log('병원');
+				formData.append('hospitalId', userId);
+				formData.append('hospitalPw', password);
+				formData.append('phone', phoneNumber);
+				if (inputFile != undefined || inputFile != null) {
+					formData.append('uploadFiles', inputFile);
+				} else {
+					formData.append('hospitalImg', hospitalImg);
+				}
+				formData.append('holiday', holidayValues.join(','));
+				formData.append('opentime', openTime);
+				formData.append('closetime', closeTime);
+				formData.append('directorPhone', ceoPhone);
+
+				for (let pair of formData.entries()) {
+					console.log(pair[0] + ': ' + pair[1]);
+				}
+
+				$.ajax({
+					url: '/hospital/hosinfoupdate',
+					type: 'post',
+					processData: false,
+					contentType: false,
+					data: formData,
+					success: function (resp) {
+						console.log(resp);
+						if (resp.result) {
+							Swal.fire({
+								icon: 'success',
+								text: resp.msg,
+							}).then(function () {
+								location.href = '/hospital/myProfile';
+							});
+						} else {
+							Swal.fire({
+								icon: 'error',
+								text: resp.msg,
+							}).then(function () {
+								location.reload();
+							});
+						}
+					},
+				});
+			}
+
+			function revertForm() {
+				location.href = '/hospital/myProfile';
+			}
+		</script>
+	</head>
+
+	<body>
+		<div layout:fragment="content">
+			<div class="container-fluid">
+				<div class="head_info">
+					<h4 th:text="${hospitalSel.hospitalName}"></h4>
+					<p>
+						<i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+						<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					</p>
+				</div>
+
+				<p>Profile update</p>
+				<div class="card shadow mb-4">
+					<div
+						class="card-header py-3"
+						style="display: flex; justify-content: space-between; align-items: center"
+					>
+						<h5 class="m-0 font-weight-bold text-secondary">
+							<i class="fas fa-fw fa-hospital"></i>병원 정보
+						</h5>
+					</div>
+					<div class="card-body" style="display: flex; justify-content: center; align-items: center">
+						<form id="medicalForm" method="post">
+							<div class="container">
+								<div class="input-group">
+									<label>아이디</label>
+									<input
+										type="text"
+										id="mid"
+										required
+										th:value="${hospitalSel.hospitalId}"
+										readonly
+										class="onlyread"
+									/>
+								</div>
+
+								<div class="input-group">
+									<label>비밀번호</label>
+									<input
+										type="password"
+										id="mpw"
+										placeholder="비밀번호를 입력하세요"
+										required
+										oninput="checkPassword()"
+									/>
+									<span id="pwErrorMessage" class="error-message" style="display: block"></span>
+								</div>
+
+								<div class="input-group">
+									<label>비밀번호 확인</label>
+									<input
+										type="password"
+										id="mpwcheck"
+										placeholder="비밀번호를 다시 입력하세요"
+										required
+										oninput="checkPasswordMatch()"
+									/>
+									<span
+										id="rePasswordErrorMessage"
+										class="error-message"
+										style="display: block"
+									></span>
+								</div>
+
+								<div class="input-group">
+									<label id="namelabel">병원 이름</label>
+									<input
+										type="text"
+										id="mname"
+										required
+										th:value="${hospitalSel.hospitalName}"
+										readonly
+										class="onlyread"
+									/>
+								</div>
+
+								<div class="input-group">
+									<label id="addlabel">병원 주소</label>
+									<input
+										type="text"
+										id="madd"
+										required
+										th:value="${hospitalSel.address}"
+										readonly
+										class="onlyread"
+									/>
+								</div>
+
+								<div class="input-group">
+									<label>전화번호</label>
+									<input
+										type="tel"
+										id="mphone"
+										placeholder="전화번호를 입력하세요"
+										required
+										maxlength="12"
+										oninput="autoHyphen(this)"
+										th:value="${hospitalSel.phone}"
+									/>
+								</div>
+
+								<div class="input-group">
+									<label>대표 사진</label>
+									<input type="file" id="mimg" />
+									<p id="hospitalImg" th:text="${hospitalSel.hospitalImg}" style="display: none"></p>
+									<img id="filePreview" alt="File Preview" />
+								</div>
+
+								<div class="input-group">
+									<label>휴무일</label>
+									<th:block th:each="detailCode : ${application.detailCode_i}">
+										<input
+											type="checkbox"
+											id="holiday"
+											th:value="${detailCode.detailCode}"
+											style="
+												width: 20px;
+												height: 20px;
+												border: 2px solid #3498db;
+												border-radius: 5px;
+												margin-right: 10px;
+												cursor: pointer;
+												display: flex;
+												align-items: center;
+												justify-content: center;
+												transition: background-color 0.3s;
+											"
+										/>
+										<label
+											th:for="${'hday' + detailCode.detailCode}"
+											th:text="${detailCode.codeName}"
+											style="width: 50px"
+										></label>
+										<br />
+									</th:block>
+								</div>
+
+								<div class="input-group" style="width: 300px">
+									<label>오픈 시간</label>
+									<select
+										id="otime"
+										class="custom-select custom-select-sm form-control form-control-sm"
+									>
+										<option selected>[[${hospitalSel.opentime}]]</option>
+										<th:block th:each="detailCode : ${application.detailCode_k}">
+											<option
+												th:value="${detailCode.codeName}"
+												th:text="${detailCode.codeName}"
+											></option>
+										</th:block>
+									</select>
+								</div>
+
+								<div class="input-group" style="width: 300px">
+									<label>마감 시간</label>
+									<select
+										id="ctime"
+										class="custom-select custom-select-sm form-control form-control-sm"
+									>
+										<option selected>[[${hospitalSel.closetime}]]</option>
+										<th:block th:each="detailCode : ${application.detailCode_k}">
+											<option
+												th:value="${detailCode.codeName}"
+												th:text="${detailCode.codeName}"
+											></option>
+										</th:block>
+									</select>
+								</div>
+
+								<hr />
+
+								<div class="input-group">
+									<label id="ceonamelabel">병원장 이름</label>
+									<input
+										type="text"
+										id="ceoname"
+										required
+										th:value="${hospitalSel.directorName}"
+										readonly
+										class="onlyread"
+									/>
+								</div>
+
+								<div class="input-group">
+									<label id="ceophonelabel">병원장 전화번호</label>
+									<input
+										type="tel"
+										id="ceophone"
+										placeholder="전화번호를 입력하세요"
+										required
+										maxlength="13"
+										oninput="autoHyphen(this)"
+										th:value="${hospitalSel.directorPhone}"
+									/>
+									<button
+										type="button"
+										id="checkPhoneBtn"
+										onclick="checkPhone()"
+										class="btn btn-sm btn-info shadow-sm"
+										style="width: 120px"
+									>
+										인증번호발송
+									</button>
+									<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
+								</div>
+
+								<div class="input-group" id="verification-section">
+									<label>인증번호</label>
+									<input
+										type="number"
+										id="checkPhoneNum"
+										placeholder="인증번호를 입력하세요"
+										required
+									/>
+									<button
+										type="button"
+										id="checkPhoneNumBtn"
+										class="btn btn-sm btn-info shadow-sm"
+										style="width: 120px"
+										onclick="checkPhoneNumber()"
+									>
+										인증하기
+									</button>
+								</div>
+
+								<div class="input-group">
+									<label>사업자등록번호</label>
+									<input
+										type="text"
+										id="ceolicense"
+										maxlength="12"
+										required
+										th:value="${hospitalSel.directorLicense}"
+										readonly
+										class="onlyread"
+									/>
+								</div>
+
+								<br />
+								<div style="text-align: center">
+									<input
+										type="button"
+										value="수정하기"
+										onclick="submitForm()"
+										class="btn btn-danger"
+									/>
+									<input
+										type="button"
+										value="취소하기"
+										onclick="revertForm()"
+										class="btn btn-warning"
+									/>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+
+				<!-- Modal -->
+				<div class="modal" tabindex="-1" id="exampleModal">
+					<div class="modal-dialog">
+						<div class="modal-content">
+							<div class="modal-body">
+								<p>대충 개인정보약관 내용</p>
+								<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>

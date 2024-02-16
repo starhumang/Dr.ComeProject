@@ -1,6 +1,5 @@
 package com.drcome.project.main.web;
 
-import java.security.Principal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,8 +28,11 @@ import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.medical.service.NoticeVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
+import groovy.util.logging.Log4j2;
+
 
 @Controller
+@lombok.extern.log4j.Log4j2
 public class MainController {
 	
 	@Autowired
@@ -48,9 +50,10 @@ public class MainController {
 	public String getHosList(Model model) {
 		List<HospitalVO> hosList = mainService.getHosList();
 		model.addAttribute("hosList", hosList);
-		List<PharmacyVO> phaList = mainService.getPhaList(5);
+		List<PharmacyVO> phaList = mainService.getPhaList();
 		model.addAttribute("phaList", phaList);
 		//System.out.println(phaList);
+		log.info("phaList = ",phaList);
 		return "user/home";//폴더밑에 html 이름
 	}
 	
@@ -109,7 +112,7 @@ public class MainController {
 		// 리스트 전체 개수
 		int total = hospitalService.noticeCount(type, keyword, hosId);
 		//System.out.println("hospitalId"+hospitalId); 나옴
-		System.out.println("total = "+total);
+	    System.out.println("total = "+total);
 		
 		// 선택 페이지 변환
 		int cpage = Integer.parseInt(page);
@@ -223,7 +226,7 @@ public class MainController {
 	 */
 	@GetMapping("/recommendPharmacy/{clinicNo}")
 	public String PhaList(@PathVariable("clinicNo") String clinicNo, Model model) {
-		List<PharmacyVO> phaList = mainService.getPhaList(10);
+		List<PharmacyVO> phaList = mainService.recommendPhaList(10);
 		model.addAttribute("clinic",clinicNo);
 		model.addAttribute("phaList", phaList);
 		return "user/recommendPha";

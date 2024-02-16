@@ -300,18 +300,12 @@
 					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
 				</div>
 				<div class="row g-4 here" style="">
-					<div th:each="hos: ${hosList}"
+					<div th:each="hos: ${hosList.subList(0, 5)}"
 						class="col-lg-3 col-md-6 hospitalItem"
 						style="width: 280px; height: 380px;"
 						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
 						<!-- 바로 위는 타임리프로 링크 보내버리는법 -->
 
-						<!-- <p th:text="${hos.phone}"></p>
-                  <p th:text="${hos.hospitalId}"></p>
-                  <p th:text="${hos.hospitalName}"></p>
-                  <p th:text="${hos.hospitalImg}"></p>
-                  <p th:text="${hos.closetime}"></p>
-                  <p th:text="${hos.address}"></p> -->
 						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
 							<div class="team-item bg-light">
 								<div class="overflow-hidden">
@@ -401,6 +395,9 @@
 
 
 		<script th:inline="javascript">
+		
+//<<------methods----------------------------------------------------------------------------------------------------------------->>
+		
       <!--1. 내 현재 좌표(위치)찾기(geolocation) -->
          //방법 = navigator.geolocation.getCurrentPosition(success, error, [options])
          function getLocation() {
@@ -417,7 +414,6 @@
                      //console.log("curLon=", curLon);
                      
                      
-      
                      <!--2. 현재 내위치 좌표로 주소를 찾고 화면에 띄어주기(kakao지도 api라이브러리) -->
                      //x Number : x 좌표, 경위도인 경우 longitude
                      //y Number : y 좌표, 경위도인 경우 latitude
@@ -440,6 +436,7 @@
                ALERT('GPS 허용을 눌러주세요');
             }
          }
+         
          //만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
          let curLocation = window.localStorage.getItem('location');
          if(!curLocation){
@@ -448,6 +445,8 @@
             document.getElementById("location").innerText = '현재 내 위치 : ' + curLocation;
          }
          
+// <<------ getLocation() end----------------------------------------------------------------------------------------------------------------->>
+
          
          //3. 내 현재 주소를 daum 주소api로 바꾸기(daum주소 api)
          function switchLocation(){
@@ -476,9 +475,10 @@
                        geocoder.addressSearch(data.address, callback);
                     }
                 }).open(); 
-             
          }
       
+         
+// <<------ switchLocation() end----------------------------------------------------------------------------------------------------------------->>
    
          
          //현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
@@ -505,7 +505,34 @@
         	 }
         	 let pharmacyList = [];
              
-         	 function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
+         	 
+         	 
+         	 /*address(태그자체)로 만든 배열을 새로운 배열로 바꿀건데,
+         	 그 새로운 배열map은 promiseFn함수에 address배열에 있는 
+         	 item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
+         	 */
+         	 //병원
+	         const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
+	         //console.log("promises=",promises)
+	         await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
+			 
+	         //makeHospitalListBox() 이자리에 있었음
+	         
+	         //약국
+	         const promises2 = Array.from(phAddress).map((item, index)=> promiseFn(item, index));
+	         await Promise.all(promises2);
+	         pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+	         const pharmacyListBox = document.querySelector('.here2');	 
+	         pharmacyList.forEach(({parent_node}) =>{
+	        	 pharmacyListBox.append(parent_node);
+	         })
+	         
+         }; //restart함수 끝
+         
+// <<------ restart() end----------------------------------------------------------------------------------------------------------------->>
+
+
+			function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
          		//console.log("item= ",item);
          		 return new Promise((resolve)=>{
          			 geocoder.addressSearch(item.innerHTML, (result, status)=>{ //item.innerHTML= 주소 그 자체
@@ -550,15 +577,13 @@
          		 	});
          	 	});       
              }  
-         	 //병원
-         	 //address(태그자체)로 만든 배열을 새로운 배열로 바꿀건데,
-         	 //그 새로운 배열map은 promiseFn함수에 address배열에 있는 
-         	 //item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
-	         const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
-	         //console.log("promises=",promises)
-	         await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
-			 
-	         //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
+            
+//<<------ promiseFn() end----------------------------------------------------------------------------------------------------------------->>
+
+            
+         //거리순 재정렬
+         function makeHospitalListBox(list){
+        	 //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
 	         //parseFloat()=문자열을 실수로 변경
 	         hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
 	         //console.log("hospitalList=", hospitalList);
@@ -569,22 +594,30 @@
 	         //console.log("hospitalListBox=", hospitalListBox); 
 	         
 	         //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된)를 넣어줌
-	         hospitalList.forEach(({parent_node}) =>{
-	        	 hospitalListBox.append(parent_node);
-	         })
+	         for(let i =0; i < 10; i++){
+	        	 console.log("node=",hospitalList[i].parent_node);
+	        	 hospitalListBox.append(hospitalList[i].parent_node);
+	         }
 	         
-	         //약국
-	         const promises2 = Array.from(phAddress).map((item, index)=> promiseFn(item, index));
-	         await Promise.all(promises2);
-	         pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-	         const pharmacyListBox = document.querySelector('.here2');	 
-	         pharmacyList.forEach(({parent_node}) =>{
-	        	 pharmacyListBox.append(parent_node);
-	         })
-	         
-         }; //restart함수 끝
-            
-            
+// 	         hospitalList.forEach(({parent_node}) =>{
+// 	        	 console.log("node=",parent_node);
+// 	        	 hospitalListBox.append(parent_node);
+// 	         })
+        	 
+             //hospitalItem클래스를 가진 div전체(하위요소 포함)
+             const hospitalListBox = document.querySelector('.here');
+                
+             hospitalListBox.innerHTML = ''; // 초기화
+
+             //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된 / 가나다순 )를 넣어줌
+             list.forEach(({parent_node}) =>{
+                hospitalListBox.append(parent_node);
+             })
+          };
+          
+//<<------ makeHospitalListBox() end----------------------------------------------------------------------------------------------------------------->>
+           
+          
          //6. 본격 좌표로 거리계산 시작
            //Math.PI 는 파이값임(3.14...)
            //Math.sin()은 라디안으로 주어진 각도의 사인 값인 -1과 1 사이의 수를 반환 | sin = 높이 / 빗변
@@ -598,7 +631,7 @@
            function radian( i ){
                return i * (Math.PI / 180)
            }
-
+         
            //거리 구하는 함수
            function distance(curLat, curLon, hosLat, hosLon){ //현재좌표 - 병원좌표
                const earth_r = 6371 // 지구의 반지름(km)
@@ -617,9 +650,12 @@
                const distance = earth_r * c // 반지름 x 2개의 각도값
 
                return distance;
+               
            }
-           restart();
            
+           //여기에 정렬하는거 restart();
+//<<------ 거리구하는 함수2개 radian&distance () end----------------------------------------------------------------------------------------------------------------->>
+
            
            //영업시간 끝나면 스타일 바꾸는 함수(오픈시간은 생략)
            function changeStyle(){
@@ -773,8 +809,9 @@
 	              }
 	          }     
            }
-           
-         changeStyle();
+
+//<<------ changeStyle () end----------------------------------------------------------------------------------------------------------------->>
+
          
        //검색 함수
   		function searchResult(e){

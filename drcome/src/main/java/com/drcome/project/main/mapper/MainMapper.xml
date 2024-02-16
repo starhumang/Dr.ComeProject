@@ -16,9 +16,9 @@
 	             MAIN_SUBJECT,
 	             HOLIDAY
 			FROM HOSPITAL
-			<![CDATA[WHERE ROWNUM <= 5]]>
+			WHERE HOSPITAL_STATUS = 'b2'
 			
-    	</select> <!-- 자료 다 들어오고 붙이기 WHERE HOSPITAL_STATUS = 'b2' -->
+    	</select>
     	
     	<!-- 약국리스트 --> 
     	<select id="selectPhaList" resultType="PharmacyVO">
@@ -31,8 +31,26 @@
 		            CLOSETIME,
 		            HOLIDAY
 			FROM PHARMACY
-			<![CDATA[WHERE ROWNUM <= #{num}]]>
-		</select> <!-- WHERE PHARMACY_STATUS = 'b2' -->
+			WHERE PHARMACY_STATUS = 'b2'
+		</select>
+		
+		<!--약국추천리스트 -->
+		<select id="recommendPhaList" resultType="PharmacyVO">
+			SELECT PHARMACY_PHONE,
+		            PHARMACY_ID,
+		            PHARMACY_NAME,
+		            PHARMACY_IMG,
+		            ADDRESS,
+		            OPENTIME,
+		            CLOSETIME,
+		            HOLIDAY
+			FROM PHARMACY
+			WHERE PHARMACY_STATUS = 'b2'
+            AND PHARMACY_ID NOT IN (SELECT PHARMACY_ID FROM PHARMACY_SELECT)
+		    <![CDATA[AND ROWNUM <= #{num}]]>
+		    ORDER BY PHARMACY_ID
+		</select>
+		
 		
 		<!-- 병원상세 -->
 	    <select id="selectHos" resultType="HospitalVO">
@@ -75,6 +93,7 @@
 		           ADDRESS
 			FROM HOSPITAL
 			WHERE HOSPITAL_NAME LIKE '%' ||#{word}||'%'
+			AND HOSPITAL_STATUS = 'b2'
 			ORDER BY HOSPITAL_NAME  
 		</select>
 		
@@ -88,6 +107,7 @@
 		           ADDRESS
 			FROM PHARMACY
 			WHERE PHARMACY_NAME LIKE '%' ||#{word}||'%' 
+			AND PHARMACY_STATUS = 'b2'
 			ORDER BY PHARMACY_NAME  
 		</select>
 		
@@ -101,6 +121,7 @@
 		           ADDRESS
 			FROM HOSPITAL
 			WHERE MAIN_SUBJECT = #{mainSubject}
+			AND HOSPITAL_STATUS = 'b2'
 			ORDER BY HOSPITAL_NAME
 		</select>
 		

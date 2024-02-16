@@ -395,6 +395,21 @@
 
 
 		<script th:inline="javascript">
+//<<------변수모음집----------------------------------------------------------------------------------------------------------------->>
+		//거리로 바꿔버릴 주소
+// 		let address = document.querySelectorAll('.address');
+// 		let phAddress = document.querySelectorAll('.phAddress');
+		let hosList = [[${hosList}]]; //주소값 찾으려면 forEach문에서 ele.address
+		let phaList = [[${phaList}]];
+		
+		//제일 처음 시작 함수
+		window.onload = function(){
+			//console.log("hosList=",hosList);
+			//console.log("phaList=",phaList);
+			getLocation();
+			//console.log("phAddress= ",phAddress);
+		}
+		
 		
 //<<------methods----------------------------------------------------------------------------------------------------------------->>
 		
@@ -435,6 +450,8 @@
             } else {
                ALERT('GPS 허용을 눌러주세요');
             }
+            
+            restart();// 거리계산 시작
          }
          
          //만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
@@ -487,55 +504,59 @@
         	 var geocoder = new kakao.maps.services.Geocoder();
         	 
         	 //병원
-        	 let address = document.querySelectorAll('.address');
         	 //console.log("address=",address);
-        	 if(!address){
+        	 if(!hosList){
         		 console.log("강제종료");
         		 return;
+        	 }else{
+        		 hosList.forEach(ele=>{
+            		 promiseFn(ele.address, "hos");//함수에 주소 넣어서 실행
+            	 })
         	 }
-        	 let hospitalList = [];
-             
              
              //약국
-        	 let phAddress = document.querySelectorAll('.phAddress');
         	 //console.log("phAddress=",phAddress);
-        	 if(!phAddress){
+        	 if(!phaList){
         		 console.log("강제종료");
         		 return;
+        	 }else{
+        		 phaList.forEach(ele=>{
+            		 promiseFn(ele.address, "pha");//함수에 주소 넣어서 실행
+            	 })
         	 }
-        	 let pharmacyList = [];
-             
-         	 
-         	 
+        	 
+        	
+        	 
          	 /*address(태그자체)로 만든 배열을 새로운 배열로 바꿀건데,
          	 그 새로운 배열map은 promiseFn함수에 address배열에 있는 
          	 item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
          	 */
          	 //병원
-	         const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
-	         //console.log("promises=",promises)
-	         await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
+// 	         const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
+// 	         //console.log("promises=",promises)
+// 	         await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
 			 
 	         //makeHospitalListBox() 이자리에 있었음
 	         
 	         //약국
-	         const promises2 = Array.from(phAddress).map((item, index)=> promiseFn(item, index));
-	         await Promise.all(promises2);
-	         pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-	         const pharmacyListBox = document.querySelector('.here2');	 
-	         pharmacyList.forEach(({parent_node}) =>{
-	        	 pharmacyListBox.append(parent_node);
-	         })
+// 	         const promises2 = Array.from(phAddress).map((item, index)=> promiseFn(item, index));
+// 	         await Promise.all(promises2);
+// 	         pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+// 	         const pharmacyListBox = document.querySelector('.here2');	 
+// 	         pharmacyList.forEach(({parent_node}) =>{
+// 	        	 pharmacyListBox.append(parent_node);
+// 	         })
 	         
          }; //restart함수 끝
          
 // <<------ restart() end----------------------------------------------------------------------------------------------------------------->>
 
-
-			function promiseFn(item, index){// 인덱스, 계산한 거리, 조건에 맞는 상위요소와 함께 배열에 넣는 함수
+			//배열안의 주소들을 좌표로 바꾼후 거리 계산해서 안에 넣어줌
+			function promiseFn(item, kind){// 주소, 병원인지 약국인지
+				
          		//console.log("item= ",item);
          		 return new Promise((resolve)=>{
-         			 geocoder.addressSearch(item.innerHTML, (result, status)=>{ //item.innerHTML= 주소 그 자체
+         			 geocoder.addressSearch(item, (result, status)=>{ 
          				if (status === kakao.maps.services.Status.OK) {
          					console.log("카카오맵에서 찾았음")
                             //병원&약국 좌표
@@ -553,59 +574,60 @@
                             //거리계산된 값
                             let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
                             //console.log("총 거리 =", dist);
-                            item.innerText = dist + 'km';
                             
-                            if((item.closest('.hospitalItem')) != null){
-	                            hospitalList.push({
-	                            	'index' : index,
-	                            	'dist' : dist,
-	                            	'parent_node' : item.closest('.hospitalItem') //저 클래스가 있는 item의 상위요소
-	                            });
-                            }else if((item.closest('.pharmacyItem')) != null){
-	                            pharmacyList.push({
-	                            	'index' : index,
-	                            	'dist' : dist,
-	                            	'parent_node' : item.closest('.pharmacyItem') //저 클래스가 있는 item의 상위요소
-	                            });
+                            if(kind="hos"){
+                            	hosList.forEach(ele=>{
+                            		ele["dist"] = dist + 'km';
+                            	})
+                            	makeListBox(hosList, kind);
+                            	
+                            }else if(kind="pha"){
+                            	phaList.forEach(ele=>{
+                            		ele["dist"] = dist + 'km';
                             }
+                            	makeListBox(phaList, kind);
+                            	
                             resolve(); //여기까지 도달하면 성공했다는 뜻
-                            
          			 	}else{
          			 		console.log("restart함수실행안됨");
          			 		reject()
-         			 	}         				
+         			 	}
+                            console.log("거리더한 hosList = ", hosList);
+                            console.log("거리더한 phaList = ", phaList);
          		 	});
          	 	});       
              }  
+         	
             
 //<<------ promiseFn() end----------------------------------------------------------------------------------------------------------------->>
 
             
          //거리순 재정렬
-         function makeHospitalListBox(list){
+         function makeListBox(list, kind){ //거리들어간 리스트랑 병원인지 약국인지 종류
         	 //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
 	         //parseFloat()=문자열을 실수로 변경
-	         hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-	         //console.log("hospitalList=", hospitalList);
+	         list.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+	         console.log("정렬된 list = ", list);
 	         
 	         //hospitalItem클래스를 가진 div전체(하위요소 포함)
-	         const hospitalListBox = document.querySelector('.here');
-	         
+	         //const hospitalListBox = document.querySelector('.here');
 	         //console.log("hospitalListBox=", hospitalListBox); 
 	         
-	         //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된)를 넣어줌
-	         for(let i =0; i < 10; i++){
+	         let shortHosList = [];
+	         let shortPhaList = [];
+	         for(let i =0; i < 5; i++){
 	        	 console.log("node=",hospitalList[i].parent_node);
 	        	 hospitalListBox.append(hospitalList[i].parent_node);
 	         }
 	         
+	       //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된)를 넣어줌
 // 	         hospitalList.forEach(({parent_node}) =>{
 // 	        	 console.log("node=",parent_node);
 // 	        	 hospitalListBox.append(parent_node);
 // 	         })
         	 
              //hospitalItem클래스를 가진 div전체(하위요소 포함)
-             const hospitalListBox = document.querySelector('.here');
+             //const hospitalListBox = document.querySelector('.here');
                 
              hospitalListBox.innerHTML = ''; // 초기화
 
@@ -653,7 +675,6 @@
                
            }
            
-           //여기에 정렬하는거 restart();
 //<<------ 거리구하는 함수2개 radian&distance () end----------------------------------------------------------------------------------------------------------------->>
 
            

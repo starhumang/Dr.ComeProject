@@ -52,8 +52,8 @@ public class MainController {
 		model.addAttribute("hosList", hosList);
 		List<PharmacyVO> phaList = mainService.getPhaList();
 		model.addAttribute("phaList", phaList);
-		//System.out.println(phaList);
-		log.info("phaList = ",phaList);
+		System.out.println("phaList="+phaList);
+		//log.info("phaList = ",phaList);
 		return "user/home";//폴더밑에 html 이름
 	}
 	
@@ -226,7 +226,7 @@ public class MainController {
 	 */
 	@GetMapping("/recommendPharmacy/{clinicNo}")
 	public String PhaList(@PathVariable("clinicNo") String clinicNo, Model model) {
-		List<PharmacyVO> phaList = mainService.recommendPhaList(10);
+		List<PharmacyVO> phaList = mainService.recommendPhaList(clinicNo,10);
 		model.addAttribute("clinic",clinicNo);
 		model.addAttribute("phaList", phaList);
 		return "user/recommendPha";

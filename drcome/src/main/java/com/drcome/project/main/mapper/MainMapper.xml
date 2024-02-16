@@ -46,7 +46,9 @@
 		            HOLIDAY
 			FROM PHARMACY
 			WHERE PHARMACY_STATUS = 'b2'
-            AND PHARMACY_ID NOT IN (SELECT PHARMACY_ID FROM PHARMACY_SELECT)
+            AND PHARMACY_ID NOT IN (SELECT PHARMACY_ID
+                                    FROM PHARMACY_SELECT
+                                    WHERE CLINIC_NO =#{clinicNo})
 		    <![CDATA[AND ROWNUM <= #{num}]]>
 		    ORDER BY PHARMACY_ID
 		</select>

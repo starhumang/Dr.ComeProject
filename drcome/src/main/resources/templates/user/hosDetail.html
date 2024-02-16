@@ -65,7 +65,8 @@
 <body>
 	<div layout:fragment="content" style="caret-color:transparent;">
 		<h1 style="text-align:center; margin-bottom:50px; margin-top:50px; color:gray;">- Detail Info -</h1>
-		<div class="container-fluid" style="margin-bottom:150px; text-align:center;">
+		<div class="container-fluid" style="margin-bottom:150px; text-a
+		lign:center;">
 			<th:block th:each="hos : ${hosInfo}">
 			
 			
@@ -121,7 +122,7 @@
 									<button type="button" class="bb btn btn-primary visit" th:onclick="contactCheck([[${reservationHistory}]])">방문예약하기</button>
 									<button type="button" class="bb btn btn-primary later" th:onclick="check( [[${clinicHistory}]],'later',[[${reservationHistory}]] )">비대면예약하기</button>
 									<button type="button" class="bb btn btn-primary now" th:onclick="check( [[${clinicHistory}]],'now',[[${reservationHistory}]] )">실시간 비대면 진료 <br/>접수하기</button>
-									<button type="button" class="bb btn btn-primary ">문의하기</button>
+									<button type="button" class="bb btn btn-primary " th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">문의하기</button>
 								</div>
 							</div>
 						</div>

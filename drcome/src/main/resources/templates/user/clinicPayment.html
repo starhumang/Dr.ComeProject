@@ -90,8 +90,8 @@
 		<script type="text/javascript" src="https://cdn.iamport.kr/js/iamport.payment-1.2.0.js"></script>
 
 		<script th:inline="javascript">
+			var payTotal;
 			document.addEventListener('DOMContentLoaded', function () {
-				var payTotal;
 				if (cInfo.pay === 'Y') {
 					payTotal = 5000;
 				} else if (cInfo.pay === 'N') {
@@ -109,6 +109,8 @@
 
 			var rNo = [[${rNo}]];
 
+			var cNo = cInfo.clinicNo;
+
 			var selectedPayElement = '';
 			var checkedPay = '';
 
@@ -118,6 +120,20 @@
 				document.getElementById('selectedPay').textContent = selectedPayText;
 
 				checkedPay = document.querySelector('input[name="payMethod"]:checked').value;
+			}
+
+			function scsAlert(content) {
+				Swal.fire({
+					icon: 'success',
+					text: content,
+				});
+			}
+
+			function errAlert(content) {
+				Swal.fire({
+					icon: 'error',
+					text: content,
+				});
 			}
 
 			//결제 api
@@ -138,7 +154,7 @@
 							console.log(resp);
 							updateReserve(resp);
 						} else {
-							alert('결제에 실패하였습니다.');
+							errAlert('결제에 실패하였습니다.');
 							let msg = resp.error_msg;
 							console.log(msg);
 						}
@@ -164,14 +180,14 @@
 					contentType: false,
 					success: function (res) {
 						if (res.result == true) {
-							alert(res.msg);
-							location.href = '/mypage';
+							scsAlert(res.msg);
+							location.href = '/recommendPharmacy/' + cNo;
 						} else {
-							alert(res.msg);
+							errAlert(res.msg);
 						}
 					},
 					error: function (err) {
-						alert('오류가 발생했습니다. 관리자에게 문의하세요.');
+						errAlert('오류가 발생했습니다. 관리자에게 문의하세요.');
 						console.log(err);
 					},
 				});

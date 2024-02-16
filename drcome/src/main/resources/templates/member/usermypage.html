@@ -19,7 +19,7 @@
 		</style>
 
 		<script th:inline="javascript">
-			const userId = [[${session.userId}]];
+			// const userId = [[${session.userId}]];
 
 			function goToModify() {
 				location.href = '/userupdate';
@@ -79,6 +79,64 @@
 					},
 				});
 			}
+
+			function enter(rNo) {
+				location.href = '/untactPatient/' + rNo;
+			}
+
+			function viewP(rNo) {
+				$.ajax({
+					type: 'GET',
+					url: '/mypselect',
+					data: { ReserveNo: rNo },
+					success: function (response) {
+						if (response.result === 1) {
+							console.log(response.myplist);
+							populateModal(response.myplist);
+							$('#exampleModal').modal('show');
+						} else {
+							cSwal.fire({
+								icon: 'error',
+								text: '오류가 발생했습니다.',
+							});
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error(error);
+						Swal.fire({
+							icon: 'error',
+							text: '오류가 발생했습니다.',
+						});
+					},
+				});
+			}
+
+			function populateModal(data) {
+				$('#pharmacyTableBody').empty();
+
+				if (!data || data.length === 0) {
+					$('#pharmacyTableBody').append('<td colspan="5">선택한 약국이 없습니다.</td>');
+					return;
+				}
+
+				data.forEach(function (item) {
+					$('#pharmacyTableBody').append(`
+			      <tr>
+			        <td>${item.pharmacyName}</td>
+			        <td>${item.pharmacyPhone}</td>
+			        <td>${item.sendStatus}</td>
+			        <td>${item.produceStatus}</td>
+			        <td>${item.printStatus}</td>
+			      </tr>
+			    `);
+					$('#selectPharmacyBtn').click(function () {
+						let clinicNo = data[0].clinicNo;
+						let url = 'recommendPharmacy/' + clinicNo;
+
+						location.href = url;
+					});
+				});
+			}
 		</script>
 	</head>
 	<body>
@@ -130,101 +188,148 @@
 								<div class="butt">
 									<button class="btn btn-secondary" id="btn" onclick="goToModify()">회원수정</button>
 									<button class="btn btn-danger" id="btn" onclick="withdraw()">회원탈퇴</button>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
 
-				<div class="container" style="margin-bottom: 50px">
-					<div class="card shadow mb-4">
-						<div
-							class="card-header py-3"
-							style="display: flex; justify-content: space-between; align-items: center"
-						>
-							<h5 class="m-0 font-weight-bold text-secondary">
-								<i class="fas fa-fw fa-hospital"></i>예약/진료 내역
-							</h5>
-						</div>
+					<div class="container" style="margin-bottom: 50px">
+						<div class="card shadow mb-4">
+							<div
+								class="card-header py-3"
+								style="display: flex; justify-content: space-between; align-items: center"
+							>
+								<h5 class="m-0 font-weight-bold text-secondary">
+									<i class="fas fa-fw fa-hospital"></i>예약/진료 내역
+								</h5>
+							</div>
 
-						<div class="card-body" style="display: flex; justify-content: center; align-items: center">
-							<table class="table table-hover" th:if="${reserveMyList != null and not #lists.isEmpty(reserveMyList)}">
-								<thead>
-									<tr>
-										<th>예약코드</th>
-										<th>증상</th>
-										<th>방문 일자</th>
-										<th>방문 시간</th>
-										<th>병원 이름</th>
-										<th>병원 전화번호</th>
-										<th>담당의</th>
-										<th>예약종류</th>
-										<th>예약상태</th>
-									</tr>
-								</thead>
-								<tbody>
-									<tr th:each="rdl : ${reserveMyList}">
-										<td th:text="${rdl.reserveNo}"></td>
-										<td th:text="${rdl.symptom}"></td>
-										<td th:text="${rdl.reserveDate}"></td>
-										<td th:text="${rdl.reserveTime}"></td>
-										<td th:text="${rdl.hospitalName}"></td>
-										<td th:text="${rdl.hospitalPhone}"></td>
-										<td th:text="${rdl.doctorName}"></td>
-										<td th:if="${ rdl.reserveKindstatus == 'c1' }">대면</td>
-										<td th:unless="${ rdl.reserveKindstatus == 'c1' }">비대면</td>
-										<td>
-											<button
-												disabled
-												th:if="${rdl.reserveStatus} =='e1'"
-												class="btn btn-secondary"
-											>
-												진료대기
-											</button>
-											<button
-												th:if="${rdl.reserveStatus} =='e3'"
-												th:onclick="enter([[${rdl.reserveNo}]])"
-												class="btn btn-primary enterBtn"
-											>
-												입장하기
-											</button>
-											<button disabled th:if="${rdl.reserveStatus} =='e4' OR ${rdl.reserveStatus} =='e5'"  class="btn btn-light">
-												진료완료
-											</button>
-										</td>
-									</tr>
-								</tbody>
-							</table>
-							<div th:unless="${reserveMyList != null and not #lists.isEmpty(reserveMyList)}">
-								<p>예약/진료 내역이 없습니다.</p>
+							<div class="card-body" style="display: flex; justify-content: center; align-items: center">
+								<table
+									class="table table-hover"
+									th:if="${reserveMyList != null and not #lists.isEmpty(reserveMyList)}"
+									style="text-align: center"
+								>
+									<thead>
+										<tr>
+											<th>예약코드</th>
+											<th>증상</th>
+											<th>방문 일자</th>
+											<th>방문 시간</th>
+											<th>병원 이름</th>
+											<th>병원 전화번호</th>
+											<th>담당의</th>
+											<th>예약종류</th>
+											<th>진료상태</th>
+											<th>약국선택내역</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="rdl : ${reserveMyList}">
+											<td th:text="${rdl.reserveNo}"></td>
+											<td th:text="${rdl.symptom}"></td>
+											<td th:text="${rdl.reserveDate}"></td>
+											<td th:text="${rdl.reserveTime}"></td>
+											<td th:text="${rdl.hospitalName}"></td>
+											<td th:text="${rdl.hospitalPhone}"></td>
+											<td th:text="${rdl.doctorName}"></td>
+											<td th:if="${ rdl.reserveKindstatus == 'c1' }">대면</td>
+											<td th:unless="${ rdl.reserveKindstatus == 'c1' }">비대면</td>
+											<td>
+												<button
+													disabled
+													th:if="${rdl.reserveStatus} =='e1'"
+													class="btn btn-secondary"
+												>
+													진료대기
+												</button>
+												<button
+													th:if="${rdl.reserveStatus} =='e3'"
+													th:onclick="enter([[${rdl.reserveNo}]])"
+													class="btn btn-primary enterBtn"
+												>
+													입장하기
+												</button>
+												<button
+													disabled
+													th:if="${rdl.reserveStatus} =='e4' OR ${rdl.reserveStatus} =='e5'"
+													class="btn btn-light"
+												>
+													진료완료
+												</button>
+											</td>
+											<td>
+												<button
+													th:if="${rdl.reserveStatus} =='e5'"
+													style="border: none"
+													th:onclick="viewP([[${rdl.reserveNo}]])"
+												>
+													<i class="bi bi-clipboard-plus" style="font-size: 1.5em"></i>
+												</button>
+											</td>
+										</tr>
+									</tbody>
+								</table>
+								<div th:unless="${reserveMyList != null and not #lists.isEmpty(reserveMyList)}">
+									<p>예약/진료 내역이 없습니다.</p>
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
 
-				<div class="container" style="margin-bottom: 50px">
-					<div class="card shadow mb-4">
-						<div
-							class="card-header py-3"
-							style="display: flex; justify-content: space-between; align-items: center"
-						>
-							<h5 class="m-0 font-weight-bold text-secondary">
-								<i class="fas fa-fw fa-search-location"></i>문의 내역
-							</h5>
-						</div>
+					<div class="container" style="margin-bottom: 50px">
+						<div class="card shadow mb-4">
+							<div
+								class="card-header py-3"
+								style="display: flex; justify-content: space-between; align-items: center"
+							>
+								<h5 class="m-0 font-weight-bold text-secondary">
+									<i class="fas fa-fw fa-search-location"></i>문의 내역
+								</h5>
+							</div>
 
-						<div class="card-body" style="display: flex; justify-content: center; align-items: center">
+							<div
+								class="card-body"
+								style="display: flex; justify-content: center; align-items: center"
+							></div>
 						</div>
 					</div>
 				</div>
-
 			</div>
 
-			<script>
-				function enter(rNo) {
-					// console.log(rNo);
-					location.href = '/untactPatient/' + rNo;
-				}
-			</script>
+			<div
+				class="modal fade"
+				id="exampleModal"
+				tabindex="-1"
+				aria-labelledby="exampleModalLabel"
+				aria-hidden="true"
+			>
+				<div class="modal-dialog modal-lg">
+					<div class="modal-content">
+						<div class="modal-header">
+							<h5 class="modal-title" id="exampleModalLabel">약국 정보</h5>
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div>
+						<div class="modal-body">
+							<table class="table" style="text-align: center; border: none">
+								<thead>
+									<tr>
+										<th scope="col">약국 이름</th>
+										<th scope="col">전화번호</th>
+										<th scope="col">전송 상태</th>
+										<th scope="col">반려 여부</th>
+										<th scope="col">출력 내역</th>
+									</tr>
+								</thead>
+								<tbody id="pharmacyTableBody"></tbody>
+							</table>
+						</div>
+						<div class="modal-footer">
+							<button id="selectPharmacyBtn">신청하기</button>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
 	</body>
 </html>

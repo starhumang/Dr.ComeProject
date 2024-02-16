@@ -1,6 +1,7 @@
 package com.drcome.project.mem.web;
 
 import com.drcome.project.common.service.FileUploadService;
+import com.drcome.project.doctor.service.PatientVO;
 import com.drcome.project.main.service.ClinicPayVO;
 import com.drcome.project.main.service.PaymentVO;
 import com.drcome.project.main.service.ReservationVO;
@@ -10,6 +11,7 @@ import com.drcome.project.mem.mapper.UserMemberMapper;
 import com.drcome.project.mem.service.MemVO;
 import com.drcome.project.mem.service.UserMemberService;
 import com.drcome.project.mem.service.UserMemberVO;
+import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
 import java.util.HashMap;
@@ -371,6 +373,44 @@ public class UserMemberController {
 		model.addAttribute("reserveMyList", rInfo);
 
 		return "member/usermypage";
+	}
+	
+	/**
+	 * 선택한 약국 정보 확인 기능
+	 * @param ReserveNo: 예약 번호
+	 * @param model
+	 * @return 선택한 약국 정보
+	 */
+	@GetMapping("/mypselect")
+	@ResponseBody
+	public Map<String, Object> myPselect(@RequestParam String ReserveNo, Model model) {
+		Map<String, Object> map = new HashMap<>();
+		int reserveNo = Integer.parseInt(ReserveNo);
+		
+		List<PharmacySelectVO> myplist = memMapper.myPharmacySelect(reserveNo);
+		
+		if (myplist != null) {
+			map.put("result", 1);
+			map.put("myplist", myplist);
+		} else {
+			map.put("result", 0);
+		}
+		
+		
+		return map;
+	}
+
+	/**
+	 * 비대면 진료 화면으로 이동
+	 * @param reserveNo: 예약 번호
+	 * @param vo: 환자 정보 VO
+	 * @param model
+	 * @return String: URL
+	 */
+	@GetMapping("untactPatient/{reserveNo}")
+	public String untactPatient(@PathVariable("reserveNo") String reserveNo, PatientVO vo, Model model) {
+		model.addAttribute("rNo", reserveNo);
+		return "doctor/untactPatient";
 	}
 
 	/**

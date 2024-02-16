@@ -84,13 +84,6 @@ public class PatientController {
 		return "doctor/untactClinic";
 	}
 
-	// 비대면 진료 - 환자
-	@GetMapping("untactPatient/{reserveNo}")
-	public String untactPatient(@PathVariable("reserveNo") String reserveNo, PatientVO vo, Model model) {
-		model.addAttribute("rNo", reserveNo);
-		return "doctor/untactPatient";
-	}
-
 	/**
 	 * 대면 진료 페이지
 	 * 
@@ -105,20 +98,6 @@ public class PatientController {
 		PatientVO findVO = patientService.getPatientInfo(vo);
 		model.addAttribute("pInfo", findVO);
 		return "doctor/clinic";
-
-	}
-
-	/**
-	 * 아직 미완성..
-	 * 
-	 * @param vo
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("untactPatient")
-	public String untactPatient(PatientVO vo, Model model) {
-
-		return "doctor/untactPatient";
 
 	}
 

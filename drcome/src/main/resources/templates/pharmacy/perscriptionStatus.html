@@ -304,6 +304,7 @@
 </body>
 </html>
 <script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 var clinicNo = 0;
 var dateValue = 0;
@@ -373,10 +374,10 @@ var dateValue = 0;
   });
 
 function viewPer(no) {
-    console.log(no);
     const modalTable = $("#modalTable");
-    $.ajax(`/perscription/${no}`) //fetch
+    $.ajax(`/pharmacy/perscription/${no}`) //fetch
       .done((result) => {
+
         modalTable.empty();
         modalTable.append(
           `<tr>
@@ -541,7 +542,7 @@ function createTable(plist) {
                     data-bs-target="#exampleModalCenter"
                   ><i class="fas fa-solid fa-file-medical"></i>
                   </button></td>`);
-	        row.append(`<td><button class="btn btn-warning"><i class="fas fa-solid fa-print"></i></button></td>`);
+	        row.append(`<td><button class="btn btn-warning" onclick="convertToPDF()"><i class="fas fa-solid fa-print"></i></button></td>`);
 	        row.append(`<td><button
                     id="returnbtn"
                     class="btn btn-danger"
@@ -676,7 +677,8 @@ $("#reperscript").on("click", function () {
         url: "/pharmacy/rejection",
         data: {
             rejection: rejectionReason,
-            clinicNo: clinicNo
+            clinicNo: clinicNo,
+            pharmacySelectno: pharmacySelectno
         },
         dataType: 'json',
         success: function (response) {
@@ -732,4 +734,53 @@ function connectWebSocket(rejection, pharmacySelectNo) {
         console.error("약국... WebSocket 연결 에러:", error);
       }
 }
+
+function createXML() {
+	console.log("createXML 실행");
+    var xmlDoc = document.implementation.createDocument(null, "prescription");
+
+    var rootElement = xmlDoc.documentElement;
+
+    var medicineName = "약 이름";
+    var prescriptionCount = 1;
+    var days = 1;
+
+    var tableElement = xmlDoc.createElement("table");
+
+    var trHeader = xmlDoc.createElement("tr");
+    var thMedicineName = xmlDoc.createElement("th");
+    thMedicineName.textContent = "약 이름";
+    var thPrescriptionCount = xmlDoc.createElement("th");
+    thPrescriptionCount.textContent = "처방 횟수";
+    var thDays = xmlDoc.createElement("th");
+    thDays.textContent = "일수";
+    trHeader.appendChild(thMedicineName);
+    trHeader.appendChild(thPrescriptionCount);
+    trHeader.appendChild(thDays);
+    tableElement.appendChild(trHeader);
+
+    var trData = xmlDoc.createElement("tr");
+    var tdPrescriptionCount = xmlDoc.createElement("td");
+    tdPrescriptionCount.textContent = prescriptionCount;
+    var tdDays = xmlDoc.createElement("td");
+    tdDays.textContent = days;
+    trData.appendChild(tdPrescriptionCount);
+    trData.appendChild(tdDays);
+    tableElement.appendChild(trData);
+
+    rootElement.appendChild(tableElement);
+
+    var xmlString = new XMLSerializer().serializeToString(xmlDoc);
+    return xmlString;
+}
+
+function convertToPDF() {
+	console.log("convertToPDF 실행");
+    var xmlString = createXML();
+    var pdf = new jsPDF();
+    pdf.text(xmlString, 10, 10);
+    pdf.save("prescription.pdf");
+}
+
+
 </script>

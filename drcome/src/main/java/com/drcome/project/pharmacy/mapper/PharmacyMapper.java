@@ -21,7 +21,7 @@ public interface PharmacyMapper {
 	//public List<MedicineVO> searchMedicine(String keyword);
 	
 	/*처방전 미리보기*/
-	public List<PharmacySelectVO> perscription(PharmacySelectVO vo);
+	public List<PharmacySelectVO> perscription(int clinicNo);
 	
 	/*처방전 미리보기*/
 	public int updaterejection(PharmacySelectVO vo);

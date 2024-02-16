@@ -53,8 +53,8 @@ public class PharmacyServiceImpl implements PharmacyService{
 	
 	// 처방전조회
 	@Override
-	public List<PharmacySelectVO> getPerscription(PharmacySelectVO vo) {
-		return mapper.perscription(vo);
+	public List<PharmacySelectVO> getPerscription(int clinicNo) {
+		return mapper.perscription(clinicNo);
 	}
 	
 	/* 처방전 반환 시 업데이트 */

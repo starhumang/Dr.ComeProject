@@ -24,6 +24,8 @@ import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
+import lombok.extern.log4j.Log4j2;
+
 
 @Controller
 public class MainController {
@@ -33,8 +35,6 @@ public class MainController {
 	
 	@Autowired
 	HospitalService hospitalService;
-	
-	
 	
 	/* 병원 및 약국 목록(메인페이지)
 	 * return "user/home"

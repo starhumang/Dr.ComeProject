@@ -23,7 +23,7 @@ public interface PharmacyService {
 	//public List<MedicineVO> findMedicine(String keyword);
 
 	/* 환자 처방전 조회 */
-	public List<PharmacySelectVO> getPerscription(PharmacySelectVO vo);
+	public List<PharmacySelectVO> getPerscription(int clinicNo);
 
 	/* 처방전 반환 */
 	public Map<String, Object> updaterejection(PharmacySelectVO pharmacyselectVO);

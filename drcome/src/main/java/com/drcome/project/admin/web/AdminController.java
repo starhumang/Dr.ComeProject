@@ -72,21 +72,6 @@ public class AdminController {
 		return "admin/home";
    }
    
-   /**
-    * 일반 사용자 전체 목록 조회
-    * @param pageNo 페이징 조건
-    * @param model 화면모델
-    * @return admin/adminUser
-    */
-   /*
-	 @GetMapping("/admin/user") 
-	 public String user(@RequestParam(required = false, defaultValue = "0") int pageNo, 
-			 			Model model) { 
-		 Page<Usertable> userlist = aservice.getuserAll(pageNo, 10); 
-		 model.addAttribute("list", userlist);
-	
-	return "admin/adminUser"; }*/
-
 	 @GetMapping("/admin/user") 
 	 public String getUsers(String userStatus,
 			 				@RequestParam(defaultValue = "0") int pageNo, 
@@ -110,20 +95,7 @@ public class AdminController {
       model.addAttribute("clist", hospitallist);
       return "admin/adminHospital";
    }
-   
-   /**
-    * 병원 사용자 목록 조회(승인된 항목)
-    * @param pageNo 페이징 조건
-    * @param model 화면 모델
-    * @return admin/adminHospital
-    */
-	/*
-	 * @GetMapping("/admin/hospitalw") public String
-	 * hospitalwithdrawal(@RequestParam(required = false, defaultValue = "0") int
-	 * pageNo, Model model) { Page<Hospital> hospitallist =
-	 * aservice.findByhospitalStatus("b3", pageNo, 10); model.addAttribute("clist",
-	 * hospitallist); return "admin/adminHospital"; }
-	 */
+
    /**
     * 병원 사용자 승인 대기 목록 조회
     * @param pageNo 페이징 조건
@@ -149,20 +121,7 @@ public class AdminController {
       System.out.println(count);
       return "admin/adminHospitalGrant";
    }
-   
-   /**
-    * 약국 사용자 목록 조회(승인된 항목)
-    * @param pageNo 페이징 조건
-    * @param model 화면 모델
-    * @return admin/adminPharmacy
-    */
-	/*
-	 * @GetMapping("/admin/pharmacyw") public String
-	 * pharmacywithdrawal(@RequestParam(required = false, defaultValue = "0") int
-	 * pageNo, Model model) { Page<Pharmacy> pharmacylist =
-	 * aservice.findBypharmacyStatus("b3", pageNo, 10); model.addAttribute("list",
-	 * pharmacylist); return "admin/adminPharmacy"; }
-	 */
+
    
    /**
     * 약국 사용자 목록 조회(승인된 항목)

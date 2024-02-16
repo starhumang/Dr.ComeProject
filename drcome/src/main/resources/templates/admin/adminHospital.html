@@ -42,8 +42,8 @@
 		                type="radio"
 		                class="btn-check"
 		                name="btnradio"
-		                id="btnradio1"
 		                autocomplete="off"
+		                checked
 		                onclick="location.href='/admin/hospital?hospitalStatus=b2'"
                 		th:checked="${#strings.equals(param.hospitalStatus, 'b2')}"
 		              />
@@ -115,7 +115,7 @@
 	</script>
 		
 		<!-- 페이징 컴포넌트 -->
-        <nav aria-label="Page navigation">
+        <nav aria-label="Page navigation" th:if="${clist.totalPages} > 0">
             <ul class="pagination justify-content-center">
                 <li th:class="${clist.first ? 'page-item disabled' : 'page-item'}">
 				    <a class="page-link" th:href="@{/admin/hospital(pageNo=0, hospitalStatus=${param.hospitalStatus})}" tabindex="-1" aria-disabled="true">Previous</a>

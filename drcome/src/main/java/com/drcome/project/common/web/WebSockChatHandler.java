@@ -83,11 +83,10 @@ public class WebSockChatHandler extends TextWebSocketHandler {
         for (WebSocketSession sess : sessions) {
 			// 여기 equals 뒤에 페이로드는 , 기준으로 짤라서 첫번째 = 유저아이디
 			if (sess.getAttributes().get("userId").equals(auserId)) {
-				if (cntp > 0) {
+				if (cntp > 0 && !acontent.equals("enterRoom")) {
 					TextMessage sendMsg = new TextMessage("취소 사유:" + acontent + "번호: " + aselectno);
 					sess.sendMessage(sendMsg);
-					System.out.println("보냈음!!!!!!!!!!!!!!!!!!!!!!");
-				} else if (cnt > 0) {					
+				} else if (cnt > 0 && acontent.equals("enterRoom")) {
 					TextMessage sendMsg = new TextMessage(sess.getAttributes().get("userId") + "님..진료실..입장하세요..");
 					sess.sendMessage(sendMsg);
 				}

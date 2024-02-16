@@ -109,7 +109,7 @@
 			</div>
 		</div>
 		<!-- 페이징 컴포넌트 -->
-        <nav aria-label="Page navigation">
+        <nav aria-label="Page navigation" th:if="${list.totalPages} > 0">
             <ul class="pagination justify-content-center">
                 <li th:class="${list.first ? 'page-item disabled' : 'page-item'}">
                     <a class="page-link" th:href="@{/admin/pharmacy(pageNo=0, pharmacyStatus=${param.pharmacyStatus})}" tabindex="-1" aria-disabled="true">Previous</a>

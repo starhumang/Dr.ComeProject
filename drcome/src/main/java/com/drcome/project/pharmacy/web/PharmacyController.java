@@ -82,10 +82,7 @@ public class PharmacyController {
 	@GetMapping("/pharmacy/status")
 	public String pharmacyprint(Principal principal, String pharmacyId) {
 		pharmacyId = principal.getName();
-		/*
-		 * List<Map<String, Object>> plist = pservice.selectPrescriptionList(date,
-		 * pharmacyId); model.addAttribute("plist", plist);
-		 */
+
 		return "pharmacy/perscriptionStatus";
 	}
 
@@ -147,7 +144,7 @@ public class PharmacyController {
 											   PharmacySelectVO pharmacyselectVO) {
 		System.out.println(pharmacyselectVO);
 		pharmacyselectVO.setPharmacyId(id);
-		//pservice.updateproduce(pharmacyselectVO);
+		pservice.updateproduce(pharmacyselectVO);
 		
 		return pservice.updaterejection(pharmacyselectVO);
 	}
@@ -208,11 +205,26 @@ public class PharmacyController {
 		return response;
 	}
 	
+	/**
+	 * 처방전 반환 시, 알림 테이블에 insert
+	 * @param dao 상태저장 정보
+	 * @return aservice.saveAlarmPharmacy(dao)
+	 */
 	@PostMapping("/saveAlarmP")
 	@ResponseBody
 	public int savePharmacyAlarm(@RequestBody AlarmDao dao) {
-		System.out.println(dao+"==========================");
 		return aservice.saveAlarmPharmacy(dao);
 	}
 	
+	/**
+	 * 처방전 조회 
+	 * @param no clinicNo 
+	 * @return service
+	 */
+	@GetMapping("/pharmacy/perscription/{no}")
+	@ResponseBody
+	public List<PharmacySelectVO> perscriptionInfo(@PathVariable Integer no) {
+
+		return pservice.getPerscription(no);
+	}
 }

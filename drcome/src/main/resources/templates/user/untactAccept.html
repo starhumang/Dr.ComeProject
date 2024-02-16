@@ -434,19 +434,25 @@ thead tr:nth-child(3) th {
 					console.log("ClinicYN",ClinicYN);
 					
 					
-					document.querySelector('.pCount').innerText = '현재 대기인원은 '+waitingPP+'명이며'
+					document.querySelector('.pCount').innerText = '현재 접수 대기인원은 '+waitingPP+'명이며'
 					let date = new Date;
+					let hour = date.getHours();
 					let minutes = date.getMinutes();
+					//console.log(hour,':',minutes)
+					let ClinicNowHour = canClinicNow.substr(0,2);
+					let ClinicNowMinute = canClinicNow.substr(3,2);
+					//console.log(ClinicNowHour,':',ClinicNowMinute);
 					
-					if(minutes > 30){
-						minutes = 60 - minutes;
-					}else{
-						minutes = 30 -minutes;
+					let waitingHour = String(ClinicNowHour-hour);
+					if(waitingHour == 1){
+						waitingHour = String(0);
 					}
-					console.log("minutes",minutes);
-					let waitingTime = (waitingPP * 30) + minutes;
+					let waitingMinute = String((60 - minutes) + parseInt(ClinicNowMinute));
+					
+					//console.log( String(waitingMinute));
+					//console.log(waitingHour,':',waitingMinute);
 										
-					document.querySelector('.wait').innerText = '예상 대기시간은 '+ waitingTime + '분 입니다.'
+					document.querySelector('.wait').innerText = '예상 대기시간은 '+ waitingHour+'시간 '+ waitingMinute +'분 입니다.'
 					
 				},
 				error:function(jqXHR, textStatus, errorThrown){
@@ -535,54 +541,7 @@ thead tr:nth-child(3) th {
 			let hospitalId = [[${hospitalId}]]
 			window.location.href="/hospitalDetail?hospitalId="+hospitalId;
 		}
-			
-			//제출할 것
-// 			let hospitalId = [[${hospitalId}]];//병원아이디
-// 			let userId = [[${userId}]]//유저아이디
-// 			let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
-// 			let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
-// 			let reserveYear = date.substr(0,4);//예약년도
-// 			let reserveMonth = date.substr(5,2);//예약월
-// 			let reserveDay = date.substr(8,2);//예약일
-// 			let symptom = textarea//증상
-// 			let reserveTime = time;//예약시간
-// 			console.log("제출항목들 = ",hospitalId," , ",userId," , ",doctorNo," , ",reserveYear," , ",reserveMonth," , ",reserveDay," , ",symptom);
-			
-// 			$.ajax("/untactReserve",{
-// 				type:"post",
-// 				contentType:"application/json",
-// 				data : JSON.stringify({
-// 					"hospitalId" : hospitalId,
-// 					"userId" : userId,
-// 					"doctorNo" : doctorNo,
-// 					"reserveYear" : reserveYear,
-// 					"reserveMonth" : reserveMonth,
-// 					"reserveDay" : reserveDay,
-// 					"symptom" : symptom,
-// 					"reserveTime" : reserveTime
-// 				}),
-				
-// 				success: function(response){
-// 					Swal.fire({
-// 			   			  title: "예약이 완료되었습니다!",
-// 			   			  html: '예약내역은 마이페이지에서 확인가능합니다~',
-// 			   			  icon: "success"
-// 			   			}).then(result=>{
-// 			   				if(result.value){
-// 			   					window.location.href = "/mypage";
-// 			   				}
-// 			   			})
-					
-// 				},
-// 				error: function(jqXHR, textStatus, errorThrown) {
-// 				        console.error("에러 발생:", textStatus, errorThrown);
-// 				     Swal.fire({
-// 		   			  title: "예약실패",
-// 		   			  html: '뭔가 문제가 있음ㄴ',
-// 		   			  icon: "error"
-// 		   			});
-// 				}
-// 			})
+
 		
 	
 	</script>

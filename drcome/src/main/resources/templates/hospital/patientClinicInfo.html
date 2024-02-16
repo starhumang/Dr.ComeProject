@@ -34,6 +34,46 @@ table>thead {
 	border-bottom: 1px double #edeef1;
 	border-bottom-width: medium;
 }
+
+/* 모달 스타일 */
+.modal {
+    display: none; /* 모달 기본적으로 숨김 */
+    position: fixed; /* 위치 고정 */
+    z-index: 1; /* 화면 상위로 표시 */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); /* 배경색과 투명도 조절 */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 20% auto; /* 모달을 수직 및 수평 중앙으로 위치 */
+    padding: 20px;
+    border: 1px solid #888;
+    width: 65%; /* 모달의 너비 설정 */
+    border-radius: 5px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    position: absolute; /* 절대 위치 설정 */
+    top: 10px; /* 모달 상단으로부터 10px 떨어진 위치 */
+    right: 10px; /* 모달 오른쪽으로부터 10px 떨어진 위치 */
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+}
 </style>
 </head>
 
@@ -86,6 +126,11 @@ table>thead {
 							<div class="clinic-title">
 								<i class="fas fa-fw fa-prescription-bottle"></i> <span>약처방</span>
 							</div>
+							<div class="perBtn" style="text-align:right;">
+								<button class="btn btn-warning btn-circle btn-sm" style="margin-right:1.0rem;" onclick="printPDF()">
+										<i class="fas fa-fw fa-file-pdf"></i>
+								</button>
+							</div>
 							<div class="pillTbl">
 								<table class="table table-borderless table-hover text-center">
 									<thead>
@@ -118,6 +163,72 @@ table>thead {
 				</div>
 			</div>
 
+
+			 <!-- 모달 -->
+            <div id="myModal" class="modal">
+              <div class="modal-content">
+                <span class="close">&times;</span>
+                <table id="modalTable" class="table table-borderless table-hover text-center">
+                  <thead>
+                    <tr>
+                      <th>약품명</th>
+                      <th>투약량</th>
+                      <th>횟수</th>
+                      <th>일수</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <!-- 약품 정보가 여기에 추가될 것입니다. -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- 모달 관련 스크립트 -->
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            <script th:inline="javascript">
+                /*<![CDATA[*/
+                // 모달 창 열기
+                var modal = document.getElementById("myModal");
+                var btn = document.querySelector(".perBtn button");
+                var span = document.getElementsByClassName("close")[0];
+
+                btn.onclick = function () {
+                    modal.style.display = "block";
+
+                    // 테이블 내용 동적으로 생성
+                    var patientPills = /*[[${patientPill}]]*/ [];
+
+                    var tbody = document.querySelector("#modalTable tbody");
+                    tbody.innerHTML = "";
+
+                    patientPills.forEach(function (cp) {
+                        var tr = document.createElement("tr");
+                        tr.innerHTML = `
+                          <td>${cp.medicineName}</td>
+                          <td>${cp.dosage}</td>
+                          <td>${cp.doseCnt} 번</td>
+                          <td>${cp.doseDay} 일</td>
+                        `;
+                        tbody.appendChild(tr);
+                    });
+                }
+
+                // 모달 창 닫기
+                span.onclick = function () {
+                    modal.style.display = "none";
+                }
+
+                // 사용자가 모달 외부를 클릭하면 모달 창이 닫힘
+                window.onclick = function (event) {
+                    if (event.target == modal) {
+                        modal.style.display = "none";
+                    }
+                }
+                /*]]>*/
+            </script>
+            
+            
 		</div>
 	</div>
 </body>

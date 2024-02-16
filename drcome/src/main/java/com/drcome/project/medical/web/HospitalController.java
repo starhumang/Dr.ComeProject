@@ -56,18 +56,26 @@ public class HospitalController {
 	@Autowired
 	BCryptPasswordEncoder bCryptPasswordEncoder;
 
-	/* 공통 */
-	// 공통 병원 정보 따로 빼기
+	/**
+	 * 공통 정보 : 병원 따로 빼기
+	 * @param principal
+	 * @return
+	 */
 	@ModelAttribute("hospitalSel")
 	public Hospital getServerTime(Principal principal) {
 		String hospitalId = principal.getName();
 		Hospital hosSel = hospitalService.findByhospitalId(hospitalId);
 		return hosSel;
 	}
-
-	/* 대시보드 */
-	// today 진료 내역 및 예약 내역 리스트 -- 1
-	// QNA 답변 -- 2
+	
+	/**
+	 * 대시보드 - today 진료 내역 및 예약 내역 리스트
+	 * 		   QnA 리스트(답변O/답변X)
+	 * @param principal
+	 * @param hospitalId
+	 * @param model
+	 * @return
+	 */
 	@GetMapping(value = { "/hospital", "/hospitalHome" })
 	public String home(Principal principal, String hospitalId, Model model) {
 		hospitalId = principal.getName();
@@ -80,30 +88,38 @@ public class HospitalController {
 		return "hospital/home";
 	}
 
-	/* 병원프로필 */
-	// 병원 단건조회(id로) + 병원-의사 조회
+	/**
+	 * 병원프로필 : 병원 조회, 병원-의사 조회
+	 * @param principal
+	 * @param hospitalId
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/myProfile")
 	public String findHospital(Principal principal, String hospitalId, Model model) {
 		hospitalId = principal.getName();
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId);
-		System.out.println(docList);
 		model.addAttribute("docList", docList);
 		return "hospital/myProfile";
 	}
 
-	/* 환자리스트 */
-	// 병원 환자 전체 조회
+	/**
+	 * 환자리스트 - 병원 환자 전체 조회
+	 * @param principal
+	 * @param hospitalId
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/patientList")
 	public String searchPatient(Principal principal, String hospitalId, Model model) {
 		hospitalId = principal.getName();
 		return "hospital/patientList";
 	}
 	
-	// 환자 페이징 - 검색
 	/**
-	 * 
+	 * 환자 페이지 - 페이징&검색
 	 * @param principal
-	 * @param param :
+	 * @param param : type, keyword
 	 * @param page
 	 * @return
 	 */
@@ -123,13 +139,9 @@ public class HospitalController {
 
 		// 페이지네이션(currentpage, total)
 		PageDTO2 dto = new PageDTO2(page, total);
-		System.out.println("dtd 객체" + dto);
 
 		List<Map<String, Object>> plist = hospitalService.getPaientList(param);
 			
-		System.out.println(param);
-		System.out.println(plist.size());
-
 		// ajax는 return으로...
 
 		map.put("plist", plist);
@@ -138,24 +150,23 @@ public class HospitalController {
 		return map;
 	}
 
-	// @RequestParam("userId") Long firstPageId
-	// 병원 환자별 상세내역
+	/**
+	 * 환자 페이지 - 해당 환자 진단 기록 리스트
+	 * @param principal
+	 * @param hospitalId
+	 * @param patientNo
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/patientList/patientDetail")
 	public String detailPatient(Principal principal, String hospitalId, Integer patientNo, Model model) {
 		hospitalId = principal.getName();
-//		System.out.println("Received patientNo: " + patientNo);
-//
-//		List<Map<String, Object>> detailPList = hospitalService.getPaientDetailList(hospitalId, patientNo);
 		model.addAttribute("patientNo", patientNo);
-		System.out.println(patientNo);
-//		model.addAttribute("detailPList", detailPList);
-//		System.out.println(detailPList);
 		return "hospital/patientDetail";
 	}
 	
-	// 병원 환자 상세 검색, 페이징
 	/**
-	 * 
+	 * 환자 페이지 - 해당 환자 진단 기록 리스트(Ajax)&검색,페이징
 	 * @param principal
 	 * @param param :keyword, type, patientNo
 	 * @param page
@@ -177,11 +188,8 @@ public class HospitalController {
 
 		// 페이지네이션(currentpage, total)
 		PageDTO2 dto = new PageDTO2(page, total);
-		System.out.println("dtd 객체" + dto);
 
 		List<Map<String, Object>> plist = hospitalService.getPaientDetailList(param);
-
-		System.out.println(plist.size());
 
 		// ajax는 return으로...
 
@@ -191,7 +199,15 @@ public class HospitalController {
 		return map;
 	}
 	
-	// 환자 진료내역 info
+	/**
+	 * 환자 페이지 - 해당 환자 진단 기록 단건 검색
+	 * @param principal
+	 * @param hospitalId
+	 * @param patientNo
+	 * @param clinicNo
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/patientList/patientDetail/patientClinicInfo")
 	public String patientClinic(Principal principal, String hospitalId, Integer patientNo, Integer clinicNo, Model model) {
 		hospitalId = principal.getName();
@@ -203,19 +219,30 @@ public class HospitalController {
 		model.addAttribute("clinicNo", clinicNo);
 		model.addAttribute("patientInfo", patientInfo);
 		model.addAttribute("patientPill", patientPill);
-		System.out.println(patientInfo);
-		System.out.println("Received clinicNo" + clinicNo);
-		System.out.println(patientPill);
 		return "hospital/patientClinicInfo";
 	}
-
-	/* 예약내역 - clinic */
-	//Main
+	
+	/**
+	 * 진료 및 예약 - 전체보기(Main)
+	 * @param principal
+	 * @param hospitalId
+	 * @param date
+	 * @param reserveKindstatus
+	 * @return
+	 */
 	@GetMapping("/hospital/clinicMain")
 	public String clinicReserve(Principal principal, String hospitalId, String date, String reserveKindstatus) {
 		hospitalId = principal.getName();
 		return "hospital/clinicMain";
 	}
+	/**
+	 * 진료 및 예약 - 전체보기(Main)Ajax
+	 * @param principal
+	 * @param hospitalId
+	 * @param date
+	 * @param reserveKindstatus
+	 * @return
+	 */
 	@GetMapping("/hospital/clinicMain/ajax")
 	@ResponseBody
 	public List<Map<String, Object>> clinicReserve1(Principal principal, String hospitalId, String date, String reserveKindstatus) {
@@ -224,14 +251,31 @@ public class HospitalController {
 		return reserveList;
 	}
 	
-	//Dr
+	/**
+	 * 진료 및 예약 - 의사별
+	 * @param principal
+	 * @param hospitalId
+	 * @param doctorNo
+	 * @param date
+	 * @param reserveKindstatus
+	 * @return
+	 */
 	@GetMapping("/hospital/clinicDr")
 	public String clinicReserveDr(Principal principal, String hospitalId, Integer doctorNo, String date, String reserveKindstatus) {
 		hospitalId = principal.getName();
 		return "hospital/clinicDr";
 	}
 	
-	//main-ajax
+	/**
+	 * 진료 및 예약 - 의사별Ajax & 의사선택, 날짜선택, 상태선택
+	 * @param principal
+	 * @param hospitalId
+	 * @param doctorNo
+	 * @param date
+	 * @param reserveKindstatus
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/clinicDr/ajax")
 	@ResponseBody
 	public List<Map<String, Object>> clinicReserveDr1(Principal principal, String hospitalId, Integer doctorNo, String date, String reserveKindstatus, Model model) {
@@ -240,7 +284,12 @@ public class HospitalController {
 		return reserveDrList;
 	}
 	
-	//Dr-ajax
+	/**
+	 * 진료 및 예약 - 의사별Ajax & 의사리스트
+	 * @param principal
+	 * @param hospitalId
+	 * @return
+	 */
 	@GetMapping("/hospital/clinicDr/allDr")
 	@ResponseBody
 	public List<Map<String, Object>> allDrList(Principal principal, String hospitalId) {
@@ -249,7 +298,13 @@ public class HospitalController {
 		return DrAllList;
 	}
 	
-	//선택 약국 가져오기
+	/**
+	 * 환자 선택 약국 가져오기 페이지
+	 * @param principal
+	 * @param param : reserveNo, clinicNo
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/selPharmacyList")
 	public String selPharmacyList(Principal principal,
 								  @RequestParam Map<String, Object> param,
@@ -279,17 +334,21 @@ public class HospitalController {
 		return "hospital/selPharmacyList";
 	}
 
-	/* QnA */
-	// QnA 전체
+	/**
+	 * QnA 전체 리스트
+	 * @param principal
+	 * @param hospitalId
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/qnaList")
 	public String qnaList(Principal principal, String hospitalId, Model model) {
 		hospitalId = principal.getName();
 		return "hospital/qnaList";
 	}
 	
-	// QnA 전체 - 페이징
 	/**
-	 * 
+	 * QnA 전체 - 페이징&검색
 	 * @param principal
 	 * @param param : page, type, ansStatus, keyword, categoryStatus
 	 * @param page
@@ -325,7 +384,15 @@ public class HospitalController {
 		return map;
 	}
 	
-	// QnA 단건상세 + 첨부파일 가져오기 = 1:1
+	/**
+	 * QnA 단건상세 + 첨부파일 가져오기(1:1)
+	 * @param principal
+	 * @param hospitalId
+	 * @param qnaVO
+	 * @param attVO
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/qnaList/qnaDetail")
 	public String qnaInfo(Principal principal,
 						  String hospitalId,
@@ -356,14 +423,25 @@ public class HospitalController {
 	    return "hospital/qnaDetail";
 	}
 
-	// QnA 답변 등록 - FORM
+	/**
+	 * QnA 답변 등록 -FORM
+	 * @param qnaNo
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/qnaAnsForm")
 	public String insertQnaAnsForm(@RequestParam String qnaNo, Model model) {
 		model.addAttribute("qnaNo", qnaNo);
 	    return "hospital/qnaAnsForm";
 	}
 
-	// QnA 답변 등록 - PROCESS
+	/**
+	 * QnA 답변 등록 - PROCESS
+	 * @param principal
+	 * @param vo
+	 * @param resp
+	 * @param request
+	 */
 	@PostMapping("/hospital/qnaAnsForm")
 	public void insertQnaAnsProcess(Principal principal,
 									@ModelAttribute QnaVO vo,
@@ -419,17 +497,27 @@ public class HospitalController {
 
 	}
 		
-
-	/* 공지사항 */
-	// 공지사항 불러오기
+	/**
+	 * 공지사항 페이지
+	 * @param principal
+	 * @param hospitalId
+	 * @return
+	 */
 	@GetMapping("/hospital/noticeList")
 	public String noticeList(Principal principal, String hospitalId) {
 		hospitalId = principal.getName();
 
 		return "hospital/noticeList";
 	}
-
-	// 공지사항 전체 - 페이징
+	/**
+	 * 공지사항 페이지 - 페이징,검색
+	 * @param principal
+	 * @param hospitalId
+	 * @param page
+	 * @param type
+	 * @param keyword
+	 * @return
+	 */
 	@GetMapping("/hospital/noticeListP")
 	@ResponseBody
 	public Map<String, Object> noticeList(Principal principal, String hospitalId,
@@ -461,8 +549,14 @@ public class HospitalController {
 
 		return map;
 	}
-
-	// 공지사항 단건상세
+	
+	/**
+	 * 공지사항 페이지 - 단건상세조회
+	 * @param principal
+	 * @param noticeVO
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/noticeList/noticeDetail")
 	public String noticeDetail(Principal principal, NoticeVO noticeVO, Model model) {
 		noticeVO.setHospitalId(principal.getName());
@@ -472,14 +566,23 @@ public class HospitalController {
 		model.addAttribute("noticeList", noticeList);
 		return "hospital/noticeDetail";
 	}
-
-	// 공지사항 등록 - FORM
+	
+	/**
+	 * 공지사항 페이지 - 공지사항 등록 FORM
+	 * @return
+	 */
 	@GetMapping("/hospital/noticeForm")
 	public String insertNoticeForm() {
 		return "hospital/noticeForm";
 	}
-
-	// 공지사항 등록 - PROCESS
+	
+	/**
+	 * 공지사항 페이지 - 공지사항 등록 PROCESS
+	 * @param principal
+	 * @param vo
+	 * @param resp
+	 * @param request
+	 */
 	@PostMapping("/hospital/noticeForm")
 	public void insertNoticeInfoProcess(Principal principal, NoticeVO vo, HttpServletResponse resp,
 			HttpServletRequest request) {
@@ -489,8 +592,6 @@ public class HospitalController {
 		String hospitalId = principal.getName();
 		vo.setHospitalId(hospitalId);
 
-		System.out.println("이미지테스트랭thㅡ" + vo.getUploadFiles().length);
-		System.out.println("이미지테스트" + vo.getUploadFiles());
 		try {
 			System.out.println(vo.getUploadFiles()[0].isEmpty());
 		} catch (Exception e) {
@@ -530,6 +631,14 @@ public class HospitalController {
 
 	}
 	
+	/**
+	 * 
+	 * @param principal
+	 * @param noticeNo
+	 * @param noticeVO
+	 * @param model
+	 * @return
+	 */
 	//공지사항 수정 - FORM
 	@GetMapping("/hospital/noticeUpdate/{noticeNo}")
 	public String noticeUpdateForm(Principal principal, @PathVariable("noticeNo") int noticeNo, NoticeVO noticeVO, Model model) {

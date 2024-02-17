@@ -300,40 +300,40 @@
 					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
 				</div>
 				<div class="row g-4 here" style="">
-					<div th:each="hos: ${hosList.subList(0, 5)}"
-						class="col-lg-3 col-md-6 hospitalItem"
-						style="width: 280px; height: 380px;"
-						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
-						<!-- 바로 위는 타임리프로 링크 보내버리는법 -->
+<!-- 					<div th:each="hos: ${hosList.subList(0, 5)}" -->
+<!-- 						class="col-lg-3 col-md-6 " -->
+<!-- 						style="width: 280px; height: 380px;" -->
+<!-- 						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|"> -->
+<!-- 						바로 위는 타임리프로 링크 보내버리는법 -->
 
-						<div class="ho wow fadeInUp" data-wow-delay="0.1s">
-							<div class="team-item bg-light">
-								<div class="overflow-hidden">
-									<img th:if="${hos.hospitalImg}"
-										th:src="@{/images/} + ${hos.hospitalImg}" alt="image"
-										style="width: 100%; height: 200px;" class="img-fluid" /> <img
-										th:unless="${hos.hospitalImg}"
-										th:src="@{/images/} + hospital.png" alt="image"
-										style="width: 100%; height: 200px;" class="img-fluid" />
-								</div>
-							</div>
+<!-- 						<div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
+<!-- 							<div class="team-item bg-light"> -->
+<!-- 								<div class="overflow-hidden"> -->
+<!-- 									<img th:if="${hos.hospitalImg}" -->
+<!-- 										th:src="@{/images/} + ${hos.hospitalImg}" alt="image" -->
+<!-- 										style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
+<!-- 										th:unless="${hos.hospitalImg}" -->
+<!-- 										th:src="@{/images/} + hospital.png" alt="image" -->
+<!-- 										style="width: 100%; height: 200px;" class="img-fluid" /> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
 
-							<div class="text-center p-4">
-								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5>
-								<small th:text="${hos.phone}"></small> <br /> <small
-									th:text="${hos.address}" style="color: red; font-weight: bold;"
-									class="address"></small>
-								<p th:text="${hos.closetime}" style="display: none;"
-									class="closeTime">
-								<p th:text="${hos.holiday}" style="display: none;"
-									class="closeDay">
-							</div>
-						</div>
-						<div class="closeBlock">
-							<h2 style="color: white; padding-top: 80px;">Close</h2>
-						</div>
+<!-- 							<div class="text-center p-4"> -->
+<!-- 								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5> -->
+<!-- 								<small th:text="${hos.phone}"></small> <br /> <small -->
+<!-- 									th:text="${hos.address}" style="color: red; font-weight: bold;" -->
+<!-- 									class="address"></small> -->
+<!-- 								<p th:text="${hos.closetime}" style="display: none;" -->
+<!-- 									class="closeTime"> -->
+<!-- 								<p th:text="${hos.holiday}" style="display: none;" -->
+<!-- 									class="closeDay"> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 						<div class="closeBlock"> -->
+<!-- 							<h2 style="color: white; padding-top: 80px;">Close</h2> -->
+<!-- 						</div> -->
 
-					</div>
+<!-- 					</div> -->
 				</div>
 				<!-- 병원끝 -->
 			</div>
@@ -354,39 +354,39 @@
 
 			</div>
 			<div class="row g-4 here2">
-				<div th:each="pha: ${phaList}"
-					class="col-lg-3 col-md-6 pharmacyItem"
-					style="width: 280px; height: 380px;"
-					th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|">
+<!-- 				<div th:each="pha: ${phaList}" -->
+<!-- 					class="col-lg-3 col-md-6 pharmacyItem" -->
+<!-- 					style="width: 280px; height: 380px;" -->
+<!-- 					th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"> -->
 
-					<div class="ho wow fadeInUp" data-wow-delay="0.1s">
-						<div class="team-item bg-light">
-							<div class="overflow-hidden">
-								<img th:if="${pha.pharmacyImg}"
-									th:src="@{/images/} + ${pha.pharmacyImg}" alt="image"
-									style="width: 100%; height: 200px;" class="img-fluid" /> <img
-									th:unless="${pha.pharmacyImg}"
-									th:src="@{/images/} + pharmacy.png" alt="image"
-									style="width: 100%; height: 200px;" class="img-fluid" />
-							</div>
-						</div>
+<!-- 					<div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
+<!-- 						<div class="team-item bg-light"> -->
+<!-- 							<div class="overflow-hidden"> -->
+<!-- 								<img th:if="${pha.pharmacyImg}" -->
+<!-- 									th:src="@{/images/} + ${pha.pharmacyImg}" alt="image" -->
+<!-- 									style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
+<!-- 									th:unless="${pha.pharmacyImg}" -->
+<!-- 									th:src="@{/images/} + pharmacy.png" alt="image" -->
+<!-- 									style="width: 100%; height: 200px;" class="img-fluid" /> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
 
-						<div class="text-center p-4">
-							<h5 class="mb-0" th:text="${pha.pharmacyName}"></h5>
-							<small th:text="${pha.pharmacyPhone}"></small> <br /> <small
-								th:text="${pha.address}" style="color: red; font-weight: bold;"
-								class="phAddress"></small>
-							<p th:text="${pha.closetime}" style="display: none;"
-								class="closeTime2">
-							<p th:text="${pha.holiday}" style="display: none;"
-								class="closeDay2">
-						</div>
-					</div>
-					<div class="closeBlock2">
-						<h2 style="color: white; padding-top: 80px;">Close</h2>
-					</div>
+<!-- 						<div class="text-center p-4"> -->
+<!-- 							<h5 class="mb-0" th:text="${pha.pharmacyName}"></h5> -->
+<!-- 							<small th:text="${pha.pharmacyPhone}"></small> <br /> <small -->
+<!-- 								th:text="${pha.address}" style="color: red; font-weight: bold;" -->
+<!-- 								class="phAddress"></small> -->
+<!-- 							<p th:text="${pha.closetime}" style="display: none;" -->
+<!-- 								class="closeTime2"> -->
+<!-- 							<p th:text="${pha.holiday}" style="display: none;" -->
+<!-- 								class="closeDay2"> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 					<div class="closeBlock2"> -->
+<!-- 						<h2 style="color: white; padding-top: 80px;">Close</h2> -->
+<!-- 					</div> -->
 
-				</div>
+<!-- 				</div> -->
 			</div>
 			<!-- 약국 끝 -->
 		</div>
@@ -404,10 +404,13 @@
 		
 		//제일 처음 시작 함수
 		window.onload = function(){
-			//console.log("hosList=",hosList);
-			//console.log("phaList=",phaList);
-			getLocation();
-			//console.log("phAddress= ",phAddress);
+			 //만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
+	         let curLocation = window.localStorage.getItem('location');
+	         if(!curLocation){
+	            getLocation();
+	         }else{
+	            document.getElementById("location").innerText = '현재 내 위치 : ' + curLocation;
+	         }
 		}
 		
 		
@@ -451,16 +454,9 @@
                ALERT('GPS 허용을 눌러주세요');
             }
             
-            restart();// 거리계산 시작
          }
          
-         //만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
-         let curLocation = window.localStorage.getItem('location');
-         if(!curLocation){
-            getLocation();
-         }else{
-            document.getElementById("location").innerText = '현재 내 위치 : ' + curLocation;
-         }
+         restart();// 거리계산 시작
          
 // <<------ getLocation() end----------------------------------------------------------------------------------------------------------------->>
 
@@ -492,6 +488,8 @@
                        geocoder.addressSearch(data.address, callback);
                     }
                 }).open(); 
+                
+                restart();
          }
       
          
@@ -501,7 +499,6 @@
          //현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
          //5. 병원주소를 좌표로 바꿈
          async function restart(){
-        	 var geocoder = new kakao.maps.services.Geocoder();
         	 
         	 //병원
         	 //console.log("address=",address);
@@ -509,9 +506,9 @@
         		 console.log("강제종료");
         		 return;
         	 }else{
-        		 hosList.forEach(ele=>{
-            		 promiseFn(ele.address, "hos");//함수에 주소 넣어서 실행
-            	 })
+        		 hosList.forEach((ele, index) =>{
+            		 promiseFn(ele.address, "hos", index);//함수에 주소 넣어서 실행
+            	 });
         	 }
              
              //약국
@@ -520,83 +517,58 @@
         		 console.log("강제종료");
         		 return;
         	 }else{
-        		 phaList.forEach(ele=>{
-            		 promiseFn(ele.address, "pha");//함수에 주소 넣어서 실행
-            	 })
+        		 phaList.forEach((ele, index) =>{
+            		 promiseFn(ele.address, "pha", index);//함수에 주소 넣어서 실행
+            	 });
         	 }
         	 
-        	
-        	 
-         	 /*address(태그자체)로 만든 배열을 새로운 배열로 바꿀건데,
-         	 그 새로운 배열map은 promiseFn함수에 address배열에 있는 
-         	 item값(태그와 내용이 있음/ 내용만 뽑으려면 item.innerText)과 index를 넣어 만들것이다.
-         	 */
-         	 //병원
-// 	         const promises = Array.from(address).map((item, index)=> promiseFn(item, index));
-// 	         //console.log("promises=",promises)
-// 	         await Promise.all(promises); //모든 promise들이 성공을 return 할때까지 잠시 기다리겠다.
-			 
-	         //makeHospitalListBox() 이자리에 있었음
 	         
-	         //약국
-// 	         const promises2 = Array.from(phAddress).map((item, index)=> promiseFn(item, index));
-// 	         await Promise.all(promises2);
-// 	         pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-// 	         const pharmacyListBox = document.querySelector('.here2');	 
-// 	         pharmacyList.forEach(({parent_node}) =>{
-// 	        	 pharmacyListBox.append(parent_node);
-// 	         })
-	         
-         }; //restart함수 끝
+         };
          
 // <<------ restart() end----------------------------------------------------------------------------------------------------------------->>
 
 			//배열안의 주소들을 좌표로 바꾼후 거리 계산해서 안에 넣어줌
-			function promiseFn(item, kind){// 주소, 병원인지 약국인지
-				
-         		//console.log("item= ",item);
-         		 return new Promise((resolve)=>{
-         			 geocoder.addressSearch(item, (result, status)=>{ 
-         				if (status === kakao.maps.services.Status.OK) {
-         					console.log("카카오맵에서 찾았음")
-                            //병원&약국 좌표
-                            let hosLat = result[0].address.y;
-                            let hosLon = result[0].address.x;
-                            //console.log('병원Lat = ',result[0].address.y);
-                            //console.log('병원Lon = ',result[0].address.x);
-                            
-                          	//현재위치 좌표
-                            let curLat = window.localStorage.getItem('lat');
-                            let curLon = window.localStorage.getItem('lon');
-                            //console.log('세션Lat = ',curLat);
-                            //console.log('세션Lon = ',curLon);
-                            
-                            //거리계산된 값
-                            let dist = (distance(curLat, curLon, hosLat, hosLon)).toFixed(2);
-                            //console.log("총 거리 =", dist);
-                            
-                            if(kind="hos"){
-                            	hosList.forEach(ele=>{
-                            		ele["dist"] = dist + 'km';
-                            	})
-                            	makeListBox(hosList, kind);
-                            	
-                            }else if(kind="pha"){
-                            	phaList.forEach(ele=>{
-                            		ele["dist"] = dist + 'km';
-                            }
-                            	makeListBox(phaList, kind);
-                            	
-                            resolve(); //여기까지 도달하면 성공했다는 뜻
-         			 	}else{
-         			 		console.log("restart함수실행안됨");
-         			 		reject()
-         			 	}
-                            console.log("거리더한 hosList = ", hosList);
-                            console.log("거리더한 phaList = ", phaList);
-         		 	});
-         	 	});       
-             }  
+			function promiseFn(item, kind, index) { //주소, 병원인지 약국인지, 배열의 몇번째에 해당하는지
+			    return new Promise((resolve, reject) => {
+			    	var geocoder = new kakao.maps.services.Geocoder();
+			        geocoder.addressSearch(item, (result, status) => {
+			            if (status === kakao.maps.services.Status.OK) {
+			                console.log("카카오맵에서 찾았음")
+			                //병원&약국 좌표
+			                let hosLat = result[0].address.y;
+			                let hosLon = result[0].address.x;
+			                
+			                //현재위치 좌표
+			                let curLat = window.localStorage.getItem('lat');
+			                let curLon = window.localStorage.getItem('lon');
+			                
+			                
+			                //거리계산된 값
+			                let dist = distance(curLat, curLon, hosLat, hosLon).toFixed(2);
+			                console.log("총 거리 =", dist);
+							
+			                // 거리포함한 병원 리스트 재생성
+			                if (kind === "hos") {
+			                    hosList[index]["dist"] = dist;
+			                    //console.log("거리더한 hosList = ", hosList);
+			                    makeListBox(hosList, kind);
+			                
+			                // 거리포함한 약국 리스트 재생성
+			                } else if (kind === "pha") {
+			                    phaList[index]["dist"] = dist;
+			                    //console.log("거리더한 phaList = ", phaList);
+			                    makeListBox(phaList, kind);
+			                }
+			                
+			                
+			                resolve(); // 비동기 작업 성공
+			            } else {
+			                console.log("restart 함수 실행되지 않음");
+			                reject(); // 비동기 작업 실패
+			            }
+			        });
+			    });
+			}
          	
             
 //<<------ promiseFn() end----------------------------------------------------------------------------------------------------------------->>
@@ -606,39 +578,103 @@
          function makeListBox(list, kind){ //거리들어간 리스트랑 병원인지 약국인지 종류
         	 //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
 	         //parseFloat()=문자열을 실수로 변경
-	         list.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-	         console.log("정렬된 list = ", list);
+	         const finalList = list.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+	         console.log("정렬된 finalList = ", finalList);
+			
 	         
-	         //hospitalItem클래스를 가진 div전체(하위요소 포함)
-	         //const hospitalListBox = document.querySelector('.here');
-	         //console.log("hospitalListBox=", hospitalListBox); 
 	         
-	         let shortHosList = [];
-	         let shortPhaList = [];
-	         for(let i =0; i < 5; i++){
-	        	 console.log("node=",hospitalList[i].parent_node);
-	        	 hospitalListBox.append(hospitalList[i].parent_node);
-	         }
 	         
-	       //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된)를 넣어줌
-// 	         hospitalList.forEach(({parent_node}) =>{
-// 	        	 console.log("node=",parent_node);
-// 	        	 hospitalListBox.append(parent_node);
-// 	         })
-        	 
-             //hospitalItem클래스를 가진 div전체(하위요소 포함)
-             //const hospitalListBox = document.querySelector('.here');
-                
-             hospitalListBox.innerHTML = ''; // 초기화
-
-             //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된 / 가나다순 )를 넣어줌
-             list.forEach(({parent_node}) =>{
-                hospitalListBox.append(parent_node);
-             })
-          };
+		      // 정렬된 리스트를 기반으로 HTML 업데이트
+		         function updateList(finalList) {
+		             
+			         if (kind === "hos") {
+			        	 const here = document.querySelector('.here'); // 병원 정보를 담고 있는 컨테이너 요소
+			             here.innerHTML = ''; // 기존의 내용 비우기
+			             for(let i=0; i < 5; i++){
+			            	 const hospitalElement = createHospitalElement(finalList[i]);//태그만들기
+			                 here.appendChild(hospitalElement);
+			 	             changeStyle();
+			             } 			             
+		             }else if(kind === "pha"){
+		            	 const here2 = document.querySelector('.here2'); // 병원 정보를 담고 있는 컨테이너 요소
+			             here2.innerHTML = ''; // 기존의 내용 비우기
+			             for(let i=0; i < 5; i++){
+			            	 const pharmacyElement = createPharmacyElement(finalList[i]);//태그만들기
+			                 here2.appendChild(pharmacyElement);
+			 	             changeStyle();
+			             }
+		             }
+	         	}
+		        updateList(finalList);
+         }
+	      
           
 //<<------ makeHospitalListBox() end----------------------------------------------------------------------------------------------------------------->>
            
+           //병원만드는 함수
+	         function createHospitalElement(hospital) {
+	        	    const element = document.createElement('div');
+	        	    element.className = 'col-lg-3 col-md-6 hospitalItem';
+	        	    element.style.width = '280px';
+	        	    element.style.height = '380px';
+	        	    element.setAttribute('onclick', `location.href='hospitalDetail?hospitalId=${hospital.hospitalId}'`);
+	        	    
+	        	    const imageSrc = hospital.hospitalImg ? `/images/${hospital.hospitalImg}` : '/images/hospital.png';
+	        	    element.innerHTML = `
+	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
+	        	            <div class="team-item bg-light">
+	        	                <div class="overflow-hidden">
+	        	                    <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
+	        	                </div>
+	        	            </div>
+	        	            <div class="text-center p-4">
+	        	                <h5 class="mb-0">${hospital.hospitalName}</h5>
+	        	                <small>${hospital.phone}</small><br/>
+	        	                <small style="color: red; font-weight: bold;" class="address">${hospital.dist}Km</small>
+	        	                <p style="display: none;" class="closeTime">${hospital.closetime}</p>
+	        	                <p style="display: none;" class="closeDay">${hospital.holiday}</p>
+	        	            </div>
+	        	        </div>
+	        	        <div class="closeBlock">
+	        	            <h2 style="color: white; padding-top: 80px;">Close</h2>
+	        	        </div>
+	        	    `;
+	        	    
+	        	    return element;
+	        	}
+           
+	         function createPharmacyElement(pharmacy) {
+	        	    const element = document.createElement('div');
+	        	    element.className = 'col-lg-3 col-md-6 pharmacyItem';
+	        	    element.style.width = '280px';
+	        	    element.style.height = '380px';
+	        	    element.setAttribute('onclick', `location.href='pharmacyDetail?pharmacyId=${pharmacy.pharmacyId}'`);
+	        	    
+	        	    const imageSrc = pharmacy.pharmacyImg ? `/images/${pharmacy.pharmacyImg}` : '/images/pharmacy.png';
+	        	    element.innerHTML = `
+	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
+	        	            <div class="team-item bg-light">
+	        	                <div class="overflow-hidden">
+	        	                    <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
+	        	                </div>
+	        	            </div>
+	        	            <div class="text-center p-4">
+	        	                <h5 class="mb-0">${pharmacy.pharmacyName}</h5>
+	        	                <small>${pharmacy.phone}</small><br/>
+	        	                <small style="color: red; font-weight: bold;" class="address2">${pharmacy.dist}Km</small>
+	        	                <p style="display: none;" class="closeTime2">${pharmacy.closetime}</p>
+	        	                <p style="display: none;" class="closeDay2">${pharmacy.holiday}</p>
+	        	            </div>
+	        	        </div>
+	        	        <div class="closeBlock2">
+	        	            <h2 style="color: white; padding-top: 80px;">Close</h2>
+	        	        </div>
+	        	    `;
+	        	    
+	        	    return element;
+	        	}
+
+//<<------ createElement() end----------------------------------------------------------------------------------------------------------------->>
           
          //6. 본격 좌표로 거리계산 시작
            //Math.PI 는 파이값임(3.14...)
@@ -705,11 +741,11 @@
             		 days.forEach((item) =>{//배열에 담긴숫자만큼 돌림
             			 holiday +=day[item]; //i1 -> 저는 숫자로 변환(요일로 변환해도 됨)
             			 holiday +=',';
-            		 })
+            		 });
             		 closeWeek.push(holiday); 
             	 }
                  
-              })
+              });
               //console.log("closeWeek전체=",closeWeek);
               
               //약국
@@ -723,10 +759,10 @@
             		 days.forEach((item) =>{
             			 holiday +=day[item];
             			 holiday +=',';
-            		 })
+            		 });
             		 closeWeek2.push(holiday);
             	 }
-              })
+              });
               console.log("closeWeek2전체=",closeWeek2);
               
               //병원리스트의 시간을 배열에 넣음
@@ -834,26 +870,27 @@
 //<<------ changeStyle () end----------------------------------------------------------------------------------------------------------------->>
 
          
-       //검색 함수
-  		function searchResult(e){
-  			let word = document.getElementById("search").value;
-  			console.log("검색한 단어= ",word);
-  			if(word == ''){
-  				alert("검색한 단어가 없습니다.");
-  			}else{
-  				location.href="search?word="+word;
-  			}
-  		}
+	       //검색 함수
+	  		function searchResult(e){
+	  			let word = document.getElementById("search").value;
+	  			console.log("검색한 단어= ",word);
+	  			if(word == ''){
+	  				alert("검색한 단어가 없습니다.");
+	  			}else{
+	  				location.href="search?word="+word;
+	  			}
+	  		}
+	         
+	         //키보드 엔터 눌러도 제출되게끔
+	         let enter = document.querySelector(".search")
+	         enter.addEventListener('keyup', (event) => {
+	             if (event.key === 'Enter') {
+	                 searchResult();
+	             }
+	         });
          
-         //키보드 엔터 눌러도 제출되게끔
-         let enter = document.querySelector(".search")
-         enter.addEventListener('keyup', (event) => {
-             if (event.key === 'Enter') {
-                 searchResult();
-             }
-         });
-         
-      </script>
+         </script>
 	</div>
+	
 </body>
 </html>

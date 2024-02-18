@@ -180,11 +180,16 @@
                         reserveStatusText = "결제완료";
                         btnDisabled = "disabled";
                         btnclass = "class = 'btn btn-danger'";
+                      } else if (rs === "e6") {
+                    	reserveStatusText = "처방완료";
+                    	btnDisabled = "disabled";
+                    	btnclass = "class = 'btn btn-success'";
                       } else { 
                         reserveStatusText = "진료중";
                         btnclass = "class = 'btn btn-light'";
                         btnDisabled = "disabled";
                       }
+                      
 
                       let reserveTr = document.createElement("tr");
 

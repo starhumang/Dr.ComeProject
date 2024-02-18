@@ -42,7 +42,6 @@
 	<div layout:fragment="content">
 		<div class="container-fluid">
 			<p>Qna Answer Upload</p>
-
 			<!-- Qna form -->
 			<div>
 				<div class="p-5">
@@ -51,6 +50,27 @@
 					</div>
 					<form class="user" th:action="@{/hospital/qnaUserForm}" method="post" enctype="multipart/form-data">
 					 	<input type="number" name="qnaNo" id="qnaNo" th:value="${qnaNo}" style="display:none;">
+						 	<div class="input-group" id="categoryStatus" style="width: 500px; align-items: center; margin-bottom: 1.5rem;">
+								<label style="margin-bottom: 0; margin-right: 1.0rem;">카테고리</label>
+								<select
+									id="que"
+									name="categoryStatus"
+									class="custom-select custom-select-sm form-control form-control-sm"
+								>
+									<option selected>선택하세요</option>
+									<th:block th:each="detailCode : ${application.detailCode_g}">
+										<option
+											th:value="${detailCode.detailCode}"
+											th:text="${detailCode.codeName}"
+										></option>
+									</th:block>
+								</select>
+							</div>
+						<div class="mb-3">
+							<label for="exampleFormControlInput1" class="form-label">제목</label>
+							<input type="text" name="title" class="form-control"
+								id="exampleFormControlInput1" placeholder="제목을 입력하세요.">
+						</div>
 						<div class="mb-3">
 							<label for="exampleFormControlTextarea1" class="form-label">내용</label>
 							<textarea class="form-control" name="content" id="exampleFormControlTextarea1"
@@ -71,7 +91,7 @@
 					<hr>
 				</div>
 			</div>
-
+		
 		</div>
 	</div>
 </body>

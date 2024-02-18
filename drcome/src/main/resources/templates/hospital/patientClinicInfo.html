@@ -119,7 +119,9 @@ table>thead {
                 <div class="card shadow mb-4">
                     <div class="card-header py-3">
                         <h6 class="m-0 font-weight-bold text-primary text-right">진료코드
-                            [[${patientInfo.clinicNo}]] / [[${patientInfo.reserveKindstatus}]]</h6>
+                            [[${patientInfo.clinicNo}]] / <th:block th:each="detailCode : ${application.detailCode_c}" >
+						                	<span th:if="${detailCode.detailCode} == ${patientInfo.reserveKindstatus}" th:text="${detailCode.codeName}"></span>
+						            	</th:block></h6>
                     </div>
                     <div class="card-body">
                         <div class="text-center"></div>
@@ -138,7 +140,11 @@ table>thead {
                                     <td>[[${#dates.format(patientInfo.userBirthday,
                                         'yyyy-MM-dd')}]]</td>
                                     <th>진료구분</th>
-                                    <td>[[${patientInfo.reserveKindstatus}]]</td>
+                                    <td>
+	                             		<th:block th:each="detailCode : ${application.detailCode_c}" >
+						                	<span th:if="${detailCode.detailCode} == ${patientInfo.reserveKindstatus}" th:text="${detailCode.codeName}"></span>
+						            	</th:block>
+					            	</td>
                                 </tr>
                             </table>
                         </div>

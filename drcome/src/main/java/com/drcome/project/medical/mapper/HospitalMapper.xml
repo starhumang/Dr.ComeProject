@@ -6,6 +6,33 @@
 <mapper namespace="com.drcome.project.medical.mapper.HospitalMapper">
 
 	<!-- Dashboard -->
+	<!-- 한달 내 추이 현황: 상단 card -->
+	<select id="selectReserveCnt" resultType="int">
+		select count(reserve_no) FROM reservation
+         WHERE hospital_id = #{hospitalId}
+	</select>
+	
+	<select id="selectQnaCnt" resultType="int">
+		select count(qna_no) FROM qna
+         WHERE hospital_id = #{hospitalId}
+           AND user_id IS NOT NULL
+	</select>
+	
+	<select id="selectPayMonth" resultType="int">
+		SELECT COUNT(pay_yn) * 5000 AS pay
+		  FROM clinic
+		 WHERE hospital_id = #{hospitalId}
+		   AND TO_CHAR(clinic_date, 'YY/MM') = TO_CHAR(SYSDATE, 'YY/MM')
+	</select>
+	
+	<select id="selectC2Rate" resultType="int">
+		SELECT 
+		       ROUND(COUNT(*) / (SELECT COUNT(*) FROM reservation WHERE hospital_id = #{hospitalId}), 2) * 100 AS reserveRatio
+		FROM reservation
+		WHERE hospital_id = #{hospitalId} AND reserve_kindstatus = 'c2'
+		GROUP BY reserve_kindstatus
+	</select>
+	
 	<!-- 오늘 진료 및 예약 리스트 -->
 	<select id="selectTodayReserve" resultType="Map">
 		<![CDATA[
@@ -43,7 +70,9 @@
 			SELECT user_id "userId",
 				   category_status "categoryStatus",
 				   title "title",
-				   ans_status "ansStatus"
+				   ans_status "ansStatus",
+				   qna_no "qnaNO",
+				   ans_code "ansCode"
 			  FROM QNA
 			  WHERE hospital_id = #{hospitalId} AND ans_status = 'j2' AND ROWNUM <= 5
 			  ORDER BY wdate
@@ -56,7 +85,8 @@
 			SELECT user_id "userId",
 				   category_status "categoryStatus",
 				   title "title",
-				   ans_status "ansStatus"
+				   ans_status "ansStatus",
+				   qna_no "qnaNO"
 			  FROM QNA
 			  WHERE hospital_id = #{hospitalId} AND ans_status = 'j1' AND ROWNUM <= 5
 			  ORDER BY wdate
@@ -282,7 +312,7 @@
 		        s.send_status "sendStatus",
 		        s.rejection "rejection",
 		        s.pharmacy_selectno "pharmacySelectno",
-		        r.reserve_no "reservationNo"
+		        r.reserve_no "reserveNo"
 		  FROM clinic c 
 		  LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
 		  JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
@@ -299,6 +329,12 @@
 	<update id="updateSendPersStatus" parameterType="Map">
 		UPDATE pharmacy_select SET send_status = 'Y'
 		 WHERE pharmacy_selectno = #{pharmacySelectno}
+	</update>
+	
+	<update id="updateReservationStatus" parameterType="map">
+	    UPDATE reservation
+	       SET reserve_status = 'e6'
+	     WHERE reserve_no = #{reserveNo}
 	</update>
 	
 	<!-- QnA -->

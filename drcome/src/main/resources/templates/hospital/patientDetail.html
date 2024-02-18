@@ -274,8 +274,42 @@ input[type="radio"]:checked+label {
 			            row.append(`<td>${item.clinicSymptom}</td>`);
 			            row.append(`<td>${item.specificity}</td>`);
 			            row.append(`<td>${item.perscriptionYn}</td>`);
-			            row.append(`<td>${item.reserveKindstatus}</td>`);
-			            row.append(`<td>${item.reserveStatus}</td>`);
+			            
+			            // Display '비대면' if reserveKindstatus c1', '대면' if reserveKindstatus'c2'
+			            var reserveKindstatusText = '';
+			            if (item.reserveKindstatus === 'c1') {
+			                reserveKindstatusText = '비대면';
+			            } else if (item.reserveKindstatus === 'c2') {
+			                reserveKindstatusText = '대면';
+			            } else {
+			                reserveKindstatusText = item.reserveKindstatus;
+			            }
+			            row.append(`<td>${reserveKindstatusText}</td>`);
+			            
+			            // reserveStatus
+			            var reserveStatusText = '';
+			            switch (item.reserveStatus) {
+			                case 'e1':
+			                    reserveStatusText = '진료대기';
+			                    break;
+			                case 'e2':
+			                    reserveStatusText = '예약취소';
+			                    break;
+			                case 'e3':
+			                    reserveStatusText = '입장하기';
+			                    break;
+			                case 'e4':
+			                    reserveStatusText = '진료완료';
+			                    break;
+			                case 'e5':
+			                    reserveStatusText = '결제완료';
+			                    break;
+			                default:
+			                    reserveStatusText = item.reserveStatus;
+			                    break;
+			            }
+			            row.append(`<td>${reserveStatusText}</td>`);
+			            
 			            row.append(`<td><button class="btn btn-warning">진료상세</button></td>`);
 			        });
 			

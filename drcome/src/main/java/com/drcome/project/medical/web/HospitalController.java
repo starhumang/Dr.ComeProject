@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -84,9 +83,17 @@ public class HospitalController {
 		List<Map<String, Object>> tolist = hospitalService.getTodayReserve(hospitalId);
 		List<Map<String, Object>> QnAO = hospitalService.getQnAO(hospitalId);
 		List<Map<String, Object>> QnAX = hospitalService.getQnAX(hospitalId);
+		int resCnt = hospitalService.selectReserveCnt(hospitalId);
+		int qnaCnt = hospitalService.selectQnaCnt(hospitalId);
+		int payMonth = hospitalService.selectPayMonth(hospitalId);
+		int c2Rate = hospitalService.selectC2Rate(hospitalId);
 		model.addAttribute("tolist", tolist);
 		model.addAttribute("QnAO", QnAO);
 		model.addAttribute("QnAX", QnAX);
+		model.addAttribute("resCnt", resCnt);
+		model.addAttribute("qnaCnt", qnaCnt);
+		model.addAttribute("payMonth", payMonth);
+		model.addAttribute("c2Rate", c2Rate);
 		return "hospital/home";
 	}
 
@@ -307,8 +314,6 @@ public class HospitalController {
 	 * @param model
 	 * @return
 	 */
-	
-	
 	@GetMapping("/hospital/selPharmacyList")
 	public String selPharmacyList(Principal principal,
 								  @RequestParam Map<String, Object> param,
@@ -338,18 +343,32 @@ public class HospitalController {
 		return "hospital/selPharmacyList";
 	}
 	
+	/**
+	 * 약국 처방전 발송
+	 * @param pharmacySelectNos
+	 * @return
+	 */
 	@PostMapping("/hospital/updatePharmacySelect")
-	public String updatePharmacySelect(@RequestParam List<Long> pharmacySelectNos) {
+	@ResponseBody
+	public String updatePharmacySelect(@RequestBody List<Long> pharmacySelectNos) {
 	    // pharmacySelectNos를 사용하여 업데이트 작업 수행
-	    for (Long pharmacySelectNo : pharmacySelectNos) {
+	    for (Long pharmacySelectno : pharmacySelectNos) {
 	        // 업데이트 쿼리 실행
 	        Map<String, Object> map = new HashMap<>();
-	        map.put("pharmacySelectNo", pharmacySelectNo);
+	        map.put("pharmacySelectno", pharmacySelectno);
 	        hospitalService.updateSendPersStatus(map);
 	    }
-	    // 업데이트 후에는 해당 페이지를 다시 불러와서 최신 데이터를 보여줍니다.
-	    return "redirect:/hospital/selPharmacyList";
+	    return "hospital/selPharmacyList";
 	}
+	/**
+	 * 처방전 발송 후 상태변경 -> 처방전전송 버튼 막기
+	 * @param parameter
+	 */
+    @PostMapping("/hospital/updateReservationStatus")
+    @ResponseBody
+    public void updateReservationStatus(@RequestBody Map<String, Object> parameter) {
+        hospitalService.updateReservationStatus(parameter);
+    }
 
 	/**
 	 * QnA 전체 리스트
@@ -425,6 +444,7 @@ public class HospitalController {
 	    
 	    // 첨부파일 가져오기
 	    List<NoticeAttachVO> qnaAtt = hospitalService.selectQnaAtt(attVO);
+	    System.out.println("attVOattVOattVOattVOattVOattVOattVOattVOattVO" + attVO);
 	    model.addAttribute("qnaAtt", qnaAtt);
 	    
 	    // 답변 정보가 있는 경우
@@ -500,6 +520,58 @@ public class HospitalController {
 			
 			vo.setQnaNo(realQnaNo);
 			hospitalService.updateQnaStatus(vo);
+		}
+		PrintWriter out;
+		try {
+			out = resp.getWriter();
+			out.println("<script language='javascript'>");
+			out.println("alert('등록을 성공했습니다.'); location.href='/hospital/qnaList';");
+			out.println("</script>");
+			out.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+	}
+	
+	//qna mem form
+	@GetMapping("/hospital/qnaUserForm")
+	public String insertQnaMemForm() {
+	    return "hospital/qnaUserForm";
+	}
+
+	//qna mem process
+	@PostMapping("/hospital/qnaUserForm")
+	public void insertQnaMemProcess(Principal principal,
+									@ModelAttribute QnaVO vo,
+									HttpServletResponse resp,
+									HttpServletRequest request) {
+
+		resp.setContentType("text/html; charset=UTF-8");
+
+		String hospitalId = principal.getName();
+		String userId ="user1";
+		vo.setHospitalId(hospitalId);
+		vo.setUserId(userId);
+		
+		if (vo.getUploadFiles()[0].isEmpty()) {
+			hospitalService.insertQnaMem(vo);
+			
+		}else {	
+			
+			hospitalService.insertQnaMem(vo);
+			
+			List<String> fileNames = fileUploadService.uploadFiles(vo.getUploadFiles());
+
+			// 파일정보
+			HashMap<String, Object> map = new HashMap<String, Object>();
+			map.put("chkList", fileNames);
+
+			for (String name : fileNames) {
+				vo.setFileName(name);
+				hospitalService.insertAttachQnaAns(vo);
+			}
+			
 		}
 		PrintWriter out;
 		try {

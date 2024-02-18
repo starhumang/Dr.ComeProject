@@ -56,21 +56,25 @@
 				                <th class="text-center table-light">작성일</th>
 				                <td th:text="${#dates.format(qnaInfo.wdate, 'yyyy-MM-dd')}"
 				                    class="text-center"></td>
-				                <th class="text-center table-light">수정일</th>
+<!-- 				                <th class="text-center table-light">수정일</th>
 				                <td th:if="${qnaInfo['udate'] != null}"
 				                    th:text="${#dates.format(qnaInfo['udate'], 'yyyy-MM-dd')}"></td>
-				                <td th:if="${qnaInfo['udate'] == null}">-</td>
+				                <td th:if="${qnaInfo['udate'] == null}">-</td> -->
 				                <th class="text-center table-light">답변상태</th>
-				                <td th:text="${qnaInfo.ansStatus}"></td>
+				                <td>
+				                	<th:block th:each="detailCode : ${application.detailCode_j}" >
+					                	<span th:if="${detailCode.detailCode} == ${qnaInfo.ansStatus}" th:text="${detailCode.codeName}"></span>
+					            	</th:block>
+					            </td>
 				            </tr>
 				            <tr>
 				                <th class="text-center table-light">제목</th>
-				                <td th:text="${qnaInfo.title}" colspan="8"></td>
+				                <td th:text="${qnaInfo.title}" colspan="6"></td>
 				            </tr>
 				        </thead>
 				        <tbody>
 				            <tr>
-				                <td th:text="${qnaInfo.content}" colspan="8" class="text-left"
+				                <td th:text="${qnaInfo.content}" colspan="6" class="text-left"
 				                    valign="top" height="200"><pre
 				                        style="white-space: pre-wrap; border: none;">
 				                </pre></td>
@@ -79,7 +83,7 @@
 				            <tr>
 				                <th>첨부파일</th>
 				                <td  colspan="7">
-				                  <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == ansInfo.qnaNo}">
+				                  <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == qnaInfo.qnaNo}">
          							<a href="#" th:attr="data-filename=${attach.fileName}" onclick="downloadFile(this.getAttribute('data-filename'))" th:text="${attach.fileName.substring(attach.fileName.lastIndexOf('/') + 1)}"></a>
     							  </span>
 				                </td>
@@ -101,25 +105,25 @@
 				                <th class="text-center table-light">작성일</th>
 				                <td th:text="${#dates.format(ansInfo.wdate, 'yyyy-MM-dd')}"
 				                    class="text-center"></td>
-				                <th class="text-center table-light">수정일</th>
+<!-- 				                <th class="text-center table-light">수정일</th>
 				                <td th:if="${ansInfo['udate'] != null}"
 				                    th:text="${#dates.format(ansInfo['udate'], 'yyyy-MM-dd')}"></td>
-				                <td th:if="${ansInfo['udate'] == null}">-</td>
+				                <td th:if="${ansInfo['udate'] == null}">-</td> -->
 				            </tr>
 				        </thead>
 				        <tbody>
 				            <tr>
-				                <td th:text="${ansInfo.content}" colspan="8" class="text-left"
+				                <td th:text="${ansInfo.content}" colspan="6" class="text-left"
 				                    valign="top" height="200"><pre
 				                        style="white-space: pre-wrap; border: none;">
 				                </pre></td>
 				            </tr>
 				            <tr>
 				                <th>첨부파일</th>
-				                <td  colspan="3">
+				                <td  colspan="2">
 				                   <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == ansInfo.qnaNo}">
-         <a href="#" th:attr="data-filename=${attach.fileName}" onclick="downloadFile(this.getAttribute('data-filename'))" th:text="${attach.fileName.substring(attach.fileName.lastIndexOf('/') + 1)}"></a>
-    </span>
+								         <a href="#" th:attr="data-filename=${attach.fileName}" onclick="downloadFile(this.getAttribute('data-filename'))" th:text="${attach.fileName.substring(attach.fileName.lastIndexOf('/') + 1)}"></a>
+								    </span>
 				                </td>
 				            </tr>
 				        </tbody>
@@ -131,9 +135,11 @@
 							<a th:href="@{/hospital/qnaList}" class="btn btn-dark">목록으로</a>
 						</div>
 						<div style="text-align: center;">
-							<a th:href="@{/hospital/qnaAnsForm(qnaNo=${qnaInfo.qnaNo})}" class="btn btn-warning">
-							    <span th:if="${ansInfo}">답변수정</span>
-							    <span th:unless="${ansInfo}">답변달기</span>
+							<a th:href="@{/hospital/qnaAnsForm(qnaNo=${qnaInfo.qnaNo})}" th:if="${ansInfo}" style="display: none;">
+							    <span></span>
+							</a>
+							<a th:href="@{/hospital/qnaAnsForm(qnaNo=${qnaInfo.qnaNo})}" class="btn btn-warning" th:unless="${ansInfo}">
+							    <span>답변달기</span>
 							</a>
 						</div>
 					</div>

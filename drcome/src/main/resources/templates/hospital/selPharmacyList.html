@@ -27,8 +27,10 @@
 			<p>약국 선택 리스트</p>
 			<p>클리닉 번호 : [[${pharList[0].clinicNo}]]</p>
 			<p>처방전 현황 : [[${perscrip}]]</p>
+			<p>이거전체 값확인 현황 : [[${pharList}]]</p>
+			<p><input type="text" id="reserveNo" th:value="${pharList[0].reserveNo}" /></p>
 			
-
+			<input type="hidden" id="reserveNo" th:value="${pharList[0].reserveNo}" />
 
 			<div  style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 1.0rem;">
 				<h5 style="margin:0;">환자 선택 약국리스트</h5>
@@ -52,48 +54,58 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr th:each="phl, iterStat : ${pharList}">
-						    <td class="check"><input type="checkbox" class="checkItem" value="${phl.pharmacySelectno}" data-no="${phl.pharmacySelectno}"></td>
-						    <td th:text="${phl.pharmacySelectno}"></td>
-						    <td th:text="${phl.pharmacyName}"></td>
-						    <td th:text="${phl.perscriptionDate}"></td>
-						    <td th:text="${phl.pharmacyPhone}"></td>
-						    <td><button class="btn btn-dark sendDataButton" data-value="${phl.pharmacySelectno}">전송</button></td>
-						</tr>
+					    <tr th:each="phl, iterStat : ${pharList}" >
+					    	
+					        <td class="check"><input type="checkbox" class="checkItem" value="${phl.pharmacySelectno}" data-no="${phl.pharmacySelectno}"></td>
+					        <td th:text="${phl.pharmacySelectno}"></td>
+					        <td th:text="${phl.pharmacyName}"></td>
+					        <td th:text="${phl.perscriptionDate}"></td>
+					        <td th:text="${phl.pharmacyPhone}"></td>
+					        <td><button class="btn btn-dark sendDataButton" data-value="${phl.pharmacySelectno}">전송</button></td>
+					    </tr>
 					</tbody>
 				</table>
 			</div>
 				
 			 <script>
 			 $(document).ready(function() {
-			     // 선택된 데이터 전송
-			     $('#sendSelectedData').on('click', function() {
-			         var selectedValues = [];
-			         $('.checkItem:checked').each(function() {
-			             selectedValues.push($(this).val());
-			         });
-			         sendData(selectedValues);
-			     });
-			
-			     // 전체 데이터 전송
-			     $('#sendAllData').on('click', function() {
-			         var allValues = [];
-			         $('.checkItem').each(function() {
-			             allValues.push($(this).val());
-			         });
-			         sendData(allValues);
-			     });
-			
-			     // 개별 데이터 전송
-			     $('.sendDataButton').on('click', function() {
-			         var value = $(this).data('value');
-			         sendData([value]);
-			     });
-			
-			     // 전체 선택/해제
-			     $('#selectAll').on('change', function() {
-			         $('.checkItem').prop('checked', $(this).prop('checked'));
-			     });
+				 // 선택된 데이터 전송
+				$('#sendSelectedData').on('click', function() {
+				    var selectedValues = [];
+				    $('.checkItem:checked').each(function() {
+				        var row = $(this).closest('tr');
+				        var value = parseInt(row.find('td:nth-child(2)').text()); 
+				        selectedValues.push(value); // 선택된 값 배열에 추가
+				    });
+				    console.log(selectedValues);
+				    sendData(selectedValues);
+				});
+				
+				// 전체 데이터 전송
+				$('#sendAllData').on('click', function() {
+				    var allValues = [];
+				    $('.checkItem').each(function() {
+				        var row = $(this).closest('tr');
+				        var value = parseInt(row.find('td:nth-child(2)').text()); 
+				        allValues.push(value);
+				    });
+				    console.log(allValues);
+				    sendData(allValues);
+				});
+				
+				// 개별 데이터 전송
+				$('.sendDataButton').on('click', function() {
+				    var row = $(this).closest('tr');
+				    var value = parseInt(row.find('td:nth-child(2)').text()); 
+				    console.log(value);
+				    sendData([value]);
+				});
+				
+				// 전체 선택/해제
+				$('#selectAll').on('change', function() {
+				    $('.checkItem').prop('checked', $(this).prop('checked'));
+				});
+				 
 			 });
 			
 			 function sendData(selectedValues) {
@@ -104,7 +116,12 @@
 			         data: JSON.stringify(selectedValues),
 			         success: function(response) {
 			        	    console.log('업데이트 성공:', response);
-			        	    location.reload(); // 페이지 새로고침
+			        	    alert("전송이 완료되었습니다.");
+			        	    updateReservationStatus();
+			        	    //location.reload(); // 페이지 새로고침
+			        	    // 이전 페이지로 이동
+			        	    history.back();
+			        	    
 			        	},
 			         error: function(xhr, status, error) {
 			             console.error('에러:', error);
@@ -112,6 +129,27 @@
 			         }
 			     });
 			 }
+			 
+			 // 현재 reserveNo 가져오기
+			 function getReservationNo() {
+				 return parseInt($('#reserveNo').val());
+			 }
+			 
+			 function updateReservationStatus() {
+				    var reserveNo = getReservationNo(); // 예약 번호 가져오기
+				    $.ajax({
+				        type: 'POST',
+				        url: '/hospital/updateReservationStatus',
+				        contentType: 'application/json',
+				        data: JSON.stringify({ reserveNo: reserveNo }),
+				        success: function(response) {
+				            console.log('Reservation 업데이트 성공:', response);
+				        },
+				        error: function(xhr, status, error) {
+				            console.error('Reservation 업데이트 에러:', error);
+				        }
+				    });
+			}
             </script>
 
 		</div>

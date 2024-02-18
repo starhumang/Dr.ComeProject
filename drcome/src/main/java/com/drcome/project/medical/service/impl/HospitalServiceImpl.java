@@ -25,6 +25,27 @@ public class HospitalServiceImpl implements HospitalService {
 	HospitalMapper hospitalMapper;
 
 	/* 대시보드 */
+	//상단Card
+	//예약현황 카운트
+	@Override
+	public int selectReserveCnt(String hospitalId) {
+		return hospitalMapper.selectReserveCnt(hospitalId);
+	}
+	@Override
+	public int selectQnaCnt(String hospitalId) {
+		return hospitalMapper.selectQnaCnt(hospitalId);
+	}
+	
+	@Override
+	public int selectPayMonth(String hospitalId) {
+		return hospitalMapper.selectPayMonth(hospitalId);
+	}
+	
+	@Override
+	public int selectC2Rate(String hospitalId) {
+		return hospitalMapper.selectC2Rate(hospitalId);
+	}
+	
 	// 오늘의 진료 내역 리스트
 	@Override
 	public List<Map<String, Object>> getTodayReserve(String hospitalId) {
@@ -115,10 +136,16 @@ public class HospitalServiceImpl implements HospitalService {
 		return listPhar;
 	}
 	
-	//약국 전송 후 상태 업데이트
+	//업데이드 전송값
 	@Override
 	public int updateSendPersStatus(Map<String, Object> map) {
 		return hospitalMapper.updateSendPersStatus(map);
+	}
+	
+	//약국 전송 후 상태 업데이트
+	@Override
+	public void updateReservationStatus(Map<String, Object> parameter) {
+		hospitalMapper.updateReservationStatus(parameter);
 	}
 	
 	/* QnA */
@@ -167,12 +194,18 @@ public class HospitalServiceImpl implements HospitalService {
 		return hospitalMapper.updateQnaStatus(qnaVO);
 	}
 
-	// Answer 첨부파일 등록
+	// Answer&Question 첨부파일 등록
 	@Override
 	public int insertAttachQnaAns(QnaVO qnaVO) {
 		return hospitalMapper.insertAttachQnaAns(qnaVO);
 	}
 
+	//QnA User 질문 인서트 + 첨부파일 인서트
+	@Override
+	public int insertQnaMem(QnaVO qnaVO) {
+		return hospitalMapper.insertQnaMem(qnaVO);
+	}
+	
 	/* 공지사항 */
 	// 공지사항 전체
 	@Override
@@ -286,5 +319,7 @@ public class HospitalServiceImpl implements HospitalService {
         }
 		return count;
 	}
+
+
 
 }

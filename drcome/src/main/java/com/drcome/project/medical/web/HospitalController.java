@@ -2,21 +2,18 @@ package com.drcome.project.medical.web;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.net.http.HttpHeaders;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ByteArrayResource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -25,6 +22,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -309,6 +307,8 @@ public class HospitalController {
 	 * @param model
 	 * @return
 	 */
+	
+	
 	@GetMapping("/hospital/selPharmacyList")
 	public String selPharmacyList(Principal principal,
 								  @RequestParam Map<String, Object> param,
@@ -336,6 +336,19 @@ public class HospitalController {
 		System.out.println("pharList"+ pharList);
 		System.out.println("perscrip"+ perscrip);
 		return "hospital/selPharmacyList";
+	}
+	
+	@PostMapping("/hospital/updatePharmacySelect")
+	public String updatePharmacySelect(@RequestParam List<Long> pharmacySelectNos) {
+	    // pharmacySelectNos를 사용하여 업데이트 작업 수행
+	    for (Long pharmacySelectNo : pharmacySelectNos) {
+	        // 업데이트 쿼리 실행
+	        Map<String, Object> map = new HashMap<>();
+	        map.put("pharmacySelectNo", pharmacySelectNo);
+	        hospitalService.updateSendPersStatus(map);
+	    }
+	    // 업데이트 후에는 해당 페이지를 다시 불러와서 최신 데이터를 보여줍니다.
+	    return "redirect:/hospital/selPharmacyList";
 	}
 
 	/**

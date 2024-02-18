@@ -12,29 +12,23 @@
     justify-content: space-between;
     margin-top: 30px;
 }
-
 .clinic-pInfo, .clinic-content, .clinic-drug {
     padding: 1.0rem 1.5rem;
 }
-
 .pillTbl {
     padding: 0 1.0rem;
 }
-
 .clinic-title {
     background-color: lightgray;
     margin-bottom: 1rem;
 }
-
 p {
     margin-bottom: 0;
 }
-
 table>thead {
     border-bottom: 1px double #edeef1;
     border-bottom-width: medium;
 }
-
 /* 모달 스타일 */
 .modal {
     display: none; /* 모달 기본적으로 숨김 */
@@ -47,7 +41,6 @@ table>thead {
     overflow: auto;
     background-color: rgba(0, 0, 0, 0.4); /* 배경색과 투명도 조절 */
 }
-
 .modal-content {
     background-color: #fefefe;
     margin: 5% auto; /* 모달을 수직 및 수평 중앙으로 위치 */
@@ -58,7 +51,6 @@ table>thead {
     border-radius: 5px;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
-
 .close {
     color: #aaa;
     float: right;
@@ -69,38 +61,34 @@ table>thead {
     top: 10px; /* 모달 상단으로부터 10px 떨어진 위치 */
     right: 10px; /* 모달 오른쪽으로부터 10px 떨어진 위치 */
 }
-
 .close:hover,
 .close:focus {
     color: black;
     text-decoration: none;
 }
-
 /* divPer 스타일 */
 #divPer > .table {
     width: 100%;
     border-collapse: collapse;
     margin-bottom: 20px;
 }
-
 #divPer > .table th,
 #divPer > .table td {
     padding: 8px;
     text-align: center;
     border-bottom: 1px solid #ddd;
 }
-
 #divPer > .table th {
     background-color: #f2f2f2;
 }
 
 /* Highlight 섹션 스타일 */
-.highlight {
-    border: 1px solid #ccc;
+.highlight, .highlight2 {
+    background-color: #f9f9f9;
+    border-radius: 5px;
     padding: 10px;
     margin-bottom: 20px;
 }
-
 .highlight p {
     margin: 5px 0;
 }
@@ -110,12 +98,9 @@ table>thead {
     font-weight: bold;
     color: #333;
 }
-
-/* divPer 스타일 */
 #divPer {
     margin-bottom: 20px;
 }
-
 </style>
 </head>
 
@@ -248,15 +233,27 @@ table>thead {
 
             	var highlightDiv = document.createElement('div');
             	highlightDiv.className = 'highlight';
-            	highlightDiv.style.marginBottom = '20px'; // 약간의 여백 추가
+            	highlightDiv.style.marginBottom = '10px'; // 약간의 여백 추가
             	highlightDiv.innerHTML = `
-            	    <p><strong>병원 이름 : </strong></p>
-            	    <p><strong>의사 이름 : </strong></p>
-            	    <p><strong>약국 이름 : </strong></p>
-            	    <p><strong>환자 이름 : </strong>[[${patientInfo.userName}]]</p>
+            	    <p><strong>병원 이름 : </strong>[[${patientInfo.hospitalName}]]</p>
+            	    <p><strong>의사 이름 : </strong>[[${patientInfo.doctorName}]] (담당의)</p>
+            	    <p><strong>병원 번호 : </strong>[[${patientInfo.hospitalPhone}]]</p>
             	    <p><strong>진료 번호 : </strong>[[${patientInfo.clinicNo}]]</p>
             	`;
             	divPer.appendChild(highlightDiv);
+            	
+            	
+            	var highlightDiv2 = document.createElement('div');
+            	highlightDiv2.className = 'highlight2';
+            	highlightDiv2.style.marginBottom = '20px'; // 약간의 여백 추가
+            	highlightDiv2.innerHTML = `
+            	    <p><strong>환자 이름 : </strong>[[${patientInfo.userName}]]</p>
+            	    <p><strong>환자 생년월일 : </strong>[[${#dates.format(patientInfo.userBirthday, 'yyyy-MM-dd')}]]</p>
+            	`;
+            	divPer.appendChild(highlightDiv2);
+            	
+            	
+            	
 
             	var newTable = document.createElement('table');
             	newTable.className = 'table table-borderless table-hover text-center';

@@ -48,6 +48,9 @@ public interface HospitalMapper {
 	//약국 리스트 받아오기
 	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
 	
+	//약국전송 후 상태 업데이트
+	public int updateSendPersStatus(Map<String, Object> map);
+	
 	//Dr
 	public List<Map<String, Object>> selectReserveDr(String hospitalId, Integer doctorNo, String date, String reserveKindstatus);
 	
@@ -117,5 +120,6 @@ public interface HospitalMapper {
 	
 	/* 의사 시간 삭제 */
 	public int deleteDoctorTime(int doctorNo);
+
 
 }

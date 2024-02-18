@@ -33,8 +33,8 @@
 			<div  style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 1.0rem;">
 				<h5 style="margin:0;">환자 선택 약국리스트</h5>
 				<div>
-					<button class="btn btn-info" onclick="sendSelectedData()">선택전송</button>
-					<button class="btn btn-primary" onclick="sendAllData()">일괄전송</button>
+					<button class="btn btn-info" id="sendSelectedData">선택전송</button>
+					<button class="btn btn-primary" id="sendAllData">일괄전송</button>
 				</div>
 			</div>
 			
@@ -52,69 +52,67 @@
 						</tr>
 					</thead>
 					<tbody>
-			<tr th:each="phl, iterStat : ${pharList}">
-	            <td class="check"><input type="checkbox" class="checkItem" value="[[${phl.pharmacySelectno}]]"></td>
-	            <td th:text="${phl.pharmacySelectno}"></td>
-	            <td th:text="${phl.pharmacyName}"></td>
-	            <td th:text="${phl.perscriptionDate}"></td>
-	            <td th:text="${phl.pharmacyPhone}"></td>
-	            <td><button class="btn btn-dark" onclick="sendData('[[${phl.pharmacySelectno}]]', '[[${phl.pharmacyName}]]', '[[${phl.perscriptionDate}]]', '[[${phl.pharmacyPhone}]]')">전송</button></td>
-            </tr>
+						<tr th:each="phl, iterStat : ${pharList}">
+						    <td class="check"><input type="checkbox" class="checkItem" value="${phl.pharmacySelectno}" data-no="${phl.pharmacySelectno}"></td>
+						    <td th:text="${phl.pharmacySelectno}"></td>
+						    <td th:text="${phl.pharmacyName}"></td>
+						    <td th:text="${phl.perscriptionDate}"></td>
+						    <td th:text="${phl.pharmacyPhone}"></td>
+						    <td><button class="btn btn-dark sendDataButton" data-value="${phl.pharmacySelectno}">전송</button></td>
+						</tr>
 					</tbody>
 				</table>
 			</div>
 				
-			<script>
-			    const selectAllCheckbox = document.getElementById('selectAll');
-			    const checkboxes = document.querySelectorAll('.checkItem');
+			 <script>
+			 $(document).ready(function() {
+			     // 선택된 데이터 전송
+			     $('#sendSelectedData').on('click', function() {
+			         var selectedValues = [];
+			         $('.checkItem:checked').each(function() {
+			             selectedValues.push($(this).val());
+			         });
+			         sendData(selectedValues);
+			     });
 			
-			 	// 전체 선택/해제
-			    selectAllCheckbox.addEventListener('change', function() {
-			        checkboxes.forEach(checkbox => {
-			            checkbox.checked = selectAllCheckbox.checked;
-			        });
-			    });
+			     // 전체 데이터 전송
+			     $('#sendAllData').on('click', function() {
+			         var allValues = [];
+			         $('.checkItem').each(function() {
+			             allValues.push($(this).val());
+			         });
+			         sendData(allValues);
+			     });
 			
-			    // 개별 체크박스 변경 시
-				checkboxes.forEach(checkbox => {
-				    checkbox.addEventListener('change', function() {
-				        let allChecked = true;
-				        let selectedValues = [];
-				        checkboxes.forEach(cb => {
-				            if (!cb.checked) {
-				                allChecked = false;
-				            } else {
-				                selectedValues.push(cb.value);
-				            }
-				        });
-				        console.log('전체 선택된 값:', selectedValues);
-				    });
-				});
+			     // 개별 데이터 전송
+			     $('.sendDataButton').on('click', function() {
+			         var value = $(this).data('value');
+			         sendData([value]);
+			     });
 			
-			    // 전송 함수
-			    function sendData(selectedValues, name, date, phone) {
-			        console.log('선택된 값:', selectedValues);
-			        console.log('약국명:', name, '처방날짜:', date, '전화번호:', phone);
-			    }
-			    
-			    function sendSelectedData() {
-			        let selectedValues = [];
-			        checkboxes.forEach(checkbox => {
-			            if (checkbox.checked) {
-			                selectedValues.push(checkbox.value);
-			            }
-			        });
-			        console.log('선택된 값:', selectedValues);
-			    }
+			     // 전체 선택/해제
+			     $('#selectAll').on('change', function() {
+			         $('.checkItem').prop('checked', $(this).prop('checked'));
+			     });
+			 });
 			
-			    function sendAllData() {
-			        let allValues = [];
-			        checkboxes.forEach(checkbox => {
-			            allValues.push(checkbox.value);
-			        });
-			        console.log('모든 값:', allValues);
-			    }
-			</script>
+			 function sendData(selectedValues) {
+			     $.ajax({
+			         type: 'POST', // POST 방식으로 변경
+			         url: '/hospital/updatePharmacySelect',
+			         contentType: 'application/json',
+			         data: JSON.stringify(selectedValues),
+			         success: function(response) {
+			        	    console.log('업데이트 성공:', response);
+			        	    location.reload(); // 페이지 새로고침
+			        	},
+			         error: function(xhr, status, error) {
+			             console.error('에러:', error);
+			             // 에러 발생 시 처리
+			         }
+			     });
+			 }
+            </script>
 
 		</div>
 	</div>

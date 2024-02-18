@@ -131,7 +131,10 @@
 							<a th:href="@{/hospital/qnaList}" class="btn btn-dark">목록으로</a>
 						</div>
 						<div style="text-align: center;">
-							<a th:href="@{/hospital/qnaAnsForm(qnaNo=${qnaInfo.qnaNo})}" class="btn btn-warning">답변달기</a>
+							<a th:href="@{/hospital/qnaAnsForm(qnaNo=${qnaInfo.qnaNo})}" class="btn btn-warning">
+							    <span th:if="${ansInfo}">답변수정</span>
+							    <span th:unless="${ansInfo}">답변달기</span>
+							</a>
 						</div>
 					</div>
 			</div>

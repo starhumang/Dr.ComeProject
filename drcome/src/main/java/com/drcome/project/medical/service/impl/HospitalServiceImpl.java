@@ -115,6 +115,12 @@ public class HospitalServiceImpl implements HospitalService {
 		return listPhar;
 	}
 	
+	//약국 전송 후 상태 업데이트
+	@Override
+	public int updateSendPersStatus(Map<String, Object> map) {
+		return hospitalMapper.updateSendPersStatus(map);
+	}
+	
 	/* QnA */
 	// QnA 전체
 	@Override

@@ -202,10 +202,15 @@
 			 , u.gender "gender"
 			 , r.reserve_kindstatus "reserveKindstatus"
 		 	 , a.patient_no "patientNo"
+             , h.hospital_name "hospitalName"
+             , h.phone "hospitalPhone"
+             , d.doctor_name "doctorName"
 		  FROM clinic c 
 		  JOIN reservation r ON c.RESERVE_NO = r.RESERVE_NO
 		  JOIN patient a ON c.hospital_id = a.hospital_id AND c.patient_no = a.patient_no
 		  JOIN usertable u ON u.user_id = a.user_id
+          JOIN hospital h ON h.hospital_id = c.hospital_id
+          JOIN doctor d ON d.doctor_no = r.doctor_no
 		 WHERE a.hospital_id = #{hospitalId}
 	       AND a.patient_no = #{patientNo}
 	       AND c.clinic_no = #{clinicNo}
@@ -287,7 +292,14 @@
 		  JOIN pharmacy p ON s.pharmacy_id = p.pharmacy_id
 		 WHERE r.reserve_no = #{reserveNo}
 		 AND h.hospital_id = #{hospitalId}
+		 AND s.send_status = 'N'
 	</select>
+	
+	<!-- 처방전 약국으로 전송 -->
+	<update id="updateSendPersStatus" parameterType="Map">
+		UPDATE pharmacy_select SET send_status = 'Y'
+		 WHERE pharmacy_selectno = #{pharmacySelectno}
+	</update>
 	
 	<!-- QnA -->
 	<!-- QnA 전체 -->

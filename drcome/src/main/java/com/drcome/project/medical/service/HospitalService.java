@@ -45,6 +45,9 @@ public interface HospitalService {
 	//약국 리스트 받아오기
 	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
 	
+	//약국에 전송 후 상태값 변경
+	public int updateSendPersStatus(Map<String, Object> map);
+	
 	/* QnA */
 	//QnA 전체
 	public List<Map<String, Object>> getQnaList(Map<String, Object> map);

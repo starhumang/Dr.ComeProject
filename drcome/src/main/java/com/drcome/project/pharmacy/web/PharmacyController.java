@@ -132,6 +132,50 @@ public class PharmacyController {
 		return map;
 	}
 	
+	// 현재날짜 처방 재역
+	@GetMapping("/pharmacy/cstatus/{date}")
+	@ResponseBody
+	public Map<String, Object> currpharmacyList(Principal principal, 
+											@RequestParam(required = false, defaultValue = "1") int page, 
+			                                @PathVariable String date, 
+			                                @RequestParam Map<String, Object> parammap) {
+		
+		String pharmacyId = principal.getName();
+		parammap.put("pharmacyId", pharmacyId);
+		parammap.put("page", page);
+		
+		System.out.println("keword가 있을까요??" + parammap);
+		
+		// result map
+		Map<String, Object> map = new HashMap();
+		
+		// 리스트 전체갯수 가져오기
+		int total = pservice.currpercount(parammap, date);
+		System.out.println("토탈" + total);
+
+
+		// 페이지네이션(currentpage, total)
+		PageDTO dto = new PageDTO(page, total);
+		System.out.println("page" + page);
+		System.out.println("total" + total);
+		System.out.println("dtd 객체 " + dto);
+		
+		List<Map<String, Object>> currplist = pservice.perCurrList(parammap, date);
+		
+		System.out.println(currplist.size());
+
+		
+		map.put("currplist", currplist); 
+		map.put("pagedto", dto); 
+		
+		return map;
+	}
+	
+	
+	
+	
+	
+	
 	/**
 	 * 처방전 반환 시, 반환 사유를 저장
 	 * @param id 세션
@@ -227,4 +271,27 @@ public class PharmacyController {
 
 		return pservice.getPerscription(no);
 	}
+	
+	@PostMapping("/printStatusupdate")
+	@ResponseBody
+	public int updateprintStatus(@RequestBody PharmacySelectVO vo,
+	                             Principal principal) {
+	    
+	    String pharmacyId = principal.getName();
+	    
+	    pservice.printStatusModify(vo);
+	    
+	    vo.setPharmacyId(pharmacyId);
+	    
+	    System.out.println(vo + "==================");
+	    int result = pservice.printpharmacyModify(vo);
+
+	    if (result == 1) {
+	        return 1; // 성공적으로 실행되었을 경우 1 반환
+	    } else {
+	        return 0; // 실패했을 경우 0 반환
+	    }
+	}
+	
 }
+

@@ -22,68 +22,7 @@
 		  FROM PHARMACY
 		 WHERE pharmacy_id = #{pharmacyId}
 	</select>
-	<!-- 약국별 처방 현황 조회 -->
-	<!-- <select id="selectPrescriptionList" resultType="Map">
-		SELECT   c.patient_no               "patientNo"
-			   , c.clinic_no                "clinicNo"
-               , c.hospital_id              "hospitalId"
-		       , c.reserve_no               "reserveNo"
-               , c.perscription_yn          "perscriptionYn"
-		       , a.user_id                  "patientUserId"
-		       , u.user_name                "userName"
-		       , u.birthday                 "userBirthday"
-		       , u.phone                    "userPhone"
-               , h.hospital_name            "hospitalName"
-		       , h.phone                    "hospitalPhone"
-               , d.doctor_name              "doctorName"
-               , s.print_status             "printStatus"
-		       , c.clinic_date        "perscriptionDate"
-               , s.send_status              "sendStatus"
-		       , s.rejection                "rejection"
-		  FROM clinic c 
-		  LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
-		  JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
-          JOIN hospital h ON c.hospital_id = h.hospital_id
-          JOIN reservation r ON c.reserve_no = r.reserve_no
-          JOIN doctor d ON r.doctor_no = d.doctor_no
-          JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
-          WHERE s.print_status = '출력대기'
-          AND s.send_status = 'Y'
-          AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
-          AND s.rejection IS NULL
-          AND s.pharmacy_id = #{pharmacyId} 
-	</select>-->
-	<!-- 지난 처방 내역 -->
-	<!-- <select id="selectLastPerList" resultType="Map">
-		SELECT   c.patient_no               "patientNo"
-			   , c.clinic_no                "clinicNo"
-               , c.hospital_id              "hospitalId"
-		       , c.reserve_no               "reserveNo"
-               , c.perscription_yn          "perscriptionYn"
-		       , a.user_id                  "patientUserId"
-		       , u.user_name                "userName"
-		       , u.birthday                 "userBirthday"
-		       , u.phone                    "userPhone"
-               , h.hospital_name            "hospitalName"
-		       , h.phone                    "hospitalPhone"
-               , d.doctor_name              "doctorName"
-               , s.print_status             "printStatus"
-		       , c.clinic_date        "perscriptionDate"
-               , s.send_status              "sendStatus"
-		       , s.rejection                "rejection"
-		  FROM clinic c 
-		  LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
-		  JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
-          JOIN hospital h ON c.hospital_id = h.hospital_id
-          JOIN reservation r ON c.reserve_no = r.reserve_no
-          JOIN doctor d ON r.doctor_no = d.doctor_no
-          JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
-          WHERE s.print_status = '출력완료'
-          AND s.send_status = 'Y'
-          AND to_char(c.clinic_date, 'yyyy-MM-dd' ) = #{date}
-          AND s.rejection IS NULL
-          AND s.pharmacy_id = #{pharmacyId}
-	</select> -->
+	
 	<!-- 약 주성분 검색 -->
 	<select id="searchMedicine" resultType="MedicineVO">
 		SELECT medicine_code
@@ -93,6 +32,7 @@
 		  FROM medicine
 		 WHERE ingredient LIKE '%{#keyword}%'
 	</select>
+	
 	<!-- 처방전 미리보기 -->
 	<select id="perscription" resultType="com.drcome.project.doctor.service.PatientVO">
 		SELECT medicine_name
@@ -103,6 +43,7 @@
 		    ON (p.medicine_no = d.medicine_no)
 		 WHERE clinic_no =#{clinicNo}
 	</select>
+	
 	<!-- 처방전 반환 -->
 	<update id="updaterejection" parameterType="PharmacySelectVO">
 		UPDATE pharmacy_select 
@@ -141,6 +82,7 @@
 			           s.send_status "sendStatus",
 			           s.rejection "rejection",
 			           s.pharmacy_selectno "pharmacySelectno",
+			           p.pharmacy_name "pharmacyName",
 			           ROWNUM AS rn
 			    FROM clinic c 
 			    LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
@@ -149,10 +91,12 @@
 			    JOIN reservation r ON c.reserve_no = r.reserve_no
 			    JOIN doctor d ON r.doctor_no = d.doctor_no
 			    JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+			    JOIN pharmacy p ON s.pharmacy_id = p.pharmacy_id
 			    WHERE s.print_status = 'd1'
 			    AND s.send_status = 'Y'
 			    AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
 			    AND s.rejection IS NULL
+			    AND s.produce_status = 'f1'
 			    AND s.pharmacy_id = #{pharmacyId}
 			    <include refid="searchP"></include>
 			    <![CDATA[
@@ -179,6 +123,70 @@
 		   AND s.pharmacy_id = #{pharmacyId}
 		 <include refid="searchP"></include>
 	</select>
+	
+	<!-- 현재날짜 처방 내역 -->
+	<select id="currPerList" resultType="Map">
+		SELECT *
+			FROM (
+			    SELECT 
+			           c.patient_no "patientNo",
+			           c.clinic_no "clinicNo",
+			           c.hospital_id "hospitalId",
+			           c.reserve_no "reserveNo",
+			           c.perscription_yn "perscriptionYn",
+			           a.user_id "patientUserId",
+			           u.user_name "userName",
+			           u.birthday "userBirthday",
+			           u.phone "userPhone",
+			           h.hospital_name "hospitalName",
+			           h.phone "hospitalPhone",
+			           d.doctor_name "doctorName",
+			           s.print_status "printStatus",
+			           c.clinic_date "perscriptionDate",
+			           s.send_status "sendStatus",
+			           s.rejection "rejection",
+			           s.pharmacy_selectno "pharmacySelectno",
+			           p.pharmacy_name "pharmacyName",
+			           ROWNUM AS rn
+			    FROM clinic c 
+			    LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
+			    JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
+			    JOIN hospital h ON c.hospital_id = h.hospital_id
+			    JOIN reservation r ON c.reserve_no = r.reserve_no
+			    JOIN doctor d ON r.doctor_no = d.doctor_no
+			    JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+			    JOIN pharmacy p ON s.pharmacy_id = p.pharmacy_id
+			    WHERE s.print_status = 'd2'
+			    AND s.send_status = 'Y'
+			    AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
+			    AND s.rejection IS NULL
+			    AND s.produce_status = 'f1'
+			    AND s.select_pharmacyid = #{pharmacyId}
+			    <include refid="searchP"></include>
+			    <![CDATA[
+			    AND ROWNUM <= #{page} * 5
+			     ]]>
+			)   
+			WHERE rn > (#{page} - 1) * 5
+		
+	</select>
+	<select id="percountcurr" resultType="int">
+		SELECT COUNT(*)
+		  FROM clinic c 
+		  LEFT JOIN patient a ON (c.patient_no = a.patient_no AND c.hospital_id = a.hospital_id)
+		  JOIN usertable u ON (a.user_id = u.user_id AND c.hospital_id = a.hospital_id)
+		  JOIN hospital h ON c.hospital_id = h.hospital_id
+		  JOIN reservation r ON c.reserve_no = r.reserve_no
+		  JOIN doctor d ON r.doctor_no = d.doctor_no
+		  JOIN pharmacy_select s ON c.clinic_no = s.clinic_no
+		 WHERE s.print_status = 'd2'
+		   AND s.send_status = 'Y'
+		   AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
+		   AND s.rejection IS NULL
+		   AND s.select_pharmacyid = #{pharmacyId}
+		 <include refid="searchP"></include>
+	</select>
+	
 	<!-- 처방내역 -->
 	<select id="selectLastPerList" resultType="Map">
 
@@ -236,6 +244,7 @@
           AND s.send_status = 'Y'
           AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
           AND s.rejection IS NULL
+          AND s.produce_status = 'f1'
           AND s.pharmacy_id = #{pharmacyId}
           <include refid="searchP"></include>
 	</select>
@@ -251,10 +260,18 @@
             </if>
        </if>
    </sql>
-   
+	
+	<!-- 출력 상태 update -->
    <update id="printupdate" parameterType="int">
    	UPDATE pharmacy_select 
    	   SET print_status = 'd2' 
-   	 WHERE pharmacy_selectno = #{pharmacySelectno}
+   	 WHERE clinic_no = #{clinicNo}
+   </update>
+   
+   <!-- 출력 약국 insert -->
+   <update id="insertprintpharmacy" parameterType="PharmacySelectVO">
+   	UPDATE pharmacy_select 
+	   SET select_pharmacyid = #{pharmacyId}
+	 WHERE pharmacy_selectno = #{pharmacySelectno}
    </update>
 </mapper>

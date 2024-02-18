@@ -14,6 +14,9 @@ public interface PharmacyMapper {
 	/* 약국별 처방 현황 */
 	public List<Map<String, Object>> selectPrescriptionList(Map<String, Object> map);
 	
+	/* 약국별 현재 날짜 처방 내역 */
+	public List<Map<String, Object>> currPerList(Map<String, Object> map);
+	
 	/* 약국별 지난 처방 내역 */
 	public List<Map<String, Object>> selectLastPerList(Map<String, Object> map);
 	
@@ -34,9 +37,17 @@ public interface PharmacyMapper {
 	/* 약국별 처방 현황 페이징 */
 	public int percount(Map<String, Object> map);
 	
+	/* 약국별 현재 날짜 처방 내역 페이징 */
+	public int percountcurr(Map<String, Object> map);
+	
 	/* 약국별 처방 내역 페이징 */
 	public int perLastcount(Map<String, Object> map);
 	
+	// ---- Print Update ----
+	
 	/* 처방전 출력시 update */
-	public int printupdate(int pharmacySelectno);
+	public int printupdate(PharmacySelectVO vo);
+	
+	/* 처방전 출력시 출력 약국 insert */
+	public int insertprintpharmacy(PharmacySelectVO vo);
 }

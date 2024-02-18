@@ -233,26 +233,31 @@ thead tr:nth-child(3) th {
 								<th></th>
 								<th>의사이름</th>
 								<th>담당진료과목</th>
-								<th>휴진일</th>
 								<th>진료일 / 진료시간</th>
+								<th>휴진일</th>
 								<th style="display:none;">의사번호</th>
 							</tr>
 						</thead>
 						<tbody style="vertical-align:middle;">
 							<th:block th:each="doc : ${docList}">
-								<tr th:if="${#lists.size(docList) > 0}">
+								<tr th:if="${#lists.size(docList) > 0}" class="restday">
 									<td style="vertical-align:middle;"><input type="radio" name="doctor"
 										onclick="chooseDoctor()" /></td>
 									<td class="docName" th:text="${doc.doctorName}" style="vertical-align:middle;"></td>
 									<th:block th:each="detailCode : ${application.detailCode_h}">
 										<td th:if="${doc.subject} == ${detailCode.detailCode}" th:text="${detailCode.codeName}" style="vertical-align:middle;"></td>
 									</th:block>
-									<td class="docHol" th:text="${doc.holiday}" style="vertical-align:middle;"></td>
 									<td>
-										<div th:each="drTime : ${doc.times}" class="doctorTime">
-											[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
-											[[${drTime.maxTime}]] : 00</div>
+										<div th:each="drTime : ${doc.times}"  class="doctorTime">
+											[[${drTime.day}]]&nbsp&nbsp
+											[[${drTime.minTime}]] : 00 ~ [[${drTime.maxTime}]] : 00
+										</div>
 									</td>
+									
+									<th:block th:each="detailCode : ${application.detailCode_i}">
+									<td th:if="${detailCode.detailCode ==doc.holiday and #strings.length(doc.holiday) < 3}"  th:text="${detailCode.codeName}" style="vertical-align:middle;" class="docHol"></td>
+									<td th:unless="${detailCode.detailCode == doc.holiday and #strings.length(doc.holiday) < 3}" th:text="${doc.holiday}" class="many" style="display:none; vertical-align:middle;"></td>
+									</th:block>
 									<td style="display:none;" th:text="${doc.doctorNo}" class="doctorNo"></td>
 								</tr>
 							</th:block>
@@ -316,7 +321,7 @@ thead tr:nth-child(3) th {
 					</div>
 
 					<script type="text/javascript"> 
-						
+							
 							//병원 및 의사 휴무일 지정중
 							let docName = null; //이거는 의사선택 전 날짜 못 고르게 하는 장치
 							let hosHoliday = [[${newDate}]]; //병원 쉬는날
@@ -331,39 +336,92 @@ thead tr:nth-child(3) th {
 								if(docName==null){
 									document.querySelector('.one').disabled=true;
 								}
+								doctorrestday();
 							}
+							
+							//의사 휴무일 여러개일떄
+							function doctorrestday(){
+								let doctorrestday = document.querySelector('.restday');
+								let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
+								//console.log("restday", restday);
+								
+								//요일이 여러개일때의 작업
+								if(doctorrestday.querySelector('.many')){
+									let days = document.querySelectorAll('.many');
+									let changedays = Array.from(days);//노드리스트에서 배열로 변환
+									//중복되는 것들 splice로 잘라버리고 딱 원하는 자료만 뽑기
+									for(let i =1; i <changedays.length; i++){
+										if(changedays[i-1].innerText === changedays[i].innerText){
+											changedays.splice(i-1, i);
+					 							i--; 
+										}
+									}
+									//이제 이 배열을 가지고 작업하면 됨
+									for(let i=0; i < changedays.length; i++){
+										let realdays = [];
+										let element = changedays[i].innerText;
+										if(element.length > 3){
+											let splitDays = element.split(',');
+											console.log("splitDays=",splitDays)
+											splitDays.forEach(ele=>{
+												realdays += dayList[ele] + ' ';
+												
+											}) 
+											//console.log("realdays= ",realdays);
+				 						}
+										
+										//et td = days.querySelectorAll('[style="display:none;"]');
+										console.log("changedays[i]",changedays[i].innerText);
+										console.log("realdays=",realdays);
+										
+										var tdElement = document.createElement("td");
+					 					tdElement.textContent = realdays;
+					 					tdElement.style.verticalAlign='middle';
+										tdElement.classList.add('docHol');
+					 					
+					 					if(changedays[i].innerText.length > 3){
+					 						changedays[i].parentNode.replaceChild(tdElement, changedays[i]);
+					 					}
+										
+									}						
+								}
+							}
+							
 							
 							//의사 선택
 							function chooseDoctor(){
 								let basicHosHoliDay = hosHoliday
 								let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
+								console.log("tr=",tr)
 								let docName = tr.querySelector('.docName').innerText;
 								let holiday = tr.querySelector('.docHol').innerText;
+								console.log("docName=",docName)
 								document.querySelector('.name').innerText=docName; //이름뽑아오기
 								document.querySelector('.one').disabled=false; //날짜선택 disabled걸린거 풀기
 								document.querySelector('.one').value = null;
 								
-								let dayList = {"i1": 1 ,"i2": 2,"i3": 3,"i4": 4,"i5": 5 ,"i6": 6,"i7" : 0}
+								let dayList = {"월": 1 ,"화": 2,"수": 3,"목": 4,"금": 5 ,"토": 6,"일" : 0}
 								
 								let restday = [];
 								//자르기
 								if(holiday.length > 2){
 									//hosHoliday=''
-									let splitHoliday = holiday.split(',');
+									let splitHoliday = holiday.split(' ');
 									splitHoliday.forEach((ele)=>{
 									let array = [dayList[ele]];
 									basicHosHoliDay = basicHosHoliDay.concat(array);
 									})
+									
 									//hosHoliday.push(hosHoliday);//병원 쉬는날도 같이
 								}else{
 									let array = [dayList[holiday]];
 									basicHosHoliDay = basicHosHoliDay.concat(array);
 									//hosHoliday.push(hosHoliday);//병원 쉬는날도 같이
 								}
-								
+								console.log("basicHosHoliDay=",basicHosHoliDay)
 								document.querySelector('.time').innerText= null;
 								document.querySelector('.date').innerText= null;
-								console.log("hosHoliday00",basicHosHoliDay);
+								//console.log("hosHoliday00",basicHosHoliDay);
 
 								createDatePicker(basicHosHoliDay)//달력설정이 새로 만들어짐
 								
@@ -407,6 +465,7 @@ thead tr:nth-child(3) th {
 							async function changeTime(){
 								let tr = document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
 								let doctorTime = tr.querySelectorAll('.doctorTime');
+								console.log("doctorTime=",doctorTime);
 								let reserveday = document.querySelector('input[name="date"]').value; //선택한 날짜
 								let doctorReserveTimeList = [];//이미 예약된 시간 담을 배열
 								//선택한 날짜

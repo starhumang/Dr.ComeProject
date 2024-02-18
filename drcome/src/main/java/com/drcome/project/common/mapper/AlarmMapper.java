@@ -8,6 +8,6 @@ public interface AlarmMapper {
 	public int insertAlarm(AlarmDao dao);
 
 	// 알람여부조회
-	public int selectAlarm(String uid);
+//	public int selectAlarm(String uid);
 
 }

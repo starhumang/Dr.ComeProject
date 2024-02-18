@@ -34,10 +34,10 @@ public class AlarmServiceImpl implements AlarmService {
 		return result;
 	}
 
-	// 알람여부 조회
-	@Override
-	public int checkAlarm(String uid) {
-		return mapper.selectAlarm(uid);
-	}
+//	// 알람여부 조회
+//	@Override
+//	public int checkAlarm(String uid) {
+//		return mapper.selectAlarm(uid);
+//	}
 
 }

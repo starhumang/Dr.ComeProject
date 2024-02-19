@@ -288,7 +288,7 @@
 	
 	<!-- 약국 선택 목록 확인 -->
 	<select id="myPharmacySelect" parameterType="PharmacySelectVO">
-		SELECT c.clinic_no, p.pharmacy_name, p.pharmacy_phone, ps.send_status, ps.print_status, ps.produce_status
+		SELECT c.clinic_no, p.pharmacy_name, p.pharmacy_phone, ps.send_status, ps.print_status, ps.produce_status, ps.select_pharmacyid
 		FROM reservation r
 			JOIN clinic c ON r.reserve_no = c.reserve_no
 			JOIN pharmacy_select ps ON c.clinic_no = ps.clinic_no
@@ -296,4 +296,44 @@
 		WHERE r.reserve_no = #{reserveNo}
 	</select>
 	
+	<select id="selectUserQnaList" resultType="Map">
+		SELECT * FROM (
+				    SELECT qna_no "qnaNo",
+						   title "title",
+						   hospital_id "hospitalId",
+						   hospital_name "hospitalName",
+						   category_status "categoryStatus",
+						   wdate "wdate",
+						   udate "udate",
+						   ans_status "ansStatus",
+						   ans_code "ansCode",
+				           ROWNUM AS rn
+				      FROM (
+				          	SELECT q.qna_no,
+							     q.title,
+							     q.hospital_id,
+                                 h.hospital_name,
+							     q.category_status,
+							     q.wdate,
+							     q.udate,
+							     q.ans_status,
+							     q.ans_code
+				            FROM qna q
+                            JOIN hospital h
+                            ON q.hospital_id = h.hospital_id
+				           WHERE user_id = #{userId}
+				             AND ANS_STATUS IS NOT NULL
+				           ORDER BY qna_no DESC
+				      )
+				      WHERE ROWNUM <![CDATA[ <= ]]> #{page} * 10
+				)
+		 WHERE rn > (#{page} - 1) * 10
+	</select>
+	
+	<select id="qnaUserCount" resultType="int">
+		SELECT COUNT(*)
+			FROM qna
+			WHERE user_id = #{userId}
+			AND ANS_STATUS IS NOT NULL
+	</select>
 </mapper>

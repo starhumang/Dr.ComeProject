@@ -1,6 +1,7 @@
 package com.drcome.project.mem.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.drcome.project.main.service.ClinicPayVO;
 import com.drcome.project.main.service.PaymentVO;
@@ -69,4 +70,10 @@ public interface UserMemberMapper {
 	
 //	약국 선택 목록
 	public List<PharmacySelectVO> myPharmacySelect(int reserveNo);
+	
+//	QnA 전체
+	public List<Map<String, Object>> selectUserQnaList(Map<String, Object> map);
+		
+//	QnA 리스트 페이징
+	public int qnaUserCount(Map<String, Object> map);
 }

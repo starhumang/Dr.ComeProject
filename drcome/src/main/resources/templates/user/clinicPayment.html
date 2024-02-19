@@ -181,7 +181,9 @@
 					success: function (res) {
 						if (res.result == true) {
 							scsAlert(res.msg);
-							location.href = '/recommendPharmacy/' + cNo;
+							setTimeout(function () {
+			                 location.href = '/recommendPharmacy/' + cNo;
+			             }, 1000);
 						} else {
 							errAlert(res.msg);
 						}

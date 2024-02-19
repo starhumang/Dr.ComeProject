@@ -1,6 +1,5 @@
 var alarmSocket = null;
 
-
 function connectWebSocket(uid) {
 	try {
 		// WebSocket 연결
@@ -15,14 +14,13 @@ function connectWebSocket(uid) {
 		// 메시지를 받았을 때 호출되는 이벤트 핸들러
 		alarmSocket.onmessage = function (event) {
 			console.log('onmessage' + event.data);
-			let $socketAlert = $('div#socketAlert');
-			$socketAlert.css('display', 'block');
-			$socketAlert.html(event.data);
+			// let $socketAlert = $('div#socketAlert');
+			// $socketAlert.css('display', 'block');
+			// $socketAlert.html(event.data);
 			// setTimeout(function () {
 			// 	$socketAlert.css('display', 'none');
 			// }, 5000);
 		};
-
 
 		// 연결이 닫혔을 때 호출되는 이벤트 핸들러
 		alarmSocket.onclose = function (event) {

@@ -75,7 +75,7 @@ public class PatientServiceImpl implements PatientService {
 		vo.setPatientNo(pno);
 		// 진료기록 insert
 		result = mapper.insertClinic(vo);
-		// 부여된 cno가져와서
+		// 부여된 clinicNo가져와서
 		int cno = vo.getClinicNo();
 		// 처방전이있다면 인서트
 		if (vo.getPerscriptionYn() == null) {

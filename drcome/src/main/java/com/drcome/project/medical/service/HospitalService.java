@@ -53,7 +53,7 @@ public interface HospitalService {
 	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
 	
 	//약국 전송 Y 업데이트
-	public int updateSendPersStatus(Map<String, Object> map);
+	public int updateSendPersStatus(List<Map<String, Long>> map);
 	
 	//약국에 전송 후 상태값 변경
 	public void updateReservationStatus(Map<String, Object> parameter);

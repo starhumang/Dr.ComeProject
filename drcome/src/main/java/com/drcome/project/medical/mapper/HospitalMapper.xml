@@ -8,21 +8,22 @@
 	<!-- Dashboard -->
 	<!-- 한달 내 추이 현황: 상단 card -->
 	<select id="selectReserveCnt" resultType="int">
-		select count(reserve_no) FROM reservation
+		SELECT count(reserve_no) FROM reservation
          WHERE hospital_id = #{hospitalId}
 	</select>
 	
 	<select id="selectQnaCnt" resultType="int">
-		select count(qna_no) FROM qna
+		SELECT count(qna_no) FROM qna
          WHERE hospital_id = #{hospitalId}
            AND user_id IS NOT NULL
+           AND TO_CHAR(wdate, 'YY/MM') = TO_CHAR(SYSDATE, 'YY/MM')
 	</select>
 	
 	<select id="selectPayMonth" resultType="int">
-		SELECT COUNT(pay_yn) * 5000 AS pay
-		  FROM clinic
-		 WHERE hospital_id = #{hospitalId}
-		   AND TO_CHAR(clinic_date, 'YY/MM') = TO_CHAR(SYSDATE, 'YY/MM')
+        SELECT (COUNT(CASE WHEN pay_yn = 'Y' THEN 1 END) * 5000) + (COUNT(CASE WHEN pay_yn = 'N' THEN 1 END) * 10000) AS pay
+          FROM clinic
+         WHERE hospital_id = #{hospitalId}
+           AND TO_CHAR(clinic_date, 'YY/MM') = TO_CHAR(SYSDATE, 'YY/MM')
 	</select>
 	
 	<select id="selectC2Rate" resultType="int">
@@ -36,6 +37,7 @@
 	<!-- 오늘 진료 및 예약 리스트 -->
 	<select id="selectTodayReserve" resultType="Map">
 		<![CDATA[
+		SELECT * FROM (
 	         SELECT r.RESERVE_NO "reserveNo"
 				 , u.birthday "userBirthday"
 				 , u.gender "gender"
@@ -50,23 +52,15 @@
 			  JOIN usertable u ON u.user_id = r.user_id
 			  WHERE r.hospital_id = #{hospitalId}
 			  AND r.reserve_year||r.RESERVE_month||r.reserve_day = to_char(sysdate, 'yyyyMMdd')
-			  AND ROWNUM <= 5
-			  GROUP BY r.RESERVE_NO
-				 , u.birthday
-				 , u.gender
-				 , u.phone
-				 , u.user_name
-			 	 , u.user_id
-				 , r.reserve_time
-				 , d.doctor_name
-				 , r.reserve_kindstatus
 			  ORDER BY r.reserve_time, r.reserve_no
+		) WHERE	  ROWNUM <= 5
 		]]>
 	</select>
 	<!-- QnA 리스트(답변/노답변) -->
 	<!-- 답변O -->
 	<select id="selectQnAO" resultType="Map">
-		<![CDATA[		
+		<![CDATA[
+		SELECT * FROM (		
 			SELECT user_id "userId",
 				   category_status "categoryStatus",
 				   title "title",
@@ -74,8 +68,13 @@
 				   qna_no "qnaNO",
 				   ans_code "ansCode"
 			  FROM QNA
-			  WHERE hospital_id = #{hospitalId} AND ans_status = 'j2' AND ROWNUM <= 5
+			  
+			  WHERE hospital_id = #{hospitalId} 
+			    AND ans_status = 'j2'
 			  ORDER BY wdate
+		) 
+		WHERE ROWNUM <= 5
+			    
 		]]>
 	</select>
 	
@@ -88,7 +87,9 @@
 				   ans_status "ansStatus",
 				   qna_no "qnaNO"
 			  FROM QNA
-			  WHERE hospital_id = #{hospitalId} AND ans_status = 'j1' AND ROWNUM <= 5
+			  WHERE hospital_id = #{hospitalId} 
+			    AND ans_status = 'j1' 
+			    AND ROWNUM <= 5
 			  ORDER BY wdate
 		]]>
 	</select>
@@ -130,21 +131,20 @@
 	<!-- Patient -->
 	<!-- 환자 리스트 -->
 	<select id="selectPatientList" resultType="Map">
-		SELECT * FROM (
+		SELECT * FROM ( SELECT a.*, ROWNUM AS rn FROM (
+		
 				    SELECT a.patient_no "patientNo",
 						   u.user_name "userName",
 						   u.birthday "userBirthday",
 						   u.gender "gender",
-						   u.phone "phone",
-				           ROWNUM AS rn
+						   u.phone "phone"
 					  FROM patient a 
 					  JOIN usertable u ON a.user_id = u.user_id
 				     WHERE a.hospital_id = #{hospitalId}
 				         <include refid="searchP"></include>
-				     AND ROWNUM <![CDATA[ <= ]]> #{page} * 10
 				     ORDER BY a.patient_no DESC
-				      )
-		 WHERE rn > (#{page} - 1) * 10
+				     
+	     )a    WHERE ROWNUM <![CDATA[ <= ]]> #{page} * 10 ) b	WHERE rn > (#{page} - 1) * 10
 	</select>
 	
 	<!-- 환자 리스트 페이징-->
@@ -245,6 +245,7 @@
 	       AND a.patient_no = #{patientNo}
 	       AND c.clinic_no = #{clinicNo}
 	</select>
+	
 	<!-- 처방전 가져오기 -->
 	<select id="selectPillList" resultType="Map">
 		SELECT medicine_name "medicineName",
@@ -290,6 +291,7 @@
 			</if>
 		  ORDER BY r.reserve_time, r.reserve_no
 	</select>
+	
 	<select id="allDrList" resultType="Map">
 		SELECT doctor_no "doctorNo",
 			   doctor_name "doctorName",

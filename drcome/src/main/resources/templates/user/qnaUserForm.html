@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{hospital/hospitalLayout}">
+	layout:decorate="~{layouts/layout}">
 
 <head>
 <meta charset="UTF-8">
@@ -48,7 +48,7 @@
 					<div class="text-center">
 						<h1 class="h4 text-gray-900 mb-4">QnA 등록</h1>
 					</div>
-					<form class="user" th:action="@{/hospital/qnaUserForm}" method="post" enctype="multipart/form-data">
+					<form class="user" th:action="@{/qnaUserForm}" method="post" enctype="multipart/form-data">
 					 	<input type="number" name="qnaNo" id="qnaNo" th:value="${qnaNo}" style="display:none;">
 						 	<div class="input-group" id="categoryStatus" style="width: 500px; align-items: center; margin-bottom: 1.5rem;">
 								<label style="margin-bottom: 0; margin-right: 1.0rem;">카테고리</label>
@@ -85,7 +85,7 @@
 						<div class="inBtn">
 							<button type="submit" class="btn btn-info"> 등록 </button>
 							<button type="reset" class="btn btn-success" style="margin: 0 5px;">초기화</button>
-							<a th:href="@{/hospital/qnaList}" class="btn btn-warning">취소</a>
+<!-- 							<a th:href="@{/qnaList}" class="btn btn-warning">취소</a> -->
 						</div>
 					</form>
 					<hr>

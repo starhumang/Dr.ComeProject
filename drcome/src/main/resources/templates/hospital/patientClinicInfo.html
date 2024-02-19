@@ -164,7 +164,7 @@ table>thead {
                                         <i class="fas fa-fw fa-file-pdf"></i>
                                 </button>
                             </div>
-                            <div class="pillTbl">
+                            <div th:if="${patientPill != null and not #lists.isEmpty(patientPill)}" class="pillTbl">
                             
                                 <table class="table table-borderless table-hover text-center">
                                     <thead>
@@ -185,6 +185,11 @@ table>thead {
                                     </tbody>
                                 </table>
                             </div>
+                            
+                            <div th:unless="${patientPill != null and not #lists.isEmpty(patientPill)}">
+								<p style="text-align:center; color:gray; padding: 3.0rem;">"처방전이 없습니다"</p>
+							</div>
+							
                         </div>
                     </div>
                 </div>

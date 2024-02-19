@@ -61,7 +61,13 @@ input[type="radio"]:checked+label {
 .pagination a:hover {
   background-color: #bfc5d8;
 }
-
+.tableMin {
+  min-height: 540px;
+}
+.listGoBtn {
+  text-align: right;
+  margin: 1.5rem 0;
+}
 
 </style>
 </head>
@@ -108,7 +114,7 @@ input[type="radio"]:checked+label {
 			
 			
 			<!-- 상세 환자리스트 -->
-			<div>
+			<div class="tableMin">
 				<table class="table table-hover">
 					
 				</table>
@@ -121,7 +127,7 @@ input[type="radio"]:checked+label {
 			</div>
 			
 			<!-- 목록버튼 -->
-			<div style="text-align: right;">
+			<div class="listGoBtn">
 				<a th:href="@{/hospital/patientList}" class="btn btn-dark">목록으로</a>
 			</div>
 		</div>
@@ -303,6 +309,9 @@ input[type="radio"]:checked+label {
 			                    break;
 			                case 'e5':
 			                    reserveStatusText = '결제완료';
+			                    break;
+			                case 'e6':
+			                    reserveStatusText = '처방완료';
 			                    break;
 			                default:
 			                    reserveStatusText = item.reserveStatus;

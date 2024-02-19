@@ -38,7 +38,11 @@ import com.drcome.project.medical.service.NoticeVO;
 import com.drcome.project.medical.service.QnaVO;
 import com.drcome.project.mem.mapper.UserMemberMapper;
 import com.drcome.project.mem.service.UserMemberService;
-
+/**
+ * 병원 회원 관리 페이지
+ * @author 최다예
+ *
+ */
 @Controller
 public class HospitalController {
 	@Autowired
@@ -83,10 +87,12 @@ public class HospitalController {
 		List<Map<String, Object>> tolist = hospitalService.getTodayReserve(hospitalId);
 		List<Map<String, Object>> QnAO = hospitalService.getQnAO(hospitalId);
 		List<Map<String, Object>> QnAX = hospitalService.getQnAX(hospitalId);
+		
 		int resCnt = hospitalService.selectReserveCnt(hospitalId);
 		int qnaCnt = hospitalService.selectQnaCnt(hospitalId);
 		int payMonth = hospitalService.selectPayMonth(hospitalId);
 		int c2Rate = hospitalService.selectC2Rate(hospitalId);
+		
 		model.addAttribute("tolist", tolist);
 		model.addAttribute("QnAO", QnAO);
 		model.addAttribute("QnAX", QnAX);
@@ -105,8 +111,8 @@ public class HospitalController {
 	 * @return
 	 */
 	@GetMapping("/hospital/myProfile")
-	public String findHospital(Principal principal, String hospitalId, Model model) {
-		hospitalId = principal.getName();
+	public String findHospital(Principal principal, Model model) {
+		String hospitalId = principal.getName();
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId);
 		model.addAttribute("docList", docList);
 		return "hospital/myProfile";
@@ -120,8 +126,7 @@ public class HospitalController {
 	 * @return
 	 */
 	@GetMapping("/hospital/patientList")
-	public String searchPatient(Principal principal, String hospitalId, Model model) {
-		hospitalId = principal.getName();
+	public String searchPatient() {
 		return "hospital/patientList";
 	}
 	
@@ -134,15 +139,16 @@ public class HospitalController {
 	 */
 	@GetMapping("/hospital/patientListP")
 	@ResponseBody
-	public Map<String, Object> patientList(Principal principal, 
-			@RequestParam Map<String, Object> param,
-			@RequestParam(required = false, defaultValue = "1") int page) {
+	public Map<String, Object> patientList( Principal principal, 
+											@RequestParam Map<String, Object> param,
+											@RequestParam(required = false, defaultValue = "1") int page) {
 		
 		String hospitalId = principal.getName();
 		param.put("hospitalId", hospitalId);
 		param.put("page", page);
 		
-		Map<String, Object> map = new HashMap();
+		Map<String, Object> map = new HashMap<>();
+		
 		// 리스트 전체 개수
 		int total = hospitalService.patientCount(param);
 
@@ -161,11 +167,11 @@ public class HospitalController {
 
 	/**
 	 * 환자 페이지 - 해당 환자 진단 기록 리스트
-	 * @param principal
+	 * @param principal  
 	 * @param hospitalId
 	 * @param patientNo
 	 * @param model
-	 * @return
+	 * @return hospital/patientDetail
 	 */
 	@GetMapping("/hospital/patientList/patientDetail")
 	public String detailPatient(Principal principal, String hospitalId, Integer patientNo, Model model) {
@@ -322,7 +328,6 @@ public class HospitalController {
 		String hospitalId = principal.getName();
 		param.put("hospitalId", hospitalId);
 		
-		System.out.println("param"+ param);
 		List<Map<String, Object>> pharList = hospitalService.selectPharList(param);
 		
 		//pharList 중에 clinicNo 값을 우선 Object에 들어있기에 String으로 바꾼 후,
@@ -338,8 +343,6 @@ public class HospitalController {
 		model.addAttribute("pharList", pharList);
 		model.addAttribute("perscrip", perscrip);
 		
-		System.out.println("pharList"+ pharList);
-		System.out.println("perscrip"+ perscrip);
 		return "hospital/selPharmacyList";
 	}
 	
@@ -350,14 +353,11 @@ public class HospitalController {
 	 */
 	@PostMapping("/hospital/updatePharmacySelect")
 	@ResponseBody
-	public String updatePharmacySelect(@RequestBody List<Long> pharmacySelectNos) {
+	public String updatePharmacySelect(@RequestBody List<Map<String, Long>> pharmacySelectNos) {
 	    // pharmacySelectNos를 사용하여 업데이트 작업 수행
-	    for (Long pharmacySelectno : pharmacySelectNos) {
-	        // 업데이트 쿼리 실행
-	        Map<String, Object> map = new HashMap<>();
-	        map.put("pharmacySelectno", pharmacySelectno);
-	        hospitalService.updateSendPersStatus(map);
-	    }
+	
+	    hospitalService.updateSendPersStatus(pharmacySelectNos);
+	
 	    return "hospital/selPharmacyList";
 	}
 	/**
@@ -406,11 +406,8 @@ public class HospitalController {
 
 		// 페이지네이션(currentpage, total)
 		PageDTO2 dto = new PageDTO2(page, total);
-		System.out.println("dtd 객체" + dto);
 
 		List<Map<String, Object>> plist = hospitalService.getQnaList(param);
-
-		System.out.println(plist.size());
 
 		// ajax는 return으로...
 
@@ -444,18 +441,14 @@ public class HospitalController {
 	    
 	    // 첨부파일 가져오기
 	    List<NoticeAttachVO> qnaAtt = hospitalService.selectQnaAtt(attVO);
-	    System.out.println("attVOattVOattVOattVOattVOattVOattVOattVOattVO" + attVO);
 	    model.addAttribute("qnaAtt", qnaAtt);
 	    
 	    // 답변 정보가 있는 경우
 	    if (qnaVO.getAnsCode() != null && !"undefined".equals(qnaVO.getAnsCode())) {
 	        // 답변 정보 가져오기
 	        QnaVO ansInfo = hospitalService.getAnsInfo(qnaVO);
-	        if (ansInfo != null) {
-	            model.addAttribute("ansInfo", ansInfo);
-	        }
+	        model.addAttribute("ansInfo", ansInfo);
 	    }
-	    
 	    // 결과를 보여줄 뷰 페이지의 이름을 반환
 	    return "hospital/qnaDetail";
 	}
@@ -493,18 +486,9 @@ public class HospitalController {
 		//realQnaNo 차자오기
 		int realQnaNo = vo.getQnaNo();
 		
-		if (vo.getUploadFiles()[0].isEmpty()) {
-			hospitalService.insertQnaAns(vo);
-			
-			vo.setAnsCode(vo.getQnaNo());
-			
-			vo.setQnaNo(realQnaNo);
-			hospitalService.updateQnaStatus(vo);
-			
-		}else {	
-			
-			hospitalService.insertQnaAns(vo);
-			
+		hospitalService.insertQnaAns(vo);
+		
+		if (! vo.getUploadFiles()[0].isEmpty()) {
 			List<String> fileNames = fileUploadService.uploadFiles(vo.getUploadFiles());
 
 			// 파일정보
@@ -515,12 +499,12 @@ public class HospitalController {
 				vo.setFileName(name);
 				hospitalService.insertAttachQnaAns(vo);
 			}
-			
-			vo.setAnsCode(vo.getQnaNo());
-			
-			vo.setQnaNo(realQnaNo);
-			hospitalService.updateQnaStatus(vo);
 		}
+		
+		vo.setAnsCode(vo.getQnaNo());		
+		vo.setQnaNo(realQnaNo);
+		hospitalService.updateQnaStatus(vo);
+		
 		PrintWriter out;
 		try {
 			out = resp.getWriter();
@@ -534,57 +518,66 @@ public class HospitalController {
 
 	}
 	
-	//qna mem form
-	@GetMapping("/hospital/qnaUserForm")
-	public String insertQnaMemForm() {
-	    return "hospital/qnaUserForm";
-	}
-
-	//qna mem process
-	@PostMapping("/hospital/qnaUserForm")
-	public void insertQnaMemProcess(Principal principal,
-									@ModelAttribute QnaVO vo,
-									HttpServletResponse resp,
-									HttpServletRequest request) {
-
-		resp.setContentType("text/html; charset=UTF-8");
-
-		String hospitalId = principal.getName();
-		String userId ="user1";
-		vo.setHospitalId(hospitalId);
-		vo.setUserId(userId);
-		
-		if (vo.getUploadFiles()[0].isEmpty()) {
-			hospitalService.insertQnaMem(vo);
-			
-		}else {	
-			
-			hospitalService.insertQnaMem(vo);
-			
-			List<String> fileNames = fileUploadService.uploadFiles(vo.getUploadFiles());
-
-			// 파일정보
-			HashMap<String, Object> map = new HashMap<String, Object>();
-			map.put("chkList", fileNames);
-
-			for (String name : fileNames) {
-				vo.setFileName(name);
-				hospitalService.insertAttachQnaAns(vo);
-			}
-			
-		}
-		PrintWriter out;
-		try {
-			out = resp.getWriter();
-			out.println("<script language='javascript'>");
-			out.println("alert('등록을 성공했습니다.'); location.href='/hospital/qnaList';");
-			out.println("</script>");
-			out.flush();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-	}
+	/**
+	 * qna User - FORM
+	 * @return
+	 */
+//	@GetMapping("/qnaUserForm")
+//	public String insertQnaMemForm() {
+//	    return "user/qnaUserForm";
+//	}
+	
+	/**
+	 * qna User - PROCESS
+	 * @param principal
+	 * @param vo
+	 * @param resp
+	 * @param request
+	 */
+//	@PostMapping("/hospital/qnaUserForm")
+//	public void insertQnaMemProcess(Principal principal,
+//									@ModelAttribute QnaVO vo,
+//									HttpServletResponse resp,
+//									HttpServletRequest request) {
+//
+//		resp.setContentType("text/html; charset=UTF-8");
+//
+//		String hospitalId = principal.getName();
+//		String userId ="user1";
+//		vo.setHospitalId(hospitalId);
+//		vo.setUserId(userId);
+//		
+//		if (vo.getUploadFiles()[0].isEmpty()) {
+//			hospitalService.insertQnaMem(vo);
+//			
+//		}else {	
+//			
+//			hospitalService.insertQnaMem(vo);
+//			
+//			List<String> fileNames = fileUploadService.uploadFiles(vo.getUploadFiles());
+//
+//			// 파일정보
+//			HashMap<String, Object> map = new HashMap<String, Object>();
+//			map.put("chkList", fileNames);
+//
+//			for (String name : fileNames) {
+//				vo.setFileName(name);
+//				hospitalService.insertAttachQnaAns(vo);
+//			}
+//			
+//		}
+//		PrintWriter out;
+//		try {
+//			out = resp.getWriter();
+//			out.println("<script language='javascript'>");
+//			out.println("alert('등록을 성공했습니다.'); location.href='/hospital/qnaList';");
+//			out.println("</script>");
+//			out.flush();
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//
+//	}
 		
 	/**
 	 * 공지사항 페이지
@@ -598,6 +591,7 @@ public class HospitalController {
 
 		return "hospital/noticeList";
 	}
+	
 	/**
 	 * 공지사항 페이지 - 페이징,검색
 	 * @param principal
@@ -621,15 +615,11 @@ public class HospitalController {
 
 		// 선택 페이지 변환
 		int cpage = Integer.parseInt(page);
-		System.out.println("선택된 페이지" + cpage);
 
 		// 페이지네이션(currentpage, total)
 		PageDTO2 dto = new PageDTO2(cpage, total);
-		System.out.println("dtd 객체" + dto);
 
 		List<Map<String, Object>> plist = hospitalService.getNoticeList(cpage, type, keyword, hospitalId);
-
-		System.out.println(plist.size());
 
 		// ajax는 return으로...
 
@@ -650,9 +640,9 @@ public class HospitalController {
 	public String noticeDetail(Principal principal, NoticeVO noticeVO, Model model) {
 		noticeVO.setHospitalId(principal.getName());
 		int noticeNo = noticeVO.getNoticeNo();
-		NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
+		NoticeVO notice = hospitalService.getNoticeDetail(noticeVO);
 		model.addAttribute("noticeNo", noticeNo);
-		model.addAttribute("noticeList", noticeList);
+		model.addAttribute("noticeList", notice);
 		return "hospital/noticeDetail";
 	}
 	
@@ -681,32 +671,23 @@ public class HospitalController {
 		String hospitalId = principal.getName();
 		vo.setHospitalId(hospitalId);
 
-		try {
-			System.out.println(vo.getUploadFiles()[0].isEmpty());
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		if (vo.getUploadFiles()[0].isEmpty()) {
-			hospitalService.insertNoticeInfo(vo);
-		} else {
-
+		// notice정보..
+		hospitalService.insertNoticeInfo(vo);
+		
+		//첨부파일 등록
+		if (! vo.getUploadFiles()[0].isEmpty()) {
 			List<String> fileNames = fileUploadService.uploadFiles(vo.getUploadFiles());
-
-			// notice정보..
-			hospitalService.insertNoticeInfo(vo);
 
 			// 파일정보...
 			HashMap<String, Object> map = new HashMap<String, Object>();
 			map.put("chkList", fileNames);
-
-			System.out.println(vo.getNoticeNo());
 
 			for (String name : fileNames) {
 				vo.setFileName(name);
 				hospitalService.insertAttach(vo);
 			}
 		}
+		
 		PrintWriter out;
 		try {
 			out = resp.getWriter();
@@ -721,14 +702,13 @@ public class HospitalController {
 	}
 	
 	/**
-	 * 
+	 * 공지사항 수정 - FORM
 	 * @param principal
 	 * @param noticeNo
 	 * @param noticeVO
 	 * @param model
 	 * @return
 	 */
-	//공지사항 수정 - FORM
 	@GetMapping("/hospital/noticeUpdate/{noticeNo}")
 	public String noticeUpdateForm(Principal principal, @PathVariable("noticeNo") int noticeNo, NoticeVO noticeVO, Model model) {
 		noticeVO.setHospitalId(principal.getName());
@@ -739,7 +719,13 @@ public class HospitalController {
 		return "hospital/noticeModify";
 	}
 	
-	//공지사항 수정
+	/**
+	 * 공지사항 수정 - PROCESS
+	 * @param principal
+	 * @param noticeVO
+	 * @param param
+	 * @param resp
+	 */
 	@PostMapping("/hospital/noticeUpdate")
 	@ResponseBody
 	public void noticeUpdate(Principal principal,
@@ -752,12 +738,11 @@ public class HospitalController {
 		String hospitalId = principal.getName();
 		noticeVO.setHospitalId(hospitalId);
 		
-		System.out.println(noticeVO);
 		int noticeNo = noticeVO.getNoticeNo();
 		
 		if (noticeVO.getUploadFiles()[0].isEmpty()) {
 			hospitalService.updateNotice(noticeVO);
-			} else {
+		} else {
 
 			hospitalService.deleteAttachment(noticeNo);
 			List<String> fileNames = fileUploadService.uploadFiles(noticeVO.getUploadFiles());
@@ -787,7 +772,12 @@ public class HospitalController {
 
 	}
 	
-	// 공지사항 삭제
+	/**
+	 * 공지사항 & 첨부파일 삭제
+	 * @param principal
+	 * @param noticeNo
+	 * @return
+	 */
 	@ResponseStatus(HttpStatus.SEE_OTHER)
 	@DeleteMapping("/hospital/noticeDelete/{noticeNo}")
 	public String noticeDelete(Principal principal,
@@ -808,12 +798,21 @@ public class HospitalController {
 	    return "redirect:/hospital/noticeList";
 	}
 	
-	//병원 업데이트
+	//병원 수정,탈퇴 & 의사 등록,수정
+	/**
+	 * 병원 업데이트 - FORM
+	 * @return
+	 */
 	@GetMapping("/hospital/hosinfoupdate")
 	public String hosUpdateForm() {
 		return "hospital/hosupdate";
 	}
-
+	
+	/**
+	 * 병원 업데이트 - PROCESS
+	 * @param hVO
+	 * @return
+	 */
 	@PostMapping("/hospital/hosinfoupdate")
 	@ResponseBody
 	public Map<String, Object> hosUpdate(HospitalVO hVO) {
@@ -828,8 +827,6 @@ public class HospitalController {
 			String uploadedFileName = imageList.get(0); // 첫 번째 파일의 경로
 			hVO.setHospitalImg(uploadedFileName);
 		}
-
-		System.out.println(hVO);
 
 		try {
 			int cnt = userMemService.updateHosInfo(hVO);
@@ -848,11 +845,27 @@ public class HospitalController {
 		return response;
 	}
 
+	/**
+	 * 의사 등록 - FORM
+	 * @return
+	 */
 	@GetMapping("/hospital/doctorinsert")
 	public String doctorInsertForm() {
 		return "hospital/doctorinsert";
 	}
 
+	/**
+	 * 의사 등록 - PROCESS
+	 * @param vo
+	 * @param i1Times
+	 * @param i2Times
+	 * @param i3Times
+	 * @param i4Times
+	 * @param i5Times
+	 * @param i6Times
+	 * @param i7Times
+	 * @return
+	 */
 	@PostMapping("/hospital/doctorinsert")
 	@ResponseBody
 	public Map<String, Object> doctorInsert(DoctorVO vo, @RequestParam("i1") List<String> i1Times,
@@ -901,6 +914,12 @@ public class HospitalController {
 		return doctorTimeVO;
 	}
 	
+	/**
+	 * 의사 정보 수정 - FORM
+	 * @param doctorNo
+	 * @param model
+	 * @return
+	 */
 	@GetMapping("/hospital/doctorupdate/{DoctorNo}")
 	public String doctorUpdateForm(@PathVariable("DoctorNo") String doctorNo, Model model) {
 		int doctorNum = Integer.parseInt(doctorNo);
@@ -909,6 +928,18 @@ public class HospitalController {
 		return "hospital/doctormodify";
 	}
 	
+	/**
+	 * 의사 정보 수정 - PROCESS
+	 * @param vo
+	 * @param i1Times
+	 * @param i2Times
+	 * @param i3Times
+	 * @param i4Times
+	 * @param i5Times
+	 * @param i6Times
+	 * @param i7Times
+	 * @return
+	 */
 	@PostMapping("/hospital/doctorupdate")
 	@ResponseBody
 	public Map<String, Object> doctorUpdate(DoctorVO vo, @RequestParam("i1") List<String> i1Times,

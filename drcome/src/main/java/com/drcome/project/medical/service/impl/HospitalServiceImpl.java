@@ -3,6 +3,8 @@ package com.drcome.project.medical.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -137,9 +139,15 @@ public class HospitalServiceImpl implements HospitalService {
 	}
 	
 	//업데이드 전송값
+	@Transactional
 	@Override
-	public int updateSendPersStatus(Map<String, Object> map) {
-		return hospitalMapper.updateSendPersStatus(map);
+	public int updateSendPersStatus(List<Map<String, Long>> list) {
+		int result = 0;
+		for(Map<String, Long> map :list )
+			result += hospitalMapper.updateSendPersStatus(map);
+		//상태변경하기
+		
+		return result;
 	}
 	
 	//약국 전송 후 상태 업데이트

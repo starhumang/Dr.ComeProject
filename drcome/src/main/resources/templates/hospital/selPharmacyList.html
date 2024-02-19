@@ -25,10 +25,7 @@
 				</p>
 			</div>
 			<p>약국 선택 리스트</p>
-			<p>클리닉 번호 : [[${pharList[0].clinicNo}]]</p>
-			<p>처방전 현황 : [[${perscrip}]]</p>
-			<p>이거전체 값확인 현황 : [[${pharList}]]</p>
-			<p><input type="text" id="reserveNo" th:value="${pharList[0].reserveNo}" /></p>
+<!-- 			<p>클리닉 번호 : [[${pharList[0].clinicNo}]]</p> -->
 			
 			<input type="hidden" id="reserveNo" th:value="${pharList[0].reserveNo}" />
 
@@ -48,8 +45,8 @@
 							<th class="check"><input type="checkbox" id="selectAll"></th>
 							<th>No.</th>
 							<th>약국명</th>
-							<th>처방날짜</th>
 							<th>전화번호</th>
+							<th>처방날짜</th>
 							<th>전송하기</th>
 						</tr>
 					</thead>
@@ -59,8 +56,8 @@
 					        <td class="check"><input type="checkbox" class="checkItem" value="${phl.pharmacySelectno}" data-no="${phl.pharmacySelectno}"></td>
 					        <td th:text="${phl.pharmacySelectno}"></td>
 					        <td th:text="${phl.pharmacyName}"></td>
-					        <td th:text="${phl.perscriptionDate}"></td>
 					        <td th:text="${phl.pharmacyPhone}"></td>
+					        <td th:text="${#dates.format(phl.perscriptionDate, 'yyyy-MM-dd')}"></td>
 					        <td><button class="btn btn-dark sendDataButton" data-value="${phl.pharmacySelectno}">전송</button></td>
 					    </tr>
 					</tbody>
@@ -75,7 +72,7 @@
 				    $('.checkItem:checked').each(function() {
 				        var row = $(this).closest('tr');
 				        var value = parseInt(row.find('td:nth-child(2)').text()); 
-				        selectedValues.push(value); // 선택된 값 배열에 추가
+				        selectedValues.push({pharmacySelectno: value}); // 선택된 값 배열에 추가
 				    });
 				    console.log(selectedValues);
 				    sendData(selectedValues);
@@ -87,7 +84,7 @@
 				    $('.checkItem').each(function() {
 				        var row = $(this).closest('tr');
 				        var value = parseInt(row.find('td:nth-child(2)').text()); 
-				        allValues.push(value);
+				        allValues.push({pharmacySelectno: value});
 				    });
 				    console.log(allValues);
 				    sendData(allValues);
@@ -98,7 +95,7 @@
 				    var row = $(this).closest('tr');
 				    var value = parseInt(row.find('td:nth-child(2)').text()); 
 				    console.log(value);
-				    sendData([value]);
+				    sendData([{pharmacySelectno: value}]);
 				});
 				
 				// 전체 선택/해제

@@ -56,7 +56,7 @@ public interface HospitalMapper {
 	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
 	
 	//약국전송 후 상태 업데이트
-	public int updateSendPersStatus(Map<String, Object> map);
+	public int updateSendPersStatus(Map<String, Long> map);
 	
 	public void updateReservationStatus(Map<String, Object> parameter);
 	

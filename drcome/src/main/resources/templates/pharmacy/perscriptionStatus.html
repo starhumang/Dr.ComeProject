@@ -368,73 +368,7 @@
   referrerpolicy="no-referrer"
 ></script>
 <script>
-  var dateValue = 0;
-  var plist = [];
-  $(function () {
-    //input을 datepicker로 선언
-    $("#datepicker").datepicker({
-      dateFormat: "yy-mm-dd", //달력 날짜 형태
-      showOtherMonths: true, //빈 공간에 현재월의 앞뒤월의 날짜를 표시
-      showMonthAfterYear: true, // 월- 년 순서가아닌 년도 - 월 순서
-      changeYear: true, //option값 년 선택 가능
-      changeMonth: true, //option값  월 선택 가능
-      yearSuffix: "년", //달력의 년도 부분 뒤 텍스트
-      monthNamesShort: [
-        "1월",
-        "2월",
-        "3월",
-        "4월",
-        "5월",
-        "6월",
-        "7월",
-        "8월",
-        "9월",
-        "10월",
-        "11월",
-        "12월",
-      ], //달력의 월 부분 텍스트
-      monthNames: [
-        "1월",
-        "2월",
-        "3월",
-        "4월",
-        "5월",
-        "6월",
-        "7월",
-        "8월",
-        "9월",
-        "10월",
-        "11월",
-        "12월",
-      ], //달력의 월 부분 Tooltip
-      dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"], //달력의 요일 텍스트
-      dayNames: [
-        "일요일",
-        "월요일",
-        "화요일",
-        "수요일",
-        "목요일",
-        "금요일",
-        "토요일",
-      ], //달력의 요일 Tooltip
-      minDate: "-5Y", //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
-      maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)
-    });
-
-    //초기값을 오늘 날짜로 설정해줘야 합니다.
-    $("#datepicker").datepicker("setDate", "today", {
-      dateFormat: "yyyy-MM-dd",
-    }); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
-
-    /*     $("#datepicker").on("change", function () {
-             // 선택된 날짜를 콘솔에 출력
-             console.log("선택된 날짜:", $(this).val());
-           }); */
-
-    // 페이지 로드 시 현재 날짜를 콘솔에 출력
-    console.log("현재 날짜:", $("#datepicker").val());
-  });
-
+  
   var clinicNo = null;
   var pharmacySelectno = null;
   var userId = null;
@@ -443,14 +377,78 @@
   var doctorname = null;
   var pharmacyname = null;
 
-  function viewPer(no, uname, hname, dname, pname, pselect) {
+  
+  /* --------------------
+   * datepicker 초기화
+  ----------------------*/
+  function datepickerinit() {
+	  $("#datepicker").datepicker({
+	      dateFormat: "yy-mm-dd", //달력 날짜 형태
+	      showOtherMonths: true, //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+	      showMonthAfterYear: true, // 월- 년 순서가아닌 년도 - 월 순서
+	      changeYear: true, //option값 년 선택 가능
+	      changeMonth: true, //option값  월 선택 가능
+	      yearSuffix: "년", //달력의 년도 부분 뒤 텍스트
+	      monthNamesShort: [
+	        "1월",
+	        "2월",
+	        "3월",
+	        "4월",
+	        "5월",
+	        "6월",
+	        "7월",
+	        "8월",
+	        "9월",
+	        "10월",
+	        "11월",
+	        "12월",
+	      ], //달력의 월 부분 텍스트
+	      monthNames: [
+	        "1월",
+	        "2월",
+	        "3월",
+	        "4월",
+	        "5월",
+	        "6월",
+	        "7월",
+	        "8월",
+	        "9월",
+	        "10월",
+	        "11월",
+	        "12월",
+	      ], //달력의 월 부분 Tooltip
+	      dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"], //달력의 요일 텍스트
+	      dayNames: [
+	        "일요일",
+	        "월요일",
+	        "화요일",
+	        "수요일",
+	        "목요일",
+	        "금요일",
+	        "토요일",
+	      ], //달력의 요일 Tooltip
+	      minDate: "-5Y", //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+	      maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)
+	    });
+	  
+	    //초기값을 오늘 날짜로 설정해줘야 합니다.
+	    $("#datepicker").datepicker("setDate", "today", {
+	      dateFormat: "yyyy-MM-dd",
+	    }); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
+  }
+  
+  /*--------------------
+  *  처방전 조회 
+  ---------------------*/
+  function viewPer(no, uname, hname, dname, pname, pselect, pstatus) {
     clinicNo = no;
     username = uname;
     hospitalname = hname;
     doctorname = dname;
     pharmacyname = pname;
     pharmacySelectno = pselect;
-
+    var printStatus = pstatus;
+    
     const modalTable = $("#modalTable");
     $.ajax(`/pharmacy/perscription/${no}`) //fetch
       .done((result) => {
@@ -474,16 +472,28 @@
                  </tr>`
           );
         }
+        
+        console.log("===================================================", printStatus);
+        if(printStatus == 'd2') {
+        	document.getElementById("printper").style.display = "none";
+        }
+        
       })
       .fail((err) => console.log(err)); //catch
   }
-
+  
+  /*--------------------
+   *  처방전 반환 
+   ---------------------*/
   function viewreturn(no, phno, uid, uname, hname, dname) {
     clinicNo = no;
     pharmacySelectno = phno;
     userId = uid;
   }
 
+  /*--------------------
+   *  처방전 반환 시, 소켓
+   ---------------------*/
   function cancle(rj) {
     console.log("alarm 들어갑니당~ ", clinicNo, pharmacySelectno, userId, rj);
     console.log(rj);
@@ -514,8 +524,11 @@
     connectWebSocket(rj, pharmacySelectno);
   }
 
+  /*--------------------
+   *  날짜별 처방 현황 / 내역
+   ---------------------*/
   function sendDate(page) {
-    dateValue = $("#datepicker").val();
+    var dateValue = $("#datepicker").val();
     var currentDate = new Date();
     var perdate = currentDate.toISOString().split("T")[0];
 
@@ -523,6 +536,12 @@
     console.log("keyword", keyword);
     var type = $("#type").val();
     console.log("type", type);
+    
+    var prescriptionButton = document.getElementById("prescriptionButton");
+	var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
+
+	prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
+	prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
 
     $.ajax({
       type: "GET",
@@ -538,7 +557,7 @@
         /* console.log("Ajax 요청 성공", response);
                  console.log("일", response.plist);
                  console.log("이", response.pagedto); */
-        plist = response.plist;
+        var plist = response.plist;
         if (dateValue === perdate) {
           createTable(plist);
         } else {
@@ -553,6 +572,7 @@
     });
   }
 
+  
   $("#datepicker").on("change", function () {
     console.log("선택된 날짜:", $(this).val());
     dateValue = $(this).val();
@@ -561,24 +581,11 @@
   });
 
   $(document).ready(function () {
-    sendDate(page);
 
     if ($("#flexRadioDefault4").is(":checked")) {
       $("#message-text").show();
     } else {
       $("#message-text").hide();
-    }
-
-    // 처방 현황, 처방 내역 확인 버튼
-    var inputDate = $("#datepicker").val();
-    var currentDate = $("#curdate").text();
-
-    console.log("input", inputDate, "curr", currentDate);
-
-    // 값이 같은지 비교
-    if (inputDate === currentDate) {
-      // 값이 같으면 버튼을 표시
-      $("#prescriptionButtonWrapper").show();
     }
 
     // 라디오 버튼 변경 시 이벤트 처리
@@ -591,18 +598,15 @@
     });
   });
 
-  function createTable() {
+  
+  
+  function createTable(plist) {
 	  
-	var prescriptionButton = document.getElementById("prescriptionButton");
-    var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
+/* 	  var prescriptionButton = document.getElementById("prescriptionButton");
+	  var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
 
-    if (prescriptionButton.style.display !== "none") {
-        prescriptionButton.style.display = "none";
-        prescriptionButtonccc.style.display = "block";
-    } else {
-        prescriptionButton.style.display = "block";
-        prescriptionButtonccc.style.display = "none";
-    }
+	  prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
+	  prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시 */
 	  
     // 동적으로 테이블 생성
     $(".table").empty();
@@ -642,7 +646,7 @@
       row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
       row.append(`<td><button
                          id="viewper"
-                         onclick="viewPer(${i.clinicNo}, '${i.userName}', '${i.hospitalName}', '${i.doctorName}', '${i.pharmacyName}', '${i.pharmacySelectno}')"
+                         onclick="viewPer(${i.clinicNo}, '${i.userName}', '${i.hospitalName}', '${i.doctorName}', '${i.pharmacyName}', '${i.pharmacySelectno}', '${i.printStatus}')"
                          type="button"
                          class="btn btn-info"
                          data-bs-toggle="modal"
@@ -664,7 +668,8 @@
     }
   }
 
-  function createTable2(plist) {
+  
+  function createTable2() {
     // 동적으로 테이블 생성
     $(".table").empty();
     var table = document.querySelector(".table");
@@ -702,7 +707,7 @@
       row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
       row.append(`<td><button
                          id="viewper"
-                         onclick="viewPer(${i.clinicNo})"
+                         onclick="viewPer(${i.clinicNo}, '${i.userName}', '${i.hospitalName}', '${i.doctorName}', '${i.pharmacyName}', '${i.pharmacySelectno}', '${i.printStatus}')"
                          type="button"
                          class="btn btn-info"
                          data-bs-toggle="modal"
@@ -773,6 +778,8 @@
     console.log("반환 사유:", checkedLabel);
     console.log("진료번호", clinicNo);
   });
+  
+  
   /* 처방전 반환 시 동작 */
   $("#reperscript").on("click", function () {
     var checkedValue = $("input[name='flexRadioDefault']:checked");
@@ -812,10 +819,7 @@
     });
   });
 
-  //검색버튼 이벤트 만들기
-  $("#searchBtn").on("click", function () {
-    sendDate(1);
-  });
+
 
   // ------------------------ socket
   let alarmSocket = null;
@@ -940,9 +944,11 @@
           });
       });
   }
-
-  $(document).ready(function () {
-    $("#printper").click(function () {
+  
+  /* ----------------------
+   * 현재 날짜 처방 내역 
+  ------------------------*/
+  function pringhandler() {
       no = clinicNo;
       uname = username;
       hname = hospitalname;
@@ -973,27 +979,20 @@
           console.error(xhr.responseText);
           alert("Update 실패");
         });
-    });
-  });
-
+    }
+  
+  /* ----------------------
+   * 현재 날짜 처방 내역 
+  ------------------------*/
   function convert() {
 	  
-	var prescriptionButton = document.getElementById("prescriptionButton");
-    var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
-    var prescriptionButtonWrapper = document.getElementById("prescriptionButtonWrapper");
-    var prescriptionButtoncccWrapper = document.getElementById("prescriptionButtonccc");
+	  var prescriptionButton = document.getElementById("prescriptionButton");
+	  var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
 
-    if (prescriptionButton.style.display !== "none") {
-        prescriptionButton.style.display = "none";
-        prescriptionButtonccc.style.display = "block";
-    } else {
-        prescriptionButton.style.display = "block";
-        prescriptionButtonccc.style.display = "none";
-    }
+	  prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
+	  prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
 	  
     dateValue = $("#datepicker").val();
-    console.log(dateValue);
-    
     var keyword = $("#keyword").val();
     var type = $("#type").val();
     
@@ -1044,7 +1043,7 @@
           row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
           row.append(`<td><button
       	                        id="viewper"
-      	                        onclick="viewPer(${i.clinicNo})"
+      	                        onclick="viewPer(${i.clinicNo}, '${i.userName}', '${i.hospitalName}', '${i.doctorName}', '${i.pharmacyName}', '${i.pharmacySelectno}', '${i.printStatus}')"
       	                        type="button"
       	                        class="btn btn-info"
       	                        data-bs-toggle="modal"
@@ -1052,25 +1051,28 @@
       	                      ><i class="fas fa-solid fa-file-medical"></i>
       	                      </button></td>`);
         }
+      makePaging(response.pagedto);
       },
+      
     });
   }
   
-  function toggleButtons() {
-      var today = formatDate();
-      var perbtn = document.getElementById("perbtn");
-      var prescriptionButtonWrapper = document.getElementById("prescriptionButtonWrapper");
-      var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
-      
-      // 오늘 날짜와 현재 날짜가 같으면 버튼을 보이게 함
-      if (today === dateValue) { // 오늘 날짜에 따라 변경해야 함
-          perbtn.style.display = "block";
-          prescriptionButtonWrapper.style.display = "block";
-          prescriptionButtonccc.style.display = "none";
-      } else {
-          perbtn.style.display = "none";
-      }
-  }
 
-  document.addEventListener("DOMContentLoaded", toggleButtons);
+  
+  $(function () {
+	    //input을 datepicker로 선언	  
+		datepickerinit();
+
+	    sendDate(1);
+	    
+	    // 출력 btn 이벤트 핸들러
+	    $("#printper").click(pringhandler);
+	    
+	    // 처방내역 btn 이벤트 핸들러
+	    document.getElementById("prescriptionButtonccc").addEventListener("click", function() {    sendDate(1);	});
+	  
+	  //검색버튼 이벤트 만들기
+	  $("#searchBtn").on("click", function () {    sendDate(1);  });
+	});
+
 </script>

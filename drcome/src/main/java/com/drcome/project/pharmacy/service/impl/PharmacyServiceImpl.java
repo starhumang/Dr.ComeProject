@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +38,11 @@ public class PharmacyServiceImpl implements PharmacyService{
 		String perdate = dateFormat.format(currentDate);
 		map.put("date", date);
 		
+		// 오늘 날짜
 		if(date.equals(perdate)) {
 			listmap = mapper.selectPrescriptionList(map);
 		} 
+		// 이전 날짜
 		else {
 			listmap = mapper.selectLastPerList( map);
 		}
@@ -58,11 +62,12 @@ public class PharmacyServiceImpl implements PharmacyService{
 	}
 	
 	/* 처방전 반환 시 업데이트 */
+	@Transactional
 	@Override
 	public Map<String, Object> updaterejection(PharmacySelectVO pharmacyselectVO) {
 		Map<String, Object> map = new HashMap<>();
 		boolean isSuccessed = false;
-
+		mapper.updateProduceStatus(pharmacyselectVO);
 		int result = mapper.updaterejection(pharmacyselectVO);
 		if (result == 1) {
 			isSuccessed = true;
@@ -90,22 +95,6 @@ public class PharmacyServiceImpl implements PharmacyService{
 			result = mapper.perLastcount(map); }
 		
 		return result;
-	}
-
-	@Override
-	public Map<String, Object> updateproduce(PharmacySelectVO pharmacyselectVO) {
-		Map<String, Object> map = new HashMap<>();
-		boolean isSuccessed = false;
-
-		int result = mapper.updateProduceStatus(pharmacyselectVO);
-		if (result == 1) {
-			isSuccessed = true;
-		}
-
-		map.put("result", isSuccessed);
-		map.put("target", pharmacyselectVO);
-		
-		return map;
 	}
 
 	@Override

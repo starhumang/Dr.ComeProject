@@ -52,6 +52,7 @@ public class PharmacyController {
 	@Autowired
 	AlarmService aservice;
 
+	// 사용 안 함
 	@GetMapping("/pharmacy")
 	public String home() {
 		return "pharmacy/home";
@@ -75,14 +76,10 @@ public class PharmacyController {
 	
 	/**
 	 * 약국 처방현황 페이지
-	 * @param principal 세선
-	 * @param pharmacyId
 	 * @return pharmacy/perscriptionStatus
 	 */
 	@GetMapping("/pharmacy/status")
-	public String pharmacyprint(Principal principal, String pharmacyId) {
-		pharmacyId = principal.getName();
-
+	public String pharmacyprint() {
 		return "pharmacy/perscriptionStatus";
 	}
 
@@ -105,26 +102,16 @@ public class PharmacyController {
 		parammap.put("pharmacyId", pharmacyId);
 		parammap.put("page", page);
 		
-		System.out.println("keword가 있을까요??" + parammap);
-		
 		// result map
 		Map<String, Object> map = new HashMap();
 		
 		// 리스트 전체갯수 가져오기
 		int total = pservice.percount(parammap, date);
-		System.out.println("토탈" + total);
-
 
 		// 페이지네이션(currentpage, total)
 		PageDTO dto = new PageDTO(page, total);
-		System.out.println("page" + page);
-		System.out.println("total" + total);
-		System.out.println("dtd 객체 " + dto);
 		
 		List<Map<String, Object>> plist = pservice.selectPrescriptionList(parammap, date);
-		
-		System.out.println(plist.size());
-
 		
 		map.put("plist", plist); 
 		map.put("pagedto", dto); 
@@ -144,8 +131,6 @@ public class PharmacyController {
 		parammap.put("pharmacyId", pharmacyId);
 		parammap.put("page", page);
 		
-		System.out.println("keword가 있을까요??" + parammap);
-		
 		// result map
 		Map<String, Object> map = new HashMap();
 		
@@ -156,25 +141,15 @@ public class PharmacyController {
 
 		// 페이지네이션(currentpage, total)
 		PageDTO dto = new PageDTO(page, total);
-		System.out.println("page" + page);
-		System.out.println("total" + total);
-		System.out.println("dtd 객체 " + dto);
 		
 		List<Map<String, Object>> currplist = pservice.perCurrList(parammap, date);
 		
-		System.out.println(currplist.size());
-
 		
 		map.put("currplist", currplist); 
 		map.put("pagedto", dto); 
 		
 		return map;
 	}
-	
-	
-	
-	
-	
 	
 	/**
 	 * 처방전 반환 시, 반환 사유를 저장
@@ -186,10 +161,8 @@ public class PharmacyController {
 	@ResponseBody
 	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, 
 											   PharmacySelectVO pharmacyselectVO) {
-		System.out.println(pharmacyselectVO);
 		pharmacyselectVO.setPharmacyId(id);
-		pservice.updateproduce(pharmacyselectVO);
-		
+
 		return pservice.updaterejection(pharmacyselectVO);
 	}
 	
@@ -276,14 +249,12 @@ public class PharmacyController {
 	@ResponseBody
 	public int updateprintStatus(@RequestBody PharmacySelectVO vo,
 	                             Principal principal) {
-	    
+	    // 출력 상태 업데이트
 	    String pharmacyId = principal.getName();
-	    
 	    pservice.printStatusModify(vo);
 	    
+	    // 출력한 약국 id insert
 	    vo.setPharmacyId(pharmacyId);
-	    
-	    System.out.println(vo + "==================");
 	    int result = pservice.printpharmacyModify(vo);
 
 	    if (result == 1) {

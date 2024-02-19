@@ -33,9 +33,6 @@ public interface PharmacyService {
 	/* 처방전 반환 */
 	public Map<String, Object> updaterejection(PharmacySelectVO pharmacyselectVO);
 	
-	/* 처방전 반환 produce */
-	public Map<String, Object> updateproduce(PharmacySelectVO pharmacyselectVO);
-	
 	/* 처방전 출력시 update */
 	public int printStatusModify(PharmacySelectVO vo);
 	

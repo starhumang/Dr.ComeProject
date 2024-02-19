@@ -51,20 +51,23 @@ public class AdminController {
 		   			  Model model, 
 		   			  String ustatus) {
 		
+	    // 일반 사용자 cnt
 		Page<Usertable> userlist = aservice.getuserAll("a1", pageNo, 10);
 		model.addAttribute("totalCount", userlist.getTotalElements());
 
+		// 병원 승인 리스트&병원 승인 cnt
 		Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
 		model.addAttribute("grantlisth", grantlisth);
-		model.addAttribute("totalgranth", grantlisth.getTotalElements());
       
+		// 약국 승인 리스트&병원 승인 cnt
 		Page<Pharmacy> grantlistp = aservice.findBypharmacyStatus("b1", pageNo, 5);
 		model.addAttribute("grantlistp", grantlistp);
-		model.addAttribute("totalgrantp", grantlistp.getTotalElements());
 		
+		// 병원 사용자 cnt
 		Page<Hospital> hospitallist = aservice.findByhospitalStatus("b2", pageNo, 10);
 		model.addAttribute("totalCounth", hospitallist.getTotalElements());
 		
+		// 약국 사용자 cnt
 		Page<Pharmacy> pharmacylist = aservice.findBypharmacyStatus("b2", pageNo, 10);
 		model.addAttribute("totalCountp", pharmacylist.getTotalElements());
 		
@@ -72,6 +75,13 @@ public class AdminController {
 		return "admin/home";
    }
    
+     /**
+      * 일반 사용자 목록 조회
+      * @param userStatus 
+      * @param pageNo
+      * @param model
+      * @return
+      */
 	 @GetMapping("/admin/user") 
 	 public String getUsers(String userStatus,
 			 				@RequestParam(defaultValue = "0") int pageNo, 
@@ -116,10 +126,9 @@ public class AdminController {
     */
    @PostMapping("/admin/hospital/grant/{HospitalId}")
    @ResponseBody
-   public String updateStatus(@PathVariable String HospitalId) {
+   public Hospital updateStatus(@PathVariable String HospitalId) {
       Hospital count = aservice.updateStatus(HospitalId);
-      System.out.println(count);
-      return "admin/adminHospitalGrant";
+      return count;
    }
 
    
@@ -161,8 +170,7 @@ public class AdminController {
    @ResponseBody
    public String updatePharmacyStatus(@PathVariable String pharmacyId) {
       Pharmacy count = aservice.updatePharmacyStatus(pharmacyId);
-      System.out.println(count);
-      return "admin/adminPharmacyGrant";
+      return "true";
    }
    
    

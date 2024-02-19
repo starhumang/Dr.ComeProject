@@ -44,7 +44,7 @@
 		                id="btnradio1"
 		                autocomplete="off"
 		                onclick="location.href='/admin/pharmacy?pharmacyStatus=b2'"
-                		th:checked="${#strings.equals(param.pharmacyStatus, 'b2')}"
+                		th:checked="${#strings.equals(param.pharmacyStatus, 'b2') or '/admin/pharmacy' == #httpServletRequest.getRequestURI()}"
 		              />
 		              <label
 		                class="btn btn-outline-dark"
@@ -72,6 +72,10 @@
 				
 				<div class="card-body">
 					<div class="table-responsive">
+						<th:block th:if="${list.empty}">
+					        <p>해당 내역이 없습니다.</p>
+					    </th:block>
+					    <th:block th:if="${not list.empty}">
 						<table class="table table-bordered" id="dataTable" width="100%"
 							cellspacing="0">
 							<thead>
@@ -104,6 +108,7 @@
 								</tr>
 							</tbody>
 						</table>
+						</th:block>
 					</div>
 				</div>
 			</div>

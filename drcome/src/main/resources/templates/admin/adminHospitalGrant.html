@@ -20,9 +20,10 @@
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
-						<!--/* <th:block th:if="${grantlisth} == null">
-							<p>승인 목록이 없습니다.</p>
-						</th:block> */-->
+							<th:block th:if="${grantlisth.empty}">
+						        <p>승인 대기 목록이 없습니다.</p>
+						    </th:block>
+						    <th:block th:if="${not grantlisth.empty}">
 							<table class="table table-bordered" id="dataTable" width="100%"
 								cellspacing="0">
 								<thead>
@@ -61,6 +62,7 @@
 									</tr>
 								</tbody>
 							</table>
+							</th:block>
 					</div>
 				</div>
 			</div>

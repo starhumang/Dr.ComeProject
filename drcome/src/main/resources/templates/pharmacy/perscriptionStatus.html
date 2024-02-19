@@ -122,6 +122,9 @@
       .form-check-input[type="radio"] {
         margin-top: 5px; /* 폼 라디오 버튼 위 여백 */
       }
+      #perbtn {
+		margin: 10px 10px;      
+      }
     </style>
   </head>
   <body>
@@ -202,7 +205,7 @@
               class="btn btn-primary"
               onclick="convert()"
             >
-              처방내역
+              처방내역보기
             </button>
           </div>
           <div id="prescriptionButtonccc" style="display: none">
@@ -210,7 +213,7 @@
               id="prescriptionButtonccc"
               class="btn btn-primary"
             >
-              처방현황
+              처방현황보기
             </button>
           </div>
           </div>
@@ -949,6 +952,8 @@
    * 현재 날짜 처방 내역 
   ------------------------*/
   function pringhandler() {
+	  var print = $(event.targe)
+	  
       no = clinicNo;
       uname = username;
       hname = hospitalname;
@@ -969,10 +974,7 @@
       })
         .done(function (result) {
           if (result > 0) {
-            alert("Update 성공");
-            setTimeout(function () {
-              location.reload();
-            }, 2000);
+        	  print.parent().remove();
           }
         })
         .fail(function (xhr, status, error) {

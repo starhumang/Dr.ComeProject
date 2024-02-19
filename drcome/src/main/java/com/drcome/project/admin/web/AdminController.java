@@ -58,10 +58,14 @@ public class AdminController {
 		// 병원 승인 리스트&병원 승인 cnt
 		Page<Hospital> grantlisth = aservice.findByhospitalStatus("b1", pageNo, 5);
 		model.addAttribute("grantlisth", grantlisth);
-      
+		long h = grantlisth.getTotalElements();
+		
 		// 약국 승인 리스트&병원 승인 cnt
 		Page<Pharmacy> grantlistp = aservice.findBypharmacyStatus("b1", pageNo, 5);
 		model.addAttribute("grantlistp", grantlistp);
+		long p = grantlistp.getTotalElements();
+		long total = h + p;
+		model.addAttribute("total", total);
 		
 		// 병원 사용자 cnt
 		Page<Hospital> hospitallist = aservice.findByhospitalStatus("b2", pageNo, 10);

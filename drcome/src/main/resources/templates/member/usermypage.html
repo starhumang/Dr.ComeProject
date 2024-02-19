@@ -37,6 +37,26 @@
 			.pagination a:hover {
 				background-color: #bfc5d8;
 			}
+
+			.paginationR a {
+				display: inline-block;
+				padding: 5px 10px;
+				margin: 0 2px;
+				border: 1px solid #ccc;
+				background-color: #fff;
+				color: #333;
+				text-decoration: none;
+			}
+
+			.paginationR a.active {
+				background-color: #36b9cc;
+				color: #fff;
+				/* border: 1px solid #4e73df; */
+			}
+
+			.paginationR a:hover {
+				background-color: #bfc5d8;
+			}
 		</style>
 
 		<script th:inline="javascript">
@@ -151,8 +171,6 @@
 					return '답변대기';
 				} else if (status === 'j2') {
 					return '답변완료';
-				} else {
-					return '상태 미정';
 				}
 			}
 
@@ -166,7 +184,13 @@
 
 				data.forEach(function (item) {
 					let produceStatusDescription = getStatusDescription(item.produceStatus);
-					let printStatusDescription = getStatusDescription(item.printStatus);
+					let printStatusDescription = '';
+
+					if (item.selectPharmacyid === null) {
+						printStatusDescription = '';
+					} else {
+						printStatusDescription = '출력완료';
+					}
 
 					$('#pharmacyTableBody').append(`
 			      <tr>
@@ -174,7 +198,7 @@
 			        <td>${item.pharmacyPhone}</td>
 			        <td>${item.sendStatus}</td>
 			        <td>${produceStatusDescription}</td>
-					<td th:if="${item.selectPharmacyid != null}" th:text="'dddddddd'"></td>
+					<td>${printStatusDescription}</td>
 
 			    `);
 					$('#selectPharmacyBtn').click(function () {
@@ -189,55 +213,23 @@
 			//ajax로 페이지 열린 후에 페이징 한 거 받아오기...
 			let page = 1;
 
-			$("input[name='categoryStatus']").click(function () {
-				// 선택된 라디오 버튼의 값을 가져오기
-				$("input[name='ansStatus']").filter("[value='']").prop('checked', true); // ansStatus 라디오 버튼이 value가 빈 문자열인 경우 체크
-				$("input[name='ansStatus']").filter("[value='']").val(''); // ansStatus 라디오 버튼이 value가 빈 문자열로 설정
-				//$('#type').val("")
-				sendP(1);
-			});
+			let pageR = 1;
 
-			$("input[name='ansStatus']").click(function () {
-				// 선택된 라디오 버튼의 값을 가져오기
-				sendP(1);
-				//$('#type').val("")
-			});
 			// Ajax 요청을 보내는 함수
 			function sendP(page) {
-				var type = $('#type').val();
-				var keyword = $('#keyword').val();
-				var categoryStatus = $("input[name='categoryStatus']:checked").val();
-				var ansStatus = $("input[name='ansStatus']:checked").val();
-
 				$.ajax({
 					url: '/qnaListP',
 					type: 'GET',
 					data: {
 						page: page,
-						keyword: keyword,
-						type: type,
-						categoryStatus: categoryStatus,
-						ansStatus: ansStatus,
 					},
 					dataType: 'json',
 				})
 					.done(function (response) {
-						// 응답을 받으면 처리합니다.
-						var qnaList = $('#qnaList');
-						qnaList.empty();
-
-						$.each(response.plist, function (index, item) {
-							qnaList.append('<div>' + item.title + '</div>');
-						});
-
-						// 페이지네이션 정보를 사용하여 페이지네이션을 구현할 수 있습니다.
-						console.log('pagedto' + response.pagedto);
-						// 받은 JSON 데이터를 사용하여 테이블 생성
 						createTable(response.plist);
 						makePaging(response.pagedto);
 					})
 					.fail(function (xhr, status, error) {
-						// 요청이 실패한 경우 에러 처리를 합니다.
 						console.error('error' + error);
 					});
 			}
@@ -245,6 +237,7 @@
 			// 페이지 로드 시 첫 번째 페이지 데이터를 가져옵니다.
 			$(document).ready(function () {
 				sendP(page);
+				sendAjaxRequest(pageR);
 			});
 
 			// 날짜 처리 함수
@@ -317,12 +310,12 @@
 					return;
 				}
 
-				var table = document.querySelector('#qnaTable');
-				var thead = $('<thead>').appendTo(table);
-				var tbody = $('<tbody>').appendTo(table);
+				let table = document.querySelector('#qnaTable');
+				let thead = $('<thead>').appendTo(table);
+				let tbody = $('<tbody>').appendTo(table);
 
-				var headerRow = $('<tr>').appendTo(thead);
-				var headers = ['No.', '병원명', '제목', '카테고리', '작성일자', '답변상태'];
+				let headerRow = $('<tr>').appendTo(thead);
+				let headers = ['No.', '병원명', '제목', '카테고리', '작성일자', '답변상태'];
 
 				$.each(headers, function (index, text) {
 					$('<th>').text(text).appendTo(headerRow);
@@ -331,7 +324,7 @@
 				$.each(plist, function (index, item) {
 					let categoryStatusDescription = getStatusDescription(item.categoryStatus);
 					let ansStatusDescription = getStatusDescription(item.ansStatus);
-					var row = $('<tr>').appendTo(tbody);
+					let row = $('<tr>').appendTo(tbody);
 					row.append(`<td>${item.qnaNo}</td>`);
 					row.append(`<td style="display: none;">${item.hospitalId}</td>`);
 					row.append(`<td>${item.hospitalName}</td>`);
@@ -358,6 +351,134 @@
 				});
 
 				$('#qnaTable tbody tr').css('cursor', 'pointer');
+			}
+
+			// AJAX 요청을 수행하는 함수
+			function sendAjaxRequest(pageR) {
+				$.ajax({
+					url: '/reserveMyList',
+					type: 'GET',
+					data: {
+						page: pageR,
+					},
+					success: function (reserveDrList) {
+						console.log(reserveDrList);
+						$('#Rtable').empty();
+						if (!reserveDrList.rlist || reserveDrList.rlist.length === 0) {
+							$('#Rtable').append('<div style="text-align: center;">예약 정보가 없습니다.</div>');
+							return;
+						}
+						createRTable(reserveDrList.rlist);
+						makePagingR(reserveDrList.pagedto);
+					},
+				});
+			}
+
+			function createRTable(rlist) {
+				let table = document.querySelector('#Rtable');
+				let thead = $('<thead>').appendTo(table);
+				let tbody = $('<tbody>').appendTo(table);
+
+				let headerRow = $('<tr>').appendTo(thead);
+				let headers = [
+					'예약코드',
+					'증상',
+					'방문 일자',
+					'방문 시간',
+					'병원 이름',
+					'병원 전화번호',
+					'담당의',
+					'예약종류',
+					'진료상태',
+					'처방내역',
+				];
+
+				$.each(headers, function (index, text) {
+					$('<th>').text(text).appendTo(headerRow);
+				});
+
+				$.each(rlist, function (index, item) {
+					let reserveStatusText = '';
+					let btnDisabled = '';
+					let btnclass = '';
+
+					let row = $('<tr>').appendTo(tbody);
+					console.log(item);
+					row.append(`<td>${item.reserveNo}</td>`);
+					row.append(`<td>${item.symptom}</td>`);
+					row.append(`<td>${item.reserveDate}</td>`);
+					row.append(`<td>${item.reserveTime}</td>`);
+					row.append(`<td>${item.hospitalName}</td>`);
+					row.append(`<td>${item.hospitalPhone}</td>`);
+					row.append(`<td>${item.doctorName}</td>`);
+					row.append(`<td>${item.reserveKindstatus == 'c1' ? '대면' : '비대면'}</td>`);
+					if (item.reserveStatus === 'e1') {
+						reserveStatusText = '진료대기';
+						btnDisabled = 'disabled';
+						btnclass = 'class = btn btn-secondary';
+					} else if (
+						item.reserveStatus === 'e4' ||
+						item.reserveStatus === 'e5' ||
+						item.reserveStatus === 'e6'
+					) {
+						reserveStatusText = '진료완료';
+						btnDisabled = 'disabled';
+						btnclass = 'class = btn btn-light';
+					} else {
+						reserveStatusText = '입장하기';
+						btnclass = 'class = btn btn-primary';
+					}
+					row.append(
+						`<td><button onclick="enter(${item.reserveNo})" ${btnDisabled} class="btn ${btnclass}">${reserveStatusText}</button></td>`
+					);
+					let viewButton = '';
+					if (item.reserveStatus === 'e5' || item.reserveStatus === 'e6') {
+						viewButton = `<button style="border: none" onclick="viewP(${item.reserveNo})"> <i class="bi bi-clipboard-plus" style="font-size: 1.5em"></i></button>`;
+					}
+					row.append(`<td>${viewButton}</td>`);
+				});
+			}
+
+			// 페이징 함수
+			function makePagingR(dto = {}) {
+				document.querySelector('.paginationR').innerHTML = ''; // 초기화
+				console.log('dto', dto);
+				// 이전 페이지가 있으면
+				if (dto.prev) {
+					let aTag = document.createElement('a');
+					aTag.setAttribute('href', dto.startPage - 1); // 11페이지에서 << 누르면 10페이지로 가게끔
+					aTag.innerHTML = '&laquo';
+					document.querySelector('.paginationR').append(aTag);
+				}
+
+				for (let i = dto.startPage; i <= dto.endPage; i++) {
+					let aTag = document.createElement('a');
+					aTag.setAttribute('href', i); //<a href="1">1</a>
+					aTag.innerHTML = i;
+					// active 녹색 주는거
+					if (i == pageR) {
+						aTag.className = 'active';
+					}
+					document.querySelector('.paginationR').append(aTag);
+				} // 포
+
+				// 이후 페이지가 있으면
+				if (dto.next) {
+					let aTag = document.createElement('a');
+					aTag.setAttribute('href', dto.endPage + 1);
+					aTag.innerHTML = '&raquo';
+					document.querySelector('.paginationR').append(aTag);
+				}
+
+				// 페이지 숫자 태그에 클릭 이벤트 만들기
+				document.querySelectorAll('.paginationR a').forEach((ele) => {
+					// 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
+					ele.addEventListener('click', function (e) {
+						e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
+						pageR = ele.getAttribute('href'); // href의 값 = page
+						sendAjaxRequest(pageR); // 페이지 번호에 해당하는 데이터를 불러오는 함수 호출
+					}); // 클릭 이벤트
+				}); // 포이치
 			}
 		</script>
 	</head>
@@ -415,7 +536,7 @@
 						</div>
 					</div>
 
-					<div class="container" style="margin-bottom: 50px">
+					<div class="container" style="margin-bottom: 30px">
 						<div class="card shadow mb-4">
 							<div
 								class="card-header py-3"
@@ -426,80 +547,19 @@
 								</h5>
 							</div>
 
-							<div class="card-body" style="display: flex; justify-content: center; align-items: center">
-								<table
-									class="table table-hover"
-									th:if="${reserveMyList != null and not #lists.isEmpty(reserveMyList)}"
-									style="text-align: center"
-								>
-									<thead>
-										<tr>
-											<th>예약코드</th>
-											<th>증상</th>
-											<th>방문 일자</th>
-											<th>방문 시간</th>
-											<th>병원 이름</th>
-											<th>병원 전화번호</th>
-											<th>담당의</th>
-											<th>예약종류</th>
-											<th>진료상태</th>
-											<th>약국선택내역</th>
-										</tr>
-									</thead>
-									<tbody>
-										<tr th:each="rdl : ${reserveMyList}">
-											<td th:text="${rdl.reserveNo}"></td>
-											<td th:text="${rdl.symptom}"></td>
-											<td th:text="${rdl.reserveDate}"></td>
-											<td th:text="${rdl.reserveTime}"></td>
-											<td th:text="${rdl.hospitalName}"></td>
-											<td th:text="${rdl.hospitalPhone}"></td>
-											<td th:text="${rdl.doctorName}"></td>
-											<td th:if="${ rdl.reserveKindstatus == 'c1' }">대면</td>
-											<td th:unless="${ rdl.reserveKindstatus == 'c1' }">비대면</td>
-											<td>
-												<button
-													disabled
-													th:if="${rdl.reserveStatus} =='e1'"
-													class="btn btn-secondary"
-												>
-													진료대기
-												</button>
-												<button
-													th:if="${rdl.reserveStatus} =='e3'"
-													th:onclick="enter([[${rdl.reserveNo}]])"
-													class="btn btn-primary enterBtn"
-												>
-													입장하기
-												</button>
-												<button
-													disabled
-													th:if="${rdl.reserveStatus} =='e4' OR ${rdl.reserveStatus} =='e5' OR ${rdl.reserveStatus} == 'e6'"
-													class="btn btn-light"
-												>
-													진료완료
-												</button>
-											</td>
-											<td>
-												<button
-													th:if="${rdl.reserveStatus} =='e5' OR ${rdl.reserveStatus} == 'e6'"
-													style="border: none"
-													th:onclick="viewP([[${rdl.reserveNo}]])"
-												>
-													<i class="bi bi-clipboard-plus" style="font-size: 1.5em"></i>
-												</button>
-											</td>
-										</tr>
-									</tbody>
-								</table>
-								<div th:unless="${reserveMyList != null and not #lists.isEmpty(reserveMyList)}">
-									<p>예약/진료 내역이 없습니다.</p>
+							<div class="card-body" style="display: block; justify-content: center; align-items: center">
+								<div style="min-height: 350px">
+									<table class="table table-hover" style="text-align: center" id="Rtable"></table>
 								</div>
+								<div
+									class="paginationR"
+									style="display: flex; justify-content: center; margin: 10px 0"
+								></div>
 							</div>
 						</div>
 					</div>
 
-					<div class="container" style="margin-bottom: 50px">
+					<div class="container" style="margin-bottom: 30px">
 						<div class="card shadow mb-4">
 							<div
 								class="card-header py-3"
@@ -513,12 +573,14 @@
 							<div class="card-body" style="display: block; justify-content: center; align-items: center">
 								<!-- QnA 리스트 -->
 								<!-- table -->
-								<table class="table table-hover" id="qnaTable"></table>
+								<div style="min-height: 500px">
+									<table class="table table-hover" id="qnaTable"></table>
+								</div>
 
 								<!-- 페이징 버튼 -->
 								<div
 									class="pagination"
-									style="display: flex; justify-content: center; margin: 50px 0"
+									style="display: flex; justify-content: center; margin: 10px 0"
 								></div>
 							</div>
 						</div>
@@ -546,7 +608,7 @@
 										<th scope="col">약국 이름</th>
 										<th scope="col">전화번호</th>
 										<th scope="col">전송 상태</th>
-										<th scope="col">반려 여부</th>
+										<th scope="col">승인 여부</th>
 										<th scope="col">출력 내역</th>
 									</tr>
 								</thead>

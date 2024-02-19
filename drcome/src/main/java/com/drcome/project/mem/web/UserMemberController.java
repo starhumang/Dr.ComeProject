@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
 import com.drcome.project.common.service.FileUploadService;
+import com.drcome.project.common.service.PageDTO;
 import com.drcome.project.common.service.PageDTO2;
 import com.drcome.project.doctor.service.PatientVO;
 import com.drcome.project.main.service.ClinicPayVO;
@@ -29,6 +30,7 @@ import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.medical.service.NoticeAttachVO;
 import com.drcome.project.medical.service.QnaVO;
 import com.drcome.project.mem.mapper.UserMemberMapper;
+import com.drcome.project.mem.service.AlarmVO;
 import com.drcome.project.mem.service.MemVO;
 import com.drcome.project.mem.service.UserMemberService;
 import com.drcome.project.mem.service.UserMemberVO;
@@ -370,6 +372,22 @@ public class UserMemberController {
 	public int deleteUser(@RequestParam String userId, @RequestParam String password, Authentication auth) {
 		return userMemService.deleteUser(userId, password, auth);
 	}
+	
+	@GetMapping("/useralarm")
+	@ResponseBody
+	public Map<String, Object> userAlarm(@SessionAttribute(name = "userId", required = false) String id) {
+		Map<String, Object> map = new HashMap<>();
+		List<AlarmVO> list = memMapper.myAlarmList(id);
+		map.put("alarmList", list);
+		
+		return map;
+	}
+	
+	@GetMapping("/checkedAlarm")
+	@ResponseBody
+	public int checkedAlarm(@RequestParam int alarmNo) {
+		return memMapper.chekedAlarm(alarmNo);
+	}
 
 	/**
 	 * 마이페이지 화면으로 이동
@@ -384,11 +402,37 @@ public class UserMemberController {
 		model.addAttribute("profile", myprofile);
 		
 		// 예약 정보
-		List<ReservationVO> rInfo = memMapper.selectUserReserveInfo(id);		
-		model.addAttribute("reserveMyList", rInfo);
+//		List<ReservationVO> rInfo = memMapper.selectUserReserveInfo(id);		
+//		model.addAttribute("reserveMyList", rInfo);
 
 		return "member/usermypage";
 	}
+	
+	@GetMapping("reserveMyList")
+	@ResponseBody
+	public Map<String, Object> clinicReserveUser(@SessionAttribute(name = "userId", required = false) String id, 
+			@RequestParam Map<String, Object> param,
+			@RequestParam(required = false, defaultValue = "1") int page) {
+
+		param.put("userId", id);
+		param.put("page", page);
+		
+		Map<String, Object> map = new HashMap<>();
+		// 리스트 전체 개수
+		int total = memMapper.UserReserveCount(param);
+		
+		System.out.println("asdga"+ total);
+		
+		PageDTO dto = new PageDTO(page, total);
+		
+		List<Map<String, Object>> reserveUserList = memMapper.selectUserReserveInfo1(param);
+		
+		map.put("rlist", reserveUserList);
+		map.put("pagedto", dto);
+
+		return map;
+	}
+	
 	
 	@GetMapping("/qnaListP")
 	@ResponseBody

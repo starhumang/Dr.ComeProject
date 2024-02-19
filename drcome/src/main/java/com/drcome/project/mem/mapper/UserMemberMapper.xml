@@ -237,6 +237,37 @@
         ORDER BY r.reserve_time, r.reserve_no
 	</select>
 	
+	<select id="selectUserReserveInfo1" resultType="Map">
+		SELECT * FROM (
+    					SELECT 
+        					r.RESERVE_NO AS "reserveNo"
+        				  , r.symptom AS "symptom"
+        				  , r.reserve_year || '-' || r.reserve_month || '-' || r.reserve_day AS "reserveDate"
+        				  , r.reserve_time AS "reserveTime"
+        				  , h.hospital_name AS "hospitalName"
+        				  , h.phone AS "hospitalPhone"
+        				  , d.doctor_name AS "doctorName"
+        				  , r.reserve_kindstatus AS "reserveKindstatus"
+        				  , r.reserve_status AS "reserveStatus"
+        				  , ROWNUM AS rn
+    					FROM 
+        					(SELECT * 
+        					 FROM reservation 
+        					 WHERE user_id = #{userId} 
+        					 ORDER BY reserve_time
+        					        , reserve_no) r
+        				JOIN doctor d 
+        				ON r.doctor_no = d.doctor_no 
+        				AND r.hospital_id = d.hospital_id
+        				JOIN usertable u 
+        				ON u.user_id = r.user_id
+        				JOIN hospital h 
+        				ON h.hospital_id = r.hospital_id
+    					WHERE ROWNUM <![CDATA[ <= ]]> #{page} * 5
+						)
+		WHERE rn > (#{page} - 1) * 5
+	</select>
+	
 	<!-- 결제 정보 -->
 	<select id="selectClinicPay" resultType="ClinicPayVO">
 		SELECT c.clinic_no
@@ -336,4 +367,27 @@
 			WHERE user_id = #{userId}
 			AND ANS_STATUS IS NOT NULL
 	</select>
+	
+	<select id="UserReserveCount" resultType="int">
+		SELECT COUNT(*)
+			FROM reservation
+			WHERE user_id = #{userId}
+	</select>
+	
+	<select id="myAlarmList" resultType="AlarmVO">
+		SELECT alarm_no
+			 , content_code
+			 , prefix
+			 , reserve_no
+			 , pharmacy_selectno 
+		FROM alarm 
+		WHERE user_id = #{userId}
+		AND check_code = 'X'
+	</select>
+	
+	<update id="chekedAlarm">
+		UPDATE alarm
+		SET check_code = 'Y'
+		WHERE alarm_no = #{alarmNo}
+	</update>
 </mapper>

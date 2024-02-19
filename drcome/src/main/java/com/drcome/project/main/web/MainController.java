@@ -137,17 +137,13 @@ public class MainController {
 	
 	// 병원공지사항 단건상세 유저ver
 	@GetMapping("/userNoticeDetail")
-	public String noticeDetail(String hospitalId, NoticeVO noticeVO, Model model) {
-		noticeVO.setHospitalId(hosId);
-		//System.out.println("hospitalId = "+ hosId);
-		int noticeNo = noticeVO.getNoticeNo();
-		//System.out.println("noticeNo = "+ noticeNo);
-		
-		NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
-		model.addAttribute("noticeNo", noticeNo);
-		model.addAttribute("noticeList", noticeList);
-		model.addAttribute("hosId", hosId);
-		//System.out.println("noticeList = "+ noticeList);
+	   public String noticeDetail( NoticeVO noticeVO, Model model) {
+	      noticeVO.setHospitalId(hosId);
+	      int noticeNo = noticeVO.getNoticeNo();
+	      NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
+	      model.addAttribute("noticeNo", noticeNo);
+	      model.addAttribute("noticeList", noticeList);
+
 		
 		return "user/userNoticeDetail";
 	}

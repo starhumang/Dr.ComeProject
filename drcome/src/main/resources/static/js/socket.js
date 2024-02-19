@@ -1,11 +1,11 @@
-let socket = io("http://192.168.0.16:3000/", {
+let socket = io("http://192.168.0.36:3000/", {
   cors: { origin: "*" },
 });
 
 console.log(socket.connected);
 
 const myPeer = new Peer({
-	host: '192.168.0.16',
+	host: '192.168.0.36',
 	port: '3001', //PeerJS 서버가 실행되고 있는 포트
 });
 
@@ -15,8 +15,11 @@ let myScreen;
 
 navigator.mediaDevices
   .getUserMedia({
-    video: true,
-    audio: true,
+    video: {
+      width: { ideal:300 },
+      height: { ideal: 450 }
+    },
+    audio: true
   })
   .then((stream) => {
     //화면onoff

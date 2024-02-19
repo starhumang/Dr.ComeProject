@@ -103,12 +103,14 @@
         display: none;
       }
     </style>
+
+  
   </head>
 
   <body>
     <div layout:fragment="content">
       <!--container-fluid-->
-      <div class="container-fluid">
+      <div class="container-fluid" style="padding: 10px;">
         <!--title-->
         <div class="title" style="background-color: #06bbcc; padding: 5px">
           <!--on off-->
@@ -133,7 +135,7 @@
 
           <h3
             style="
-              width: 80%;
+              width: 70%;
               text-align: center;
               margin-bottom: 0;
               padding-left: 120px;
@@ -164,7 +166,7 @@
         <!--title-->
 
         <!--비디오-->
-        <div style="height: 100vh">
+        <div style="height: 70vh">
           <div
             id="video"
             style="
@@ -174,8 +176,8 @@
               margin-top: 5%;
             "
           >
-            <video id="localVideo" autoplay width="40%" height="52%"></video>
-            <video id="remoteVideo" autoplay width="40%" height="52%"></video>
+            <video id="localVideo" autoplay width="18%" height="40%"></video>
+            <video id="remoteVideo" autoplay width="18%" height="40%"></video>
           </div>
         </div>
         <!--비디오-->
@@ -195,7 +197,7 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-        <script src="/js/socket.js"></script>
+        <script src="/js/socket.js"></script>  
         <script th:inline="javascript">
           let rNo = [[${rNo}]];
           function payment() {
@@ -217,6 +219,9 @@
               track.enabled = !track.enabled;
               });
               }
+
+
+            
         </script>
 
         <script th:inline="javascript"></script>

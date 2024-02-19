@@ -117,9 +117,9 @@
 
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
         <link
-          href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
-          rel="stylesheet"
-        />
+        href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
+        rel="stylesheet"
+      />
 
         <script>
           $(document).ready(function () {
@@ -175,71 +175,55 @@
                       } else if (rs === "e4" && rt === "c1") {
                         reserveStatusText = "결제완료 처리하기";
                         btnclass = "class = 'btn btn-warning update'";
-                      } else if (rs === "e5") {
+                        
+                      } else if (rs ==="e5"){
                         reserveStatusText = "결제완료";
                         btnDisabled = "disabled";
                         btnclass = "class = 'btn btn-danger'";
-                      } else {
+                      } else if (rs === "e6") {
+                    	reserveStatusText = "처방완료";
+                    	btnDisabled = "disabled";
+                    	btnclass = "class = 'btn btn-success'";
+                      } else { 
                         reserveStatusText = "진료중";
                         btnclass = "class = 'btn btn-light'";
                         btnDisabled = "disabled";
                       }
+                      
 
                       let reserveTr = document.createElement("tr");
 
-                      reserveTr.innerHTML =
-                        "<td>" +
-                        reserve.reserveNo +
-                        "</td>" +
-                        "<td>" +
-                        reserve.userName +
-                        "</td>" +
-                        "<td>" +
-                        formatDate(new Date(reserve.userBirthday)) +
-                        "</td>" +
-                        "<td>" +
-                        reserve.gender +
-                        "</td>" +
-                        "<td>" +
-                        reserve.userPhone +
-                        "</td>" +
-                        "<td>" +
-                        reserve.reserveTime +
-                        "</td>" +
-                        "<td>" +
-                        reserve.doctorName +
-                        "</td>" +
-                        "<td>" +
-                        (reserve.reserveKindstatus === "c1"
-                          ? "대면"
-                          : "비대면") +
-                        "</td>" +
-                        "<td><button " +
-                        btnclass +
-                        btnDisabled +
-                        ">" +
-                        reserveStatusText +
-                        "</button></td>";
+                      reserveTr.innerHTML = 
+                        "<td>" + reserve.reserveNo + "</td>" +
+                        "<td>" + reserve.userName + "</td>" +
+                        "<td>" + formatDate(new Date(reserve.userBirthday)) + "</td>" +
+                        "<td>" + reserve.gender + "</td>" +
+                        "<td>" + reserve.userPhone + "</td>" +
+                        "<td>" + reserve.reserveTime + "</td>" +
+                        "<td>" + reserve.doctorName + "</td>" +
+                        "<td>" + (reserve.reserveKindstatus === "c1" ? "대면" : "비대면") + "</td>" +
+                        "<td><button " + btnclass + btnDisabled + ">" + reserveStatusText + "</button></td>";
 
-                      if (rs === "e5" && reserve.perscriptionYn === "Y") {
-                        let prescriptionButton =
-                          document.createElement("button");
-                        prescriptionButton.textContent = "처방전 전송";
-                        prescriptionButton.className = "btn btn-primary psend";
+                       
+                        if (rs === "e5" && reserve.perscriptionYn === "Y") {
+                            let prescriptionButton = document.createElement("button");
+                            prescriptionButton.textContent = "처방전 전송";
+                            prescriptionButton.className = "btn btn-primary";
+                            prescriptionButton.id = "sendPh";
 
-                        let prescriptionTd = document.createElement("td");
-                        prescriptionTd.appendChild(prescriptionButton);
+                            let prescriptionTd = document.createElement("td");
+                            prescriptionTd.appendChild(prescriptionButton);
 
-                        reserveTr.appendChild(prescriptionTd);
-                      } else {
-                        let prescriptionButton = document.createElement("p");
-                        prescriptionButton.textContent = "-";
+                            reserveTr.appendChild(prescriptionTd);
+                        }else {
+                            let prescriptionButton = document.createElement("p");
+                              prescriptionButton.textContent = "-";
 
-                        let prescriptionTd = document.createElement("td");
-                        prescriptionTd.appendChild(prescriptionButton);
+                              let prescriptionTd = document.createElement("td");
+                              prescriptionTd.appendChild(prescriptionButton);
 
-                        reserveTr.appendChild(prescriptionTd);
-                      }
+                              reserveTr.appendChild(prescriptionTd);
+                        }
 
                       reserveListTbody.append(reserveTr);
                     }
@@ -272,12 +256,13 @@
             });
           });
 
-          //대면환자 결제대기 눌렀을때 결제완료로 상태업데이트
-          $(document).on("click", ".update", function (event) {
-            var trElement = $(this).closest("tr");
-            var firstTdValue = trElement.find("td:first").text();
-            // console.log("첫 번째 td 값: " + firstTdValue);
-
+          //대면환자 결제대기 눌렀을때 결제완료로 상태업데이트 
+          $(document).on("click", ".update", function(event) {
+    
+           var trElement = $(this).closest('tr');
+           var firstTdValue = trElement.find('td:first').text();
+           // console.log("첫 번째 td 값: " + firstTdValue);
+           
             $.ajax({
               url: `/updatePayment?reserveNo=${firstTdValue}`,
               method: "POST",
@@ -289,14 +274,27 @@
                     icon: "success",
                   });
                 }
-                setTimeout(function () {
-                  location.href = `/hospital/clinicMain`;
+                setTimeout(function() {
+                location.href = `/hospital/clinicMain`;
                 }, 1000);
               })
               .fail((err) => {
                 console.log(err);
               });
-          });
+          
+
+            });
+          
+          //처방전 전송 버튼에 페이지 열리게
+           $(document).on("click", "#sendPh", function(event) {
+    
+           var trElement = $(this).closest('tr');
+           var firstTdValue = trElement.find('td:first').text();
+			console.log(firstTdValue);
+			
+			 window.location.href = '/hospital/selPharmacyList?reserveNo=' + firstTdValue;
+           });
+
         </script>
       </div>
     </div>

@@ -1,41 +1,41 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout}">
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{layouts/layout}">
 
 <head>
 <meta charset="UTF-8">
 <title>Search</title>
 <script type="text/javascript"
-	th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
+   th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
 <style scoped>
 .head_info {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 30px;
+   display: flex;
+   justify-content: space-between;
+   margin-top: 30px;
 }
 
 .search {
-	display: flex;
-	justify-content: flex-end;
-	margin-bottom: 40px;
+   display: flex;
+   justify-content: flex-end;
+   margin-bottom: 40px;
 }
 
 .ho:hover {
-	background-color: #B0E0E6;
-	cursor: pointer;
+   background-color: #B0E0E6;
+   cursor: pointer;
 }
 
 button {
-	border: none;
-	font-weight: bold;
-	font-size: 18px;
+   border: none;
+   font-weight: bold;
+   font-size: 18px;
 }
 
 button:hover {
-	color: #06BBCC;
+   color: #06BBCC;
 }
 .pagination a {
   display: inline-block;
@@ -85,115 +85,115 @@ button:hover {
 </head>
 
 <body>
-	<div layout:fragment="content" >
-		<div class="container" style="margin-top: 100px; text-align: center;">
-			<div class="head"
-				style="display: flex; justify-content: center; margin-bottom: 100px;">
-				<div style="width: 600px;">
-					<h2 th:text="|Result : ${word}|"
-						style="margin-bottom: 20px; color: #363636;"></h2>
-					<hr>
-					<hr>
-					<h5 class="loc" style="color: gray;">현재위치들어가는 곳</h5>
-				</div>
-			</div>
-			<script th:inline="javascript">
-				function nowLocation(){
-					const loc = window.localStorage.getItem("location");
-					console.log(loc);
-					document.querySelector(".loc").innerText='현재 내 위치는 ' + loc + ' 입니다.';
-				}
-				nowLocation();
-			</script>
+   <div layout:fragment="content" >
+      <div class="container" style="margin-top: 100px; text-align: center;">
+         <div class="head"
+            style="display: flex; justify-content: center; margin-bottom: 100px;">
+            <div style="width: 600px;">
+               <h2 th:text="|Result : ${word}|"
+                  style="margin-bottom: 20px; color: #363636;"></h2>
+               <hr>
+               <hr>
+               <h5 class="loc" style="color: gray;">현재위치들어가는 곳</h5>
+            </div>
+         </div>
+         <script th:inline="javascript">
+            function nowLocation(){
+               const loc = window.localStorage.getItem("location");
+               console.log(loc);
+               document.querySelector(".loc").innerText='현재 내 위치는 ' + loc + ' 입니다.';
+            }
+            nowLocation();
+         </script>
 
 
-			<!-- 병원리스트 -->
-			<div style="margin-bottom: 50px;">
-				<div style="display: flex; justify-content: right;">
-					<button class="na" onclick="methods.sorting(true)">거리순</button>
-					|
-					<button style="color: #06BBCC;" class="ga" onclick="methods.sorting(false)">가나다순</button>
-				</div>
-				<h3 style="color: gray; margin-bottom: 50px;">- 병원목록 -</h3>
-				<div style="height:250px;">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>병원명</th>
-							<th>전화번호</th>
-							<th>운영시간</th>
-							<th style="width: 400px;">주소</th>
-							<th class="lo">거리</th>
-						</tr>
-					</thead>
-					<tbody class="here">
-						<th:block th:each="hos : ${searchHos}">
-							<tr th:if="${#lists.size(searchHos) > 0}" class="ho hospitalItem"
-								th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
-								<td th:text="${hos.hospitalName}" class="hospitalName"></td>
-								<td th:text="${hos.phone}"></td>
-								<td th:text="|${hos.opentime} ~ ${hos.closetime}|"></td>
-								<td th:text="${hos.address}"></td>
-								<td style="font-weight: bold;" class="address"
-									th:text="${hos.address}"></td>
-							</tr>
-						</th:block>
-						<tr th:unless="${#lists.size(searchHos) > 0}">
-							<td colspan="5"
-								style="color: gray; height: 100px; vertical-align: middle;">검색
-								조건에 맞는 병원이 없습니다.</td>
-						</tr>
-					</tbody>
-				</table>
-				</div>
-			</div>
-			 <!-- 페이징 버튼 -->
+         <!-- 병원리스트 -->
+         <div style="margin-bottom: 50px;">
+            <div style="display: flex; justify-content: right;">
+               <button class="na" onclick="methods.sorting(true)">거리순</button>
+               |
+               <button style="color: #06BBCC;" class="ga" onclick="methods.sorting(false)">가나다순</button>
+            </div>
+            <h3 style="color: gray; margin-bottom: 50px;">- 병원목록 -</h3>
+            <div style="height : 250px;">
+            <table class="table">
+               <thead>
+                  <tr>
+                     <th>병원명</th>
+                     <th>전화번호</th>
+                     <th>운영시간</th>
+                     <th style="width: 400px;">주소</th>
+                     <th class="lo">거리</th>
+                  </tr>
+               </thead>
+               <tbody class="here">
+                  <th:block th:each="hos : ${searchHos}">
+                     <tr th:if="${#lists.size(searchHos) > 0}" class="ho hospitalItem"
+                        th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|">
+                        <td th:text="${hos.hospitalName}" class="hospitalName"></td>
+                        <td th:text="${hos.phone}"></td>
+                        <td th:text="|${hos.opentime} ~ ${hos.closetime}|"></td>
+                        <td th:text="${hos.address}"></td>
+                        <td style="font-weight: bold;" class="address"
+                           th:text="${hos.address}"></td>
+                     </tr>
+                  </th:block>
+                  <tr th:unless="${#lists.size(searchHos) > 0}">
+                     <td colspan="5"
+                        style="color: gray; height: 100px; vertical-align: middle;">검색
+                        조건에 맞는 병원이 없습니다.</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+      </div>
+          <!-- 페이징 버튼 -->
             <div>
                <div class="pagination" style="display: flex; justify-content: center; margin: 50px 0;">
                </div>   
             </div>
-			
-			<!-- 약국리스트 -->
-			<div style="margin-bottom: 50px;margin-top:150px;">
-				<h3 style="color: gray; margin-bottom: 50px;">- 약국목록 -</h3>
-				<div style="height:250px;">
-				<table class="table">
-					<thead>
-						<tr>
-							<th>약국명</th>
-							<th>전화번호</th>
-							<th>운영시간</th>
-							<th style="width: 400px;">주소</th>
-							<th class="lo">거리</th>
-						</tr>
-					</thead>
-					<tbody class="here2">
-						<th:block th:each="pha : ${searchPha}">
-							<tr th:if="${#lists.size(searchPha) > 0}" class="ho pharmacyItem"
-								th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|">
-								<td th:text="${pha.pharmacyName}" class="pharmacyName"></td>
-								<td th:text="${pha.pharmacyPhone}"></td>
-								<td th:text="|${pha.opentime} ~ ${pha.closetime}|"></td>
-								<td th:text="${pha.address}"></td>
-								<td style="font-weight: bold;" class="phAddress"
-									th:text="${pha.address}"></td>
-							</tr>
-						</th:block>
-						<tr th:unless="${#lists.size(searchPha) > 0}">
-							<td colspan="5"
-								style="color: gray; height: 100px; vertical-align: middle;">검색
-								조건에 맞는 약국이 없습니다.</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-			</div>
-			 <!-- 페이징 버튼 -->
+         
+         <!-- 약국리스트 -->
+         <div style="margin-bottom: 50px;margin-top:150px;">
+            <h3 style="color: gray; margin-bottom: 50px;">- 약국목록 -</h3>
+            <div style="height : 250px;">
+            <table class="table">
+               <thead>
+                  <tr>
+                     <th>약국명</th>
+                     <th>전화번호</th>
+                     <th>운영시간</th>
+                     <th style="width: 400px;">주소</th>
+                     <th class="lo">거리</th>
+                  </tr>
+               </thead>
+               <tbody class="here2">
+                  <th:block th:each="pha : ${searchPha}">
+                     <tr th:if="${#lists.size(searchPha) > 0}" class="ho pharmacyItem"
+                        th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|">
+                        <td th:text="${pha.pharmacyName}" class="pharmacyName"></td>
+                        <td th:text="${pha.pharmacyPhone}"></td>
+                        <td th:text="|${pha.opentime} ~ ${pha.closetime}|"></td>
+                        <td th:text="${pha.address}"></td>
+                        <td style="font-weight: bold;" class="phAddress"
+                           th:text="${pha.address}"></td>
+                     </tr>
+                  </th:block>
+                  <tr th:unless="${#lists.size(searchPha) > 0}">
+                     <td colspan="5"
+                        style="color: gray; height: 100px; vertical-align: middle;">검색
+                        조건에 맞는 약국이 없습니다.</td>
+                  </tr>
+               </tbody>
+            </table>
+         </div>
+         </div>
+          <!-- 페이징 버튼 -->
             <div>
                <div class="pagination2" style="display: flex; justify-content: center; margin: 50px 0 100px 0 ;">
                </div>   
             </div>
-			  <script th:inline="javascript">
+           <script th:inline="javascript">
 
 //<<----Init-------------------------------------------------------------------------------------------------------------------->>
        // 젤 먼저 시작 함수 
@@ -204,23 +204,27 @@ button:hover {
  //<<-----setup ------------------------------------------------------------------------------------------------------------------>>
        // 페이징 관련 변수들
       const paging = {
-		   hos:{
-			   List:[],
-			   ListGaNaDa:[],
-			   count : 0,
-			   totalPages:0,//전체 페이지 수
-			   cupPage:1//현재페이지
-		   },
-		   pha:{
-			   List:[],
-			   ListGaNaDa:[],
-			   count : 0,
-			   totalPages:0,//전체 페이지 수
-			   cupPage:1//현재페이지
-		   },
-		   
-		   countPerPage : 5 //한 페이지에 보여줄 병원수
-       }
+         hos: {   // 병원 관련 페이징 변수들
+            List: [],
+            ListGaNaDa: [],
+            count: 0,
+            totalPages: 0,
+            curPage: 1,
+         },
+         pha: {   // 약국 관련 페이징 변수들
+            List: [],
+            ListGaNaDa: [],
+            count: 0,
+            totalPages: 0,
+            curPage: 1,
+         }
+      }
+
+      //전체 병원수 pagingInject() 함수를 통해 거리 계산 후 할당
+
+      //한 페이지에 보여줄 병원수 
+      paging.countPerPage = 5;
+
 
       // 페이지에 쓸 글로벌 전역변수들
       const global = {}
@@ -237,41 +241,40 @@ button:hover {
             
             const hosAddress = document.querySelectorAll('.address'); //병원
             const phaAddress = document.querySelectorAll('.phAddress')//약국
-			console.log("hosAddress=",hosAddress);
+         console.log("hosAddress=",hosAddress);
             
             if(hosAddress){
-            	await methods.addressToDistance(hosAddress, "hos"); // 거리값 계산
-            	methods.makePaging("hos"); // 초기 페이징 생성 or 병원 데이터 뿌려줌
+               await methods.addressToDistance(hosAddress, "hos"); // 거리값 계산
+               methods.makePaging("hos"); // 초기 페이징 생성 or 병원 데이터 뿌려줌
             }
             
             if(phaAddress){
-            	await methods.addressToDistance(phaAddress, "pha"); // 거리값 계산
-				methods.makePaging("pha");
+               await methods.addressToDistance(phaAddress, "pha"); // 거리값 계산
+            methods.makePaging("pha");
             }            
 
          },
 // init() end---------------------------------------------------------------------------------------------------------------------
          //  각 거리 계산 후 페이징 변수들 값 할당
          pagingInject(list, kind){
-        	const kindName = kind ==='hos' ? 'hospitalName' : 'pharmacyName';
-        	paging[kind].List = list;
-        	// 배열 분해 ...(Array destructuring) 문법 list의 모든 요소를 복사하여 새 배열을 만듦
-        	paging[kind].ListGaNaDa = [...list].sort((a, b)=>{
-        		const _a = a[kindName].toLowerCase();
-        		const _b = b[kindName].toLowerCase();
-        		
-        		// 가나다순 할당
-        		if (_a < _b) {
-                   return -1; 
-                }
-                if (_a > _b) {
-                   return 1; 
-                }
-                return 0; 
-        	});
+            const kindName = kind === 'hos' ? 'hospitalName' : 'pharmacyName';
+            paging[kind].List = list;
+            paging[kind].ListGaNaDa = [...list].sort((a, b) => { 
+               const _a = a[kindName].toLowerCase();
+               const _b = b[kindName].toLowerCase();
 
-            paging.count = list.length // 전체 병원 혹은 약국 수
-            paging.totalPages = Math.ceil(paging[kind].count / paging.countPerPage); // 페이징 하단 1,2,3 버튼 최대 값
+               if (_a < _b) {
+                  return -1; 
+               }
+               if (_a > _b) {
+                  return 1; 
+               }
+               return 0; 
+            }); // 가나다순 할당
+        
+            paging[kind].count = list.length // 전체 병원 혹은 약국 수
+            paging[kind].totalPages = Math.ceil(paging[kind].count / paging.countPerPage); // 페이징 하단 1,2,3 버튼 최대 값
+       
 
          },
 // pagingInject() end-------------------------------------------------------------------------------------------------------------
@@ -294,12 +297,13 @@ button:hover {
 //            hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
 
             // 모든 값을 구한 객체로 페이징 변수 값 할당
+  
             if(kind === "hos"){
-            	hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-            	methods.pagingInject(hospitalList, kind);
+               hospitalList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+               methods.pagingInject(hospitalList, kind);
             }else if(kind === "pha"){
-            	pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-            	methods.pagingInject(pharmacyList, kind);
+               pharmacyList.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+               methods.pagingInject(pharmacyList, kind);
             }
             
             
@@ -324,11 +328,11 @@ button:hover {
                         //거리계산된 값
                         let dist = (methods.distance(curLat, curLon, Lat, Lon)).toFixed(2);
                         console.log("총 거리 =", dist);
-						
+                        
                         if(kind === "hos"){
-                        	const hospitalName = item.closest('.hospitalItem').querySelector('.hospitalName').innerText// 가나다순으로 정렬을 위해 
-                        	item.innerText = dist + 'km';
-                        	if((item.closest('.hospitalItem')) != null){
+                           const hospitalName = item.closest('.hospitalItem').querySelector('.hospitalName').innerText// 가나다순으로 정렬을 위해 
+                           item.innerText = dist + 'km';
+                           if((item.closest('.hospitalItem')) != null){
                                 hospitalList.push({
                                    'index' : index,
                                    'dist' : dist,
@@ -339,9 +343,9 @@ button:hover {
                         
                         }
                         if(kind ==="pha"){
-                        	const pharmacyName = item.closest('.pharmacyItem').querySelector('.pharmacyName').innerText// 가나다순으로 정렬을 위해 
-                        	item.innerText = dist + 'km';
-                        	 if((item.closest('.pharmacyItem')) != null){
+                           const pharmacyName = item.closest('.pharmacyItem').querySelector('.pharmacyName').innerText// 가나다순으로 정렬을 위해 
+                           item.innerText = dist + 'km';
+                            if((item.closest('.pharmacyItem')) != null){
                                  pharmacyList.push({
                                     'index' : index,
                                     'dist' : dist,
@@ -366,7 +370,7 @@ button:hover {
          makeHospitalListBox(list, kind){
             //hospitalItem클래스를 가진 div전체(하위요소 포함)
             if(kind === "hos"){
-            	const hospitalListBox = document.querySelector('.here');
+               const hospitalListBox = document.querySelector('.here');
                 
                 hospitalListBox.innerHTML = ''; // 초기화
 
@@ -375,13 +379,13 @@ button:hover {
                    hospitalListBox.append(parent_node);
                 })
             }else if(kind ==="pha"){
-				const pharmacyListBox = document.querySelector('.here2');
+            const pharmacyListBox = document.querySelector('.here2');
                 
-				pharmacyListBox.innerHTML = ''; // 초기화
+            pharmacyListBox.innerHTML = ''; // 초기화
 
                 //div전체에 부모 노드(똑같은div 근데 이제 거리순으로 정렬된 / 가나다순 )를 넣어줌
                 list.forEach(({parent_node}) =>{
-                	pharmacyListBox.append(parent_node);
+                   pharmacyListBox.append(parent_node);
                 })
             }
             
@@ -426,21 +430,22 @@ button:hover {
 // distance() end-------------------------------------------------------------------------------------------------------------------
 
          //병원리스트 표시하는 함수
-          display() {//현재페이지
+          display(kind) {//현재페이지
 
-            if(paging.List.length < 1){
+            if(paging[kind].List.length < 1){
                return;
             }
-          
+        
           
             // 가다나순, 거리순 확인 후 리스트 할당
-            const list = global.sort ? paging.List : paging.ListGaNaDa
+            const list = global.sort ? paging[kind].List : paging[kind].ListGaNaDa
          
-            const startPage = (paging.curPage - 1) * paging.countPerPage; //배열 0부터
-            const endPage = Math.min(startPage + paging.countPerPage ,paging.count) //배열 4까지 보여줌(짜피 아래에서 slice쓰기 때문에 여기선 숫자가 1씩 더 큼)
-         
+            const startPage = (paging[kind].curPage - 1) * paging.countPerPage; //배열 0부터
+            const endPage = Math.min(startPage + paging.countPerPage ,paging[kind].count) //배열 4까지 보여줌(짜피 아래에서 slice쓰기 때문에 여기선 숫자가 1씩 더 큼)
+     
             // 가나다순, 거리순 에 따라 현재 클릭한 페이지에 맞게 보여줄 목록을 style 설정 
             list.forEach((ele, index)=> {
+
                if (startPage <= index && endPage > index){   
                   ele.parent_node.style.opacity = '1';
                   ele.parent_node.classList.remove('display-none');
@@ -451,39 +456,39 @@ button:hover {
             })
 
             // 페이징에 맞게 수정 한 리스트를 보여주기 위해 새롭게 화면에 뿌려줌
-            methods.makeHospitalListBox(list, paging.kind);
+            methods.makeHospitalListBox(list, kind);
 
           },
 // display() end--------------------------------------------------------------------------------------------------------------------
 
          makePaging(kind) {
 
-            if(paging.List.length < 1){
+            if(paging[kind].List.length < 1){
                return;
             }
             
             if(kind ==="hos"){
                document.querySelector(".pagination").innerHTML = ""; // 초기화
                  //이전페이지 여부
-               const prev = paging.curPage > 1;
+               const prev = paging[kind].curPage > 1;
             
                //다음페이지 여부
-               const next = paging.curPage < paging.totalPages; 
+               const next = paging[kind].curPage < paging[kind].totalPages; 
       
                  // 이전 페이지가 있으면
                  if (prev) {
                      let aTag = document.createElement("a");
-                     aTag.setAttribute("href", paging.curPage - 1); // 현재 페이지의 이전 페이지로 이동
+                     aTag.setAttribute("href", paging[kind].curPage - 1); // 현재 페이지의 이전 페이지로 이동
                      aTag.innerHTML = "&laquo";
                      document.querySelector(".pagination").append(aTag);
                  }
 
-                 for (let i = 1; i <= paging.totalPages; i++) { // 전체 페이지 수만큼 반복
+                 for (let i = 1; i <= paging[kind].totalPages; i++) { // 전체 페이지 수만큼 반복
                      let aTag = document.createElement("a");
                      aTag.setAttribute("href", i); //<a href="1">1</a>
                      aTag.innerHTML = i;
                      // active 녹색 주는거
-                     if (i == paging.curPage) {
+                     if (i == paging[kind].curPage) {
                          aTag.className = "active";
                      }
                      document.querySelector(".pagination").append(aTag);
@@ -492,7 +497,7 @@ button:hover {
                  // 이후 페이지가 있으면
                  if (next) {
                      let aTag = document.createElement("a");
-                     aTag.setAttribute("href", paging.curPage + 1); // 현재 페이지의 다음 페이지로 이동
+                     aTag.setAttribute("href", paging[kind].curPage + 1); // 현재 페이지의 다음 페이지로 이동
                      aTag.innerHTML = "&raquo";
                      document.querySelector(".pagination").append(aTag);
                  }
@@ -502,10 +507,10 @@ button:hover {
                      // 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
                      ele.addEventListener("click", function(e) {
                          e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
-                         paging.curPage = parseInt(ele.getAttribute("href")); // href의 값 = curPage
-                         
+                         paging[kind].curPage = parseInt(ele.getAttribute("href")); // href의 값 = curPage
+                   
                          // 현재 페이지에 맞는 병원 리스트 표시
-                         methods.makePaging(); // 페이징 다시 만들기
+                         methods.makePaging(kind); // 페이징 다시 만들기
                          
                 
                          
@@ -513,27 +518,27 @@ button:hover {
                  }); // forEach
                  
             }else if(kind =="pha"){
-            	document.querySelector(".pagination2").innerHTML = ""; // 초기화
+               document.querySelector(".pagination2").innerHTML = ""; // 초기화
                 //이전페이지 여부
-              const prev = paging.curPage > 1;
+              const prev = paging[kind].curPage > 1;
            
               //다음페이지 여부
-              const next = paging.curPage < paging.totalPages; 
-     
+              const next = paging[kind].curPage < paging[kind].totalPages; 
+
                 // 이전 페이지가 있으면
                 if (prev) {
                     let aTag = document.createElement("a");
-                    aTag.setAttribute("href", paging.curPage - 1); // 현재 페이지의 이전 페이지로 이동
+                    aTag.setAttribute("href", paging[kind].curPage - 1); // 현재 페이지의 이전 페이지로 이동
                     aTag.innerHTML = "&laquo";
                     document.querySelector(".pagination2").append(aTag);
                 }
 
-                for (let i = 1; i <= paging.totalPages; i++) { // 전체 페이지 수만큼 반복
+                for (let i = 1; i <= paging[kind].totalPages; i++) { // 전체 페이지 수만큼 반복
                     let aTag = document.createElement("a");
                     aTag.setAttribute("href", i); //<a href="1">1</a>
                     aTag.innerHTML = i;
                     // active 녹색 주는거
-                    if (i == paging.curPage) {
+                    if (i == paging[kind].curPage) {
                         aTag.className = "active";
                     }
                     document.querySelector(".pagination2").append(aTag);
@@ -542,7 +547,7 @@ button:hover {
                 // 이후 페이지가 있으면
                 if (next) {
                     let aTag = document.createElement("a");
-                    aTag.setAttribute("href", paging.curPage + 1); // 현재 페이지의 다음 페이지로 이동
+                    aTag.setAttribute("href", paging[kind].curPage + 1); // 현재 페이지의 다음 페이지로 이동
                     aTag.innerHTML = "&raquo";
                     document.querySelector(".pagination2").append(aTag);
                 }
@@ -552,10 +557,10 @@ button:hover {
                     // 페이지네이션 클래스의 모든 a 태그들을 가져옴   // 배열 메소드 forEach 씀
                     ele.addEventListener("click", function(e) {
                         e.preventDefault(); // 기본 기능 차단하고 아랫부분 코드 계속 실행하겠다는 말 // 페이지 안넘어가게
-                        paging.curPage = parseInt(ele.getAttribute("href")); // href의 값 = curPage
-                        
+                        paging[kind].curPage = parseInt(ele.getAttribute("href")); // href의 값 = curPage
+               
                         // 현재 페이지에 맞는 병원 리스트 표시
-                        methods.makePaging(); // 페이징 다시 만들기
+                        methods.makePaging(kind); // 페이징 다시 만들기
                         
                     }); // 클릭 이벤트
                 }); // forEach
@@ -563,7 +568,7 @@ button:hover {
              
 
             
-            methods.display(); // 병원 목록 보여주기
+            methods.display(kind); // 병원 목록 보여주기
           }, // makePaging 함수 끝
           
 // makePaging() end--------------------------------------------------------------------------------------------------------------
@@ -575,7 +580,8 @@ button:hover {
                return;
             }
             global.sort = data;
-            methods.display(); // 화면만 바꿔줌.
+            methods.display('hos'); // 화면만 바꿔줌.
+            methods.display('pha'); // 화면만 바꿔줌.
             methods.sortingBtnToggle(); 
          },
 // sorting() end-----------------------------------------------------------------------------------------------------------------
@@ -603,8 +609,8 @@ button:hover {
 
        
       </script>
-		</div>
-	</div>
+      </div>
+   </div>
 
 </body>
 </html>

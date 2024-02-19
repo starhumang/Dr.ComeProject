@@ -419,6 +419,22 @@
       <!--1. 내 현재 좌표(위치)찾기(geolocation) -->
          //방법 = navigator.geolocation.getCurrentPosition(success, error, [options])
          function getLocation() {
+        	 
+//         	 navigator.geolocation.getCurrentPosition(
+//         			 successCallback,
+//         			 errorCallback,
+//         			 geolocationOptions);
+        	 
+//         	 const successCallback = (geolocation)=>{
+//         		 console.log("geolocation = ",geolocation);
+//         	 };
+//         	 const errorCallback = (error)=>{
+//         		 console.log("error = ",error);
+//         	 };
+        	 
+        	 
+        	 
+        	 
             if (navigator.geolocation) {
                navigator.geolocation.getCurrentPosition(
                   function(position) {
@@ -478,9 +494,9 @@
                               let newLat = result[0].address.y;
                               let newLon = result[0].address.x;
                               //console.log('바뀐주소Lat = ',result[0].address.y);
-                               //console.log('바뀐주소Lon = ',result[0].address.x);
-                               //로컬스토리지에 정보 덮어씀
-                               window.localStorage.setItem('lat',result[0].address.y);
+                              //console.log('바뀐주소Lon = ',result[0].address.x);
+                              //로컬스토리지에 정보 덮어씀
+                              window.localStorage.setItem('lat',result[0].address.y);
                            window.localStorage.setItem('lon',result[0].address.x);
                            window.location.reload();
                            }     
@@ -533,7 +549,7 @@
 			    	var geocoder = new kakao.maps.services.Geocoder();
 			        geocoder.addressSearch(item, (result, status) => {
 			            if (status === kakao.maps.services.Status.OK) {
-			                console.log("카카오맵에서 찾았음")
+			                //console.log("카카오맵에서 찾았음")
 			                //병원&약국 좌표
 			                let hosLat = result[0].address.y;
 			                let hosLon = result[0].address.x;
@@ -545,7 +561,7 @@
 			                
 			                //거리계산된 값
 			                let dist = distance(curLat, curLon, hosLat, hosLon).toFixed(2);
-			                console.log("총 거리 =", dist);
+			                //console.log("총 거리 =", dist);
 							
 			                // 거리포함한 병원 리스트 재생성
 			                if (kind === "hos") {
@@ -579,7 +595,7 @@
         	 //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
 	         //parseFloat()=문자열을 실수로 변경
 	         const finalList = list.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-	         console.log("정렬된 finalList = ", finalList);
+	         //console.log("정렬된 finalList = ", finalList);
 			
 	         
 	         
@@ -763,7 +779,7 @@
             		 closeWeek2.push(holiday);
             	 }
               });
-              console.log("closeWeek2전체=",closeWeek2);
+              //console.log("closeWeek2전체=",closeWeek2);
               
               //병원리스트의 시간을 배열에 넣음
               let endTime = [];
@@ -783,37 +799,37 @@
               let curHour = today.getHours();
               let curMinute = today.getMinutes();
               let curDay = today.getDay();
-              console.log("curDay=", curDay);
-              console.log("curMinute=", curMinute);
+              //console.log("curDay=", curDay);
+              //console.log("curMinute=", curMinute);
               
               
               //병원 조건걸고 적용
               //close표시 먹여야하는 div 전체
               let closeBlocks = document.querySelectorAll(".closeBlock");
-              console.log("closeBlocks =",closeBlocks);
+              //console.log("closeBlocks =",closeBlocks);
               //끝나는 시간을 기준으로 시간이랑 분 뽑아서 스타일 먹일거임
               // 각 병원의 끝나는 시간을 기준으로 스타일을 적용
             for (let i = 0; i < endTime.length; i++) {
                 let closeHour = parseInt(endTime[i].substr(0, 2)); // 병원 영업 종료 시간 (시)
                 let closeMinute = parseInt(endTime[i].substr(3, 2)); // 병원 영업 종료 시간 (분)
-                console.log("closeHour=", closeHour);
-                console.log("closeMinute=", closeMinute);
-                console.log("closeWeek[i]=",closeWeek[i].length);
-                console.log("////////////////////////////////")
+                //console.log("closeHour=", closeHour);
+                //console.log("closeMinute=", closeMinute);
+                //console.log("closeWeek[i]=",closeWeek[i].length);
+                //console.log("////////////////////////////////")
             
                 if (closeHour < curHour || (closeHour === curHour && closeMinute < curMinute)) {
                     // 병원의 영업 종료 시간이 현재 시간보다 이전이면
                     closeBlocks[i].style.display = "block"; 
                     //console.log('가가');
                 } else if (closeWeek[i].length == undefined && closeWeek[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
-                	console.log("하루휴무");
+                	//console.log("하루휴무");
                     closeBlocks[i].style.display = "block"; 
                     
                 }else if(closeWeek[i].length > 3){ //휴무일이 여러개인데 오늘이 그 요일임
                 	 let days = closeWeek[i].split(',');
                 	 let holicheck = false;
                 	 for(let i=0; i <days.length; i++){
-                		 console.log("days",days[i]);
+                		 //console.log("days",days[i]);
                 		 if(days[i] == curDay){
                 			 holicheck = true;
                 		 }
@@ -821,7 +837,7 @@
                 	 if(holicheck){
                 		 closeBlocks[i].style.display = "block";  
                 	 }
-                	console.log("holicheck",holicheck);
+                	//console.log("holicheck",holicheck);
                 }else{
                 	
                 }
@@ -852,7 +868,7 @@
 	                	 let days = closeWeek2[i].split(',');
 	                	 let holicheck = false;
 	                	 for(let i=0; i <days.length; i++){
-	                		 console.log("days",days[i]);
+	                		 //console.log("days",days[i]);
 	                		 if(days[i] == curDay){
 	                			 holicheck = true;
 	                		 }
@@ -860,7 +876,7 @@
 	                	 if(holicheck){
 	                		 closeBlocks2[i].style.display = "block";  
 	                	 }
-	                	console.log("holicheck",holicheck);
+	                	//console.log("holicheck",holicheck);
 	              }else{
 	                	
 	              }

@@ -68,8 +68,8 @@
 										<th>첨부파일</th>
 			                            <td colspan="2">
 			                              <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == qnaInfo.qnaNo}">
-			                              <a href="#" th:attr="data-filename=${attach.fileName}" onclick="downloadFile(this.getAttribute('data-filename'))"
-			                              th:text="${attach.fileName.substring(attach.fileName.lastIndexOf('/') + 1)}"></a>
+				                              <a href="#" th:attr="data-filename=${attach.fileName}" onclick="downloadFile(this.getAttribute('data-filename'))"
+				                              th:text="${attach.fileName.substring(attach.fileName.lastIndexOf('/') + 1)}"></a>
 			                          	  </span>
 			                            </td>
 									</tr>

@@ -146,10 +146,9 @@ public class PatientController {
 	 * @param no clinicNo
 	 * @return patientService
 	 */
-	@GetMapping("perscription/{no}")
+	@GetMapping("/perscription/{no}")
 	@ResponseBody
 	public List<PatientVO> perscriptionInfo(@PathVariable Integer no) {
-
 		PatientVO vo = new PatientVO();
 		vo.setClinicNo(no);
 

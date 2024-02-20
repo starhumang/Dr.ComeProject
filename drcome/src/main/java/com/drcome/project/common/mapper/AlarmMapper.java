@@ -6,8 +6,13 @@ public interface AlarmMapper {
 
 	// 알람정보 인서트
 	public int insertAlarm(AlarmDao dao);
-
-	// 알람여부조회
-//	public int selectAlarm(String uid);
-
+	
+	//public 알람정보 가져오기 
+	public int selectAlarmPharmacy(String uid);
+	
+	//약국 알람정보 인서트 
+	public int insertAlarmPharmacy(AlarmDao dao);
+	
+	//public 약국알람정보 가져오기 
+	public int selectAlarmPharmacy(String uid);
 }

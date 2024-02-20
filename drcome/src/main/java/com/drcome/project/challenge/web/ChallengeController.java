@@ -59,21 +59,18 @@ public class ChallengeController {
 	 * 날짜별 TodoList 조회
 	 * @param date 검색 조건
 	 * @param principal 세션
-	 * @param userId 사용자 조회 조건
 	 * @param model 화면 모델
 	 * @return challenge/todolist
 	 */
 	@GetMapping("/todolist/{date}")
-	public String getTodoList(@PathVariable String date, Principal principal, String userId, Model model) {
-		userId = principal.getName();
+	public String getTodoList(@PathVariable String date, Principal principal,  Model model) {
+		String userId = principal.getName();
 
 		List<ChallengeVO> todoList = cservice.getTodoList(userId, date);
 		List<ChallengeVO> ctodoList = cservice.clearToDo(userId, date);
 		
 		model.addAttribute("todolist", todoList);
-		System.out.println(todoList);
 		model.addAttribute("completetodo", ctodoList);
-		System.out.println("com" + ctodoList);
 		model.addAttribute("date", date);
 
 		return "challenge/todolist";
@@ -84,17 +81,15 @@ public class ChallengeController {
 	 * @param date 검색 조건
 	 * @param principal 세션
 	 * @param challengeContent 등록 내용
-	 * @param userId 사용자 조회 조건
 	 * @return addTodoList
 	 */
 	/* 등록 process */
 	@PostMapping("/todoinsert/{date}")
 	@ResponseBody
-	public Map<String, Object> addTodoList(@PathVariable String date, Principal principal, String challengeContent, String userId) {
-		userId = principal.getName();
+	public Map<String, Object> addTodoList(@PathVariable String date, Principal principal, String challengeContent) {
+		String userId = principal.getName();
 
 		Map<String, Object> addTodoList = new HashMap();
-		System.out.println("challenge" + challengeContent);
 		addTodoList.put("result", challengeContent);
 
 		cservice.addTodoList(date, challengeContent, userId);
@@ -105,46 +100,44 @@ public class ChallengeController {
 	/**
 	 * ToDo 성공여부 수정(fail -> success)
 	 * @param principal 세션
-	 * @param userId 검색 조건
 	 * @param challengeNo 수정 조건
 	 * @return challenge/todolist
 	 */
 	@PostMapping("/todoupdate/{challengeNo}")
 	@ResponseBody
-	public String updateTodoList(Principal principal, String userId, @PathVariable Integer challengeNo) {
-		userId = principal.getName();
-		cservice.updateTodoList(userId, challengeNo);
-		return "challenge/todolist";
+	public int updateTodoList(Principal principal, @PathVariable Integer challengeNo) {
+		String userId = principal.getName();
+		int result = cservice.updateTodoList(userId, challengeNo);
+		return result;
 	}
 	
 	
 	/**
 	 * ToDo 성공여부 수정(success -> fail)
 	 * @param principal 세션
-	 * @param userId 검색 조건
 	 * @param challengeNo 수정 조건
 	 * @return challenge/todolist
 	 */
 	@PostMapping("/todoupdatecancle/{challengeNo}")
 	@ResponseBody
-	public String updateCancleTodo(Principal principal, String userId, @PathVariable Integer challengeNo) {
-		userId = principal.getName();
-		cservice.cancleupdateTodo(userId, challengeNo);
-		return "challenge/todolist";
+	public int updateCancleTodo(Principal principal, @PathVariable Integer challengeNo) {
+		String userId = principal.getName();
+		int result = cservice.cancleupdateTodo(userId, challengeNo);
+		return result;
 	}
 
 	/**
 	 * 등록된 ToDo 삭제
 	 * @param principal 세션
-	 * @param userId 검색 조건
 	 * @param challengeNo 삭제 조건
 	 * @return redirect:todolist
 	 */
 	@GetMapping("/tododelete/{challengeNo}")
-	public String deleteTodo(Principal principal, String userId, @PathVariable Integer challengeNo) {
-		userId = principal.getName();
-		cservice.deleteTodo(challengeNo, userId);
-		return "redirect:todolist";
+	@ResponseBody
+	public boolean deleteTodo(Principal principal, @PathVariable Integer challengeNo) {
+		String userId = principal.getName();
+		boolean delete = cservice.deleteTodo(challengeNo, userId);
+		return delete;
 	}
 
 

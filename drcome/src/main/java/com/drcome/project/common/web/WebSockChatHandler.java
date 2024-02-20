@@ -81,7 +81,6 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 				}
 			}
 		}
-
 	}/// handleTextMessage
 
 	// WebSocket 연결이 닫혔을 때 호출되는 메서드

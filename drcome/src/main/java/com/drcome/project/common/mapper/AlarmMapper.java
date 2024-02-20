@@ -8,7 +8,7 @@ public interface AlarmMapper {
 	public int insertAlarm(AlarmDao dao);
 	
 	//public 알람정보 가져오기 
-	public int selectAlarmPharmacy(String uid);
+	public int selectAlarm(String uid);
 	
 	//약국 알람정보 인서트 
 	public int insertAlarmPharmacy(AlarmDao dao);

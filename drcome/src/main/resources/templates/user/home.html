@@ -1,440 +1,445 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout}">
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{layouts/layout}">
 <head>
 <meta charset="UTF-8" />
 <title>Dr.Come</title>
 <!-- 좌표로 주소찾는 라이브러리 불러오기 -->
 <script type="text/javascript"
-	th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
+   th:src="@{//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services}"></script>
 <!-- 주소검색 다음api -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 <style scoped>
 .ho:hover {
-	border-radius: 5%;
-	background-color: #D3E6FF;
+   border-radius: 5%;
+   background-color: #D3E6FF;
 }
 
 .ho {
-	text-align: center;
-	margin-right: 10px;
-	margin-left: 10px;
-	padding-top: 10px;
-	width: 250px;
-	height: 350px;
-	border: 3px solid #D3E6FF;
-	position: relative;
+   text-align: center;
+   margin-right: 10px;
+   margin-left: 10px;
+   padding-top: 10px;
+   width: 250px;
+   height: 350px;
+   border: 3px solid #D3E6FF;
+   position: relative;
 }
 
 .closeBlock {
-	position: relative;
-	background-color: #22313f;
-	margin-right: 10px;
-	margin-left: 10px;
-	padding-top: 10px;
-	left: 0px;
-	top: -350px;
-	width: 250px;
-	height: 350px;
-	opacity: 0.6;
-	text-align: center;
-	display: none;
+   position: relative;
+   background-color: #22313f;
+   margin-right: 10px;
+   margin-left: 10px;
+   padding-top: 10px;
+   left: 0px;
+   top: -350px;
+   width: 250px;
+   height: 350px;
+   opacity: 0.6;
+   text-align: center;
+   display: none;
 }
 
 .closeBlock2 {
-	position: relative;
-	background-color: #22313f;
-	margin-right: 10px;
-	margin-left: 10px;
-	padding-top: 10px;
-	left: 0px;
-	top: -350px;
-	width: 250px;
-	height: 350px;
-	opacity: 0.6;
-	text-align: center;
-	display: none;
+   position: relative;
+   background-color: #22313f;
+   margin-right: 10px;
+   margin-left: 10px;
+   padding-top: 10px;
+   left: 0px;
+   top: -350px;
+   width: 250px;
+   height: 350px;
+   opacity: 0.6;
+   text-align: center;
+   display: none;
 }
 
 .ss:hover {
-	background-color: #06BBCC;
+   background-color: #06BBCC;
 }
 
 .ss {
-	color: white;
-	border-color: #FFFFF0;
-	border-radius: 20%;
-	width: 200px;
+   color: white;
+   border-color: #FFFFF0;
+   border-radius: 20%;
+   width: 200px;
 }
 
 .img-button {
-	width: 80px;
-	height: 80px;
-	no-repeat;
+   width: 80px;
+   height: 80px;
+   no-repeat;
 }
 
 .subject>tr>th>button:hover {
-	background-color: #B0E0E6;
+   background-color: #B0E0E6;
 }
 
 .subject>tr>th>button {
-	margin: 10px 25px 10px 25px;
-	border-radius: 30%;
-	border-color: white;
+   margin: 10px 25px 10px 25px;
+   border-radius: 30%;
+   border-color: white;
 }
 
 .subject>tr>td {
-	margin-top: 20px;
+   margin-top: 20px;
 }
 </style>
 
 </head>
 <body>
-	<div layout:fragment="content" style="caret-color:transparent;">
-		<!-- Header Start -->
-		<div class="container-fluid bg-primary py-5 mb-5 page-header"
-			style="height: 480px;">
-			<div class="container py-5">
-				<div class="row justify-content-center">
-					<div class="col-lg-10 text-center" style="padding-top: 40px;">
-						<h1 class="display-3 text-white animated slideInDown"
-							style="font-size: 40px;">어떤 병원을 찾고 계신가요?</h1>
+   <div layout:fragment="content" style="caret-color:transparent;">
+      <!-- Header Start -->
+      <div class="container-fluid bg-primary py-5 mb-5 page-header"
+         style="height: 480px;">
+         <div class="container py-5">
+            <div class="row justify-content-center">
+               <div class="col-lg-10 text-center" style="padding-top: 40px;">
+                  <h1 class="display-3 text-white animated slideInDown"
+                     style="font-size: 40px;">어떤 병원을 찾고 계신가요?</h1>
 
-						<div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
-							style="padding-left: 170px; margin-top: 40px;">
+                  <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
+                     style="padding-left: 170px; margin-top: 40px;">
 
-							<!-- 검색창 -->
-							<input type="search" id="search"
-								class="form-control form-control-dark text-bg-dark search"
-								placeholder="찾으시는 병원이나 약국을 검색해보세요" aria-label="Search"
-								style="width: 78%; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
+                     <!-- 검색창 -->
+                     <input type="search" id="search"
+                        class="form-control form-control-dark text-bg-dark search"
+                        placeholder="찾으시는 병원이나 약국을 검색해보세요" aria-label="Search"
+                        style="width: 78%; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
 
-							<!-- 검색참고용 -->
-							<!-- <form class="d-flex" action="searchList.do" method="POST">
-								<input style="width: 800px;" class="form-control me-sm-2" type="search" placeholder="Search" name="word">
-								<button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-							</form> -->
+                     <!-- 검색참고용 -->
+                     <!-- <form class="d-flex" action="searchList.do" method="POST">
+                        <input style="width: 800px;" class="form-control me-sm-2" type="search" placeholder="Search" name="word">
+                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
+                     </form> -->
 
-							<!-- 돋보기 아이콘 -->
-							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
-								onclick="searchResult()" fill="rgb(255,255,255)"
-								style="position: relative; top: -50px; left: 300px; cursor: pointer;"
-								class="bi bi-search" viewBox="0 0 16 16">
-                          		<path
-									d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                     		</svg>
+                     <!-- 돋보기 아이콘 -->
+                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
+                        onclick="searchResult()" fill="rgb(255,255,255)"
+                        style="position: relative; top: -50px; left: 300px; cursor: pointer;"
+                        class="bi bi-search" viewBox="0 0 16 16">
+                                <path
+                           d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                           </svg>
 
-						</div>
-						<button class="ss btn" data-bs-toggle="modal"
-							data-bs-target="#exampleModal">진료과목으로 찾기</button>
-					</div>
-				</div>
-			</div>
-		</div>
+                  </div>
+                  <button class="ss btn" data-bs-toggle="modal"
+                     data-bs-target="#exampleModal">진료과목으로 찾기</button>
+               </div>
+            </div>
+         </div>
+      </div>
 
-		<!-- Modal -->
-		<div class="modal" tabindex="-1" id="exampleModal">
-			<div class="modal-dialog">
-				<div class="modal-content" style="text-align: center;">
-					<!--  width:700px; height:700px; -->
-					<!-- <div class="modal-header" style="text-align:center;">
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-						</div> -->
-					<div class="modal-body" style="padding: 30px 30px 30px 30px;">
-						<h2 style="margin-bottom: 20px;">진료과목을 선택해주세요</h2>
-						<hr>
-						<table>
-							<tbody class="subject">
-								<tr>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 002.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h1)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 003.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h2)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 004.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h3)}'|">
-										</button>
-									</th>
-								<tr>
-								<tr style="font-weight: bolder;">
-									<td>가정의학과</td>
-									<td>내과</td>
-									<td>비뇨기과</td>
-								<tr>
-								<tr>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 005.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h4)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 006.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h5)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 007.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h6)}'|">
-										</button>
-									</th>
-								<tr>
-								<tr style="font-weight: bolder;">
-									<td>산부인과</td>
-									<td>성형외과</td>
-									<td>소아과</td>
-								<tr>
-								<tr>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 008.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h7)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 009.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h8)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 010.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h9)}'|">
-										</button>
-									</th>
-								<tr>
-								<tr style="font-weight: bolder;">
-									<td>신경외과</td>
-									<td>안과</td>
-									<td>외과</td>
-								<tr>
-								<tr>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 011.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h10)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 012.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h11)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 013.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h12)}'|">
-										</button>
-									</th>
-								<tr>
-								<tr style="font-weight: bolder;">
-									<td>이비인후과</td>
-									<td>응급의학과</td>
-									<td>정신건강의학과</td>
-								<tr>
-								<tr>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 014.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h13)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 015.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h14)}'|">
-										</button>
-									</th>
-									<th>
-										<button id="ddd" type="button">
-											<img class="img-button" th:src="@{/images/} + 016.png"
-												th:onclick="|location.href='@{searchSubject(mainSubject=h15)}'|">
-										</button>
-									</th>
-								<tr>
-								<tr style="font-weight: bolder;">
-									<td>정형외과</td>
-									<td>치과</td>
-									<td>피부과</td>
-								<tr>
-							</tbody>
-						</table>
-
-
-					</div>
-				</div>
-			</div>
-		</div>
-
-		<!-- Team Start -->
-		<div class="container-xxl py-5"
-			style="padding-top: 10px; max-width: 1430px;">
-			<div class="container" style="text-align: center; max-width: 1430px;">
-				<div style="text-align: center; margin-bottom: 50px;">
-					<h5 class="mb-5"
-						style="color: gray; display: inline; margin-right: 20px;"
-						id="location"></h5>
-					<button class="btn btn-warning rounded-pill px-3" type="button"
-						onclick="switchLocation()">현재위치변경</button>
-				</div>
-
-				<!-- 병원시작 -->
-				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-					<h6 class="section-title bg-white text-center text-primary px-3">내
-						주변</h6>
-					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
-				</div>
-				<div class="row g-4 here" style="">
-<!-- 					<div th:each="hos: ${hosList.subList(0, 5)}" -->
-<!-- 						class="col-lg-3 col-md-6 " -->
-<!-- 						style="width: 280px; height: 380px;" -->
-<!-- 						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|"> -->
-<!-- 						바로 위는 타임리프로 링크 보내버리는법 -->
-
-<!-- 						<div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
-<!-- 							<div class="team-item bg-light"> -->
-<!-- 								<div class="overflow-hidden"> -->
-<!-- 									<img th:if="${hos.hospitalImg}" -->
-<!-- 										th:src="@{/images/} + ${hos.hospitalImg}" alt="image" -->
-<!-- 										style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
-<!-- 										th:unless="${hos.hospitalImg}" -->
-<!-- 										th:src="@{/images/} + hospital.png" alt="image" -->
-<!-- 										style="width: 100%; height: 200px;" class="img-fluid" /> -->
-<!-- 								</div> -->
-<!-- 							</div> -->
-
-<!-- 							<div class="text-center p-4"> -->
-<!-- 								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5> -->
-<!-- 								<small th:text="${hos.phone}"></small> <br /> <small -->
-<!-- 									th:text="${hos.address}" style="color: red; font-weight: bold;" -->
-<!-- 									class="address"></small> -->
-<!-- 								<p th:text="${hos.closetime}" style="display: none;" -->
-<!-- 									class="closeTime"> -->
-<!-- 								<p th:text="${hos.holiday}" style="display: none;" -->
-<!-- 									class="closeDay"> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						<div class="closeBlock"> -->
-<!-- 							<h2 style="color: white; padding-top: 80px;">Close</h2> -->
-<!-- 						</div> -->
-
-<!-- 					</div> -->
-				</div>
-				<!-- 병원끝 -->
-			</div>
-		</div>
+      <!-- Modal -->
+      <div class="modal" tabindex="-1" id="exampleModal">
+         <div class="modal-dialog">
+            <div class="modal-content" style="text-align: center;">
+               <!--  width:700px; height:700px; -->
+               <!-- <div class="modal-header" style="text-align:center;">
+                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div> -->
+               <div class="modal-body" style="padding: 30px 30px 30px 30px;">
+                  <h2 style="margin-bottom: 20px;">진료과목을 선택해주세요</h2>
+                  <hr>
+                  <table>
+                     <tbody class="subject">
+                        <tr>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 002.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h1)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 003.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h2)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 004.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h3)}'|">
+                              </button>
+                           </th>
+                        <tr>
+                        <tr style="font-weight: bolder;">
+                           <td>가정의학과</td>
+                           <td>내과</td>
+                           <td>비뇨기과</td>
+                        <tr>
+                        <tr>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 005.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h4)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 006.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h5)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 007.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h6)}'|">
+                              </button>
+                           </th>
+                        <tr>
+                        <tr style="font-weight: bolder;">
+                           <td>산부인과</td>
+                           <td>성형외과</td>
+                           <td>소아과</td>
+                        <tr>
+                        <tr>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 008.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h7)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 009.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h8)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 010.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h9)}'|">
+                              </button>
+                           </th>
+                        <tr>
+                        <tr style="font-weight: bolder;">
+                           <td>신경외과</td>
+                           <td>안과</td>
+                           <td>외과</td>
+                        <tr>
+                        <tr>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 011.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h10)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 012.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h11)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 013.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h12)}'|">
+                              </button>
+                           </th>
+                        <tr>
+                        <tr style="font-weight: bolder;">
+                           <td>이비인후과</td>
+                           <td>응급의학과</td>
+                           <td>정신건강의학과</td>
+                        <tr>
+                        <tr>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 014.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h13)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 015.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h14)}'|">
+                              </button>
+                           </th>
+                           <th>
+                              <button id="ddd" type="button">
+                                 <img class="img-button" th:src="@{/images/} + 016.png"
+                                    th:onclick="|location.href='@{searchSubject(mainSubject=h15)}'|">
+                              </button>
+                           </th>
+                        <tr>
+                        <tr style="font-weight: bolder;">
+                           <td>정형외과</td>
+                           <td>치과</td>
+                           <td>피부과</td>
+                        <tr>
+                     </tbody>
+                  </table>
 
 
+               </div>
+            </div>
+         </div>
+      </div>
 
-		<!-- Testimonial Start -->
-		<div class="container-xxl py-5"
-			style="padding-top: 10px; max-width: 1430px;">
-			<div class="container" style="text-align: center; max-width: 1430px;">
-				<div style="text-align: center; margin-bottom: 50px;">
-					<!-- 약국시작 -->
-					<h6 class="section-title bg-white text-center text-primary px-3">내
-						주변</h6>
-					<h1 class="mb-5" style="margin-top: 5px;">Pharmacy</h1>
-				</div>
+      <!-- Team Start -->
+      <div class="container-xxl py-5"
+         style="padding-top: 10px; max-width: 1430px;">
+         <div class="container" style="text-align: center; max-width: 1430px;">
+            <div style="text-align: center; margin-bottom: 50px; display: flex;align-items: center;justify-content: center;">
+               <h5 class=""
+                  style="color: gray; display: inline; margin-right: 20px; margin-bottom: 0;"
+                  id="location"></h5>
+               <button class="btn btn-warning rounded-pill px-3" type="button"
+                  onclick="switchLocation()">현재위치변경</button>
+            </div>
 
-			</div>
-			<div class="row g-4 here2">
-<!-- 				<div th:each="pha: ${phaList}" -->
-<!-- 					class="col-lg-3 col-md-6 pharmacyItem" -->
-<!-- 					style="width: 280px; height: 380px;" -->
-<!-- 					th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"> -->
+            <!-- 병원시작 -->
+            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+               <h6 class="section-title bg-white text-center text-primary px-3">내
+                  주변</h6>
+               <h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
+            </div>
+            <div class="row g-4 here" style="">
+<!--                <div th:each="hos: ${hosList.subList(0, 5)}" -->
+<!--                   class="col-lg-3 col-md-6 " -->
+<!--                   style="width: 280px; height: 380px;" -->
+<!--                   th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|"> -->
+<!--                   바로 위는 타임리프로 링크 보내버리는법 -->
 
-<!-- 					<div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
-<!-- 						<div class="team-item bg-light"> -->
-<!-- 							<div class="overflow-hidden"> -->
-<!-- 								<img th:if="${pha.pharmacyImg}" -->
-<!-- 									th:src="@{/images/} + ${pha.pharmacyImg}" alt="image" -->
-<!-- 									style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
-<!-- 									th:unless="${pha.pharmacyImg}" -->
-<!-- 									th:src="@{/images/} + pharmacy.png" alt="image" -->
-<!-- 									style="width: 100%; height: 200px;" class="img-fluid" /> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
+<!--                   <div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
+<!--                      <div class="team-item bg-light"> -->
+<!--                         <div class="overflow-hidden"> -->
+<!--                            <img th:if="${hos.hospitalImg}" -->
+<!--                               th:src="@{/images/} + ${hos.hospitalImg}" alt="image" -->
+<!--                               style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
+<!--                               th:unless="${hos.hospitalImg}" -->
+<!--                               th:src="@{/images/} + hospital.png" alt="image" -->
+<!--                               style="width: 100%; height: 200px;" class="img-fluid" /> -->
+<!--                         </div> -->
+<!--                      </div> -->
 
-<!-- 						<div class="text-center p-4"> -->
-<!-- 							<h5 class="mb-0" th:text="${pha.pharmacyName}"></h5> -->
-<!-- 							<small th:text="${pha.pharmacyPhone}"></small> <br /> <small -->
-<!-- 								th:text="${pha.address}" style="color: red; font-weight: bold;" -->
-<!-- 								class="phAddress"></small> -->
-<!-- 							<p th:text="${pha.closetime}" style="display: none;" -->
-<!-- 								class="closeTime2"> -->
-<!-- 							<p th:text="${pha.holiday}" style="display: none;" -->
-<!-- 								class="closeDay2"> -->
-<!-- 						</div> -->
-<!-- 					</div> -->
-<!-- 					<div class="closeBlock2"> -->
-<!-- 						<h2 style="color: white; padding-top: 80px;">Close</h2> -->
-<!-- 					</div> -->
+<!--                      <div class="text-center p-4"> -->
+<!--                         <h5 class="mb-0" th:text="${hos.hospitalName}"></h5> -->
+<!--                         <small th:text="${hos.phone}"></small> <br /> <small -->
+<!--                            th:text="${hos.address}" style="color: red; font-weight: bold;" -->
+<!--                            class="address"></small> -->
+<!--                         <p th:text="${hos.closetime}" style="display: none;" -->
+<!--                            class="closeTime"> -->
+<!--                         <p th:text="${hos.holiday}" style="display: none;" -->
+<!--                            class="closeDay"> -->
+<!--                      </div> -->
+<!--                   </div> -->
+<!--                   <div class="closeBlock"> -->
+<!--                      <h2 style="color: white; padding-top: 80px;">Close</h2> -->
+<!--                   </div> -->
 
-<!-- 				</div> -->
-			</div>
-			<!-- 약국 끝 -->
-		</div>
-		<!-- Testimonial End -->
+<!--                </div> -->
+            </div>
+            <!-- 병원끝 -->
+         </div>
+      </div>
 
 
 
-		<script th:inline="javascript">
+      <!-- Testimonial Start -->
+      <div class="container-xxl py-5"
+         style="padding-top: 10px; max-width: 1430px;">
+         <div class="container" style="text-align: center; max-width: 1430px;">
+            <div style="text-align: center; margin-bottom: 50px;">
+               <!-- 약국시작 -->
+               <h6 class="section-title bg-white text-center text-primary px-3">내
+                  주변</h6>
+               <h1 class="mb-5" style="margin-top: 5px;">Pharmacy</h1>
+            </div>
+
+         </div>
+         <div class="row g-4 here2">
+<!--             <div th:each="pha: ${phaList}" -->
+<!--                class="col-lg-3 col-md-6 pharmacyItem" -->
+<!--                style="width: 280px; height: 380px;" -->
+<!--                th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"> -->
+
+<!--                <div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
+<!--                   <div class="team-item bg-light"> -->
+<!--                      <div class="overflow-hidden"> -->
+<!--                         <img th:if="${pha.pharmacyImg}" -->
+<!--                            th:src="@{/images/} + ${pha.pharmacyImg}" alt="image" -->
+<!--                            style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
+<!--                            th:unless="${pha.pharmacyImg}" -->
+<!--                            th:src="@{/images/} + pharmacy.png" alt="image" -->
+<!--                            style="width: 100%; height: 200px;" class="img-fluid" /> -->
+<!--                      </div> -->
+<!--                   </div> -->
+
+<!--                   <div class="text-center p-4"> -->
+<!--                      <h5 class="mb-0" th:text="${pha.pharmacyName}"></h5> -->
+<!--                      <small th:text="${pha.pharmacyPhone}"></small> <br /> <small -->
+<!--                         th:text="${pha.address}" style="color: red; font-weight: bold;" -->
+<!--                         class="phAddress"></small> -->
+<!--                      <p th:text="${pha.closetime}" style="display: none;" -->
+<!--                         class="closeTime2"> -->
+<!--                      <p th:text="${pha.holiday}" style="display: none;" -->
+<!--                         class="closeDay2"> -->
+<!--                   </div> -->
+<!--                </div> -->
+<!--                <div class="closeBlock2"> -->
+<!--                   <h2 style="color: white; padding-top: 80px;">Close</h2> -->
+<!--                </div> -->
+
+<!--             </div> -->
+         </div>
+         <!-- 약국 끝 -->
+      </div>
+      <!-- Testimonial End -->
+
+
+
+      <script th:inline="javascript">
 //<<------변수모음집----------------------------------------------------------------------------------------------------------------->>
-		//거리로 바꿔버릴 주소
-// 		let address = document.querySelectorAll('.address');
-// 		let phAddress = document.querySelectorAll('.phAddress');
-		let hosList = [[${hosList}]]; //주소값 찾으려면 forEach문에서 ele.address
-		let phaList = [[${phaList}]];
-		
-		//제일 처음 시작 함수
-		window.onload = function(){
-			 //만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
-	         let curLocation = window.localStorage.getItem('location');
-	         if(!curLocation){
-	            getLocation();
-	         }else{
-	            document.getElementById("location").innerText = '현재 내 위치 : ' + curLocation;
-	         }
-		}
-		
-		
+      //거리로 바꿔버릴 주소
+//       let address = document.querySelectorAll('.address');
+//       let phAddress = document.querySelectorAll('.phAddress');
+      let hosList = [[${hosList}]]; //주소값 찾으려면 forEach문에서 ele.address
+      let phaList = [[${phaList}]];
+      
+      //제일 처음 시작 함수
+      window.onload = function(){
+          //만약 세션에 주소가 담겨 있으면 1번 실행 안해도 됨
+            let curLocation = window.localStorage.getItem('location');
+            if(!curLocation){
+               getLocation();
+            }else{
+            	//앞에 아이콘추가
+            	let locationElement = document.getElementById("location");
+            	let iconElement = document.createElement("i");
+			    iconElement.className = "fas fa-fw fa-location-arrow";
+			    locationElement.insertBefore(iconElement, locationElement.firstChild);
+			    locationElement.innerHTML += ' 현재 내 위치 : ' + curLocation;
+            }
+      }
+      
+      
 //<<------methods----------------------------------------------------------------------------------------------------------------->>
-		
+      
       <!--1. 내 현재 좌표(위치)찾기(geolocation) -->
          //방법 = navigator.geolocation.getCurrentPosition(success, error, [options])
          function getLocation() {
-        	 
-//         	 navigator.geolocation.getCurrentPosition(
-//         			 successCallback,
-//         			 errorCallback,
-//         			 geolocationOptions);
-        	 
-//         	 const successCallback = (geolocation)=>{
-//         		 console.log("geolocation = ",geolocation);
-//         	 };
-//         	 const errorCallback = (error)=>{
-//         		 console.log("error = ",error);
-//         	 };
-        	 
-        	 
-        	 
-        	 
+            
+//             navigator.geolocation.getCurrentPosition(
+//                   successCallback,
+//                   errorCallback,
+//                   geolocationOptions);
+            
+//             const successCallback = (geolocation)=>{
+//                console.log("geolocation = ",geolocation);
+//             };
+//             const errorCallback = (error)=>{
+//                console.log("error = ",error);
+//             };
+            
+            
+            
+            
             if (navigator.geolocation) {
                navigator.geolocation.getCurrentPosition(
                   function(position) {
@@ -515,180 +520,180 @@
          //현재의 좌표와 뽑아낸 좌표로 거리계산하기(지도와 지도의 직선거리임 가장 가까운 경로거리 아님)
          //5. 병원주소를 좌표로 바꿈
          async function restart(){
-        	 
-        	 //병원
-        	 //console.log("address=",address);
-        	 if(!hosList){
-        		 console.log("강제종료");
-        		 return;
-        	 }else{
-        		 hosList.forEach((ele, index) =>{
-            		 promiseFn(ele.address, "hos", index);//함수에 주소 넣어서 실행
-            	 });
-        	 }
+            
+            //병원
+            //console.log("address=",address);
+            if(!hosList){
+               console.log("강제종료");
+               return;
+            }else{
+               hosList.forEach((ele, index) =>{
+                   promiseFn(ele.address, "hos", index);//함수에 주소 넣어서 실행
+                });
+            }
              
              //약국
-        	 //console.log("phAddress=",phAddress);
-        	 if(!phaList){
-        		 console.log("강제종료");
-        		 return;
-        	 }else{
-        		 phaList.forEach((ele, index) =>{
-            		 promiseFn(ele.address, "pha", index);//함수에 주소 넣어서 실행
-            	 });
-        	 }
-        	 
-	         
+            //console.log("phAddress=",phAddress);
+            if(!phaList){
+               console.log("강제종료");
+               return;
+            }else{
+               phaList.forEach((ele, index) =>{
+                   promiseFn(ele.address, "pha", index);//함수에 주소 넣어서 실행
+                });
+            }
+            
+            
          };
          
 // <<------ restart() end----------------------------------------------------------------------------------------------------------------->>
 
-			//배열안의 주소들을 좌표로 바꾼후 거리 계산해서 안에 넣어줌
-			function promiseFn(item, kind, index) { //주소, 병원인지 약국인지, 배열의 몇번째에 해당하는지
-			    return new Promise((resolve, reject) => {
-			    	var geocoder = new kakao.maps.services.Geocoder();
-			        geocoder.addressSearch(item, (result, status) => {
-			            if (status === kakao.maps.services.Status.OK) {
-			                //console.log("카카오맵에서 찾았음")
-			                //병원&약국 좌표
-			                let hosLat = result[0].address.y;
-			                let hosLon = result[0].address.x;
-			                
-			                //현재위치 좌표
-			                let curLat = window.localStorage.getItem('lat');
-			                let curLon = window.localStorage.getItem('lon');
-			                
-			                
-			                //거리계산된 값
-			                let dist = distance(curLat, curLon, hosLat, hosLon).toFixed(2);
-			                //console.log("총 거리 =", dist);
-							
-			                // 거리포함한 병원 리스트 재생성
-			                if (kind === "hos") {
-			                    hosList[index]["dist"] = dist;
-			                    //console.log("거리더한 hosList = ", hosList);
-			                    makeListBox(hosList, kind);
-			                
-			                // 거리포함한 약국 리스트 재생성
-			                } else if (kind === "pha") {
-			                    phaList[index]["dist"] = dist;
-			                    //console.log("거리더한 phaList = ", phaList);
-			                    makeListBox(phaList, kind);
-			                }
-			                
-			                
-			                resolve(); // 비동기 작업 성공
-			            } else {
-			                console.log("restart 함수 실행되지 않음");
-			                reject(); // 비동기 작업 실패
-			            }
-			        });
-			    });
-			}
-         	
+         //배열안의 주소들을 좌표로 바꾼후 거리 계산해서 안에 넣어줌
+         function promiseFn(item, kind, index) { //주소, 병원인지 약국인지, 배열의 몇번째에 해당하는지
+             return new Promise((resolve, reject) => {
+                var geocoder = new kakao.maps.services.Geocoder();
+                 geocoder.addressSearch(item, (result, status) => {
+                     if (status === kakao.maps.services.Status.OK) {
+                         //console.log("카카오맵에서 찾았음")
+                         //병원&약국 좌표
+                         let hosLat = result[0].address.y;
+                         let hosLon = result[0].address.x;
+                         
+                         //현재위치 좌표
+                         let curLat = window.localStorage.getItem('lat');
+                         let curLon = window.localStorage.getItem('lon');
+                         
+                         
+                         //거리계산된 값
+                         let dist = distance(curLat, curLon, hosLat, hosLon).toFixed(2);
+                         //console.log("총 거리 =", dist);
+                     
+                         // 거리포함한 병원 리스트 재생성
+                         if (kind === "hos") {
+                             hosList[index]["dist"] = dist;
+                             //console.log("거리더한 hosList = ", hosList);
+                             makeListBox(hosList, kind);
+                         
+                         // 거리포함한 약국 리스트 재생성
+                         } else if (kind === "pha") {
+                             phaList[index]["dist"] = dist;
+                             //console.log("거리더한 phaList = ", phaList);
+                             makeListBox(phaList, kind);
+                         }
+                         
+                         
+                         resolve(); // 비동기 작업 성공
+                     } else {
+                         console.log("restart 함수 실행되지 않음");
+                         reject(); // 비동기 작업 실패
+                     }
+                 });
+             });
+         }
+            
             
 //<<------ promiseFn() end----------------------------------------------------------------------------------------------------------------->>
 
             
          //거리순 재정렬
          function makeListBox(list, kind){ //거리들어간 리스트랑 병원인지 약국인지 종류
-        	 //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
-	         //parseFloat()=문자열을 실수로 변경
-	         const finalList = list.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
-	         //console.log("정렬된 finalList = ", finalList);
-			
-	         
-	         
-	         
-		      // 정렬된 리스트를 기반으로 HTML 업데이트
-		         function updateList(finalList) {
-		             
-			         if (kind === "hos") {
-			        	 const here = document.querySelector('.here'); // 병원 정보를 담고 있는 컨테이너 요소
-			             here.innerHTML = ''; // 기존의 내용 비우기
-			             for(let i=0; i < 5; i++){
-			            	 const hospitalElement = createHospitalElement(finalList[i]);//태그만들기
-			                 here.appendChild(hospitalElement);
-			 	             changeStyle();
-			             } 			             
-		             }else if(kind === "pha"){
-		            	 const here2 = document.querySelector('.here2'); // 병원 정보를 담고 있는 컨테이너 요소
-			             here2.innerHTML = ''; // 기존의 내용 비우기
-			             for(let i=0; i < 5; i++){
-			            	 const pharmacyElement = createPharmacyElement(finalList[i]);//태그만들기
-			                 here2.appendChild(pharmacyElement);
-			 	             changeStyle();
-			             }
-		             }
-	         	}
-		        updateList(finalList);
+            //거리 짧은 순으로 정렬 sort((a, b) => a - b) = 오름차순
+            //parseFloat()=문자열을 실수로 변경
+            const finalList = list.sort((a, b)=> parseFloat(a.dist) - parseFloat(b.dist));
+            //console.log("정렬된 finalList = ", finalList);
+         
+            
+            
+            
+            // 정렬된 리스트를 기반으로 HTML 업데이트
+               function updateList(finalList) {
+                   
+                  if (kind === "hos") {
+                     const here = document.querySelector('.here'); // 병원 정보를 담고 있는 컨테이너 요소
+                      here.innerHTML = ''; // 기존의 내용 비우기
+                      for(let i=0; i < 5; i++){
+                         const hospitalElement = createHospitalElement(finalList[i]);//태그만들기
+                          here.appendChild(hospitalElement);
+                          changeStyle();
+                      }                       
+                   }else if(kind === "pha"){
+                      const here2 = document.querySelector('.here2'); // 병원 정보를 담고 있는 컨테이너 요소
+                      here2.innerHTML = ''; // 기존의 내용 비우기
+                      for(let i=0; i < 5; i++){
+                         const pharmacyElement = createPharmacyElement(finalList[i]);//태그만들기
+                          here2.appendChild(pharmacyElement);
+                          changeStyle();
+                      }
+                   }
+               }
+              updateList(finalList);
          }
-	      
+         
           
 //<<------ makeHospitalListBox() end----------------------------------------------------------------------------------------------------------------->>
            
            //병원만드는 함수
-	         function createHospitalElement(hospital) {
-	        	    const element = document.createElement('div');
-	        	    element.className = 'col-lg-3 col-md-6 hospitalItem';
-	        	    element.style.width = '280px';
-	        	    element.style.height = '380px';
-	        	    element.setAttribute('onclick', `location.href='hospitalDetail?hospitalId=${hospital.hospitalId}'`);
-	        	    
-	        	    const imageSrc = hospital.hospitalImg ? `/images/${hospital.hospitalImg}` : '/images/hospital.png';
-	        	    element.innerHTML = `
-	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
-	        	            <div class="team-item bg-light">
-	        	                <div class="overflow-hidden">
-	        	                    <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
-	        	                </div>
-	        	            </div>
-	        	            <div class="text-center p-4">
-	        	                <h5 class="mb-0">${hospital.hospitalName}</h5>
-	        	                <small>${hospital.phone}</small><br/>
-	        	                <small style="color: red; font-weight: bold;" class="address">${hospital.dist}Km</small>
-	        	                <p style="display: none;" class="closeTime">${hospital.closetime}</p>
-	        	                <p style="display: none;" class="closeDay">${hospital.holiday}</p>
-	        	            </div>
-	        	        </div>
-	        	        <div class="closeBlock">
-	        	            <h2 style="color: white; padding-top: 80px;">Close</h2>
-	        	        </div>
-	        	    `;
-	        	    
-	        	    return element;
-	        	}
+            function createHospitalElement(hospital) {
+                  const element = document.createElement('div');
+                  element.className = 'col-lg-3 col-md-6 hospitalItem';
+                  element.style.width = '280px';
+                  element.style.height = '380px';
+                  element.setAttribute('onclick', `location.href='hospitalDetail?hospitalId=${hospital.hospitalId}'`);
+                  
+                  const imageSrc = hospital.hospitalImg ? `/img/${hospital.hospitalImg}` : '/img/hospital.png';
+                  element.innerHTML = `
+                      <div class="ho wow fadeInUp" data-wow-delay="0.1s">
+                          <div class="team-item bg-light">
+                              <div class="overflow-hidden">
+                                  <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
+                              </div>
+                          </div>
+                          <div class="text-center p-4">
+                              <h5 class="mb-0">${hospital.hospitalName}</h5>
+                              <small>${hospital.phone}</small><br/>
+                              <small style="color: red; font-weight: bold;" class="address">${hospital.dist}Km</small>
+                              <p style="display: none;" class="closeTime">${hospital.closetime}</p>
+                              <p style="display: none;" class="closeDay">${hospital.holiday}</p>
+                          </div>
+                      </div>
+                      <div class="closeBlock">
+                          <h2 style="color: white; padding-top: 80px;">Close</h2>
+                      </div>
+                  `;
+                  
+                  return element;
+              }
            
-	         function createPharmacyElement(pharmacy) {
-	        	    const element = document.createElement('div');
-	        	    element.className = 'col-lg-3 col-md-6 pharmacyItem';
-	        	    element.style.width = '280px';
-	        	    element.style.height = '380px';
-	        	    element.setAttribute('onclick', `location.href='pharmacyDetail?pharmacyId=${pharmacy.pharmacyId}'`);
-	        	    
-	        	    const imageSrc = pharmacy.pharmacyImg ? `/images/${pharmacy.pharmacyImg}` : '/images/pharmacy.png';
-	        	    element.innerHTML = `
-	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
-	        	            <div class="team-item bg-light">
-	        	                <div class="overflow-hidden">
-	        	                    <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
-	        	                </div>
-	        	            </div>
-	        	            <div class="text-center p-4">
-	        	                <h5 class="mb-0">${pharmacy.pharmacyName}</h5>
-	        	                <small>${pharmacy.phone}</small><br/>
-	        	                <small style="color: red; font-weight: bold;" class="address2">${pharmacy.dist}Km</small>
-	        	                <p style="display: none;" class="closeTime2">${pharmacy.closetime}</p>
-	        	                <p style="display: none;" class="closeDay2">${pharmacy.holiday}</p>
-	        	            </div>
-	        	        </div>
-	        	        <div class="closeBlock2">
-	        	            <h2 style="color: white; padding-top: 80px;">Close</h2>
-	        	        </div>
-	        	    `;
-	        	    
-	        	    return element;
-	        	}
+            function createPharmacyElement(pharmacy) {
+                  const element = document.createElement('div');
+                  element.className = 'col-lg-3 col-md-6 pharmacyItem';
+                  element.style.width = '280px';
+                  element.style.height = '380px';
+                  element.setAttribute('onclick', `location.href='pharmacyDetail?pharmacyId=${pharmacy.pharmacyId}'`);
+                  
+                  const imageSrc = pharmacy.pharmacyImg ? `/img/${pharmacy.pharmacyImg}` : '/img/pharmacy.png';
+                  element.innerHTML = `
+                      <div class="ho wow fadeInUp" data-wow-delay="0.1s">
+                          <div class="team-item bg-light">
+                              <div class="overflow-hidden">
+                                  <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
+                              </div>
+                          </div>
+                          <div class="text-center p-4">
+                              <h5 class="mb-0">${pharmacy.pharmacyName}</h5>
+                              <small>${pharmacy.phone}</small><br/>
+                              <small style="color: red; font-weight: bold;" class="address2">${pharmacy.dist}Km</small>
+                              <p style="display: none;" class="closeTime2">${pharmacy.closetime}</p>
+                              <p style="display: none;" class="closeDay2">${pharmacy.holiday}</p>
+                          </div>
+                      </div>
+                      <div class="closeBlock2">
+                          <h2 style="color: white; padding-top: 80px;">Close</h2>
+                      </div>
+                  `;
+                  
+                  return element;
+              }
 
 //<<------ createElement() end----------------------------------------------------------------------------------------------------------------->>
           
@@ -732,7 +737,7 @@
            
            //영업시간 끝나면 스타일 바꾸는 함수(오픈시간은 생략)
            function changeStyle(){
-        	  //병원 영업끝나는 시간과 휴무요일
+             //병원 영업끝나는 시간과 휴무요일
               let closeTime = document.querySelectorAll(".closeTime");
               let closeDay = document.querySelectorAll(".closeDay");
               //약국 영업끝나는 시간과 휴무요일
@@ -746,20 +751,20 @@
               let closeWeek = []; 
               //배열에 담긴 휴무일(ex [i1, i2, i3)
               closeDay.forEach((ele, idx)=>{
-            	  //console.log('값=',ele.innerText,'길이=',ele.innerText.length)
-            	 if(ele.innerText.length <3){//휴무일이 하나면
-            		 closeWeek.push((day[ele.innerText]))
-            		 //console.log("closeWeek하나짜리=", closeWeek);
-            		 
-            	 }else{//휴무일이 여러개면
-            		 let days = ele.innerText.split(',');
-            		 let holiday = ''
-            		 days.forEach((item) =>{//배열에 담긴숫자만큼 돌림
-            			 holiday +=day[item]; //i1 -> 저는 숫자로 변환(요일로 변환해도 됨)
-            			 holiday +=',';
-            		 });
-            		 closeWeek.push(holiday); 
-            	 }
+                 //console.log('값=',ele.innerText,'길이=',ele.innerText.length)
+                if(ele.innerText.length <3){//휴무일이 하나면
+                   closeWeek.push((day[ele.innerText]))
+                   //console.log("closeWeek하나짜리=", closeWeek);
+                   
+                }else{//휴무일이 여러개면
+                   let days = ele.innerText.split(',');
+                   let holiday = ''
+                   days.forEach((item) =>{//배열에 담긴숫자만큼 돌림
+                      holiday +=day[item]; //i1 -> 저는 숫자로 변환(요일로 변환해도 됨)
+                      holiday +=',';
+                   });
+                   closeWeek.push(holiday); 
+                }
                  
               });
               //console.log("closeWeek전체=",closeWeek);
@@ -767,17 +772,17 @@
               //약국
               let closeWeek2 = []; 
               closeDay2.forEach((ele, idx)=>{
-            	 if(ele.innerText.length <3){
-            		 closeWeek2.push(day[ele.innerText])
-            	 }else{
-            		 let days = ele.innerText.split(',');
-            		 let holiday = ''
-            		 days.forEach((item) =>{
-            			 holiday +=day[item];
-            			 holiday +=',';
-            		 });
-            		 closeWeek2.push(holiday);
-            	 }
+                if(ele.innerText.length <3){
+                   closeWeek2.push(day[ele.innerText])
+                }else{
+                   let days = ele.innerText.split(',');
+                   let holiday = ''
+                   days.forEach((item) =>{
+                      holiday +=day[item];
+                      holiday +=',';
+                   });
+                   closeWeek2.push(holiday);
+                }
               });
               //console.log("closeWeek2전체=",closeWeek2);
               
@@ -822,91 +827,91 @@
                     closeBlocks[i].style.display = "block"; 
                     //console.log('가가');
                 } else if (closeWeek[i].length == undefined && closeWeek[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
-                	//console.log("하루휴무");
+                   //console.log("하루휴무");
                     closeBlocks[i].style.display = "block"; 
                     
                 }else if(closeWeek[i].length > 3){ //휴무일이 여러개인데 오늘이 그 요일임
-                	 let days = closeWeek[i].split(',');
-                	 let holicheck = false;
-                	 for(let i=0; i <days.length; i++){
-                		 //console.log("days",days[i]);
-                		 if(days[i] == curDay){
-                			 holicheck = true;
-                		 }
-                	 }
-                	 if(holicheck){
-                		 closeBlocks[i].style.display = "block";  
-                	 }
-                	//console.log("holicheck",holicheck);
+                    let days = closeWeek[i].split(',');
+                    let holicheck = false;
+                    for(let i=0; i <days.length; i++){
+                       //console.log("days",days[i]);
+                       if(days[i] == curDay){
+                          holicheck = true;
+                       }
+                    }
+                    if(holicheck){
+                       closeBlocks[i].style.display = "block";  
+                    }
+                   //console.log("holicheck",holicheck);
                 }else{
-                	
+                   
                 }
             }              
               
               
               //약국 조건걸고 적용
-	          //close표시 먹여야하는 div 전체
-	            let closeBlocks2 = document.querySelectorAll(".closeBlock2");
-	            //console.log("closeBlocks =",closeBlocks);
-	            //끝나는 시간을 기준으로 시간이랑 분 뽑아서 스타일 먹일거임
-	            // 각 병원의 끝나는 시간을 기준으로 스타일을 적용
-	          for (let i = 0; i < endTime2.length; i++) {
-	              let closeHour2 = parseInt(endTime2[i].substr(0, 2)); // 병원 영업 종료 시간 (시)
-	              let closeMinute2 = parseInt(endTime2[i].substr(3, 2)); // 병원 영업 종료 시간 (분)
-	              //console.log("closeHour2=", closeHour2);
-	              //console.log("closeMinute2=", closeMinute2);
-	          
-	              if (closeHour2 < curHour || (closeHour2 === curHour && closeMinute2 < curMinute)) {
-	                  // 병원의 영업 종료 시간이 현재 시간보다 이전이면
-	                  closeBlocks2[i].style.display = "block"; // 또는 다른 스타일을 적용
-	                  //console.log('가가');
-	              }else if (closeWeek2[i].length == undefined <3 && closeWeek2[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
-          			
-	                    closeBlocks2[i].style.display = "block"; 
-	                    
-	              }else if(closeWeek2[i].length > 3){ //휴무일이 여러개인데 오늘이 그 요일임
-	                	 let days = closeWeek2[i].split(',');
-	                	 let holicheck = false;
-	                	 for(let i=0; i <days.length; i++){
-	                		 //console.log("days",days[i]);
-	                		 if(days[i] == curDay){
-	                			 holicheck = true;
-	                		 }
-	                	 }
-	                	 if(holicheck){
-	                		 closeBlocks2[i].style.display = "block";  
-	                	 }
-	                	//console.log("holicheck",holicheck);
-	              }else{
-	                	
-	              }
-	          }     
+             //close표시 먹여야하는 div 전체
+               let closeBlocks2 = document.querySelectorAll(".closeBlock2");
+               //console.log("closeBlocks =",closeBlocks);
+               //끝나는 시간을 기준으로 시간이랑 분 뽑아서 스타일 먹일거임
+               // 각 병원의 끝나는 시간을 기준으로 스타일을 적용
+             for (let i = 0; i < endTime2.length; i++) {
+                 let closeHour2 = parseInt(endTime2[i].substr(0, 2)); // 병원 영업 종료 시간 (시)
+                 let closeMinute2 = parseInt(endTime2[i].substr(3, 2)); // 병원 영업 종료 시간 (분)
+                 //console.log("closeHour2=", closeHour2);
+                 //console.log("closeMinute2=", closeMinute2);
+             
+                 if (closeHour2 < curHour || (closeHour2 === curHour && closeMinute2 < curMinute)) {
+                     // 병원의 영업 종료 시간이 현재 시간보다 이전이면
+                     closeBlocks2[i].style.display = "block"; // 또는 다른 스타일을 적용
+                     //console.log('가가');
+                 }else if (closeWeek2[i].length == undefined <3 && closeWeek2[i] === curDay) { //휴무일이 하루인데 오늘이 그 요일이면
+                   
+                       closeBlocks2[i].style.display = "block"; 
+                       
+                 }else if(closeWeek2[i].length > 3){ //휴무일이 여러개인데 오늘이 그 요일임
+                       let days = closeWeek2[i].split(',');
+                       let holicheck = false;
+                       for(let i=0; i <days.length; i++){
+                          //console.log("days",days[i]);
+                          if(days[i] == curDay){
+                             holicheck = true;
+                          }
+                       }
+                       if(holicheck){
+                          closeBlocks2[i].style.display = "block";  
+                       }
+                      //console.log("holicheck",holicheck);
+                 }else{
+                      
+                 }
+             }     
            }
 
 //<<------ changeStyle () end----------------------------------------------------------------------------------------------------------------->>
 
          
-	       //검색 함수
-	  		function searchResult(e){
-	  			let word = document.getElementById("search").value;
-	  			console.log("검색한 단어= ",word);
-	  			if(word == ''){
-	  				alert("검색한 단어가 없습니다.");
-	  			}else{
-	  				location.href="search?word="+word;
-	  			}
-	  		}
-	         
-	         //키보드 엔터 눌러도 제출되게끔
-	         let enter = document.querySelector(".search")
-	         enter.addEventListener('keyup', (event) => {
-	             if (event.key === 'Enter') {
-	                 searchResult();
-	             }
-	         });
+          //검색 함수
+           function searchResult(e){
+              let word = document.getElementById("search").value;
+              console.log("검색한 단어= ",word);
+              if(word == ''){
+                 alert("검색한 단어가 없습니다.");
+              }else{
+                 location.href="search?word="+word;
+              }
+           }
+            
+            //키보드 엔터 눌러도 제출되게끔
+            let enter = document.querySelector(".search")
+            enter.addEventListener('keyup', (event) => {
+                if (event.key === 'Enter') {
+                    searchResult();
+                }
+            });
          
          </script>
-	</div>
-	
+   </div>
+   
 </body>
 </html>

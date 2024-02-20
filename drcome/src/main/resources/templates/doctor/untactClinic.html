@@ -111,11 +111,17 @@
       <div class="container-fluid">
         <!--title-->
         <div class="title" style="background-color: #06bbcc; padding: 5px">
-
           <!--on off-->
-          <div class="d-flex justify-content-center align-items-center" style="margin-left: 10px;">
+          <div
+            class="d-flex justify-content-center align-items-center"
+            style="margin-left: 10px"
+          >
             <!-- 마이크 버튼 -->
-            <button class="btn btn-secondary" onclick="toggleAudio()" style="margin-right: 5px;">
+            <button
+              class="btn btn-secondary"
+              onclick="toggleAudio()"
+              style="margin-right: 5px"
+            >
               <i id="micIcon" class="bi bi-mic"></i>
             </button>
             <!-- 비디오 버튼 -->
@@ -125,13 +131,15 @@
           </div>
           <!--on off-->
 
-          <h3 style="
+          <h3
+            style="
               width: 70%;
               text-align: center;
               margin-bottom: 0;
               padding-left: 120px;
               color: white;
-            ">
+            "
+          >
             비대면 진료중
           </h3>
 
@@ -156,23 +164,23 @@
         <!--title-->
 
         <!--오왼-->
-        <div id="full" style="margin: 3%">
+        <div id="full" style="margin: 1%">
           <!--왼쪽-->
-          <div id="left" style="width: 49%; margin-right: 7%">
+          <div id="left" style="width: 49%; border: solid 1px #ccc; border-radius: 10px; padding: 20px;">
             <!--비디오-->
             <div
               id="video"
               style="width: 100%; display: flex; justify-content: center"
             >
-              <video id="localVideo" autoplay width="48%" height="52%"></video>
-              <video id="remoteVideo" autoplay width="48%" height="52%"></video>
+              <video id="localVideo" autoplay ></video>
+              <video id="remoteVideo" autoplay ></video>
             </div>
             <!--비디오-->
 
             <!--진료기록-->
             <div
               id="clinic"
-              style="width: 100%; justify-content: center; margin-top: 20%"
+              style="width: 100%; justify-content: center; margin-top: 10%; "
             >
               <!--재진-->
               <div id="secondV">
@@ -196,8 +204,8 @@
                 </div>
                 <!--제목-->
                 <!--table pagination-->
-                <div style="min-height: 350px">
-                  <table id="clist" class="table" style="text-align: center">
+                <div style="min-height: 250px">
+                  <table id="clist" class="table table-hover" style="text-align: center">
                     <thead>
                       <tr>
                         <th>NO</th>
@@ -222,10 +230,8 @@
           </div>
           <!--왼쪽-->
 
-  
-
           <!--오른쪽-->
-          <div id="right" style="width: 49%">
+          <div id="right" style="width: 49%; border: solid 1px #ccc; border-radius: 10px; padding: 20px;">
             <!--기본정보-->
             <div style="margin-bottom: 15%">
               <div style="margin-bottom: 15px">
@@ -517,7 +523,11 @@
         />
 
         <script th:inline="javascript">
-          //아이디  //예약번호
+
+
+      
+
+          //아이디 //예약번호
           let uid = [[ ${pInfo.userId} ]];
           let rno = [[ ${pInfo.reserveNo} ]];
           // console.log("나와라~!rno)
@@ -529,7 +539,7 @@
               method: "POST",
             })
               .done((result) => {
-               
+
                 if (result > 0) {
                   location.href = `/hospital/clinicDr`;
                 }
@@ -549,7 +559,7 @@
           function connectWebSocket() {
             try {
               // WebSocket 연결
-              alarmSocket = new WebSocket("ws://localhost:80/echo");
+              alarmSocket = new WebSocket("ws://192.168.0.16:80/echo");
 
               // 연결이 열리면 호출되는 이벤트 핸들러
               alarmSocket.onopen = function (event) {
@@ -558,7 +568,7 @@
                 if (alarmSocket && alarmSocket.readyState === WebSocket.OPEN) {
                   // 서버로 메시지 전송
                   console.log("의사가 메세지 전송 ㅎㅎ");
-                  const message = uid;
+                  const message = uid+","+"enterRoom"+","+rno;
                   alarmSocket.send(message);
                 }
               }; ///
@@ -566,7 +576,7 @@
               // 연결이 닫혔을 때 호출되는 이벤트 핸들러
               alarmSocket.onclose = function (event) {
                 console.log("의사 퇴장 WebSocket 연결이 닫혔습니다.");
-              }; 
+              };
 
               // 에러가 발생했을 때 호출되는 이벤트 핸들러
               alarmSocket.onerror = function (error) {
@@ -938,7 +948,7 @@
               tracks.forEach(track => {
               track.enabled = !track.enabled;
               });
-              
+
               }
 
               function toggleAudio() {

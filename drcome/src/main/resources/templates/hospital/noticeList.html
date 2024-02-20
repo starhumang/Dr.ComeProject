@@ -45,6 +45,9 @@ input[type="radio"]:checked+label {
 .pagination a:hover {
   background-color: #bfc5d8;
 }
+.tableMin {
+  min-height: 540px;
+}
 </style>
 </head>
 
@@ -58,7 +61,7 @@ input[type="radio"]:checked+label {
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>notice</p>
+			<p>Notice</p>
 			<div class="search">
 				<!-- drop -->
 			    <div class="input-group" style="width: 40%;">
@@ -81,7 +84,7 @@ input[type="radio"]:checked+label {
 			
 			<!-- 공지사항 리스트 -->
 			<!-- table -->
-			<div>
+			<div class="tableMin">
 				<table class="table table-hover">
 				</table>
 				

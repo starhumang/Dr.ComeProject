@@ -34,6 +34,8 @@ import com.drcome.project.medical.service.NoticeVO;
 import com.drcome.project.medical.service.QnaVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
+import lombok.extern.log4j.Log4j2;
+
 
 @Controller
 @lombok.extern.log4j.Log4j2
@@ -48,7 +50,6 @@ public class MainController {
    @Autowired
    private FileUploadService fileUploadService;
 
-	
 	/* 병원 및 약국 목록(메인페이지)
 	 * return "user/home"
 	 */

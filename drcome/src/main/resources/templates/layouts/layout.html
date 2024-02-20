@@ -34,24 +34,69 @@
 		<!-- Socket -->
 		<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
 
-		<script th:inline="javascript">
-
-			$(document).ready(function () {
-			          // 로그인한 경우에만 웹 소켓 연결을 시도합니다.
-			          // var logId = document.querySelector('#loginId').innerHTML;
-			          var logId = [[${session.userId}]];
-				console.log(logId);
-			          if (logId != null && logId != '' && logId != undefined) {
-			              connectWebSocket(logId);
-			          }
-			      });
-		</script>
-
 		<script src="/js/alarm.js"></script>
 
+		<script th:inline="javascript">
+			$(document).ready(function () {
+				// 로그인한 경우에만 웹 소켓 연결을 시도합니다.
+				var logId = [[${session.userId}]];
+				if (logId != null && logId != '' && logId != undefined) {
+					// connectWebSocket(logId);
+					$.ajax({
+						type: 'GET',
+						url: '/useralarm',
+						success: function (response) {
+							console.log('서버로부터 알람 목록을 성공적으로 받아왔습니다.', response);
+							var alarmCount = response.alarmList.length;
+
+							var $bellIcon = $('.fa-bell');
+
+							if (alarmCount > 0) {
+			                     var $bellIcon = $('.fa-bell');
+			                     $bellIcon.after('<span class="badge bg-danger">' + alarmCount + '</span>');
+			                 }
+
+							var $notificationList = $('#notificationList');
+							response.alarmList.forEach(function (alarm) {
+								var notificationItem = '<div class="notification-item" onclick="checkAlarm(' + alarm.alarmNo + ')">' + '<p>';
+
+								// if (alarm.contentCode === 'canclePharmacy') {
+								// 	notificationItem += alarm.prefix + ' 약국 번호: ' + alarm.pharmacySelectno;
+								// } else if (alarm.contentCode === 'enterRoom') {
+								// 	notificationItem += alarm.prefix + ' 예약 번호: ' + alarm.reserveNo;
+								// }
+								notificationItem += alarm.prefix;
+
+								notificationItem += '</p>' + '</div>';
+								$notificationList.append(notificationItem);
+							});
+						},
+						error: function (xhr, status, error) {
+							console.error('서버로부터 알람 목록을 받아오는데 실패했습니다.', error);
+						},
+					});
+				}
+			});
+		</script>
+
 		<script>
-			function checkAlarm() {
-				location.href = '/mypage';
+			function checkAlarm(alarmNo) {
+				$.ajax({
+					type: 'GET',
+					url: '/checkedAlarm',
+					data: { alarmNo: alarmNo },
+					success: function (response) {
+						console.log('알람 확인 처리 성공:', response);
+						location.href = '/mypage';
+					},
+					error: function (xhr, status, error) {
+						console.error('알람 확인 처리 실패:', error);
+					},
+				});
+			}
+
+			function toggleNotifications() {
+				$('#notificationList').collapse('toggle');
 			}
 		</script>
 
@@ -66,7 +111,7 @@
 		<!-- Header Start -->
 		<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
 			<a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-				<h2 class="m-0 text-primary"><i class="fa fa-book me-3"></i>로고자리</h2>
+				<h2 class="m-0 text-primary"><img src="/images/logo_color.png" alt="logo" width="195"></h2>
 			</a>
 			<button
 				type="button"
@@ -91,7 +136,13 @@
 					<a th:href="@{/mypage}" class="nav-item nav-link">
 						<i class="bi bi-person-circle fs-3 text-dark"></i
 					></a>
-					<a href="/" class="nav-item nav-link"><i class="fas fa-fw fa-bell fs-3 text-dark"></i></a>
+					<!-- <a href="/" class="nav-item nav-link"><i class="fas fa-fw fa-bell fs-3 text-dark"></i></a> -->
+					<a href="#" class="nav-item nav-link" onclick="toggleNotifications()">
+						<div class="btn-group">
+							<i class="fas fa-fw fa-bell fs-3 text-dark"></i>
+							<span class="badge bg-danger"></span>
+						</div>
+					</a>
 
 					<a th:href="@{/logout}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Logout</a>
 				</th:block>
@@ -100,6 +151,10 @@
 				</th:block>
 			</div>
 		</nav>
+
+		<!-- 알림 목록 -->
+		<div id="notificationList" class="collapse"></div>
+		<!-- 알림 목록 끝 -->
 
 		<div
 			id="socketAlert"

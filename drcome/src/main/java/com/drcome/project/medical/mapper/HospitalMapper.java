@@ -13,6 +13,13 @@ import com.drcome.project.medical.service.QnaVO;
 public interface HospitalMapper {
 	
 	/* 대시보드 */
+	//상단Card
+	//예약현황 카운트
+	public int selectReserveCnt(String hospitalId);
+	public int selectQnaCnt(String hospitalId);
+	public int selectPayMonth(String hospitalId);
+	public int selectC2Rate(String hospitalId);
+	
 	//진료및예약리스트
 	public List<Map<String, Object>> selectTodayReserve(String hospitalId);
 	
@@ -48,6 +55,11 @@ public interface HospitalMapper {
 	//약국 리스트 받아오기
 	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
 	
+	//약국전송 후 상태 업데이트
+	public int updateSendPersStatus(Map<String, Long> map);
+	
+	public void updateReservationStatus(Map<String, Object> parameter);
+	
 	//Dr
 	public List<Map<String, Object>> selectReserveDr(String hospitalId, Integer doctorNo, String date, String reserveKindstatus);
 	
@@ -74,6 +86,9 @@ public interface HospitalMapper {
 	
 	//QnA 파일 가져오기
 	public List<NoticeAttachVO> selectQnaAtt(NoticeAttachVO attVO);
+	
+	//QnA User 질문 인서트 + 첨부파일 인서트
+	public int insertQnaMem(QnaVO qnaVO);
 	
 	/* 공지사항 */
 	//공지사항 전체
@@ -117,5 +132,6 @@ public interface HospitalMapper {
 	
 	/* 의사 시간 삭제 */
 	public int deleteDoctorTime(int doctorNo);
+
 
 }

@@ -3,6 +3,8 @@ package com.drcome.project.medical.service.impl;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +27,27 @@ public class HospitalServiceImpl implements HospitalService {
 	HospitalMapper hospitalMapper;
 
 	/* 대시보드 */
+	//상단Card
+	//예약현황 카운트
+	@Override
+	public int selectReserveCnt(String hospitalId) {
+		return hospitalMapper.selectReserveCnt(hospitalId);
+	}
+	@Override
+	public int selectQnaCnt(String hospitalId) {
+		return hospitalMapper.selectQnaCnt(hospitalId);
+	}
+	
+	@Override
+	public int selectPayMonth(String hospitalId) {
+		return hospitalMapper.selectPayMonth(hospitalId);
+	}
+	
+	@Override
+	public int selectC2Rate(String hospitalId) {
+		return hospitalMapper.selectC2Rate(hospitalId);
+	}
+	
 	// 오늘의 진료 내역 리스트
 	@Override
 	public List<Map<String, Object>> getTodayReserve(String hospitalId) {
@@ -115,6 +138,24 @@ public class HospitalServiceImpl implements HospitalService {
 		return listPhar;
 	}
 	
+	//업데이드 전송값
+	@Transactional
+	@Override
+	public int updateSendPersStatus(List<Map<String, Long>> list) {
+		int result = 0;
+		for(Map<String, Long> map :list )
+			result += hospitalMapper.updateSendPersStatus(map);
+		//상태변경하기
+		
+		return result;
+	}
+	
+	//약국 전송 후 상태 업데이트
+	@Override
+	public void updateReservationStatus(Map<String, Object> parameter) {
+		hospitalMapper.updateReservationStatus(parameter);
+	}
+	
 	/* QnA */
 	// QnA 전체
 	@Override
@@ -161,12 +202,18 @@ public class HospitalServiceImpl implements HospitalService {
 		return hospitalMapper.updateQnaStatus(qnaVO);
 	}
 
-	// Answer 첨부파일 등록
+	// Answer&Question 첨부파일 등록
 	@Override
 	public int insertAttachQnaAns(QnaVO qnaVO) {
 		return hospitalMapper.insertAttachQnaAns(qnaVO);
 	}
 
+	//QnA User 질문 인서트 + 첨부파일 인서트
+	@Override
+	public int insertQnaMem(QnaVO qnaVO) {
+		return hospitalMapper.insertQnaMem(qnaVO);
+	}
+	
 	/* 공지사항 */
 	// 공지사항 전체
 	@Override
@@ -280,5 +327,7 @@ public class HospitalServiceImpl implements HospitalService {
         }
 		return count;
 	}
+
+
 
 }

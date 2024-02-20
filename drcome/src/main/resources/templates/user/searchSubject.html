@@ -65,9 +65,9 @@ button:hover {
 
 <body>
    <div layout:fragment="content" style="margin-bottom:200px;">
-      <div class="container" style="margin-top: 50px; text-align: center;">
+      <div class="container" style="margin-top: 100px; text-align: center;">
          <div class="head"
-            style="display: flex; justify-content: center; margin-bottom: 130px;">
+            style="display: flex; justify-content: center; margin-bottom: 100px;">
             <div style="width: 600px;">
                <th:block th:each="detailCode : ${application.detailCode_h}">
                <h2 th:if="${detailCode.detailCode} == ${mainSubject}" th:text="|Result : ${detailCode.codeName}|"
@@ -136,11 +136,12 @@ button:hover {
          </div>
 
    <script th:inline="javascript">
-      /**
-       * 젤 하단 window.onload 부터 시작 (확인하면 됨)
-       * 
-       * */
 
+//<<----Init-------------------------------------------------------------------------------------------------------------------->>
+       // 젤 먼저 시작 함수 
+       window.onload = function(){
+          methods.init()
+       } 
 
  //<<-----setup ------------------------------------------------------------------------------------------------------------------>>
        // 페이징 관련 변수들
@@ -446,11 +447,6 @@ button:hover {
       } 
 //<<----methods end------------------------------------------------------------------------------------------------------------->>
 
-//<<----Init-------------------------------------------------------------------------------------------------------------------->>
-      // 젤 먼저 시작 함수 
-      window.onload = function(){
-         methods.init()
-      } 
 
 
        

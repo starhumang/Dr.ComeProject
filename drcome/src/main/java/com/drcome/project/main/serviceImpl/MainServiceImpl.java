@@ -54,8 +54,8 @@ public class MainServiceImpl implements MainService {
    }
    
 	@Override
-	public List<PharmacyVO> recommendPhaList(int num) {
-		return mainMapper.recommendPhaList(num);
+	public List<PharmacyVO> recommendPhaList(String clinicNo,int num) {
+		return mainMapper.recommendPhaList(clinicNo,num);
 	}
 
 	@Override

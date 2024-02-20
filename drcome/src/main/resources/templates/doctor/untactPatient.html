@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout}"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layouts/layout}"
 >
   <head>
     <meta charset="UTF-8" />
@@ -103,19 +103,27 @@
         display: none;
       }
     </style>
+
+  
   </head>
 
   <body>
     <div layout:fragment="content">
       <!--container-fluid-->
-      <div class="container-fluid">
+      <div class="container-fluid" style="padding: 10px;">
         <!--title-->
         <div class="title" style="background-color: #06bbcc; padding: 5px">
-
           <!--on off-->
-          <div class="d-flex justify-content-center align-items-center" style="margin-left: 10px;">
+          <div
+            class="d-flex justify-content-center align-items-center"
+            style="margin-left: 10px"
+          >
             <!-- 마이크 버튼 -->
-            <button class="btn btn-secondary" onclick="toggleAudio()" style="margin-right: 5px;">
+            <button
+              class="btn btn-secondary"
+              onclick="toggleAudio()"
+              style="margin-right: 5px"
+            >
               <i id="micIcon" class="bi bi-mic"></i>
             </button>
             <!-- 비디오 버튼 -->
@@ -125,13 +133,15 @@
           </div>
           <!--on off-->
 
-          <h3 style="
-              width: 80%;
+          <h3
+            style="
+              width: 70%;
               text-align: center;
               margin-bottom: 0;
               padding-left: 120px;
               color: white;
-            ">
+            "
+          >
             비대면 진료중
           </h3>
 
@@ -156,7 +166,7 @@
         <!--title-->
 
         <!--비디오-->
-        <div style="height: 100vh">
+        <div style="height: 70vh">
           <div
             id="video"
             style="
@@ -166,8 +176,8 @@
               margin-top: 5%;
             "
           >
-            <video id="localVideo" autoplay width="40%" height="52%"></video>
-            <video id="remoteVideo" autoplay width="40%" height="52%"></video>
+            <video id="localVideo" autoplay width="18%" height="40%"></video>
+            <video id="remoteVideo" autoplay width="18%" height="40%"></video>
           </div>
         </div>
         <!--비디오-->
@@ -187,14 +197,32 @@
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
-        <script src="/js/socket.js"></script>
+        <script src="/js/socket.js"></script>  
         <script th:inline="javascript">
-					let rNo = [[${rNo}]];
-					function payment() {
-						location.href = '/payment/' + rNo;
-					}
-		</script>
+          let rNo = [[${rNo}]];
+          function payment() {
+          	location.href = '/payment/' + rNo;
+          }
 
+            //on off 토글버튼
+            function toggleVideo() {
+              const tracks = myScreen.getVideoTracks();
+              tracks.forEach(track => {
+              track.enabled = !track.enabled;
+              });
+
+              }
+
+              function toggleAudio() {
+              const tracks = myScreen.getAudioTracks();
+              tracks.forEach(track => {
+              track.enabled = !track.enabled;
+              });
+              }
+
+
+            
+        </script>
 
         <script th:inline="javascript"></script>
       </div>

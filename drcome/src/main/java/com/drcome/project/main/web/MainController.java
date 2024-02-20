@@ -1,5 +1,7 @@
 package com.drcome.project.main.web;
 
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,18 +9,21 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.drcome.project.common.service.FileUploadService;
 import com.drcome.project.common.service.PageDTO2;
 import com.drcome.project.main.service.MainService;
 import com.drcome.project.main.service.ReservationVO;
@@ -26,9 +31,8 @@ import com.drcome.project.medical.service.DoctorVO;
 import com.drcome.project.medical.service.HospitalService;
 import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.medical.service.NoticeVO;
+import com.drcome.project.medical.service.QnaVO;
 import com.drcome.project.pharmacy.PharmacyVO;
-
-import groovy.util.logging.Log4j2;
 
 
 @Controller
@@ -41,7 +45,9 @@ public class MainController {
 	@Autowired
 	HospitalService hospitalService;
 	
-	
+   @Autowired
+   private FileUploadService fileUploadService;
+
 	
 	/* 병원 및 약국 목록(메인페이지)
 	 * return "user/home"
@@ -52,8 +58,8 @@ public class MainController {
 		model.addAttribute("hosList", hosList);
 		List<PharmacyVO> phaList = mainService.getPhaList();
 		model.addAttribute("phaList", phaList);
-		//System.out.println(phaList);
-		log.info("phaList = ",phaList);
+		System.out.println("phaList="+phaList);
+		//log.info("phaList = ",phaList);
 		return "user/home";//폴더밑에 html 이름
 	}
 	
@@ -137,17 +143,13 @@ public class MainController {
 	
 	// 병원공지사항 단건상세 유저ver
 	@GetMapping("/userNoticeDetail")
-	public String noticeDetail(String hospitalId, NoticeVO noticeVO, Model model) {
-		noticeVO.setHospitalId(hosId);
-		//System.out.println("hospitalId = "+ hosId);
-		int noticeNo = noticeVO.getNoticeNo();
-		//System.out.println("noticeNo = "+ noticeNo);
-		
-		NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
-		model.addAttribute("noticeNo", noticeNo);
-		model.addAttribute("noticeList", noticeList);
-		model.addAttribute("hosId", hosId);
-		//System.out.println("noticeList = "+ noticeList);
+	   public String noticeDetail( NoticeVO noticeVO, Model model) {
+	      noticeVO.setHospitalId(hosId);
+	      int noticeNo = noticeVO.getNoticeNo();
+	      NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
+	      model.addAttribute("noticeNo", noticeNo);
+	      model.addAttribute("noticeList", noticeList);
+
 		
 		return "user/userNoticeDetail";
 	}
@@ -226,7 +228,7 @@ public class MainController {
 	 */
 	@GetMapping("/recommendPharmacy/{clinicNo}")
 	public String PhaList(@PathVariable("clinicNo") String clinicNo, Model model) {
-		List<PharmacyVO> phaList = mainService.recommendPhaList(10);
+		List<PharmacyVO> phaList = mainService.recommendPhaList(clinicNo,10);
 		model.addAttribute("clinic",clinicNo);
 		model.addAttribute("phaList", phaList);
 		return "user/recommendPha";
@@ -656,8 +658,56 @@ public class MainController {
 		return response; 
 	}
 	
-	
-	
-
+	   @GetMapping("/qnaUserForm")
+	   public String insertQnaMemForm(String hospitalId) {
+	      hosId =hospitalId;
+	       return "user/qnaUserForm";
+	   }
+	   
+//	   @PostMapping("/qnaUserForm")
+//	   public void insertQnaMemProcess(
+//	                           @ModelAttribute QnaVO vo,
+//	                           HttpServletResponse resp,
+//	                           HttpServletRequest request) {
+//
+//	      resp.setContentType("text/html; charset=UTF-8");
+//	      HttpSession session = request.getSession();
+//	      String userId = (String) session.getAttribute("userId");
+//	      
+//	      vo.setHospitalId(hosId);
+//	      vo.setUserId(userId);
+//	      
+//	      if (vo.getUploadFiles()[0].isEmpty()) {
+//	         hospitalService.insertQnaMem(vo);
+//	         
+//	      }else {   
+//	         
+//	         hospitalService.insertQnaMem(vo);
+//	         
+//	         List<String> fileNames = fileUploadService.uploadFiles(vo.getUploadFiles());
+//
+//	         // 파일정보
+//	         HashMap<String, Object> map = new HashMap<String, Object>();
+//	         map.put("chkList", fileNames);
+//
+//	         for (String name : fileNames) {
+//	            vo.setFileName(name);
+//	            hospitalService.insertAttachQnaAns(vo);
+//	         }
+//	         
+//	      }
+//	      PrintWriter out;
+//	      try {
+//	         out = resp.getWriter();
+//	         out.println("<script language='javascript'>");
+//	         out.println("alert('등록을 성공했습니다.')");
+//	         out.println("window.location.href = '/hospitalDetail?hospitalId=" + hosId + "';");
+//	         out.println("</script>");
+//	         out.flush();
+//	      } catch (IOException e) {
+//	         e.printStackTrace();
+//	      }
+//
+//	   }
 
 }

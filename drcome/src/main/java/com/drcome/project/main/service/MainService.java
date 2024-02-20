@@ -35,7 +35,7 @@ public interface MainService {
 	public List<HospitalVO> searchSubjectHos(String mainSubject);
 	
 	//추천받은 약국리스트
-	public List<PharmacyVO> recommendPhaList(int num);
+	public List<PharmacyVO> recommendPhaList(String clinicNo, @Param("num") int num);;
 	
 	//처방받을 약국 선택(insert)
 	public int insertPhaSelect(String pharmacyId, int clinicNo);

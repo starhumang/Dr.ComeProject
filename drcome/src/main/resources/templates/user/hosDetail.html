@@ -65,7 +65,8 @@
 <body>
 	<div layout:fragment="content" style="caret-color:transparent;">
 		<h1 style="text-align:center; margin-bottom:50px; margin-top:50px; color:gray;">- Detail Info -</h1>
-		<div class="container-fluid" style="margin-bottom:150px; text-align:center;">
+		<div class="container-fluid" style="margin-bottom:150px; text-a
+		lign:center;">
 			<th:block th:each="hos : ${hosInfo}">
 			
 			
@@ -121,8 +122,9 @@
 									<button type="button" class="bb btn btn-primary visit" th:onclick="contactCheck([[${reservationHistory}]])">방문예약하기</button>
 									<button type="button" class="bb btn btn-primary later" th:onclick="check( [[${clinicHistory}]],'later',[[${reservationHistory}]] )">비대면예약하기</button>
 									<button type="button" class="bb btn btn-primary now" th:onclick="check( [[${clinicHistory}]],'now',[[${reservationHistory}]] )">실시간 비대면 진료 <br/>접수하기</button>
-									<button type="button" class="bb btn btn-primary ">문의하기</button>
+									<button type="button" class="bb btn btn-primary " th:onclick="|location.href='@{/qnaUserForm(hospitalId=${hos.hospitalId})}'|">문의하기</button>     
 								</div>
+
 							</div>
 						</div>
 	
@@ -153,9 +155,6 @@
 							holiday.append(tdElement);
 							
 							}
-							
-							
-							
 						}
 						dayday();
 						
@@ -303,24 +302,30 @@
 									<tr>
 										<th>의사이름</th>
 										<th>진료과목</th>
-										<th>휴진일</th>
 										<th>진료일 / 진료시간</th>
+										<th>휴진일</th>
 									</tr>
 								</thead>
 								<tbody style="vertical-align:middle;">
 									<th:block th:each="doc : ${docList}">
-										<tr th:if="${#lists.size(docList) > 0}">
+										<tr th:if="${#lists.size(docList) > 0}" class="restday">
 											<td th:text="${doc.doctorName}"></td>
+											
 											<th:block th:each="detailCode : ${application.detailCode_h}">
 											<td th:if="${doc.subject} == ${detailCode.detailCode}" th:text="${detailCode.codeName}" ></td>
 											</th:block>
-											<td th:text="${doc.holiday}"></td>
+											
 											<td>
 												<div th:each="drTime : ${doc.times}">
 													[[${drTime.day}]]&nbsp&nbsp
 													[[${drTime.minTime}]] : 00 ~ [[${drTime.maxTime}]] : 00
 												</div>
 											</td>
+											
+											<th:block th:each="detailCode : ${application.detailCode_i}">
+											<td th:if="${detailCode.detailCode ==doc.holiday and #strings.length(doc.holiday) < 3}"  th:text="${detailCode.codeName}" ></td>
+											<td th:unless="${detailCode.detailCode == doc.holiday and #strings.length(doc.holiday) < 3}" th:text="${doc.holiday}" class="many" style="display:none;"></td>
+											</th:block>
 										</tr>
 									</th:block>
 									<tr th:unless="${#lists.size(docList) > 0}">
@@ -333,6 +338,54 @@
 						</div>
 					</div>
 				</div>
+				<script th:inline="javascript">
+				//의사 휴무일 여러개일떄
+				function restday(){
+					let restday = document.querySelector('.restday');
+					let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
+					//console.log("restday", restday);
+					
+					//요일이 여러개일때의 작업
+					if(restday.querySelector('.many')){
+						let days = document.querySelectorAll('.many');
+						let changedays = Array.from(days);//노드리스트에서 배열로 변환
+						//중복되는 것들 splice로 잘라버리고 딱 원하는 자료만 뽑기
+						for(let i =1; i <changedays.length; i++){
+							if(changedays[i-1].innerText === changedays[i].innerText){
+								changedays.splice(i-1, i);
+		 							i--; 
+							}
+						}
+						//이제 이 배열을 가지고 작업하면 됨
+						for(let i=0; i < changedays.length; i++){
+							let realdays = [];
+							let element = changedays[i].innerText;
+							if(element.length > 3){
+								let splitDays = element.split(',');
+								console.log("splitDays=",splitDays)
+								splitDays.forEach(ele=>{
+									realdays += dayList[ele] + ' ';
+									
+								}) 
+								//console.log("realdays= ",realdays);
+	 						}
+							
+							//et td = days.querySelectorAll('[style="display:none;"]');
+							console.log("changedays[i]",changedays[i].innerText);
+							console.log("realdays=",realdays);
+							
+							var tdElement = document.createElement("td");
+		 					tdElement.textContent = realdays;
+							
+		 					if(changedays[i].innerText.length > 3){
+		 						changedays[i].parentNode.replaceChild(tdElement, changedays[i]);
+		 					}
+							
+						}						
+					}
+				}
+				restday();
+				</script>
 				
 				<!-- 병원위치 -->
 				<div class="container" style="margin-bottom:50px;">

@@ -59,9 +59,6 @@ public class PatientServiceImpl implements PatientService {
 
 		int result = 0;
 
-		// 약
-		List<PatientVO> plist = vo.getPerary();
-
 		// 초진이면 환자테이블 인서트
 		if (vo.getVisit().equals("first")) {
 			mapper.patientInsert(vo);
@@ -69,8 +66,11 @@ public class PatientServiceImpl implements PatientService {
 		// 재진이면
 		// 최근 진료 날짜 업데이트
 		mapper.updateDate(vo);
+
 		// 환자번호 select
+
 		int pno = mapper.searchPno(vo);
+
 		// vo에 set
 		vo.setPatientNo(pno);
 		// 진료기록 insert
@@ -79,6 +79,8 @@ public class PatientServiceImpl implements PatientService {
 		int cno = vo.getClinicNo();
 		// 처방전이있다면 인서트
 		if (vo.getPerscriptionYn() == null) {
+			// 약
+			List<PatientVO> plist = vo.getPerary();
 			for (PatientVO obj : plist) {
 				obj.setClinicNo(cno);
 				result = mapper.insertPer(obj);

@@ -10,30 +10,30 @@
 	<select id="selectPatientInfo"
 		resultType="com.drcome.project.doctor.service.PatientVO">
 		select reserve_no
-		,u.user_id
-		,user_name
-		,gender
-		,birthday
-		,symptom
-		from usertable u
-		join reservation r
-		on(u.user_id = r.user_id)
-		where
-		r.reserve_no=#{reserveNo}
+		       ,u.user_id
+		       ,user_name
+		       ,gender
+		       ,birthday
+		       ,symptom
+		       
+		  from usertable u
+		  join reservation r on(u.user_id = r.user_id)
+		  
+		 where r.reserve_no=#{reserveNo}
 	</select>
 
 	<!-- 처방전가져오기 -->
 	<select id="perscription"
 		resultType="com.drcome.project.doctor.service.PatientVO">
 		select medicine_name
-		,dosage
-		,dose_cnt
-		,dose_day
-		from
-		perscription p join medicine d
-		on (p.medicine_no = d.medicine_no)
-		where
-		clinic_no =#{clinicNo}
+	     	  ,dosage
+		      ,dose_cnt
+		      ,dose_day
+		      
+		from perscription p 
+		join medicine d on (p.medicine_no = d.medicine_no)
+		
+		where clinic_no =#{clinicNo}
 	</select>
 
 
@@ -41,16 +41,15 @@
 	<select id="mnameList"
 		resultType="com.drcome.project.doctor.service.PatientVO">
 		select * from medicine
-		where medicine_name LIKE
-		#{medicineName}||'%'
+		where medicine_name LIKE '%${medicineName}%'
 	</select>
 
 
 	<!-- 재진 -환자번호조회 -->
 	<select id="searchPno" resultType="int">
 		select patient_no
-		from patient
-		where user_id=#{userId} and hospital_id=#{hospitalId}
+		 from patient
+		 where user_id=#{userId} and hospital_id=#{hospitalId}
 	</select>
 
 
@@ -58,9 +57,7 @@
 	<update id="updateDate" parameterType="PatientVO">
 		update patient set
 		current_date =SYSDATE
-		where hospital_id = #{hospitalId} and
-		user_id=
-		#{userId}
+		where hospital_id = #{hospitalId} and user_id=#{userId}
 	</update>
 
 
@@ -74,33 +71,32 @@
 		</selectKey>
 
 
-		insert into
-		clinic(
-		clinic_no
-		,clinic_symptom
-		,specificity
-		,pay_yn
-		,reserve_no
-		,perscription_yn
-		,hospital_id
-		,patient_no
-		)
+		insert into	clinic(
+					 clinic_no
+					,clinic_symptom
+					,specificity
+					,pay_yn
+					,reserve_no
+					,perscription_yn
+					,hospital_id
+					,patient_no
+					)
 
 		values (
-		#{clinicNo}
-		,#{clinicSymptom}
-		,#{specificity}
-		,#{payYn}
-		,#{reserveNo}
-		,
-		<choose>
-			<when test="perscriptionYn == null or perscriptionYn == ''"> 'Y' </when>
-			<otherwise> #{perscriptionYn} </otherwise>
-		</choose>
-		,#{hospitalId}
-		,#{patientNo}
-		)
-
+					#{clinicNo}
+					,#{clinicSymptom}
+					,#{specificity}
+					,#{payYn}
+					,#{reserveNo}
+					,
+					<choose>
+						<when test="perscriptionYn == null or perscriptionYn == ''"> 'Y' </when>
+						<otherwise> #{perscriptionYn} </otherwise>
+					</choose>
+					,#{hospitalId}
+					,#{patientNo}
+					)
+					
 	</insert>
 
 	<!-- 처방전 저장 -->
@@ -113,49 +109,44 @@
 		</selectKey>
 
 
-		insert into
-		perscription(
-		perscription_no
-		,dosage
-		,dose_cnt
-		,dose_day
-		,clinic_no
-		,medicine_no
-		)
+		insert into perscription(
+		            perscription_no
+		           ,dosage
+		           ,dose_cnt
+		           ,dose_day
+		           ,clinic_no
+		           ,medicine_no
+		           )
 
 		values (
-		#{perscriptionNo}
-		,#{dosage}
-		,#{doseCnt}
-		,#{doseDay}
-		,#{clinicNo}
-		,#{medicineNo}
-		)
-
+					#{perscriptionNo}
+					,#{dosage}
+					,#{doseCnt}
+					,#{doseDay}
+					,#{clinicNo}
+					,#{medicineNo}
+		            )
 	</insert>
 
 
 	<!-- 신규환자등록 -->
 	<insert id="patientInsert" parameterType="PatientVO">
 
-		insert into
-		patient(
-		user_id
-		,hospital_id
+		insert into patient(
+					 user_id
+					,hospital_id
 		)
 
 		values (
-		#{userId}
-		,#{hospitalId}
-		)
-
+				#{userId}
+			   ,#{hospitalId}
+		       )
 	</insert>
 
 
 	<!-- 페이지네이션 + 진료기록리스트 -->
 	<select id="clinicList"
 		resultType="com.drcome.project.doctor.service.PatientVO">
-  <![CDATA[
 		SELECT *
 		FROM (
 			SELECT clinic_no,
@@ -165,22 +156,23 @@
 			       perscription_yn,
 			       ROW_NUMBER() OVER (ORDER BY clinic_date DESC) AS rn
 			FROM (
-				SELECT clinic_no,
-				       clinic_date,
-		               clinic_symptom,
-					   specificity,
-					   perscription_yn
-		        FROM clinic
-		        WHERE patient_no = (SELECT patient_no
-		                            FROM patient
-		                            WHERE user_id = #{id.userId} AND hospital_id = #{id.hospitalId}
-		                            )
-			    ORDER BY clinic_date DESC
-					)  
+					SELECT clinic_no,
+					       clinic_date,
+			               clinic_symptom,
+						   specificity,
+						   perscription_yn
+			        FROM clinic
+			        WHERE patient_no = (SELECT patient_no
+			                              FROM patient
+			                             WHERE user_id = #{id.userId} AND hospital_id = #{id.hospitalId}
+			                            )
+				    ORDER BY clinic_date DESC
+				  )  
+            <![CDATA[
 			WHERE ROWNUM <= #{page} * 5
-		  )
+            ]]>
+		     )
 		WHERE rn > (#{page} - 1) * 5
-  ]]>
 	</select>
 
 
@@ -189,23 +181,18 @@
 
 		select count(*)
 		from clinic
-		where
-		patient_no
-		= (select
-		patient_no
-		from
-		patient
-		where user_id=#{userId} and
-		hospital_id=#{hospitalId})
-
+		where patient_no = (
+			select patient_no
+			from patient
+			where user_id=#{userId} and hospital_id=#{hospitalId}
+		)
 	</select>
 
 
 	<!-- 진료완료로 업데이트 -->
 	<update id="updateReserve" parameterType="PatientVO">
 		update reservation
-		set
-		reserve_status = 'e4'
+		set reserve_status = 'e4'
 		where reserve_no = #{reserveNo}
 	</update>
 
@@ -213,8 +200,7 @@
 	<!-- 입장하기로 업데이트 -->
 	<update id="updateEnter" parameterType="AlarmDao">
 		update reservation
-		set
-		reserve_status = 'e3'
+		set reserve_status = 'e3'
 		where reserve_no = #{reserveNo}
 	</update>
 	
@@ -222,8 +208,7 @@
 	<!-- 결제완료로 업데이트 -->
 	<update id="updatePayment" parameterType="PatientVO">
 		update reservation
-		set
-		reserve_status = 'e5'
+		set reserve_status = 'e5'
 		where reserve_no = #{reserveNo}
 	</update>
 

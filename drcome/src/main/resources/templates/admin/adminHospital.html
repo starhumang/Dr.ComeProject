@@ -101,7 +101,11 @@
 									<!-- <td th:text="${hospital.hospitalImg}"></td> -->
 									<td><img th:src="@{/images/}+${hospital.hospitalImg}"
 										alt="image" width="50px" /></td>
-									<td th:text="${hospital.mainSubject}"></td>
+									<!--/* <td th:text="${hospital.mainSubject}"></td> */-->
+									<td>
+									<th:block th:each="detailCode : ${application.detailCode_h}" >
+									    <span th:if="${detailCode.detailCode} == ${hospital.mainSubject}" th:text="${detailCode.codeName}"></span>
+									</th:block></td>
 									<td th:text="${hospital.directorName}"></td>
 									<td th:text="${hospital.directorPhone}"></td>
 									<td th:if="${hospital.hospitalStatus == 'b1'}">승인대기</td>

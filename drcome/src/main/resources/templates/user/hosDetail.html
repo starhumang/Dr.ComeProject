@@ -97,8 +97,7 @@
 									<button type="button" class="bb btn btn-primary visit" th:onclick="contactCheck([[${reservationHistory}]])">방문예약하기</button>
 									<button type="button" class="bb btn btn-primary later" th:onclick="check( [[${clinicHistory}]],'later',[[${reservationHistory}]] )">비대면예약하기</button>
 									<button type="button" class="bb btn btn-primary now" th:onclick="check( [[${clinicHistory}]],'now',[[${reservationHistory}]] )">실시간 비대면 진료 <br/>접수하기</button>
-									<button type="button" class="bb btn btn-primary ">문의하기</button>
-								</div>
+									<button type="button" class="bb btn btn-primary " th:onclick="|location.href='@{/qnaUserForm(hospitalId=${hos.hospitalId})}'|">문의하기</button>								</div>
 							</div>
 						</div>
 	

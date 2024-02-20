@@ -8,6 +8,13 @@ import com.drcome.project.admin.domain.Hospital;
 public interface HospitalService {
 	
 	/* 대시보드 */
+	//상단Card
+	//예약현황 카운트
+	public int selectReserveCnt(String hospitalId);
+	public int selectQnaCnt(String hospitalId);
+	public int selectPayMonth(String hospitalId);
+	public int selectC2Rate(String hospitalId);
+	
 	//오늘의 진료현황 리스트
 	public List<Map<String, Object>> getTodayReserve(String hospitalId);
 	
@@ -45,6 +52,12 @@ public interface HospitalService {
 	//약국 리스트 받아오기
 	public List<Map<String, Object>> selectPharList(Map<String, Object> map);
 	
+	//약국 전송 Y 업데이트
+	public int updateSendPersStatus(List<Map<String, Long>> map);
+	
+	//약국에 전송 후 상태값 변경
+	public void updateReservationStatus(Map<String, Object> parameter);
+	
 	/* QnA */
 	//QnA 전체
 	public List<Map<String, Object>> getQnaList(Map<String, Object> map);
@@ -63,6 +76,9 @@ public interface HospitalService {
 	public int insertQnaAns(QnaVO qnaVO);
 	public int updateQnaStatus(QnaVO qnaVO);
 	public int insertAttachQnaAns(QnaVO qnaVO);
+	
+	//QnA User 질문 인서트 + 첨부파일 인서트
+	public int insertQnaMem(QnaVO qnaVO);
 	
 	/* 공지사항 */
 	//공지사항 전체	

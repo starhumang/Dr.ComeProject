@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -37,8 +38,14 @@ import com.drcome.project.pharmacy.PharmacyVO;
 import lombok.extern.log4j.Log4j2;
 
 
+
+/**
+ * 메인페이지, 검색기능, 약국&병원 상세페이지, 약국 선택페이지, 방문예약, 비대면예약, 실시간 비대면 상담접수처리 컨트롤러
+ * @author 김은별
+ * 나중에 이력적기(수정일자,수정자, 수정내용안내)
+ */
 @Controller
-@lombok.extern.log4j.Log4j2
+@Log4j2
 public class MainController {
 	
 	@Autowired
@@ -59,7 +66,7 @@ public class MainController {
 		model.addAttribute("hosList", hosList);
 		List<PharmacyVO> phaList = mainService.getPhaList();
 		model.addAttribute("phaList", phaList);
-		System.out.println("phaList="+phaList);
+//		log.debug("phaList="+phaList);
 		//log.info("phaList = ",phaList);
 		return "user/home";//폴더밑에 html 이름
 	}
@@ -80,29 +87,24 @@ public class MainController {
 					            ) { //String hospitalId 이게 get으로 링크에서 받은 값
 		//병원정보
 		HospitalVO hosInfo = mainService.getHos(hospitalId);
-		//System.out.println("hosInfo"+ hosInfo);
 		model.addAttribute("hosInfo", hosInfo);
 		hosId =hospitalId;
 		
 		//병원의 의사정보
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
 		model.addAttribute("docList", docList);
-		//System.out.println("docList="+docList);
 		
 		//받아온 세션값
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute("userId");
-		//System.out.println("userId="+userId);
 		
 		//예약전 초진기록 확인
 		int clinicHistory = mainService.checkClinicHistory(userId, hospitalId);
 		model.addAttribute("clinicHistory", clinicHistory);
-		//System.out.println("clinicHistory="+clinicHistory);
 		
 		//동일병원 당일 예약(진료받기전까지/ 예약한거 진료받고나면 예약ok)중복방지
 		int reservationHistory = mainService.checkReservationHistory(userId, hospitalId);
 		model.addAttribute("reservationHistory", reservationHistory);
-		//System.out.println("reservationHistory="+reservationHistory);
 		
 		return "user/hosDetail";
 	}
@@ -148,10 +150,10 @@ public class MainController {
 	      noticeVO.setHospitalId(hosId);
 	      int noticeNo = noticeVO.getNoticeNo();
 	      NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
+	      model.addAttribute("hosId", hosId);
 	      model.addAttribute("noticeNo", noticeNo);
 	      model.addAttribute("noticeList", noticeList);
 
-		
 		return "user/userNoticeDetail";
 	}
 	
@@ -164,7 +166,6 @@ public class MainController {
 	@GetMapping("/pharmacyDetail")
 	public String phaInformation(String pharmacyId, Model model) {
 		PharmacyVO phaInfo = mainService.getPha(pharmacyId);
-		//System.out.println("phaInfo" + phaInfo);
 		model.addAttribute("phaInfo", phaInfo);
 		return "user/phaDetail";
 	}
@@ -198,8 +199,6 @@ public class MainController {
 		List<HospitalVO> subjectHosList = mainService.searchSubjectHos(mainSubject);
 		model.addAttribute("mainSubject", mainSubject);
 		model.addAttribute("subject", subjectHosList);
-		System.out.println("mainSubject="+ mainSubject);
-		System.out.println("subjectHosList="+ subjectHosList);
 		return "user/searchSubject";
 	}
 	
@@ -225,17 +224,15 @@ public class MainController {
 	@ResponseBody
 	public boolean insertPhaSelect(@RequestBody Map<String, Object> data) {
 		Object pharmacyIdList = data.get("pharmacyId");
-		 List<Object> pharmacyIdListAsList = (List<Object>) pharmacyIdList;
+		 List<String> pharmacyIdListAsList = (List<String>) pharmacyIdList;
 		    
 		// List를 String 배열로 변환
-		String[] pharmacyIdArray = pharmacyIdListAsList.toArray(new String[0]);
-		int clinicNo = Integer.parseInt((String) data.get("clinicNo"));
-		int result = 0;
-		//System.out.println("pharmacyIdArray="+pharmacyIdArray);
-		for(int i=0; i < pharmacyIdArray.length; i++) {
-			result += mainService.insertPhaSelect(pharmacyIdArray[i], clinicNo);
+		 int clinicNo = Integer.parseInt((String) data.get("clinicNo"));
+		 int result = 0;
+		//String[] pharmacyIdArray = pharmacyIdListAsList.toArray(new String[0]);
+		for(int i=0; i < pharmacyIdListAsList.size(); i++) {
+			result += mainService.insertPhaSelect(pharmacyIdListAsList.get(i), clinicNo);
 		}
-		//System.out.println("result=" + result);
 		if(result == 0) { //insert 안되면 false
 			return false;
 		}else { //insert되면 true
@@ -268,32 +265,9 @@ public class MainController {
 		model.addAttribute("userId", userId);
 		//System.out.println("userId="+userId);
 		
-		//병원 휴무일 보내기(숫자형태로 전환해서 보내는 중)
-		Map<String, Integer> dayList = new HashMap<>();
-		dayList.put("i1", 1);//월
-		dayList.put("i2", 2);//화
-		dayList.put("i3", 3);//수
-		dayList.put("i4", 4);//목
-		dayList.put("i5", 5);//금
-		dayList.put("i6", 6);//토
-		dayList.put("i7", 0);//일
 		String date = hosInfo.getHoliday();
-		//System.out.println("date="+date);
-		//System.out.println(dayList.get("i1"));
-		if(date.length() < 3){
-			List<Integer> newDate = new ArrayList<>();
-			newDate.add(dayList.get(date));
-			System.out.println("newDate요일하나"+newDate);
-			model.addAttribute("newDate", newDate);
-		}else {
-			String[] sliceDate = date.split(",");
-			List<Integer> newDate = new ArrayList<>();
-			for(int i=0; i < sliceDate.length; i++) {
-				newDate.add(dayList.get(sliceDate[i]));
-			}
-			System.out.println("newDate요일여러개="+newDate);
-			model.addAttribute("newDate", newDate);
-		}
+		
+		model.addAttribute("newDate", day(date));
 		
 		return "user/contactReserve";
 	}
@@ -315,6 +289,33 @@ public class MainController {
 		}
 	}
 	
+	
+	private List<Integer> day(String date){
+		//병원 휴무일 보내기(숫자형태로 전환해서 보내는 중)
+				Map<String, Integer> dayList = new HashMap<>();
+				dayList.put("i1", 1);//월
+				dayList.put("i2", 2);//화
+				dayList.put("i3", 3);//수
+				dayList.put("i4", 4);//목
+				dayList.put("i5", 5);//금
+				dayList.put("i6", 6);//토
+				dayList.put("i7", 0);//일
+		
+				//System.out.println("date="+date);
+				//System.out.println(dayList.get("i1"));
+
+				List<Integer> newDate = new ArrayList<>();
+
+				if(date.length() < 3){
+					newDate.add(dayList.get(date));
+				}else {
+					String[] sliceDate = date.split(",");
+					for(int i=0; i < sliceDate.length; i++) {
+						newDate.add(dayList.get(sliceDate[i]));
+					}
+				}
+				return newDate;
+	}
 	
 	/* 해당 의사의 날짜마다의 예약리스트 보여줌(모든 예약시 이미 예약된 항목 표시)
 	 * @Param ReservationVO reservationVo = 의사번호, 예약년, 예약월, 예약일
@@ -344,40 +345,15 @@ public class MainController {
 		//병원의 의사정보
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
 		model.addAttribute("docList", docList);
-		//System.out.println("docList="+docList);
 		
 		//세션으로 유저아이디 가져옴
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute("userId");
 		model.addAttribute("userId", userId);
-		//System.out.println("userId="+userId);
 		
-		//병원 휴무일 보내기(숫자형태로 전환해서 보내는 중)
-		Map<String, Integer> dayList = new HashMap<>();
-		dayList.put("i1", 1);//월
-		dayList.put("i2", 2);//화
-		dayList.put("i3", 3);//수
-		dayList.put("i4", 4);//목
-		dayList.put("i5", 5);//금
-		dayList.put("i6", 6);//토
-		dayList.put("i7", 0);//일
-		String date = hosInfo.getHoliday();
-		//System.out.println("date="+date);
-		//System.out.println(dayList.get("i1"));
-		if(date.length() < 3){
-			List<Integer> newDate = new ArrayList<>();
-			newDate.add(dayList.get(date));
-			System.out.println("newDate요일하나"+newDate);
-			model.addAttribute("newDate", newDate);
-		}else {
-			String[] sliceDate = date.split(",");
-			List<Integer> newDate = new ArrayList<>();
-			for(int i=0; i < sliceDate.length; i++) {
-				newDate.add(dayList.get(sliceDate[i]));
-			}
-			System.out.println("newDate요일여러개="+newDate);
-			model.addAttribute("newDate", newDate);
-		}
+		//휴일 코드를 요일번호로 변경
+		String date = hosInfo.getHoliday();		
+		model.addAttribute("newDate", day(date));
 		
 		return "user/untactReserve";
 	}
@@ -390,9 +366,7 @@ public class MainController {
 	@PostMapping("/untactReserve")
 	@ResponseBody
 	public boolean insertUntactReservation(@RequestBody ReservationVO reservationVo) {
-		//System.out.println("reservationVo"+reservationVo);
 		int result = mainService.insertUntactReservation(reservationVo);
-		System.out.println("insertUntactReservation="+result);
 		if(result == 0) { //insert 안되면 false
 			return false;
 		}else { //insert되면 true
@@ -423,38 +397,22 @@ public class MainController {
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute("userId");
 		model.addAttribute("userId", userId);
-		//System.out.println("userId="+userId);
 		
-		//병원 휴무일 보내기(숫자형태로 전환해서 보내는 중)
-		Map<String, Integer> dayList = new HashMap<>();
-		dayList.put("i1", 1);//월
-		dayList.put("i2", 2);//화
-		dayList.put("i3", 3);//수
-		dayList.put("i4", 4);//목
-		dayList.put("i5", 5);//금
-		dayList.put("i6", 6);//토
-		dayList.put("i7", 0);//일
+		//휴일 코드를 요일번호로 변경
 		String date = hosInfo.getHoliday();
-		//System.out.println("date="+date);
-		//System.out.println(dayList.get("i1"));
-		if(date.length() < 3){
-			List<Integer> newDate = new ArrayList<>();
-			newDate.add(dayList.get(date));
-			System.out.println("newDate요일하나"+newDate);
-			model.addAttribute("newDate", newDate);
-		}else {
-			String[] sliceDate = date.split(",");
-			List<Integer> newDate = new ArrayList<>();
-			for(int i=0; i < sliceDate.length; i++) {
-				newDate.add(dayList.get(sliceDate[i]));
-			}
-			System.out.println("newDate요일여러개="+newDate);
-			model.addAttribute("newDate", newDate);
-		}
-		
+		model.addAttribute("newDate", day(date));
 		return "user/untactAccept";
 	}
 
+	private String nextTime(int minute, int hour) {
+		String canClinicNow ="";
+		if(minute >= 30) {
+    		canClinicNow = String.valueOf(hour + 1).concat(":00");
+    	}else{
+    		canClinicNow = String.valueOf(hour).concat(":30");
+    	}
+		return canClinicNow;
+	}
 	
 	/* 비대면실시간접수페이지(대기현황)
 	 * @Param DoctorVO doctorVO = 의사번호
@@ -510,6 +468,7 @@ public class MainController {
 		
         if(!findWaitingList.isEmpty()) {
         	// 가장 빠른 예약시간 구하기
+        	//firstReserve = Collections.max(newTimes);
 	        for (int i = 0; i < newTimes.size(); i++) {
 	            if (Integer.parseInt(newTimes.get(i)) < Integer.parseInt(firstReserve)) {
 	                firstReserve = newTimes.get(i);
@@ -525,23 +484,15 @@ public class MainController {
         
         //▶ 만약 대기하는 사람이 없으면
         if(times.isEmpty()) {
-			System.out.println("현재 대기하는 인원 없음");
+//			System.out.println("현재 대기하는 인원 없음");
 			
 			//의사 진료시간에 맞게 조건을 걸어야하지만 여
-			if(minute >= 30) {
-        		canClinicNow = String.valueOf(hour + 1).concat(":00");
-        	}else{
-        		canClinicNow = String.valueOf(hour).concat(":30");
-        	}
+			canClinicNow = nextTime(minute, hour);
         
         //▶ 대기하는 사람이 있지만 지금 당장 예약할 수 있을때(현재시간 + 1시간한게 가장빠른 예약시간보다 더 빠르면)
         }else if(hour + 1  < firstReserveHour) {
-        	System.out.println("현재 대기 인원은 있지만 내 앞엔 없음");
-        	if(minute >= 30) {
-        		canClinicNow = String.valueOf(hour + 1).concat(":00");
-        	}else {
-        		canClinicNow = String.valueOf(hour).concat(":30");
-        	}
+//        	System.out.println("현재 대기 인원은 있지만 내 앞엔 없음");
+        	canClinicNow = nextTime(minute, hour);
         	
         //▶ 대기하는 사람도 있고 지금당장 예약할 수 없을떄
         }else {
@@ -576,9 +527,6 @@ public class MainController {
 				//1. 빈 예약찾는 연산
 				for(int i= 0; i < (newTimes.size()-1) ; i++) {
 					int extraNum = Integer.parseInt(newTimes.get(i + 1)) - Integer.parseInt(newTimes.get(i));
-					System.out.println("+ "+newTimes.get(i + 1));
-					System.out.println("- "+newTimes.get(i));
-					System.out.println("연산결과값= "+extraNum);
 					
 					if(extraNum >= 100 ) { //1.연산값이 100이상일때 = 중간에 빈예약이 있다는 뜻
 						System.out.println("현재 대기인원 여러명임");
@@ -648,50 +596,50 @@ public class MainController {
 	   }
 	   
 	/*유저 QNA insert*/
-//	   @PostMapping("/qnaUserForm")
-//	   public void insertQnaMemProcess(
-//	                           @ModelAttribute QnaVO vo,
-//	                           HttpServletResponse resp,
-//	                           HttpServletRequest request) {
-//
-//	      resp.setContentType("text/html; charset=UTF-8");
-//	      HttpSession session = request.getSession();
-//	      String userId = (String) session.getAttribute("userId");
-//	      
-//	      vo.setHospitalId(hosId);
-//	      vo.setUserId(userId);
-//	      
-//	      if (vo.getUploadFiles()[0].isEmpty()) {
-//	         hospitalService.insertQnaMem(vo);
-//	         
-//	      }else {   
-//	         
-//	         hospitalService.insertQnaMem(vo);
-//	         
-//	         List<String> fileNames = fileUploadService.uploadFiles(vo.getUploadFiles());
-//
-//	         // 파일정보
-//	         HashMap<String, Object> map = new HashMap<String, Object>();
-//	         map.put("chkList", fileNames);
-//
-//	         for (String name : fileNames) {
-//	            vo.setFileName(name);
-//	            hospitalService.insertAttachQnaAns(vo);
-//	         }
-//	         
-//	      }
-//	      PrintWriter out;
-//	      try {
-//	         out = resp.getWriter();
-//	         out.println("<script language='javascript'>");
-//	         out.println("alert('등록을 성공했습니다.')");
-//	         out.println("window.location.href = '/hospitalDetail?hospitalId=" + hosId + "';");
-//	         out.println("</script>");
-//	         out.flush();
-//	      } catch (IOException e) {
-//	         e.printStackTrace();
-//	      }
-//
-//	   }
+	   @PostMapping("/qnaUserForm")
+	   public void insertQnaMemProcess(
+	                           @ModelAttribute QnaVO vo,
+	                           HttpServletResponse resp,
+	                           HttpServletRequest request) {
+
+	      resp.setContentType("text/html; charset=UTF-8");
+	      HttpSession session = request.getSession();
+	      String userId = (String) session.getAttribute("userId");
+	      
+	      vo.setHospitalId(hosId);
+	      vo.setUserId(userId);
+	      
+	      if (vo.getUploadFiles()[0].isEmpty()) {
+	         hospitalService.insertQnaMem(vo);
+	         
+	      }else {   
+	         
+	         hospitalService.insertQnaMem(vo);
+	         
+	         List<String> fileNames = fileUploadService.uploadFiles(vo.getUploadFiles());
+
+	         // 파일정보
+	         HashMap<String, Object> map = new HashMap<String, Object>();
+	         map.put("chkList", fileNames);
+
+	         for (String name : fileNames) {
+	            vo.setFileName(name);
+	            hospitalService.insertAttachQnaAns(vo);
+	         }
+	         
+	      }
+	      PrintWriter out;
+	      try {
+	         out = resp.getWriter();
+	         out.println("<script language='javascript'>");
+	         out.println("alert('등록을 성공했습니다.')");
+	         out.println("window.location.href = '/hospitalDetail?hospitalId=" + hosId + "';");
+	         out.println("</script>");
+	         out.flush();
+	      } catch (IOException e) {
+	         e.printStackTrace();
+	      }
+
+	   }
 
 }

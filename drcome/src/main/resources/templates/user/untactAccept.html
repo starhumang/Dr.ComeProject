@@ -486,24 +486,25 @@ thead tr:nth-child(3) th {
 					console.log("canClinicNow",canClinicNow);
 					console.log("ClinicYN",ClinicYN);
 					
-					
+					//접수 대기 인원과 시간
 					document.querySelector('.pCount').innerText = '현재 접수 대기인원은 '+waitingPP+'명이며'
 					let date = new Date;
 					let hour = date.getHours();
 					let minutes = date.getMinutes();
-					//console.log(hour,':',minutes)
-					let ClinicNowHour = canClinicNow.substr(0,2);
-					let ClinicNowMinute = canClinicNow.substr(3,2);
-					//console.log(ClinicNowHour,':',ClinicNowMinute);
+// 					console.log(hour,':',minutes)
+					let ClinicNowHour = canClinicNow.substr(0,2);//가능한 가장 빠른 예약 시
+					let ClinicNowMinute = canClinicNow.substr(3,2);//가능한 가장 빠른 분
+					console.log(ClinicNowHour,':',ClinicNowMinute);
 					
-					let waitingHour = String(ClinicNowHour-hour);
-					if(waitingHour == 1){
-						waitingHour = String(0);
-					}
-					let waitingMinute = String((60 - minutes) + parseInt(ClinicNowMinute));
 					
-					//console.log( String(waitingMinute));
-					//console.log(waitingHour,':',waitingMinute);
+					let nowTime = minutes + (hour * 60);
+					let canReserveTime = parseInt(ClinicNowMinute) + (parseInt(ClinicNowHour)*60);
+// 					console.log("nowTime=",nowTime);
+// 					console.log("canReserveTime=",canReserveTime);
+					
+					//각 시간을 빼서 계산
+					let waitingHour = String(Math.floor((canReserveTime - nowTime)/ 60)); //대기시간
+					let waitingMinute = String((canReserveTime - nowTime)%60);//대기 분
 										
 					document.querySelector('.wait').innerText = '예상 대기시간은 '+ waitingHour+'시간 '+ waitingMinute +'분 입니다.'
 					
@@ -555,7 +556,7 @@ thead tr:nth-child(3) th {
 					success: function(response){
 						Swal.fire({
 				   			  title: "접수가 완료되었습니다!",
-				   			  html: '화상 진료하기 전 알람을 따로 드리니 <br> 안심하고 기다려주세요',
+				   			  html: '화상 진료하기 전 상단에 알림을 따로 드리니 <br> 안심하고 페이지를 나가셔도 됩니다.',
 				   			  icon: "success"
 				   			}).then(result=>{
 				   				if(result.value){

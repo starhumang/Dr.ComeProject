@@ -11,6 +11,9 @@
 <!-- 주소검색 다음api -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+
 <style scoped>
 .ho:hover {
 	border-radius: 5%;
@@ -88,39 +91,49 @@
 .subject>tr>td {
 	margin-top: 20px;
 }
+.movebody{
+	position:relative;
+	background-color: white;
+}
+.move{
+	position:absolute;
+	z-index: 1; /* 이미지 위에 배치*/
+	transform: translate(-10%, -160%);
+	left:50%;
+	width:600px;
+	text-align:center;
+}
+.ment{
+	right:80%;
+}
 </style>
 
 </head>
 <body>
 	<div layout:fragment="content" style="caret-color:transparent;">
 		<!-- Header Start -->
-		<div class="container-fluid bg-primary py-5 mb-5 page-header"
-			style="height: 480px;">
-			<div class="container py-5">
-				<div class="row justify-content-center">
-					<div class="col-lg-10 text-center" style="padding-top: 40px;">
-						<h1 class="display-3 text-white animated slideInDown"
+		<div class="container-fluid movebody"style="height: 480px;">
+			 <img src="/images/banner4.png" alt="이미지 설명" style="width:100%; height:450px;">
+			<div class="container py-5" style="width">
+				<div class="row justify-content-center ">
+					<div class="move">
+						<h1 class="display-3 text-white animated slideInDown ment"
 							style="font-size: 40px;">어떤 병원을 찾고 계신가요?</h1>
 
-						<div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
-							style="padding-left: 170px; margin-top: 40px;">
+						<div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 " role="search"
+							style=" margin-top: 40px;">
 
 							<!-- 검색창 -->
 							<input type="search" id="search"
 								class="form-control form-control-dark text-bg-dark search"
 								placeholder="찾으시는 병원이나 약국을 검색해보세요" aria-label="Search"
-								style="width: 78%; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
+								style="width: 600px; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
 
-							<!-- 검색참고용 -->
-							<!-- <form class="d-flex" action="searchList.do" method="POST">
-								<input style="width: 800px;" class="form-control me-sm-2" type="search" placeholder="Search" name="word">
-								<button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-							</form> -->
-
+					
 							<!-- 돋보기 아이콘 -->
-							<svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
+							<svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px"
 								onclick="searchResult()" fill="rgb(255,255,255)"
-								style="position: relative; top: -50px; left: 300px; cursor: pointer;"
+								style="position: relative; top: -50px; left: 370px; cursor: pointer;"
 								class="bi bi-search" viewBox="0 0 16 16">
                           		<path
 									d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
@@ -635,7 +648,7 @@
 	        	    element.style.height = '380px';
 	        	    element.setAttribute('onclick', `location.href='hospitalDetail?hospitalId=${hospital.hospitalId}'`);
 	        	    
-	        	    const imageSrc = hospital.hospitalImg ? `/images/${hospital.hospitalImg}` : '/images/hospital.png';
+	        	    const imageSrc = hospital.hospitalImg ? `/img/${hospital.hospitalImg}` : '/img/hospital.png';
 	        	    element.innerHTML = `
 	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
 	        	            <div class="team-item bg-light">
@@ -666,7 +679,7 @@
 	        	    element.style.height = '380px';
 	        	    element.setAttribute('onclick', `location.href='pharmacyDetail?pharmacyId=${pharmacy.pharmacyId}'`);
 	        	    
-	        	    const imageSrc = pharmacy.pharmacyImg ? `/images/${pharmacy.pharmacyImg}` : '/images/pharmacy.png';
+	        	    const imageSrc = pharmacy.pharmacyImg ? `/img/${pharmacy.pharmacyImg}` : '/img/pharmacy.png';
 	        	    element.innerHTML = `
 	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
 	        	            <div class="team-item bg-light">
@@ -891,7 +904,11 @@
 	  			let word = document.getElementById("search").value;
 	  			console.log("검색한 단어= ",word);
 	  			if(word == ''){
-	  				alert("검색한 단어가 없습니다.");
+	  				Swal.fire({
+			   			  title: "단어를 입력해주세요",
+			   			  html: '검색한 단어가 없습니다.',
+			   			  icon: "error"
+			   			});
 	  			}else{
 	  				location.href="search?word="+word;
 	  			}

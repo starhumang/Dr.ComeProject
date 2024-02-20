@@ -106,7 +106,7 @@ public class MainController {
 		return "user/hosDetail";
 	}
 
-	
+	/*병원 공지사항 상세페이징*/
 	@GetMapping("/hospitalDetailP")
 	@ResponseBody
 	public Map<String, Object> hosInformation(@RequestParam(required = false, defaultValue = "1") String page,
@@ -185,25 +185,6 @@ public class MainController {
 		model.addAttribute("word", word);
 		return "user/search";
 	}
-	
-	/*@Override 중간때 검색 참고용
-	public void execute(HttpServletRequest req, HttpServletResponse resp) {
-		String path = "restaurant/restaurantSearch.tiles";
-		
-		String word = req.getParameter("word");
-		
-		RestaurantService svc = new RestaurantServiceImpl();
-		List<RestaurantVO> list = svc.selectSearchList(word);
-		
-		req.setAttribute("searchWord", word);
-		req.setAttribute("mlist", list);
-		
-		try {
-			req.getRequestDispatcher(path).forward(req, resp);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}*/
 	
 	
 	/*진료과목별 병원검색
@@ -657,13 +638,15 @@ public class MainController {
         
 		return response; 
 	}
-	
+		
+	/*유저 QNA 작성폼*/
 	   @GetMapping("/qnaUserForm")
 	   public String insertQnaMemForm(String hospitalId) {
 	      hosId =hospitalId;
 	       return "user/qnaUserForm";
 	   }
 	   
+	/*유저 QNA insert*/
 //	   @PostMapping("/qnaUserForm")
 //	   public void insertQnaMemProcess(
 //	                           @ModelAttribute QnaVO vo,

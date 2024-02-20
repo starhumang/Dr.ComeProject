@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -49,9 +48,10 @@ public class PatientController {
 	PatientMapper mapper;
 
 	/**
-	 * 공통 정보 : 병원 
-	 * @param principal 병원 아이디 
-	 * @return hosSel 
+	 * 공통 정보 : 병원
+	 * 
+	 * @param principal 병원 아이디
+	 * @return hosSel
 	 */
 	@ModelAttribute("hospitalSel")
 	public Hospital getServerTime(Principal principal) {
@@ -59,13 +59,12 @@ public class PatientController {
 		Hospital hosSel = hospitalService.findByhospitalId(hospitalId);
 		return hosSel;
 	}
-	
 
 	/**
 	 * 의사 알람 테이블 인서트 + 입장하기 상태로 업데이트 진행
 	 * 
 	 * @param dao (reserveNo , userId , contentCode , prefix)
-	 * @return int 저장건수 
+	 * @return int 저장건수
 	 */
 	@PostMapping("saveAlarm")
 	@ResponseBody
@@ -118,7 +117,8 @@ public class PatientController {
 	 */
 	@GetMapping("clist")
 	@ResponseBody
-	public Map<String, Object> clinicList(Principal principal, @RequestParam(required = false, defaultValue = "1") int page, String uid) {   //초기값 설정가능
+	public Map<String, Object> clinicList(Principal principal,
+			@RequestParam(required = false, defaultValue = "1") int page, String uid) {
 
 		PatientVO vo = new PatientVO();
 
@@ -127,12 +127,8 @@ public class PatientController {
 		// 병원아이디
 		vo.setHospitalId(principal.getName());
 
-		
 		// 전체갯수 가져오기
 		int total = patientService.totalList(vo);
-
-		// 선택된 페이지 인트로 변환
-		//int cpage = Integer.parseInt(page);
 
 		// 페이지네이션
 		PageDTO dto = new PageDTO(page, total);
@@ -167,7 +163,7 @@ public class PatientController {
 	 * 약검색
 	 * 
 	 * @param vo medicineName
-	 * @return patientService
+	 * @return List<PatientVO>
 	 */
 	@GetMapping("medicine")
 	@ResponseBody
@@ -183,7 +179,7 @@ public class PatientController {
 	 * @param reserveNo, clinicSymptom specificity payYn perscriptionYn hospitalId
 	 *                   visit userId perary=[{dosage , doseCnt ,doseDay,
 	 *                   medicineNo},{}]
-	 * @return patientService
+	 * @return int 저장건수
 	 */
 
 	@PostMapping("saveClinic")
@@ -197,7 +193,7 @@ public class PatientController {
 	 * 진료종료시 진료완료로 상태업데이트
 	 * 
 	 * @param vo reserveNo
-	 * @return patientService
+	 * @return int 업데이트건수
 	 */
 	@PostMapping("/updateStatus")
 	@ResponseBody
@@ -210,7 +206,7 @@ public class PatientController {
 	 * 대면진료 결제완료처리버튼 누를시 결제완료로 상태업데이트
 	 * 
 	 * @param vo reserveNo
-	 * @return mapper
+	 * @return int 업데이트건수
 	 */
 	@PostMapping("/updatePayment")
 	@ResponseBody

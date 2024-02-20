@@ -55,8 +55,8 @@
 
 	<!-- 재진 -최근 진료 날짜로 업데이트 -->
 	<update id="updateDate" parameterType="PatientVO">
-		update patient set
-		current_date =SYSDATE
+		update patient 
+		set current_date =SYSDATE
 		where hospital_id = #{hospitalId} and user_id=#{userId}
 	</update>
 

@@ -68,7 +68,6 @@ public class PatientServiceImpl implements PatientService {
 		mapper.updateDate(vo);
 
 		// 환자번호 select
-
 		int pno = mapper.searchPno(vo);
 
 		// vo에 set

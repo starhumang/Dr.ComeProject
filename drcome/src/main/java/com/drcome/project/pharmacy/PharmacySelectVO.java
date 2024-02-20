@@ -23,4 +23,5 @@ public class PharmacySelectVO {
 	private String pharmacyName;
 	private String pharmacyPhone;
 	private String printStatus;
+	private String selectPharmacyid;
 }

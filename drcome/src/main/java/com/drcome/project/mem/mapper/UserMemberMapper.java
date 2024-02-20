@@ -1,11 +1,13 @@
 package com.drcome.project.mem.mapper;
 
 import java.util.List;
+import java.util.Map;
 
 import com.drcome.project.main.service.ClinicPayVO;
 import com.drcome.project.main.service.PaymentVO;
 import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.HospitalVO;
+import com.drcome.project.mem.service.AlarmVO;
 import com.drcome.project.mem.service.MemVO;
 import com.drcome.project.mem.service.UserMemberVO;
 import com.drcome.project.pharmacy.PharmacySelectVO;
@@ -55,6 +57,10 @@ public interface UserMemberMapper {
 //	예약 조회
 	public List<ReservationVO> selectUserReserveInfo(String userId);
 	
+	public List<Map<String, Object>> selectUserReserveInfo1(Map<String, Object> map);
+	
+	public int UserReserveCount(Map<String, Object> map);
+	
 //	결제 정보
 	public ClinicPayVO selectClinicPay(int reserveNo);
 	
@@ -69,4 +75,14 @@ public interface UserMemberMapper {
 	
 //	약국 선택 목록
 	public List<PharmacySelectVO> myPharmacySelect(int reserveNo);
+	
+//	QnA 전체
+	public List<Map<String, Object>> selectUserQnaList(Map<String, Object> map);
+		
+//	QnA 리스트 페이징
+	public int qnaUserCount(Map<String, Object> map);
+	
+	public List<AlarmVO> myAlarmList(String userId);
+	
+	int chekedAlarm(int alarmNo);
 }

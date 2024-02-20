@@ -66,10 +66,6 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 			auserId = parts[0];
 			acontent = parts[1];
 			aselectno = parts[2];
-
-			System.out.println(acontent); // 알람 내용
-			// System.out.println(auserId); // 알람받을 회원 아이디
-			// System.out.println(aselectno); // 취소된 약국 선택 번호
 		} else {
 			auserId = payload;
 		}

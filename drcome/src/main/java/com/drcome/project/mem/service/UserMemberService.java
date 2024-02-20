@@ -1,5 +1,6 @@
 package com.drcome.project.mem.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.security.core.Authentication;
@@ -54,5 +55,9 @@ public interface UserMemberService {
 	
 //	결제
 	int paymentUpdate(PaymentVO vo);
+	
+//	QnA 전체
+	public List<Map<String, Object>> getUserQnaList(Map<String, Object> map);
+	public int qnaUserCount(Map<String, Object> map);
 
 }

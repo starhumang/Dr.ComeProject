@@ -10,5 +10,6 @@ public class AlarmDao {
 	private String checkCode;
 	private String prefix;
 	private int reserveNo;
+	private int pharmacySelectno;
 
 }

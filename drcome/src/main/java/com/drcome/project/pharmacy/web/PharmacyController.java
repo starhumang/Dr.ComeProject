@@ -13,13 +13,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
 
+import com.drcome.project.common.service.AlarmDao;
+import com.drcome.project.common.service.AlarmService;
 import com.drcome.project.common.service.FileUploadService;
 import com.drcome.project.common.service.PageDTO;
-import com.drcome.project.medical.service.HospitalVO;
 import com.drcome.project.mem.service.UserMemberService;
 import com.drcome.project.pharmacy.PharmacySelectVO;
 import com.drcome.project.pharmacy.PharmacyVO;
@@ -46,7 +48,11 @@ public class PharmacyController {
 	
 	@Autowired
 	private FileUploadService fileUploadService;
+	
+	@Autowired
+	AlarmService aservice;
 
+	// 사용 안 함
 	@GetMapping("/pharmacy")
 	public String home() {
 		return "pharmacy/home";
@@ -70,17 +76,10 @@ public class PharmacyController {
 	
 	/**
 	 * 약국 처방현황 페이지
-	 * @param principal 세선
-	 * @param pharmacyId
 	 * @return pharmacy/perscriptionStatus
 	 */
 	@GetMapping("/pharmacy/status")
-	public String pharmacyprint(Principal principal, String pharmacyId) {
-		pharmacyId = principal.getName();
-		/*
-		 * List<Map<String, Object>> plist = pservice.selectPrescriptionList(date,
-		 * pharmacyId); model.addAttribute("plist", plist);
-		 */
+	public String pharmacyprint() {
 		return "pharmacy/perscriptionStatus";
 	}
 
@@ -103,41 +102,50 @@ public class PharmacyController {
 		parammap.put("pharmacyId", pharmacyId);
 		parammap.put("page", page);
 		
-		System.out.println("keword가 있을까요??" + parammap);
+		// result map
+		Map<String, Object> map = new HashMap();
+		
+		// 리스트 전체갯수 가져오기
+		int total = pservice.percount(parammap, date);
+
+		// 페이지네이션(currentpage, total)
+		PageDTO dto = new PageDTO(page, total);
+		
+		List<Map<String, Object>> plist = pservice.selectPrescriptionList(parammap, date);
+		
+		map.put("plist", plist); 
+		map.put("pagedto", dto); 
+		
+		return map;
+	}
+	
+	// 현재날짜 처방 재역
+	@GetMapping("/pharmacy/cstatus/{date}")
+	@ResponseBody
+	public Map<String, Object> currpharmacyList(Principal principal, 
+											@RequestParam(required = false, defaultValue = "1") int page, 
+			                                @PathVariable String date, 
+			                                @RequestParam Map<String, Object> parammap) {
+		
+		String pharmacyId = principal.getName();
+		parammap.put("pharmacyId", pharmacyId);
+		parammap.put("page", page);
 		
 		// result map
 		Map<String, Object> map = new HashMap();
 		
-		/*
-		 * map.put("page", parammap.get("page")); map.put("pharmacyId",
-		 * parammap.get("pharmacyId")); map.put("date", date); map.put("keyword",
-		 * parammap.get("keyword")); map.put("type", parammap.get("type"));
-		 * System.out.println("map" + map);
-		 */
-		
-		
 		// 리스트 전체갯수 가져오기
-		int total = pservice.percount(parammap, date);
+		int total = pservice.currpercount(parammap, date);
 		System.out.println("토탈" + total);
-		
-		
-		// 선택된 페이지 인트로 변환
+
 
 		// 페이지네이션(currentpage, total)
 		PageDTO dto = new PageDTO(page, total);
-		System.out.println("page" + page);
-		System.out.println("total" + total);
-		System.out.println("dtd 객체 " + dto);
 		
-		List<Map<String, Object>> plist = pservice.selectPrescriptionList(parammap, date);
+		List<Map<String, Object>> currplist = pservice.perCurrList(parammap, date);
 		
-		System.out.println(plist.size());
 		
-		// ajax는 return으로 
-//		model.addAttribute("plist", plist);
-//		model.addAttribute("dto", dto);
-		
-		map.put("plist", plist); 
+		map.put("currplist", currplist); 
 		map.put("pagedto", dto); 
 		
 		return map;
@@ -151,9 +159,10 @@ public class PharmacyController {
 	 */
 	@PostMapping("/pharmacy/rejection")
 	@ResponseBody
-	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, PharmacySelectVO pharmacyselectVO) {
-		System.out.println(pharmacyselectVO);
+	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, 
+											   PharmacySelectVO pharmacyselectVO) {
 		pharmacyselectVO.setPharmacyId(id);
+
 		return pservice.updaterejection(pharmacyselectVO);
 	}
 	
@@ -212,4 +221,48 @@ public class PharmacyController {
 		}
 		return response;
 	}
+	
+	/**
+	 * 처방전 반환 시, 알림 테이블에 insert
+	 * @param dao 상태저장 정보
+	 * @return aservice.saveAlarmPharmacy(dao)
+	 */
+	@PostMapping("/saveAlarmP")
+	@ResponseBody
+	public int savePharmacyAlarm(@RequestBody AlarmDao dao) {
+		return aservice.saveAlarmPharmacy(dao);
+	}
+	
+	/**
+	 * 처방전 조회 
+	 * @param no clinicNo 
+	 * @return service
+	 */
+	@GetMapping("/pharmacy/perscription/{no}")
+	@ResponseBody
+	public List<PharmacySelectVO> perscriptionInfo(@PathVariable Integer no) {
+
+		return pservice.getPerscription(no);
+	}
+	
+	@PostMapping("/printStatusupdate")
+	@ResponseBody
+	public int updateprintStatus(@RequestBody PharmacySelectVO vo,
+	                             Principal principal) {
+	    // 출력 상태 업데이트
+	    String pharmacyId = principal.getName();
+	    pservice.printStatusModify(vo);
+	    
+	    // 출력한 약국 id insert
+	    vo.setPharmacyId(pharmacyId);
+	    int result = pservice.printpharmacyModify(vo);
+
+	    if (result == 1) {
+	        return 1; // 성공적으로 실행되었을 경우 1 반환
+	    } else {
+	        return 0; // 실패했을 경우 0 반환
+	    }
+	}
+	
 }
+

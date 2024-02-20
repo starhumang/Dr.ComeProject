@@ -640,7 +640,9 @@ public class HospitalController {
 	public String noticeDetail(Principal principal, NoticeVO noticeVO, Model model) {
 		noticeVO.setHospitalId(principal.getName());
 		int noticeNo = noticeVO.getNoticeNo();
+		
 		NoticeVO notice = hospitalService.getNoticeDetail(noticeVO);
+
 		model.addAttribute("noticeNo", noticeNo);
 		model.addAttribute("noticeList", notice);
 		return "hospital/noticeDetail";

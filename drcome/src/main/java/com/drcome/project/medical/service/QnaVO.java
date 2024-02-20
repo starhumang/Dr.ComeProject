@@ -28,6 +28,7 @@ public class QnaVO {
 	private String ansStatus;
 	private Integer qnaNo;
 	private String hospitalId;
+	private String hospitalName;
 	private Date wdate;
 	private Date udate;
 	

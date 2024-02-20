@@ -19,9 +19,9 @@
 </head>
 <body>
 	<div layout:fragment="content">
-		<div class="user-logout-link">
+<!-- 		<div class="user-logout-link">
 			<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
-		</div>
+		</div> -->
 		<div class="container-fluid">
 			<!-- 날짜 및 병원 정보 헤더 -->
 			<div class="head_info">
@@ -45,7 +45,7 @@
 									<div
 										class="text-xs font-weight-bold text-primary text-uppercase mb-1">
 										reservation(Monthly)</div>
-									<div class="h5 mb-0 font-weight-bold text-gray-800">82</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800"><p th:text="${resCnt}"></p></div>
 								</div>
 								<div class="col-auto">
 									<i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -64,8 +64,8 @@
 									<div
 										class="text-xs font-weight-bold text-success text-uppercase mb-1">
 										Earnings(Monthly)</div>
-									<div class="h5 mb-0 font-weight-bold text-gray-800">&#8361
-										875,000</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800"><p>&#8361
+										<span th:text="${#numbers.formatInteger(payMonth, 0, 'COMMA')}"></span></p></div>
 								</div>
 								<div class="col-auto">
 									<i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
@@ -86,12 +86,13 @@
 									</div>
 									<div class="row no-gutters align-items-center">
 										<div class="col-auto">
-											<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">62%</div>
+											<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800"><p th:text="|${c2Rate}%|"></p></div>
 										</div>
 										<div class="col">
 											<div class="progress progress-sm mr-2">
 												<div class="progress-bar bg-info" role="progressbar"
-													style="width: 62%" aria-valuenow="62" aria-valuemin="0"
+													 th:style="'width: ' + ${c2Rate} + '%'"
+                									 th:aria-valuenow="${c2Rate}" aria-valuemin="0"
 													aria-valuemax="100"></div>
 											</div>
 										</div>
@@ -113,8 +114,8 @@
 								<div class="col mr-2">
 									<div
 										class="text-xs font-weight-bold text-warning text-uppercase mb-1">
-										Review</div>
-									<div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+										QnA(Monthly)</div>
+									<div class="h5 mb-0 font-weight-bold text-gray-800"><p th:text="${qnaCnt}"></p></div>
 								</div>
 								<div class="col-auto">
 									<i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -156,11 +157,14 @@
 								<td th:text="${#dates.format(to.userBirthday, 'yyyy-MM-dd')}"></td>
 								<td th:text="${to.gender}"></td>
 								<td th:text="${to.userPhone}"></td>
-								<td th:text="|${to.reserveTime} : 00|"></td>
+								<td th:text="${to.reserveTime}"></td>
 								<td th:text="${to.doctorName}"></td>
 
-								<td th:if="${ to.reserveKindstatus == 'c1' }">대면</td>
-								<td th:unless="${ to.reserveKindstatus == 'c1' }">비대면</td>
+								<td>
+					            	<th:block th:each="detailCode : ${application.detailCode_c}" >
+					                	<span th:if="${detailCode.detailCode} == ${to.reserveKindstatus}" th:text="${detailCode.codeName}"></span>
+					            	</th:block>
+				            	</td>
 							</tr>
 						</tbody>
 					</table>
@@ -171,6 +175,10 @@
 				<div class="card-header py-3"
 					style="display: flex; justify-content: space-between; align-items: center;">
 					<h5 class="m-0 font-weight-bold text-secondary">Q&A</h5>
+					<div class="btn1">
+						<a th:href="@{/hospital/qnaList}"
+							class="btn btn-sm btn-dark shadow-sm">더보기</a>
+					</div>
 				</div>
 				<div class="card-body"
 					style="display: flex; justify-content: space-around;">
@@ -184,9 +192,17 @@
 							<tbody>
 								<tr th:each="qnax : ${QnAX}">
 									<td th:text="${qnax.userId}"></td>
-									<td th:text="${qnax.categoryStatus}"></td>
+									<td>
+						            	<th:block th:each="detailCode : ${application.detailCode_g}" >
+						                	<span th:if="${detailCode.detailCode} == ${qnax.categoryStatus}" th:text="${detailCode.codeName}"></span>
+						            	</th:block>
+					            	</td>
 									<td th:text="${qnax.title}"></td>
-									<td th:text="${qnax.ansStatus}"></td>
+									<td>
+						            	<th:block th:each="detailCode : ${application.detailCode_j}" >
+						                	<span th:if="${detailCode.detailCode} == ${qnax.ansStatus}" th:text="${detailCode.codeName}"></span>
+						            	</th:block>
+					            	</td>									
 								</tr>
 							</tbody>
 						</table>
@@ -201,9 +217,17 @@
 							<tbody>
 								<tr th:each="qnao : ${QnAO}">
 									<td th:text="${qnao.userId}"></td>
-									<td th:text="${qnao.categoryStatus}"></td>
+									<td>
+						            	<th:block th:each="detailCode : ${application.detailCode_g}" >
+						                	<span th:if="${detailCode.detailCode} == ${qnao.categoryStatus}" th:text="${detailCode.codeName}"></span>
+						            	</th:block>
+					            	</td>
 									<td th:text="${qnao.title}"></td>
-									<td th:text="${qnao.ansStatus}"></td>
+									<td>
+						            	<th:block th:each="detailCode : ${application.detailCode_j}" >
+						                	<span th:if="${detailCode.detailCode} == ${qnao.ansStatus}" th:text="${detailCode.codeName}"></span>
+						            	</th:block>
+					            	</td>
 								</tr>
 							</tbody>
 						</table>
@@ -214,6 +238,7 @@
 
 				</div>
 			</div>
+			
 		</div>
 
 	</div>

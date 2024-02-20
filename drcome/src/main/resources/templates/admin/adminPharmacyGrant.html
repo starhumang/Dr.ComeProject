@@ -17,7 +17,10 @@
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
-						
+						<th:block th:if="${grantlistp.empty}">
+					        <p>승인 대기 목록이 없습니다.</p>
+					    </th:block>
+					    <th:block th:if="${not grantlistp.empty}">
 							<table class="table table-bordered" id="dataTable" width="100%"
 								cellspacing="0">
 								<thead>
@@ -56,6 +59,7 @@
 								</th:block>
 							</tbody>
 							</table>
+							</th:block>
 					</div>
 				</div>
 			</div>
@@ -84,11 +88,18 @@
 	          type: "post"
 	        }).done((result) => {
 	            console.log("Insert", result);
-	            swal({
-					  icon: "success",
-					  text: "약국 승인 처리 완료"
+	            if(result == 'true') {
+	            	upbtn.closest('tr').remove();
+	            	swal.fire({
+				  	icon: "success",
+				  	text: "약국 승인 처리 완료"
 					});
-	            location.reload();
+	            } else {
+	            	swal.fire({
+					  	icon: "error",
+					  	text: "약국 승인 처리 실패"
+					});
+	            }
 	          })
 	          .fail((err) => console.log(err));
 		

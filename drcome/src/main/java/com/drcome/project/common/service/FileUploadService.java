@@ -30,10 +30,10 @@ public class FileUploadService {
 		List<String> imageList = new ArrayList<>();
 
 		for (MultipartFile uploadFile : uploadFiles) {
-			if (uploadFile.getContentType().startsWith("image") == false) {
-				System.err.println("this file is not image type");
-				return null;
-			}
+//			if (uploadFile.getContentType().startsWith("image") == false) {
+//				System.err.println("this file is not image type");
+//				return null;
+//			}
 
 			String originalName = uploadFile.getOriginalFilename();
 			String fileName = originalName.substring(originalName.lastIndexOf("//") + 1);

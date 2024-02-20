@@ -1,18 +1,5 @@
 package com.drcome.project.mem.web;
 
-import com.drcome.project.common.service.FileUploadService;
-import com.drcome.project.doctor.service.PatientVO;
-import com.drcome.project.main.service.ClinicPayVO;
-import com.drcome.project.main.service.PaymentVO;
-import com.drcome.project.main.service.ReservationVO;
-import com.drcome.project.medical.service.HospitalService;
-import com.drcome.project.medical.service.HospitalVO;
-import com.drcome.project.mem.mapper.UserMemberMapper;
-import com.drcome.project.mem.service.MemVO;
-import com.drcome.project.mem.service.UserMemberService;
-import com.drcome.project.mem.service.UserMemberVO;
-import com.drcome.project.pharmacy.PharmacyVO;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +10,34 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.SessionAttribute;
+
+import com.drcome.project.common.service.FileUploadService;
+import com.drcome.project.common.service.PageDTO;
+import com.drcome.project.common.service.PageDTO2;
+import com.drcome.project.doctor.service.PatientVO;
+import com.drcome.project.main.service.ClinicPayVO;
+import com.drcome.project.main.service.MainService;
+import com.drcome.project.main.service.PaymentVO;
+import com.drcome.project.main.service.ReservationVO;
+import com.drcome.project.medical.service.HospitalService;
+import com.drcome.project.medical.service.HospitalVO;
+import com.drcome.project.medical.service.NoticeAttachVO;
+import com.drcome.project.medical.service.QnaVO;
+import com.drcome.project.mem.mapper.UserMemberMapper;
+import com.drcome.project.mem.service.AlarmVO;
+import com.drcome.project.mem.service.MemVO;
+import com.drcome.project.mem.service.UserMemberService;
+import com.drcome.project.mem.service.UserMemberVO;
+import com.drcome.project.pharmacy.PharmacySelectVO;
+import com.drcome.project.pharmacy.PharmacyVO;
+
+import lombok.extern.log4j.Log4j2;
 
 /**
  * 개요 - 스프링 시큐리티 관련 controller 클래스
@@ -36,6 +46,7 @@ import org.springframework.web.bind.annotation.SessionAttribute;
  *
  */
 @Controller
+@Log4j2
 public class UserMemberController {
 
 	@Autowired
@@ -43,6 +54,9 @@ public class UserMemberController {
 
 	@Autowired
 	HospitalService hospitalService;
+	
+	@Autowired
+	MainService mainService;
 
 	@Autowired
 	UserMemberMapper memMapper;
@@ -100,6 +114,8 @@ public class UserMemberController {
 		if (userId == null) {
 			userId = "no name";
 		}
+		
+		log.info(userId);
 
 		return userId;
 	}
@@ -119,6 +135,8 @@ public class UserMemberController {
 		vo.setUserPw(password);
 
 		int result = userMemService.updatePw(vo);
+		
+		log.info(result);
 
 		return result;
 	}
@@ -354,6 +372,22 @@ public class UserMemberController {
 	public int deleteUser(@RequestParam String userId, @RequestParam String password, Authentication auth) {
 		return userMemService.deleteUser(userId, password, auth);
 	}
+	
+	@GetMapping("/useralarm")
+	@ResponseBody
+	public Map<String, Object> userAlarm(@SessionAttribute(name = "userId", required = false) String id) {
+		Map<String, Object> map = new HashMap<>();
+		List<AlarmVO> list = memMapper.myAlarmList(id);
+		map.put("alarmList", list);
+		
+		return map;
+	}
+	
+	@GetMapping("/checkedAlarm")
+	@ResponseBody
+	public int checkedAlarm(@RequestParam int alarmNo) {
+		return memMapper.chekedAlarm(alarmNo);
+	}
 
 	/**
 	 * 마이페이지 화면으로 이동
@@ -368,13 +402,129 @@ public class UserMemberController {
 		model.addAttribute("profile", myprofile);
 		
 		// 예약 정보
-		List<ReservationVO> rInfo = memMapper.selectUserReserveInfo(id);		
-		model.addAttribute("reserveMyList", rInfo);
+//		List<ReservationVO> rInfo = memMapper.selectUserReserveInfo(id);		
+//		model.addAttribute("reserveMyList", rInfo);
 
 		return "member/usermypage";
 	}
 	
-	// 비대면 진료 - 환자
+	@GetMapping("reserveMyList")
+	@ResponseBody
+	public Map<String, Object> clinicReserveUser(@SessionAttribute(name = "userId", required = false) String id, 
+			@RequestParam Map<String, Object> param,
+			@RequestParam(required = false, defaultValue = "1") int page) {
+
+		param.put("userId", id);
+		param.put("page", page);
+		
+		Map<String, Object> map = new HashMap<>();
+		// 리스트 전체 개수
+		int total = memMapper.UserReserveCount(param);
+		
+		System.out.println("asdga"+ total);
+		
+		PageDTO dto = new PageDTO(page, total);
+		
+		List<Map<String, Object>> reserveUserList = memMapper.selectUserReserveInfo1(param);
+		
+		map.put("rlist", reserveUserList);
+		map.put("pagedto", dto);
+
+		return map;
+	}
+	
+	
+	@GetMapping("/qnaListP")
+	@ResponseBody
+	public Map<String, Object> qnaList(@SessionAttribute(name = "userId", required = false) String id,
+			@RequestParam Map<String, Object> param,
+			@RequestParam(required = false, defaultValue = "1") int page) {
+		
+		String hid = "krrlo";
+		
+		param.put("userId", id);
+		param.put("page", page);
+		param.put("hospitalId", hid);
+		
+		
+		Map<String, Object> map = new HashMap<>();
+		// 리스트 전체 개수
+		int total = userMemService.qnaUserCount(param);
+
+		// 페이지네이션(currentpage, total)
+		PageDTO2 dto = new PageDTO2(page, total);
+
+		List<Map<String, Object>> plist = userMemService.getUserQnaList(param);
+
+		map.put("plist", plist);
+		map.put("pagedto", dto);
+
+	    System.out.println("agsdasgdlgsad" + plist);
+		return map;
+	}
+	
+	@GetMapping("/qnaDetail")
+	public String qnaDetail(@ModelAttribute QnaVO qnaVO, @ModelAttribute NoticeAttachVO attVO, Model model) {
+		// QnA 정보 가져오기
+	    QnaVO qnaInfo = hospitalService.getQnaInfo(qnaVO);
+	    if (qnaInfo != null) {
+	        model.addAttribute("qnaInfo", qnaInfo);
+	    }
+	    
+	    // 첨부파일 가져오기
+	    List<NoticeAttachVO> qnaAtt = hospitalService.selectQnaAtt(attVO);
+	    model.addAttribute("qnaAtt", qnaAtt);
+	    
+	    // 답변 정보가 있는 경우
+	    if (qnaVO.getAnsCode() != null && !"undefined".equals(qnaVO.getAnsCode())) {
+	        // 답변 정보 가져오기
+	        QnaVO ansInfo = hospitalService.getAnsInfo(qnaVO);
+	        if (ansInfo != null) {
+	            model.addAttribute("ansInfo", ansInfo);
+	        }
+	    }
+	    
+	    String hospitalId = qnaVO.getHospitalId();
+	    
+	    HospitalVO hosInfo = mainService.getHos(hospitalId);
+		model.addAttribute("hosInfo", hosInfo);
+	    
+	    // 결과를 보여줄 뷰 페이지의 이름을 반환
+		return "user/qnaDetail";
+	}
+	
+	/**
+	 * 선택한 약국 정보 확인 기능
+	 * @param ReserveNo: 예약 번호
+	 * @param model
+	 * @return 선택한 약국 정보
+	 */
+	@GetMapping("/mypselect")
+	@ResponseBody
+	public Map<String, Object> myPselect(@RequestParam String ReserveNo, Model model) {
+		Map<String, Object> map = new HashMap<>();
+		int reserveNo = Integer.parseInt(ReserveNo);
+		
+		List<PharmacySelectVO> myplist = memMapper.myPharmacySelect(reserveNo);
+		
+		if (myplist != null) {
+			map.put("result", 1);
+			map.put("myplist", myplist);
+		} else {
+			map.put("result", 0);
+		}
+		
+		
+		return map;
+	}
+
+	/**
+	 * 비대면 진료 화면으로 이동
+	 * @param reserveNo: 예약 번호
+	 * @param vo: 환자 정보 VO
+	 * @param model
+	 * @return String: URL
+	 */
 	@GetMapping("untactPatient/{reserveNo}")
 	public String untactPatient(@PathVariable("reserveNo") String reserveNo, PatientVO vo, Model model) {
 		model.addAttribute("rNo", reserveNo);

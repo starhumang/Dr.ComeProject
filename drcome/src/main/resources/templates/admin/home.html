@@ -84,18 +84,11 @@
 							<div class="row no-gutters align-items-center">
 								<div class="col mr-2">
 									<div
-										class="text-xs font-weight-bold text-info text-uppercase mb-1">Rate(n-f)
+										class="text-xs font-weight-bold text-info text-uppercase mb-1">승인 대기 건수
 									</div>
 									<div class="row no-gutters align-items-center">
 										<div class="col-auto">
-											<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">62%</div>
-										</div>
-										<div class="col">
-											<div class="progress progress-sm mr-2">
-												<div class="progress-bar bg-info" role="progressbar"
-													style="width: 62%" aria-valuenow="62" aria-valuemin="0"
-													aria-valuemax="100"></div>
-											</div>
+											<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">[[${total}]]</div>
 										</div>
 									</div>
 								</div>
@@ -174,9 +167,9 @@
 							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
-							<p>병원 사용자 승인 건수 [[${grantlisth.totalPages}]]건</p>
+							<p>병원 사용자 승인 건수 [[${grantlisth.totalElements}]]건</p>
 
-							<p>약국 사용자 승인 건수 [[${grantlistp.totalPages}]]건</p>
+							<p>약국 사용자 승인 건수 [[${grantlistp.totalElements}]]건</p>
 						</div>
 						<div class="modal-footer">
 							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>

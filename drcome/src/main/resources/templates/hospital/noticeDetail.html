@@ -66,7 +66,8 @@
 								<th class="text-center table-light align-middle">첨부파일</th>
 								<td class="text-center">
 									<div th:each="files : ${nif.files}">
-										[[${files.fileName}]]
+										<!-- [[${files.fileName}]] -->
+										<a href="#" th:attr="data-filename=${files.fileName}" onclick="downloadFile(this.getAttribute('data-filename'))" th:text="${files.fileName.substring(files.fileName.lastIndexOf('/') + 1)}"></a>
 									</div>
 								</td>
 							</tr>
@@ -117,6 +118,36 @@
 		        };
 		        xhr.send();
 		    }
+		}
+		
+		// 파일 다운로드 함수
+		function downloadFile(filename) {
+		    // 서버에서 파일을 다운로드하는 URL 생성
+		    var downloadUrl = "/img/" + filename;
+
+		    // AJAX를 사용하여 파일을 다운로드
+		    var xhr = new XMLHttpRequest();
+		    xhr.open('GET', downloadUrl, true);
+		    xhr.responseType = 'blob'; // 응답 타입을 Blob으로 설정
+		    xhr.onload = function() {
+		        // 응답이 성공적으로 받아졌을 때 파일 다운로드
+		        if (xhr.status === 200) {
+		            // Blob 데이터를 File로 변환
+		            var blob = new Blob([xhr.response], {type: 'application/octet-stream'});
+		            var url = window.URL.createObjectURL(blob);
+
+		            // 다운로드 링크 생성
+		            var a = document.createElement('a');
+		            a.href = url;
+		            a.download = filename;
+		            document.body.appendChild(a);
+		            a.click();
+
+		            // 객체 URL 해제
+		            window.URL.revokeObjectURL(url);
+		        }
+		    };
+		    xhr.send();
 		}
 		</script>
 	</div>

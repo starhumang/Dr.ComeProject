@@ -1,47 +1,50 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{hospital/hospitalLayout}">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{hospital/hospitalLayout}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <title>noticeList</title>
+    <style>
+      .head_info {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 30px;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <title>noticeList</title>
-  <style>
-    .head_info {
-      display: flex;
-      justify-content: space-between;
-      margin-top: 30px;
-    }
+      .catCal {
+        display: flex;
+        justify-content: space-between;
+        margin: 15px 0;
+      }
 
-    .catCal {
-      display: flex;
-      justify-content: space-between;
-      margin: 15px 0;
-    }
+      .selDr {
+        display: flex;
+        justify-content: space-between;
+      }
 
-    .selDr {
-      display: flex;
-      justify-content: space-between;
-    }
+      input[type="radio"] {
+        display: none;
+      }
 
-    input[type="radio"] {
-      display: none;
-    }
+      input[type="radio"]:checked + label {
+        background-color: #5a5c69;
+        color: #fff;
+      }
+    </style>
+  </head>
 
-    input[type="radio"]:checked+label {
-      background-color: #5a5c69;
-      color: #fff;
-    }
-  </style>
-</head>
-
-<body>
-  <div layout:fragment="content">
-    <div class="container-fluid">
-      <div class="head_info">
-        <h4 th:text="${hospitalSel.hospitalName}"></h4>
-        <p>
-          <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
-          <span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+  <body>
+    <div layout:fragment="content">
+      <div class="container-fluid">
+        <div class="head_info">
+          <h4 th:text="${hospitalSel.hospitalName}"></h4>
+          <p>
+            <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+            <span
+              th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
             ></span>
           </p>
         </div>
@@ -133,35 +136,34 @@
         function enter(rno, uid, rt) {
           //console.log(rno, uid, rt);
 
-          //비대면 진료면 알람테이블 인서트하고 입장하기상태 업뎃침 
-          if(rt==="c2"){
-            //알람테이블에 들어갈 객체 
+          //비대면 진료면 알람테이블 인서트하고 입장하기상태 업뎃
+          if (rt === "c2") {
+            //알람테이블에 들어갈 객체
             let obj = {
-            reserveNo:rno,
-            userId: uid,
-            contentCode: "enterRoom",
-            prefix: "진료실에 입장",
+              reserveNo: rno,
+              userId: uid,
+              contentCode: "enterRoom",
+              prefix: "진료실에 입장",
             };
 
             $.ajax("/saveAlarm", {
-            type: "post",
-            data: JSON.stringify(obj),
-            dataType: "json",
-            contentType: "application/json",
+              type: "post",
+              data: JSON.stringify(obj),
+              dataType: "json",
+              contentType: "application/json",
             })
-            .done((result) => {
-             //result == 1  성공했으면 페이지 이동 
-              if(result>0){
-                location.href = `/untactClinic?reserveNo=${rno}`;
-              }
-            }) //.done
-            .fail((err) => console.log(err));
-
+              .done((result) => {
+                //result == 1  성공했으면 페이지 이동
+                if (result > 0) {
+                  location.href = `/untactClinic?reserveNo=${rno}`;
+                }
+              }) //.done
+              .fail((err) => console.log(err));
           } else {
-              //대면이면 그냥 입장 
-             location.href = `/clinic?reserveNo=${rno}`;
+            //대면이면 그냥 입장
+            location.href = `/clinic?reserveNo=${rno}`;
           }
-        } // 입장하기 
+        } // 입장하기
 
         $(document).ready(function () {
           var doctorNo = null;
@@ -246,10 +248,14 @@
                       reserveStatusText = "진료대기";
                       btnDisabled = "disabled";
                       btnclass = "class = 'btn btn-secondary'";
-                    } else if (rs === "e4" || rs === "e5" ) {
+                    } else if (rs === "e4" || rs === "e5" || rs === "e6" ) {
                       reserveStatusText = "진료완료";
                       btnDisabled = "disabled";
                       btnclass = "class = 'btn btn-light'";
+                    } else if (rs === "e6") {
+                    	reserveStatusText = "처방완료";
+                    	btnDisabled = "disabled";
+                    	btnclass = "class = 'btn btn-success'";
                     }
 
                     //현재시간
@@ -315,7 +321,13 @@
                       (reserve.reserveKindstatus === "c1" ? "대면" : "비대면") +
                       "</td>" +
                       "<td>" +
-                      "<button onclick='enter(" + reserve.reserveNo + ", \"" + reserve.userId + "\", \"" + rt + "\")' " +
+                      "<button onclick='enter(" +
+                      reserve.reserveNo +
+                      ', "' +
+                      reserve.userId +
+                      '", "' +
+                      rt +
+                      "\")' " +
                       btnDisabled +
                       " " +
                       btnclass +

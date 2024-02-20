@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,9 +38,11 @@ public class PharmacyServiceImpl implements PharmacyService{
 		String perdate = dateFormat.format(currentDate);
 		map.put("date", date);
 		
+		// 오늘 날짜
 		if(date.equals(perdate)) {
 			listmap = mapper.selectPrescriptionList(map);
 		} 
+		// 이전 날짜
 		else {
 			listmap = mapper.selectLastPerList( map);
 		}
@@ -53,16 +57,17 @@ public class PharmacyServiceImpl implements PharmacyService{
 	
 	// 처방전조회
 	@Override
-	public List<PharmacySelectVO> getPerscription(PharmacySelectVO vo) {
-		return mapper.perscription(vo);
+	public List<PharmacySelectVO> getPerscription(int clinicNo) {
+		return mapper.perscription(clinicNo);
 	}
 	
 	/* 처방전 반환 시 업데이트 */
+	@Transactional
 	@Override
 	public Map<String, Object> updaterejection(PharmacySelectVO pharmacyselectVO) {
 		Map<String, Object> map = new HashMap<>();
 		boolean isSuccessed = false;
-
+		mapper.updateProduceStatus(pharmacyselectVO);
 		int result = mapper.updaterejection(pharmacyselectVO);
 		if (result == 1) {
 			isSuccessed = true;
@@ -92,27 +97,45 @@ public class PharmacyServiceImpl implements PharmacyService{
 		return result;
 	}
 
+	@Override
+	public int printStatusModify(PharmacySelectVO vo) {
+		return mapper.printupdate(vo);
+	}
 
-	/*
-	 * @Override public List<Map<String, Object>> getperPage(int pageNo, int
-	 * pageSize) { // 페이지 번호와 페이지 크기를 이용하여 offset을 계산 int offset = (pageNo - 1) *
-	 * pageSize; int limit = pageSize;
-	 * 
-	 * // 전체 레코드 수 조회 int totalCount = mapper.percount();
-	 * 
-	 * // 페이징된 결과 조회 List<Map<String, Object>> pagedData =
-	 * mapper.perListpage(offset, limit);
-	 * 
-	 * // 페이징된 결과와 전체 레코드 수를 반환합니다. return pagedData; }
-	 * 
-	 * @Override public List<Map<String, Object>> getperLastPage(int pageNo, int
-	 * pageSize) { int offset = (pageNo - 1) * pageSize; int limit = pageSize;
-	 * 
-	 * int totalCountL = mapper.perLastcount();
-	 * 
-	 * List<Map<String, Object>> pagedDataL = mapper.perLastListpage(offset, limit);
-	 * 
-	 * return pagedDataL; }
-	 */
+	@Override
+	public int printpharmacyModify(PharmacySelectVO vo) {
+		return mapper.insertprintpharmacy(vo);
+	}
+
+	@Override
+	public List<Map<String, Object>> perCurrList(Map<String, Object> map, String date) {
+		List<Map<String, Object>> clistmap = null;
+		Date currentDate = new Date();
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String perdate = dateFormat.format(currentDate);
+		map.put("date", date);
+		
+		if(date.equals(perdate)) {
+			clistmap = mapper.currPerList(map);
+		}
+		 
+		return clistmap;
+	}
+
+	@Override
+	public int currpercount(Map<String, Object> map, String date) {
+		Date currentDate = new Date(); System.out.println(currentDate);
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+		String perdate = dateFormat.format(currentDate); System.out.println(perdate);
+		
+		int result = 0; 
+		map.put("date", date);
+		
+		if(date.equals(perdate)) { 
+			result = mapper.percountcurr(map); 
+		}
+		
+		return result;
+	}
 
 }

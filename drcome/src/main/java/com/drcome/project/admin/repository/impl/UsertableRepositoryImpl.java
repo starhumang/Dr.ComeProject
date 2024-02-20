@@ -26,18 +26,21 @@ public class UsertableRepositoryImpl extends QuerydslRepositorySupport implement
 
     @Override
     public Page<Usertable> findByuserStatus(String ustatus, Pageable pageable) {
-        //JPQLQuery<Usertable> query = queryFactory.selectFrom(usertable)
-                //.where(eqStatus(ustatus));
+    	System.out.println("ustatus1=============="+ustatus);
+        JPQLQuery<Usertable> query = queryFactory.selectFrom(QUsertable.usertable)
+                .where(eqStatus(ustatus));
 
-       // List<Usertable> users = this.getQuerydsl().applyPagination(pageable, query).fetch();
-        return null;//new PageImpl<>(users, pageable, query.fetchCount());
+       List<Usertable> users = this.getQuerydsl().applyPagination(pageable, query).fetch();
+        return new PageImpl<>(users, pageable, query.fetchCount());
     }
 
     private BooleanExpression eqStatus(String ustatus) {
         if (ustatus == null || ustatus.isEmpty()) {
             return null;
-        }
-        return null;//usertable.userStatus.eq(ustatus);
+        } 
+        
+        System.out.println("ustatus2=============="+ustatus);
+        return QUsertable.usertable.userStatus.eq(ustatus);
     }
 	
 }

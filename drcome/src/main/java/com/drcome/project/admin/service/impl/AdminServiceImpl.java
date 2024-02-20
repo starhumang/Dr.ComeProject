@@ -8,13 +8,11 @@ import org.springframework.stereotype.Service;
 
 import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.admin.domain.Pharmacy;
-import com.drcome.project.admin.domain.QUsertable;
 import com.drcome.project.admin.domain.Usertable;
 import com.drcome.project.admin.repository.HospitalListRepository;
 import com.drcome.project.admin.repository.PharmacyRepository;
 import com.drcome.project.admin.repository.UsertableRepository;
 import com.drcome.project.admin.service.AdminService;
-import com.querydsl.core.types.dsl.BooleanExpression;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -30,13 +28,10 @@ public class AdminServiceImpl implements AdminService {
 	
 	
 	@Override
-	public Page<Usertable> getuserAll(int pageNo, int pageSize) {
+	public Page<Usertable> getuserAll(String ustatus, int pageNo, int pageSize) {
 		
-		//BooleanExpression predicate =  qusertable.usertable.userStatus.eq(userStatus); 
-		//Pageable pageable =  PageRequest.of(pageNo, pageSize); 
-		//return urepo.findAll(predicate, pageable);
 		Pageable pageable = PageRequest.of(pageNo, pageSize);
-		return urepo.findAll(pageable);
+		return urepo.findByuserStatus(ustatus, pageable);
 	}
 
 	@Override
@@ -80,14 +75,5 @@ public class AdminServiceImpl implements AdminService {
 		return urepo.findByuserStatus(userStatus, pageable); 
 	}
 
-	/* Querydsl */
-	@Override 
-	public Page<Usertable> findUsersDynamically(String userStatus, int pageNo, int pageSize) { 
-		BooleanExpression predicate = QUsertable.usertable.userStatus.eq(userStatus); 
-		Pageable pageable = PageRequest.of(pageNo, pageSize); 
-		
-		//SQLQueryFactory queryFactory = new SQLQueryFactory(configuration, dataSource);
-		return urepo.findByuserStatus(userStatus, pageable);
-	}
 	
 }

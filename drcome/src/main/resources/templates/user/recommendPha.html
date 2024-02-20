@@ -104,7 +104,7 @@
 							</tr>
 						</th:block>
 						<tr th:unless="${#lists.size(phaList) > 0}">
-							<td colspan="5"
+							<td colspan="7"
 								style="color: gray; height: 100px; vertical-align: middle;">검색
 								조건에 맞는 약국이 없습니다.</td>
 						</tr>
@@ -344,43 +344,43 @@
 		      }
 		      
 		      //새로고침 막는것
-		      function block() {
-			    if (document.readyState == "loading" && localStorage.getItem('visithistory')) {
-			        Swal.fire({
-			            title: "잘못된 접근입니다",
-			            html: "약국선택 및 약처방은 <br/>마이페이지에서 마저 선택하실 수 있습니다. ",
-			            icon: "warning",
-			            showCancelButton: false,
-			            confirmButtonColor: "#3085d6",
-			            confirmButtonText: "네"
-			        }).then((result) => {
-			        	let applyBtn = document.querySelector('.apply')
-			        	applyBtn.disabled = true;
-			        	applyBtn.style.backgroundColor="lightgray";
-			        	let checkboxes =  document.querySelectorAll(".checkbox");
-			        	checkboxes.forEach((ele)=>{
-		 		    			let tr = ele.closest('tr');
-		 		    			tr.disabled = true;
-								tr.style.backgroundColor="lightgray";
-								ele.checked = false;
-								ele.disabled= true;
-								tr.querySelector(".result").innerText="신청대기중"; 
-		   			    });
+// 		      function block() {
+// 			    if (document.readyState == "loading" && localStorage.getItem('visithistory')) {
+// 			        Swal.fire({
+// 			            title: "잘못된 접근입니다",
+// 			            html: "약국선택 및 약처방은 <br/>마이페이지에서 마저 선택하실 수 있습니다. ",
+// 			            icon: "warning",
+// 			            showCancelButton: false,
+// 			            confirmButtonColor: "#3085d6",
+// 			            confirmButtonText: "네"
+// 			        }).then((result) => {
+// 			        	let applyBtn = document.querySelector('.apply')
+// 			        	applyBtn.disabled = true;
+// 			        	applyBtn.style.backgroundColor="lightgray";
+// 			        	let checkboxes =  document.querySelectorAll(".checkbox");
+// 			        	checkboxes.forEach((ele)=>{
+// 		 		    			let tr = ele.closest('tr');
+// 		 		    			tr.disabled = true;
+// 								tr.style.backgroundColor="lightgray";
+// 								ele.checked = false;
+// 								ele.disabled= true;
+// 								tr.querySelector(".result").innerText="신청대기중"; 
+// 		   			    });
 			        	
 			        	
-			            if (result.isConfirmed) {
-			            	localStorage.removeItem('visithistory');
-			                window.location.href = "/mypage";
+// 			            if (result.isConfirmed) {
+// 			            	localStorage.removeItem('visithistory');
+// 			                window.location.href = "/mypage";
 			                
-			            }else{
+// 			            }else{
 			            	
-			            }
-			        });
-			    }
-			    localStorage.setItem('visithistory', 'true');
+// 			            }
+// 			        });
+// 			    }
+// 			    localStorage.setItem('visithistory', 'true');
 
-			}
-			block();
+// 			}
+// 			block();
 
 
 		      

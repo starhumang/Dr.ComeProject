@@ -25,8 +25,8 @@ public class MainServiceImpl implements MainService {
    }
 
    @Override
-   public List<PharmacyVO> getPhaList(int num) {
-      return mainMapper.selectPhaList(num);
+   public List<PharmacyVO> getPhaList() {
+      return mainMapper.selectPhaList();
    }
 
    @Override
@@ -52,6 +52,11 @@ public class MainServiceImpl implements MainService {
    public List<HospitalVO> searchSubjectHos(String mainSubject) {
       return mainMapper.searchSubjectHos(mainSubject);
    }
+   
+	@Override
+	public List<PharmacyVO> recommendPhaList(String clinicNo,int num) {
+		return mainMapper.recommendPhaList(clinicNo,num);
+	}
 
 	@Override
 	public int insertPhaSelect(String pharmacyId, int clinicNo) {
@@ -93,6 +98,8 @@ public class MainServiceImpl implements MainService {
 	public List<ReservationVO> findWaitingList(DoctorVO doctorVO) {
 		return mainMapper.findWaitingList(doctorVO);
 	}
+
+
 
 	
 

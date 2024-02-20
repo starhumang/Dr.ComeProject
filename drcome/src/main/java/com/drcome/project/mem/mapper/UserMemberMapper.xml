@@ -285,4 +285,15 @@
 		SET payment_no = #{paymentNo}
 		where reserve_no = #{reserveNo}
 	</insert>
+	
+	<!-- 약국 선택 목록 확인 -->
+	<select id="myPharmacySelect" parameterType="PharmacySelectVO">
+		SELECT c.clinic_no, p.pharmacy_name, p.pharmacy_phone, ps.send_status, ps.print_status, ps.produce_status
+		FROM reservation r
+			JOIN clinic c ON r.reserve_no = c.reserve_no
+			JOIN pharmacy_select ps ON c.clinic_no = ps.clinic_no
+			JOIN pharmacy p ON ps.pharmacy_id = p.pharmacy_id
+		WHERE r.reserve_no = #{reserveNo}
+	</select>
+	
 </mapper>

@@ -16,7 +16,7 @@ public interface ChallengeMapper {
 	public List<ChallengeVO> getCompletedTodoList(String userId, @Param("date") String date);
 	
 	/* ToDo 등록 */
-	public int addTodoList(@Param("date") String date, String challengeContent, String userId);
+	public int addTodoList(ChallengeVO cvo);
 	
 	/* ToDo 수정 */
 	public int updateTodoList(int challengeNo, String userId);

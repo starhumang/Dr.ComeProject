@@ -15,6 +15,9 @@
 	justify-content: right;
 	padding-right: 30px;
 }
+p {
+margin-top: 20px;
+}
 </style>
 </head>
 
@@ -107,7 +110,12 @@
 						<div>
 							<h5 class="m-0 font-weight-bold text-secondary">병원 승인 대기 목록</h5>
 						</div>
-						<table class="table">
+						<th:block th:if="${grantlisth.empty}">
+							<p>승인 대기 목록이 없습니다.</p>
+					        
+					    </th:block>
+					    <th:block th:if="${not grantlisth.empty}">
+						<table class="table" onclick="location.href='/admin/hospital/grant'">
 							<thead>
 								<tr>
 									<th>병원아이디</th>
@@ -123,18 +131,27 @@
 									<td th:text="${listh.hospitalId}"></td>
 									<td th:text="${listh.hospitalName}"></td>
 									<td th:text="${listh.phone}"></td>
-									<td th:text="${listh.mainSubject}"></td>
-									<td th:text="${listh.hospitalStatus}"></td>
+									<td><th:block th:each="detailCode : ${application.detailCode_h}" >
+										<span th:if="${detailCode.detailCode} == ${listh.mainSubject}" th:text="${detailCode.codeName}"></span>
+									</th:block></td>
+									<td><th:block th:each="detailCode : ${application.detailCode_b}" >
+										<span th:if="${detailCode.detailCode} == ${listh.hospitalStatus}" th:text="${detailCode.codeName}"></span>
+									</th:block></td>
 									<td th:text="${#dates.format(listh.joindate, 'yyyy-MM-dd')}"></td>
 								</tr>
 							</tbody>
 						</table>
+						</th:block>
 					</div>
 				</div>
 				<div class="card shadow mb-4">
 					<div class="right">
 						<h5 class="m-0 font-weight-bold text-secondary">약국 승인 대기 목록</h5>
-						<table class="table">
+						<th:block th:if="${grantlistp.empty}">
+					        <p>승인 대기 목록이 없습니다.</p>
+					    </th:block>
+					    <th:block th:if="${not grantlistp.empty}">
+						<table class="table" onclick="location.href='/admin/pharmacy/grant'">
 							<thead>
 								<tr>
 									<th>아이디</th>
@@ -154,6 +171,7 @@
 								</tr>
 							</tbody>
 						</table>
+						</th:block>
 					</div>
 				</div>
 			</div>

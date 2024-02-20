@@ -185,6 +185,7 @@
 				data.forEach(function (item) {
 					let produceStatusDescription = getStatusDescription(item.produceStatus);
 					let printStatusDescription = '';
+					let selectPharmacyBtn = $('#selectPharmacyBtn');
 
 					if (item.selectPharmacyid === null) {
 						printStatusDescription = '';
@@ -201,7 +202,8 @@
 								<td>${printStatusDescription}</td>
 
 						    `);
-					$('#selectPharmacyBtn').click(function () {
+
+					selectPharmacyBtn.click(function () {
 						let clinicNo = data[0].clinicNo;
 						let url = 'recommendPharmacy/' + clinicNo;
 

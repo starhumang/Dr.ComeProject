@@ -672,7 +672,7 @@
   }
 
   
-  function createTable2() {
+  function createTable2(plist) {
     // 동적으로 테이블 생성
     $(".table").empty();
     var table = document.querySelector(".table");
@@ -1058,8 +1058,30 @@
       
     });
   }
-  
+function getCurrentDate() {
+   var now = new Date();
+   var year = now.getFullYear();
+   var month = (now.getMonth() + 1).toString().padStart(2, '0');
+   var day = now.getDate().toString().padStart(2, '0');
+   return year + '-' + month + '-' + day;
+}  
 
+function showHideButton() {
+   var today = getCurrentDate();
+   var currentDateElement = document.getElementById('currentDate');
+   if (currentDateElement && currentDateElement.textContent.trim() === today) {
+     document.getElementById('prescriptionButtonWrapper').style.display = 'block';
+     document.getElementById('prescriptionButtonccc').style.display = 'none';
+   } else {
+     document.getElementById('prescriptionButtonWrapper').style.display = 'none';
+     document.getElementById('prescriptionButtonccc').style.display = 'block';
+   }
+ }
+
+ // 페이지가 로드될 때 버튼 상태 업데이트
+window.onload = function() {
+  showHideButton();
+};
   
   $(function () {
 	    //input을 datepicker로 선언	  

@@ -23,16 +23,6 @@
 		,#{reserveNo}
 		)
 	</insert>
-
-
-	<!-- 알람여부 -->
-	<select id="selectAlarm" resultType="int">
-		select count(*)
-		from alarm
-		where
-		user_id
-		=#{uid} and check_code='X' and content_code='enterRoom'
-	</select>
 	
 	<insert id="insertAlarmPharmacy" parameterType="AlarmDao">
 		INSERT into alarm(alarm_no

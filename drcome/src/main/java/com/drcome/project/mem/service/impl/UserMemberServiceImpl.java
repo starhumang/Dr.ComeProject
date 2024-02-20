@@ -1,6 +1,7 @@
 package com.drcome.project.mem.service.impl;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.annotation.PostConstruct;
@@ -185,6 +186,17 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 		result = mapper.updatePayment(reserveNo, paymentNo);
 		
 		return result;
+	}
+	
+	@Override
+	public List<Map<String, Object>> getUserQnaList(Map<String, Object> map) {
+		List<Map<String, Object>> listQnaAll = mapper.selectUserQnaList(map);
+		return listQnaAll;
+	}
+	
+	@Override
+	public int qnaUserCount(Map<String, Object> map) {
+		return mapper.qnaUserCount(map);
 	}
 
 //	시큐리티 로그인 검증

@@ -19,11 +19,11 @@ public class AlarmServiceImpl implements AlarmService {
 	@Autowired
 	PatientMapper pmapper;
 
-	//알람테이블 인서트 + 입장하기로 상태 업데이트 
+	// 알람테이블 인서트 + 입장하기로 상태 업데이트
 	@Transactional
 	@Override
 	public int saveAlarm(AlarmDao dao) {
-		//System.out.println("입장하기로업데이트");
+		// System.out.println("입장하기로업데이트");
 		// 알람인서트
 		int result = mapper.insertAlarm(dao);
 
@@ -34,11 +34,11 @@ public class AlarmServiceImpl implements AlarmService {
 		return result;
 	}
 
-	// 알람조회 
-	@Override
-	public int checkAlarm(String uid) {
-		return mapper.selectAlarm(uid);
-	}
+//	// 알람여부 조회
+//	@Override
+//	public int checkAlarm(String uid) {
+//		return mapper.selectAlarm(uid);
+//	}
 
 	// 약국 반환 알람테이블 insert
 	@Override

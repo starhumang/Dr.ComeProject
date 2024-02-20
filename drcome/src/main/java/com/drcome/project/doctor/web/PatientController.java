@@ -42,7 +42,7 @@ public class PatientController {
 
 	@Autowired
 	AlarmService alarmService;
-	
+
 	@Autowired
 	PatientMapper mapper;
 
@@ -71,8 +71,8 @@ public class PatientController {
 	/**
 	 * 비대면 진료페이지 의사화면
 	 * 
-	 * @param vo  reserveNo
-	 * @return 비대면 진료 페이지로 이동
+	 * @param vo reserveNo
+	 * @return doctor/untactClinic 비대면 진료 페이지
 	 */
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
@@ -84,19 +84,12 @@ public class PatientController {
 		return "doctor/untactClinic";
 	}
 
-	// 비대면 진료 - 환자
-	@GetMapping("untactPatient/{reserveNo}")
-	public String untactPatient(@PathVariable("reserveNo") String reserveNo, PatientVO vo, Model model) {
-		model.addAttribute("rNo", reserveNo);
-		return "doctor/untactPatient";
-	}
-
 	/**
 	 * 대면 진료 페이지
 	 * 
-	 * @param vo   reserveNo
+	 * @param vo    reserveNo
 	 * @param model
-	 * @return 대면 진료 페이지로 이동
+	 * @return doctor/clinic 대면 진료 페이지
 	 */
 	@GetMapping("clinic")
 	public String getInfo(PatientVO vo, Model model) {
@@ -109,24 +102,11 @@ public class PatientController {
 	}
 
 	/**
-	 * 아직 미완성..
+	 * 진료기록 불러오기 + 페이징
 	 * 
-	 * @param vo
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("untactPatient")
-	public String untactPatient(PatientVO vo, Model model) {
-
-		return "doctor/untactPatient";
-
-	}
-
-	/**
-	 * 진료기록 불러오기 + 페이징 
-	 * @param principal  병원아이디 
-	 * @param page		  선택한 페이지
-	 * @param uid		  유저아이디
+	 * @param principal 병원아이디
+	 * @param page      선택한 페이지
+	 * @param uid       환자아이디
 	 * @return map (list,dto)
 	 */
 	@GetMapping("clist")
@@ -135,20 +115,19 @@ public class PatientController {
 
 		PatientVO vo = new PatientVO();
 
+		// 환자아이디
 		vo.setUserId(uid);
+		// 병원아이디
 		vo.setHospitalId(principal.getName());
 
 		// 전체갯수 가져오기
 		int total = patientService.totalList(vo);
-		System.out.println("토탈" + total);
 
 		// 선택된 페이지 인트로 변환
 		int cpage = Integer.parseInt(page);
-		System.out.println("선택된페이지" + cpage);
 
-		// 페이지네이션(currentpage, total)
+		// 페이지네이션
 		PageDTO dto = new PageDTO(cpage, total);
-		System.out.println("dtd 객체 " + dto);
 
 		// 진료기록리스트 (vo : userId hospitalId)
 		List<PatientVO> clinicList = patientService.getClinicList(cpage, vo);
@@ -160,11 +139,12 @@ public class PatientController {
 		return map;
 
 	}
-	
+
 	/**
-	 * 처방전 조회 
-	 * @param no clinicNo 
-	 * @return service
+	 * 처방전 조회
+	 * 
+	 * @param no clinicNo
+	 * @return patientService
 	 */
 	@GetMapping("/perscription/{no}")
 	@ResponseBody
@@ -175,11 +155,11 @@ public class PatientController {
 		return patientService.getPerscription(vo);
 	}
 
-	
 	/**
 	 * 약검색
+	 * 
 	 * @param vo medicineName
-	 * @return service
+	 * @return patientService
 	 */
 	@GetMapping("medicine")
 	@ResponseBody
@@ -188,27 +168,28 @@ public class PatientController {
 		return patientService.getmnameList(vo);
 
 	}
-	
+
 	/**
+	 * 진료기록저장
 	 * 
-	 * @param reserveNo, clinicSymptom specificity payYn perscriptionYn hospitalId visit userId
-	 *			perary=[{dosage , doseCnt ,doseDay, medicineNo},{}]
-	 * @return service
+	 * @param reserveNo, clinicSymptom specificity payYn perscriptionYn hospitalId
+	 *                   visit userId perary=[{dosage , doseCnt ,doseDay,
+	 *                   medicineNo},{}]
+	 * @return patientService
 	 */
 
-	// 진료기록 저장
 	@PostMapping("saveClinic")
 	@ResponseBody
 	public int saveInfo(@RequestBody PatientVO vo) {
-		//System.out.println("dddddddddddddd" + vo);
+
 		return patientService.insertClinic(vo);
 	}
 
-	
 	/**
-	 * 진료종료시 상태 업데이트
+	 * 진료종료시 진료완료로 상태업데이트
+	 * 
 	 * @param vo reserveNo
-	 * @return service
+	 * @return patientService
 	 */
 	@PostMapping("/updateStatus")
 	@ResponseBody
@@ -217,19 +198,17 @@ public class PatientController {
 		return patientService.modifyReserve(vo);
 	}
 
-	
-	
 	/**
-	 * 대면 결제대기버튼 누를시 상태업데이트 
+	 * 대면진료 결제완료처리버튼 누를시 결제완료로 상태업데이트
+	 * 
 	 * @param vo reserveNo
-	 * @return service
+	 * @return mapper
 	 */
 	@PostMapping("/updatePayment")
 	@ResponseBody
 	public int updatePayment(PatientVO vo) {
-		System.out.println("Ddddddddddddd" + vo);
+
 		return mapper.updatePayment(vo);
 	}
-	
-	
+
 }// end class

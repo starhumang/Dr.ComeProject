@@ -217,26 +217,31 @@ thead tr:nth-child(3) th {
 								<th></th>
 								<th>의사이름</th>
 								<th>담당진료과목</th>
-								<th>휴진일</th>
 								<th>진료일 / 진료시간</th>
+								<th>휴진일</th>
 								<th style="display:none;">의사번호</th>
 							</tr>
 						</thead>
 						<tbody style="vertical-align:middle;">
 							<th:block th:each="doc : ${docList}">
-								<tr th:if="${#lists.size(docList) > 0}">
+								<tr th:if="${#lists.size(docList) > 0}" class="restday">
 									<td style="vertical-align:middle;"><input type="radio" name="doctor"
 										onclick="chooseDoctor()" /></td>
 									<td class="docName" th:text="${doc.doctorName}" style="vertical-align:middle;"></td>
 									<th:block th:each="detailCode : ${application.detailCode_h}">
 										<td th:if="${doc.subject} == ${detailCode.detailCode}" th:text="${detailCode.codeName}" style="vertical-align:middle;"></td>
 									</th:block>
-									<td class="docHol" th:text="${doc.holiday}" style="vertical-align:middle;"></td>
 									<td>
-										<div th:each="drTime : ${doc.times}" class="doctorTime">
-											[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
-											[[${drTime.maxTime}]] : 00</div>
+										<div th:each="drTime : ${doc.times}"  class="doctorTime">
+											[[${drTime.day}]]&nbsp&nbsp
+											[[${drTime.minTime}]] : 00 ~ [[${drTime.maxTime}]] : 00
+										</div>
 									</td>
+									
+									<th:block th:each="detailCode : ${application.detailCode_i}">
+									<td th:if="${detailCode.detailCode ==doc.holiday and #strings.length(doc.holiday) < 3}"  th:text="${detailCode.codeName}" style="vertical-align:middle;" class="docHol"></td>
+									<td th:unless="${detailCode.detailCode == doc.holiday and #strings.length(doc.holiday) < 3}" th:text="${doc.holiday}" class="many" style="display:none; vertical-align:middle;"></td>
+									</th:block>
 									<td style="display:none;" th:text="${doc.doctorNo}" class="doctorNo"></td>
 								</tr>
 							</th:block>
@@ -332,7 +337,55 @@ thead tr:nth-child(3) th {
 			</div>
 		</div>
 	<script th:inline="javascript">
+	//의사 휴무일 여러개일떄
+	window.onload = function doctorrestday(){
+		let doctorrestday = document.querySelector('.restday');
+		let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
+		//console.log("restday", restday);
 		
+		//요일이 여러개일때의 작업
+		if(doctorrestday.querySelector('.many')){
+			let days = document.querySelectorAll('.many');
+			let changedays = Array.from(days);//노드리스트에서 배열로 변환
+			//중복되는 것들 splice로 잘라버리고 딱 원하는 자료만 뽑기
+			for(let i =1; i <changedays.length; i++){
+				if(changedays[i-1].innerText === changedays[i].innerText){
+					changedays.splice(i-1, i);
+							i--; 
+				}
+			}
+			//이제 이 배열을 가지고 작업하면 됨
+			for(let i=0; i < changedays.length; i++){
+				let realdays = [];
+				let element = changedays[i].innerText;
+				if(element.length > 3){
+					let splitDays = element.split(',');
+					console.log("splitDays=",splitDays)
+					splitDays.forEach(ele=>{
+						realdays += dayList[ele] + ' ';
+						
+					}) 
+					//console.log("realdays= ",realdays);
+					}
+				
+				//et td = days.querySelectorAll('[style="display:none;"]');
+				console.log("changedays[i]",changedays[i].innerText);
+				console.log("realdays=",realdays);
+				
+				var tdElement = document.createElement("td");
+					tdElement.textContent = realdays;
+					tdElement.style.verticalAlign='middle';
+				tdElement.classList.add('docHol');
+					
+					if(changedays[i].innerText.length > 3){
+						changedays[i].parentNode.replaceChild(tdElement, changedays[i]);
+					}
+				
+			}						
+		}
+	}	
+	
+	
 		//오늘과 의사 쉬는날 비교후 disabled로 선택못하게
 		function doctorRestday(){
 			let nowDate = new Date();
@@ -434,19 +487,25 @@ thead tr:nth-child(3) th {
 					console.log("ClinicYN",ClinicYN);
 					
 					
-					document.querySelector('.pCount').innerText = '현재 대기인원은 '+waitingPP+'명이며'
+					document.querySelector('.pCount').innerText = '현재 접수 대기인원은 '+waitingPP+'명이며'
 					let date = new Date;
+					let hour = date.getHours();
 					let minutes = date.getMinutes();
+					//console.log(hour,':',minutes)
+					let ClinicNowHour = canClinicNow.substr(0,2);
+					let ClinicNowMinute = canClinicNow.substr(3,2);
+					//console.log(ClinicNowHour,':',ClinicNowMinute);
 					
-					if(minutes > 30){
-						minutes = 60 - minutes;
-					}else{
-						minutes = 30 -minutes;
+					let waitingHour = String(ClinicNowHour-hour);
+					if(waitingHour == 1){
+						waitingHour = String(0);
 					}
-					console.log("minutes",minutes);
-					let waitingTime = (waitingPP * 30) + minutes;
+					let waitingMinute = String((60 - minutes) + parseInt(ClinicNowMinute));
+					
+					//console.log( String(waitingMinute));
+					//console.log(waitingHour,':',waitingMinute);
 										
-					document.querySelector('.wait').innerText = '예상 대기시간은 '+ waitingTime + '분 입니다.'
+					document.querySelector('.wait').innerText = '예상 대기시간은 '+ waitingHour+'시간 '+ waitingMinute +'분 입니다.'
 					
 				},
 				error:function(jqXHR, textStatus, errorThrown){
@@ -535,54 +594,7 @@ thead tr:nth-child(3) th {
 			let hospitalId = [[${hospitalId}]]
 			window.location.href="/hospitalDetail?hospitalId="+hospitalId;
 		}
-			
-			//제출할 것
-// 			let hospitalId = [[${hospitalId}]];//병원아이디
-// 			let userId = [[${userId}]]//유저아이디
-// 			let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');
-// 			let doctorNo = tr.querySelector('.doctorNo').innerText;//의사번호
-// 			let reserveYear = date.substr(0,4);//예약년도
-// 			let reserveMonth = date.substr(5,2);//예약월
-// 			let reserveDay = date.substr(8,2);//예약일
-// 			let symptom = textarea//증상
-// 			let reserveTime = time;//예약시간
-// 			console.log("제출항목들 = ",hospitalId," , ",userId," , ",doctorNo," , ",reserveYear," , ",reserveMonth," , ",reserveDay," , ",symptom);
-			
-// 			$.ajax("/untactReserve",{
-// 				type:"post",
-// 				contentType:"application/json",
-// 				data : JSON.stringify({
-// 					"hospitalId" : hospitalId,
-// 					"userId" : userId,
-// 					"doctorNo" : doctorNo,
-// 					"reserveYear" : reserveYear,
-// 					"reserveMonth" : reserveMonth,
-// 					"reserveDay" : reserveDay,
-// 					"symptom" : symptom,
-// 					"reserveTime" : reserveTime
-// 				}),
-				
-// 				success: function(response){
-// 					Swal.fire({
-// 			   			  title: "예약이 완료되었습니다!",
-// 			   			  html: '예약내역은 마이페이지에서 확인가능합니다~',
-// 			   			  icon: "success"
-// 			   			}).then(result=>{
-// 			   				if(result.value){
-// 			   					window.location.href = "/mypage";
-// 			   				}
-// 			   			})
-					
-// 				},
-// 				error: function(jqXHR, textStatus, errorThrown) {
-// 				        console.error("에러 발생:", textStatus, errorThrown);
-// 				     Swal.fire({
-// 		   			  title: "예약실패",
-// 		   			  html: '뭔가 문제가 있음ㄴ',
-// 		   			  icon: "error"
-// 		   			});
-// 				}
-// 			})
+
 		
 	
 	</script>

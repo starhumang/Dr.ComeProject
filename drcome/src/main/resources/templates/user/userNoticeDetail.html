@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
+
+<head>
+<meta charset="UTF-8">
+<title>patientList</title>
+<style>
+.head_info {
+	display: flex;
+	justify-content: space-between;
+	margin-top: 30px;
+}
+
+.info-box {
+	display: flex;
+	justify-content: center;
+}
+
+#p-info {
+	text-align: center;
+	margin-bottom: 30px;
+	background-color: #DEE0E3;
+}
+.noticeBtn {
+	display: flex;
+	justify-content: space-between;
+}
+</style>
+</head>
+
+<body>
+	<div layout:fragment="content" style="caret-color:transparent;">
+		<h1 style="text-align:center; margin-bottom:50px; margin-top:50px; color:gray;">- 공지사항 -</h1>
+		<div class="container-fluid" style="margin-bottom:150px;">
+			<!-- 공지사항 단건 -->
+			<div>
+			<div class="container" style="margin-bottom:50px;">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3"
+							style="display: flex; justify-content: space-between; align-items: center; ">
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-hospital"></i>병원이름 : [[${hosId}]]
+							</h5>
+						</div>
+						<div class="card-body" >
+							<table class="table">
+								
+							<th:block th:each="nif : ${noticeList}">
+								<thead>
+									<tr>
+										<th class="text-center table-light align-middle">번호</th>
+										<td th:text="${nif.noticeNo}" class="text-center"></td>
+										<th class="text-center table-light align-middle">작성일</th>
+										<td th:text="${#dates.format(nif.wdate, 'yyyy-MM-dd')}"
+											class="text-center"></td>
+										<th class="text-center table-light align-middle">수정일</th>
+										<td th:if="${nif['udate'] != null}"
+											th:text="${#dates.format(nif['udate'], 'yyyy-MM-dd')}"></td>
+										<td th:if="${nif['udate'] == null}">-</td>
+									</tr>
+		
+									<tr>
+										<th class="text-center table-light align-middle">제목</th>
+										<td th:text="${nif.title}" colspan="2" class="align-middle"></td>
+										
+										<th>첨부파일</th>
+			                            <td colspan="2">
+			                              <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == qnaInfo.qnaNo}">
+				                              <a href="#" th:attr="data-filename=${attach.fileName}" onclick="downloadFile(this.getAttribute('data-filename'))"
+				                              th:text="${attach.fileName.substring(attach.fileName.lastIndexOf('/') + 1)}"></a>
+			                          	  </span>
+			                            </td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td th:text="${nif.content}" colspan="6" class="text-left"
+											valign="top" height="200"><pre
+												style="white-space: pre-wrap; border: none;">
+										</pre></td>
+									</tr>
+									<tr>
+										<td colspan="6" class="text-center">
+											<div class="noticeBtn" style="text-align: center;">
+												<!-- 목록버튼 -->
+												<div style="text-align: center;">
+													<button type="button" class="btn btn-primary py-2 position-absolute top-0 end-0 mt-2 me-2"
+															th:onclick="|location.href='@{hospitalDetail(hospitalId=${hosId})}'|">목록으로</button>
+												</div>
+											</div>
+										</td>
+									</tr>
+								</tbody>
+							</th:block>
+							</table>
+						</div>
+						<script th:inline="javascript">
+						   // 파일 다운로드 함수
+					      function downloadFile(filename) {
+							   console.log("filename=",filename);
+					          // 서버에서 파일을 다운로드하는 URL 생성
+					          var downloadUrl = "/img/" + filename;
+
+					          // AJAX를 사용하여 파일을 다운로드
+					          var xhr = new XMLHttpRequest();
+					          xhr.open('GET', downloadUrl, true);
+					          xhr.responseType = 'blob'; // 응답 타입을 Blob으로 설정
+					          xhr.onload = function() {
+					              // 응답이 성공적으로 받아졌을 때 파일 다운로드
+					              if (xhr.status === 200) {
+					                  // Blob 데이터를 File로 변환
+					                  var blob = new Blob([xhr.response], {type: 'application/octet-stream'});
+					                  var url = window.URL.createObjectURL(blob);
+
+					                  // 다운로드 링크 생성
+					                  var a = document.createElement('a');
+					                  a.href = url;
+					                  a.download = filename;
+					                  
+					                  document.body.appendChild(a);
+					                  a.click();
+
+					                  // 객체 URL 해제
+					                  window.URL.revokeObjectURL(url);
+					              }
+					          };
+					          xhr.send();
+					      }
+						</script>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -43,6 +43,9 @@ label {
 .swal2-popup {
     font-size: 1rem !important;
 }
+.todosuccess {
+	text-decoration: line-through;
+}
 </style>
 </head>
 <body>
@@ -74,7 +77,7 @@ label {
 				<div class="form-check">
 					<input class="form-check-input" type="checkbox"
 						name="flexRadioDefault" id="flexRadioDefault1" checked th:onchange="updatetodo(this, [[${ctodo.challengeNo}]])" /> 
-					<label class="form-check-label" for="flexRadioDefault1" th:text="${ctodo.challengeContent}" style="text-decoration: line-through;"></label>
+					<label class="form-check-label todosuccess" for="flexRadioDefault1" th:text="${ctodo.challengeContent}"></label>
 					<button class="btn btn-success" th:onclick="deleteToDo([[${ctodo.challengeNo}]])">삭제</button>
 				</div>
 			</th:block>
@@ -137,16 +140,12 @@ function insertToDo() {
 }
 
 function deleteToDo(no) {
-
+	var delbtn = $(event.targe)
 	$.ajax("/tododelete/" +no, {
 	         type: "get",
 	       }).done((result) => {
 	           console.log("ToDoDelete", result);
-			/* swal.fire({
-				  icon: "success",
-				  title: "To Do가 삭제되었습니다."
-				}); */
-	           //location.reload();
+	           delbtn.parent().remove();
 	         })
 	         .fail((err) => console.log(err));
 	}
@@ -155,21 +154,19 @@ function updatetodo(checkbox, no) {
 	var isChecked = checkbox.checked;
 
 	console.log('is', isChecked);
-
+	var url = '';
 	if(isChecked == true) {
-		$.ajax("/todoupdate/"+no, {
-				type: "post"
-		}).done((result) => {
-			console.log("success", result);
-			location.reload();
-		}).fail((err) => console.log(err));
+		url = "/todoupdate/"+no
+		
 	} else {
-		$.ajax("/todoupdatecancle/"+no, {
-				type: "post"
-		}).done((result) => {
-			console.log("success", result);
-			location.reload();
-		}).fail((err) => console.log(err));
+		url = "/todoupdatecancle/"+no
 	}
+	
+	$.ajax(url, {
+			type: "post"
+	}).done((result) => {
+		console.log("success", result);
+		$(checkbox).next().toggleClass("todosuccess");
+	}).fail((err) => console.log(err));
 }
 </script>

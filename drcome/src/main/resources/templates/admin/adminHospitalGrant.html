@@ -20,9 +20,10 @@
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
-						<!--/* <th:block th:if="${grantlisth} == null">
-							<p>승인 목록이 없습니다.</p>
-						</th:block> */-->
+							<th:block th:if="${grantlisth.empty}">
+						        <p>승인 대기 목록이 없습니다.</p>
+						    </th:block>
+						    <th:block th:if="${not grantlisth.empty}">
 							<table class="table table-bordered" id="dataTable" width="100%"
 								cellspacing="0">
 								<thead>
@@ -61,12 +62,13 @@
 									</tr>
 								</tbody>
 							</table>
+							</th:block>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- 페이징 컴포넌트 -->
-		<nav aria-label="Page navigation">
+		<nav aria-label="Page navigation" th:if="${grantlisth.totalPages} > 0">
 			<ul class="pagination justify-content-center">
 				<li
 					th:class="${grantlisth.first ? 'page-item disabled' : 'page-item'}">
@@ -88,17 +90,24 @@
 </html>
 <script>
 	function hospitalupdate(hid) {
+		var upbtn = $(event.target);
 		$.ajax("/admin/hospital/grant/"+hid, {
 	          type: "post"
 	        }).done((result) => {
 	            console.log("Insert", result);
-	            swal.fire({
-				  icon: "success",
-				  text: "병원 승인 처리 완료"
-				});
-	            setTimeout(function() {
-	                location.reload();
-	            }, 1500);
+	            if(result != null) {
+	            	upbtn.closest('tr').remove();
+	            	swal.fire({
+				  	icon: "success",
+				  	text: "병원 승인 처리 완료"
+					});
+	            } else {
+	            	swal.fire({
+					  	icon: "error",
+					  	text: "병원 승인 처리 실패"
+					});
+	            }
+	            
 	          })
 	          .fail((err) => console.log(err));
 		

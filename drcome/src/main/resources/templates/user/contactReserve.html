@@ -6,13 +6,6 @@
 <head>
 <meta charset="UTF-8" />
 <title>방문예약</title>
-<script type="text/javascript"
-	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-<link
-	href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
-	rel="stylesheet" />
 
 <!-- 달력 -->
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
@@ -189,6 +182,20 @@ thead tr:nth-child(3) th {
 }
 .nonecursor{
 	caret-color:transparent;
+}
+.btn-primary{
+	background-color: #06BBCC;
+    border-color: #06BBCC;
+}
+.btn-lg {
+    font-size: 1.25rem;
+    border : none;
+}
+.btn {
+    font-family: 'Nunito', sans-serif;
+}
+a{
+	background-color:white;
 }
 </style>
 </head>
@@ -399,6 +406,7 @@ thead tr:nth-child(3) th {
 								document.querySelector('.name').innerText=docName; //이름뽑아오기
 								document.querySelector('.one').disabled=false; //날짜선택 disabled걸린거 풀기
 								document.querySelector('.one').value = null;
+								
 								
 								let dayList = {"월": 1 ,"화": 2,"수": 3,"목": 4,"금": 5 ,"토": 6,"일" : 0}
 								

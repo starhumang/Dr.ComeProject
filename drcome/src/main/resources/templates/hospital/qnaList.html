@@ -53,6 +53,10 @@ input[type="radio"]:checked+label {
 .tableMin {
   min-height: 540px;
 }
+thead, th {
+	background-color: rgb(230, 239, 240);
+	border: 0.5px solid rgb(230, 239, 240);
+}
 </style>
 </head>
 
@@ -60,13 +64,15 @@ input[type="radio"]:checked+label {
 	<div layout:fragment="content" style="min-height: 926px;">
 		<div class="container-fluid">
 			<div class="head_info">
-				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<h6 th:text="${hospitalSel.hospitalName}"></h6>
 				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
-						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					<i class="fas fa-fw fa-calendar"></i> 오늘날짜 :
+					<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>Q&A</p>
+			<!-- title -->
+			<h4 class="m-0 font-weight-bold text-secondary">QnA</h4>
+			<br />
 			<div class="search">
 				<!-- drop -->
 			    <div class="input-group" style="width: 40%;">
@@ -124,7 +130,7 @@ input[type="radio"]:checked+label {
 			<!-- QnA 리스트 -->
 			<!-- table -->
 			<div class="tableMin">
-				<table class="table table-hover">
+				<table class="table table-light">
 				</table>
 				
 			</div>
@@ -350,6 +356,20 @@ input[type="radio"]:checked+label {
 			
 			        // tr 요소에 마우스 오버 시에 손가락 모양으로 마우스 커서를 변경
 			        $(".table tbody tr").css("cursor", "pointer");
+			        
+			        
+			     	// 마우스 오버 시에도 색상 변경
+			        $(".table tbody tr").hover(
+			          function() {
+			            $(this).css("background-color", "#F2F2F2");
+			          },
+			          function() {
+			            $(this).css("background-color", "#fff");
+			          }
+			        );
+			        
+			        
+			        
 			    }
 			    
 			    //검색버튼 이벤트 만들기

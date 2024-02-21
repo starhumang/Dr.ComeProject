@@ -108,13 +108,13 @@
        border-radius: 10px;
       }
 
-      /* #full {
-       background-image: url('/images/background.jpg');
+      #full {
+       background-image: url('/images/background50.jpg');
        background-repeat: no-repeat;
-       background-size: 50%;
-       background-position: right 50px;
-      
-      } */
+       background-position: center;
+       background-size: 150%;
+       
+      }
     </style>
   </head>
 
@@ -131,14 +131,14 @@
           >
             <!-- 마이크 버튼 -->
             <button
-              class="btn btn-secondary"
+              class="btn btn-sm btn-dark shadow-sm"
               onclick="toggleAudio()"
               style="margin-right: 5px"
             >
               <i id="micIcon" class="bi bi-mic"></i>
             </button>
             <!-- 비디오 버튼 -->
-            <button class="btn btn-secondary" onclick="toggleVideo()">
+            <button  class="btn btn-sm btn-dark shadow-sm" onclick="toggleVideo()">
               <i id="cameraIcon" class="bi bi-camera-video"></i>
             </button>
           </div>
@@ -167,7 +167,7 @@
             </p>
             <button
               onclick="endClinic()"
-              class="btn btn-dark"
+              class="btn btn-sm btn-dark shadow-sm"
               style="margin-right: 15px;
                font-weight: 100;"
             >
@@ -426,7 +426,7 @@
                       <button
                         onclick="searchMedicine()"
                         type="button"
-                        class="btn btn-primary py-2"
+                        class="btn btn-sm btn-info shadow-sm py-2"
                       >
                         검색
                       </button>
@@ -464,8 +464,8 @@
                 <br />
 
                 <div style="text-align: center">
-                  <button class="btn btn-info" id="saveBtn">
-                    진료기록저장
+                  <button class="btn btn-sm btn-info shadow-sm" id="saveBtn">
+                    진료기록 저장
                   </button>
                 </div>
               </form>

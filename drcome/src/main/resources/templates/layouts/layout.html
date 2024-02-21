@@ -53,21 +53,22 @@
 
 							if (alarmCount > 0) {
 			                     var $bellIcon = $('.fa-bell');
-			                     $bellIcon.after('<span class="badge bg-danger" id="bellNum">' + alarmCount + '</span>');
+			                     $bellIcon.after('<span class="badge" style="background-color: #f70000;" id="bellNum">' + alarmCount + '</span>');
 			                 }
 
 							var $notificationList = $('#notificationList');
 							response.alarmList.forEach(function (alarm) {
-								var notificationItem = '<div class="notification-item" onclick="checkAlarm(' + alarm.alarmNo + ')">' + '<p>';
+								var notificationItem = '<p style="font-size: smaller; cursor:pointer; border-bottom: 0.5px solid lightgray; padding: 5px; margin-bottom: 0px;" onmouseover="this.style.backgroundColor=\'lightblue\'" onmouseout="this.style.backgroundColor=\'transparent\'" onclick="checkAlarm(' + alarm.alarmNo + ')">';
 
-								// if (alarm.contentCode === 'canclePharmacy') {
-								// 	notificationItem += alarm.prefix + ' 약국 번호: ' + alarm.pharmacySelectno;
-								// } else if (alarm.contentCode === 'enterRoom') {
-								// 	notificationItem += alarm.prefix + ' 예약 번호: ' + alarm.reserveNo;
-								// }
+
 								notificationItem += alarm.prefix;
 
-								notificationItem += '</p>' + '</div>';
+								notificationItem += '</p>';
+								/* var notificationItem = '<div class="notification-item" onclick="checkAlarm(' + alarm.alarmNo + ')">' + '<p>';
+
+								notificationItem += alarm.prefix;
+
+								notificationItem += '</p>' + '</div>'; */
 								$notificationList.append(notificationItem);
 							});
 						},
@@ -112,6 +113,9 @@
 				align-items:center;
 				justify-content: center;
 			}
+			#notificationList {
+				border-radius: 8px;
+			}
 		</style>
 	</head>
 
@@ -145,12 +149,17 @@
 						<i class="bi bi-person-circle fs-3 text-dark"></i
 					></a>
 					<!-- <a href="/" class="nav-item nav-link"><i class="fas fa-fw fa-bell fs-3 text-dark"></i></a> -->
-					<a href="#" class="nav-item nav-link" onclick="toggleNotifications()">
-						<div class="btn-group">
-							<i class="fas fa-fw fa-bell fs-3 text-dark"></i>
-							<span class="badge bg-danger"></span>
+					
+					<div class="nav-item dropdown">
+						<a href="#" class="nav-item nav-link dropdown" data-bs-toggle="dropdown">
+							<div class="btn-group">
+								<i class="fas fa-fw fa-bell fs-3 text-dark"></i>
+								<span class="badge bg-danger"></span>
+							</div>
+						</a>
+						<div id="notificationList" class="dropdown-menu fade-down m-0" style="width: 180px;">
 						</div>
-					</a>
+					</div>
 
 					<a th:href="@{/logout}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Logout</a>
 				</th:block>
@@ -161,7 +170,7 @@
 		</nav>
 
 		<!-- 알림 목록 -->
-		<div id="notificationList" class="collapse"></div>
+		<!-- <div id="notificationList" class="collapse"></div> -->
 		<!-- 알림 목록 끝 -->
 
 		<div

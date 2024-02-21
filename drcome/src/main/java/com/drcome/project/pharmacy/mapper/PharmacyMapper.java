@@ -11,6 +11,9 @@ public interface PharmacyMapper {
 	/* 단건 조회 */
 	public PharmacyVO selectPharmacyInfo(PharmacyVO pharmacyVO);
 	
+	/* 세션 사용 조회 */
+	public PharmacyVO PharmacyInfo(String pharmacyId);
+	
 	/* 약국별 처방 현황 */
 	public List<Map<String, Object>> selectPrescriptionList(Map<String, Object> map);
 	

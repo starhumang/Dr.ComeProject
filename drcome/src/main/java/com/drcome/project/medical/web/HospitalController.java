@@ -330,12 +330,15 @@ public class HospitalController {
 		
 		List<Map<String, Object>> pharList = hospitalService.selectPharList(param);
 		
+		int clinicNo = 0;
 		//pharList 중에 clinicNo 값을 우선 Object에 들어있기에 String으로 바꾼 후,
-	    Object clinicNoObject = pharList.get(0).get("clinicNo");
-	    String test2 = String.valueOf(clinicNoObject);
-	    
-	    //이걸 다시 int로 형변환
-	    int clinicNo =Integer.parseInt(test2);
+		if(pharList.size() > 0) {
+			Object clinicNoObject = pharList.get(0).get("clinicNo");
+			String test2 = String.valueOf(clinicNoObject);
+			
+			//이걸 다시 int로 형변환
+			clinicNo =Integer.parseInt(test2);
+		} 
 	    
 	    //첫 번째 clinicNo를 사용하여 getpaientPillInfo 메서드 호출
 	    List<Map<String, Object>> perscrip = hospitalService.getpaientPillInfo(clinicNo);

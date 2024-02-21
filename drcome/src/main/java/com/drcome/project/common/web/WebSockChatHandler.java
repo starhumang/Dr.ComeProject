@@ -51,7 +51,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
 
-		// 의사or약국이 보낸 payload
+		// 의사or약국이 보낸 payload  //vo로 받아서....
 		payload = message.getPayload();
 		System.out.println("받은 메세지 ======================" + payload);
 

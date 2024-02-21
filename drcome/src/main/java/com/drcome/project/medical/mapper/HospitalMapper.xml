@@ -26,7 +26,7 @@
            AND TO_CHAR(clinic_date, 'YY/MM') = TO_CHAR(SYSDATE, 'YY/MM')
 	</select>
 	
-	<select id="selectC2Rate" resultType="int">
+	<select id="selectC2Rate" resultType="int" >
 		SELECT 
 		       ROUND(COUNT(*) / (SELECT COUNT(*) FROM reservation WHERE hospital_id = #{hospitalId}), 2) * 100 AS reserveRatio
 		FROM reservation

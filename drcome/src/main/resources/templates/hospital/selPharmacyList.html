@@ -1,163 +1,186 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html
+	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{hospital/hospitalLayout}">
-<head>
-<meta charset="UTF-8" />
-<title>select Pharmacy List</title>
-<style>
-.head_info {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 30px;
-}
-.listGoBtn {
-  margin: 1.5rem 0;
-  text-align: right;
-}
-</style>
-</head>
-<body>
-	<div layout:fragment="content">
-		<div class="container-fluid">
-			<!-- 날짜 및 병원 정보 헤더 -->
-			<div class="head_info">
-				<h4 th:text="${hospitalSel.hospitalName}"></h4>
-				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
-						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
-				</p>
-			</div>
-			<p>환자 약국 선택 리스트</p>
-			
-			<input type="hidden" id="reserveNo" th:value="${pharList[0].reserveNo}" />
-
-			<div  style="display:flex; justify-content:space-between; align-items: center; margin-bottom: 2.0rem;">
-				<h5 style="margin:0;"><i class="fas fa-fw fa-paper-plane"></i> <span class="btn btn-light">진료코드  [[${pharList[0].clinicNo}]]</span>처방전 전송</h5>
-				<div>
-					<button class="btn btn-info" id="sendSelectedData">선택전송</button>
-					<button class="btn btn-primary" id="sendAllData">일괄전송</button>
-				</div>
-			</div>
-			
-			<!-- 약국 선택 리스트 -->
-			<div class="table-div">
-				<table class="table">
-					<thead>
-						<tr>
-							<th class="check"><input type="checkbox" id="selectAll"></th>
-							<th>No.</th>
-							<th>약국명</th>
-							<th>전화번호</th>
-							<th>처방날짜</th>
-							<th>전송하기</th>
-						</tr>
-					</thead>
-					<tbody>
-					    <tr th:each="phl, iterStat : ${pharList}" >
-					    	
-					        <td class="check"><input type="checkbox" class="checkItem" value="${phl.pharmacySelectno}" data-no="${phl.pharmacySelectno}"></td>
-					        <td th:text="${phl.pharmacySelectno}"></td>
-					        <td th:text="${phl.pharmacyName}"></td>
-					        <td th:text="${phl.pharmacyPhone}"></td>
-					        <td th:text="${#dates.format(phl.perscriptionDate, 'yyyy-MM-dd')}"></td>
-					        <td><button class="btn btn-warning sendDataButton" data-value="${phl.pharmacySelectno}">전송</button></td>
-					    </tr>
-					</tbody>
-				</table>
-			</div>
-			
-			<!-- 뒤로 가기 -->
-			<div class="listGoBtn">
-				<a th:href="@{/hospital/clinicMain}" class="btn btn-dark">뒤로가기</a>
-			</div>
-				
-			 <script>
-			 $(document).ready(function() {
-				 // 선택된 데이터 전송
-				$('#sendSelectedData').on('click', function() {
-				    var selectedValues = [];
-				    $('.checkItem:checked').each(function() {
-				        var row = $(this).closest('tr');
-				        var value = parseInt(row.find('td:nth-child(2)').text()); 
-				        selectedValues.push({pharmacySelectno: value}); // 선택된 값 배열에 추가
-				    });
-				    console.log(selectedValues);
-				    sendData(selectedValues);
-				});
-				
-				// 전체 데이터 전송
-				$('#sendAllData').on('click', function() {
-				    var allValues = [];
-				    $('.checkItem').each(function() {
-				        var row = $(this).closest('tr');
-				        var value = parseInt(row.find('td:nth-child(2)').text()); 
-				        allValues.push({pharmacySelectno: value});
-				    });
-				    console.log(allValues);
-				    sendData(allValues);
-				});
-				
-				// 개별 데이터 전송
-				$('.sendDataButton').on('click', function() {
-				    var row = $(this).closest('tr');
-				    var value = parseInt(row.find('td:nth-child(2)').text()); 
-				    console.log(value);
-				    sendData([{pharmacySelectno: value}]);
-				});
-				
-				// 전체 선택/해제
-				$('#selectAll').on('change', function() {
-				    $('.checkItem').prop('checked', $(this).prop('checked'));
-				});
-				 
-			 });
-			
-			 function sendData(selectedValues) {
-			     $.ajax({
-			         type: 'POST', // POST 방식으로 변경
-			         url: '/hospital/updatePharmacySelect',
-			         contentType: 'application/json',
-			         data: JSON.stringify(selectedValues),
-			         success: function(response) {
-			        	    console.log('업데이트 성공:', response);
-			        	    alert("전송이 완료되었습니다.");
-			        	    updateReservationStatus();
-			        	    //location.reload(); // 페이지 새로고침
-			        	    // 이전 페이지로 이동
-			        	    history.back();
-			        	    
-			        	},
-			         error: function(xhr, status, error) {
-			             console.error('에러:', error);
-			             // 에러 발생 시 처리
-			         }
-			     });
-			 }
-			 
-			 // 현재 reserveNo 가져오기
-			 function getReservationNo() {
-				 return parseInt($('#reserveNo').val());
-			 }
-			 
-			 function updateReservationStatus() {
-				    var reserveNo = getReservationNo(); // 예약 번호 가져오기
-				    $.ajax({
-				        type: 'POST',
-				        url: '/hospital/updateReservationStatus',
-				        contentType: 'application/json',
-				        data: JSON.stringify({ reserveNo: reserveNo }),
-				        success: function(response) {
-				            console.log('Reservation 업데이트 성공:', response);
-				        },
-				        error: function(xhr, status, error) {
-				            console.error('Reservation 업데이트 에러:', error);
-				        }
-				    });
+	layout:decorate="~{hospital/hospitalLayout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>select Pharmacy List</title>
+		<style>
+			.head_info {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30px;
 			}
-            </script>
+			.listGoBtn {
+				margin: 1.5rem 0;
+				text-align: right;
+			}
+			#noPers {
+				background-color: #e0e0e0;
+				height: 300px;
+			}
+		</style>
+	</head>
+	<body>
+		<div layout:fragment="content">
+			<div class="container-fluid">
+				<!-- 날짜 및 병원 정보 헤더 -->
+				<div class="head_info">
+					<h4 th:text="${hospitalSel.hospitalName}"></h4>
+					<p>
+						<i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+						<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					</p>
+				</div>
+				<p>환자 약국 선택 리스트</p>
 
+				<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem">
+					<h5 style="margin: 0">
+						<i class="fas fa-fw fa-paper-plane"></i>
+						처방전 전송
+					</h5>
+					<div>
+						<button class="btn btn-info" id="sendSelectedData">선택전송</button>
+						<button class="btn btn-primary" id="sendAllData">일괄전송</button>
+					</div>
+				</div>
+
+				<!-- 약국 선택 리스트 -->
+				<div th:if="${pharList != null and not #lists.isEmpty(pharList)}">
+					<div class="table-div">
+						<input type="hidden" id="reserveNo" th:value="${pharList[0].reserveNo}" />
+						<table class="table">
+							<thead>
+								<tr>
+									<th class="check"><input type="checkbox" id="selectAll" /></th>
+									<th>No.</th>
+									<th>약국명</th>
+									<th>전화번호</th>
+									<th>처방날짜</th>
+									<th>전송하기</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr th:each="phl, iterStat : ${pharList}">
+									<td class="check">
+										<input
+											type="checkbox"
+											class="checkItem"
+											value="${phl.pharmacySelectno}"
+											data-no="${phl.pharmacySelectno}"
+										/>
+									</td>
+									<td th:text="${phl.pharmacySelectno}"></td>
+									<td th:text="${phl.pharmacyName}"></td>
+									<td th:text="${phl.pharmacyPhone}"></td>
+									<td th:text="${#dates.format(phl.perscriptionDate, 'yyyy-MM-dd')}"></td>
+									<td>
+										<button
+											class="btn btn-warning sendDataButton"
+											data-value="${phl.pharmacySelectno}"
+										>
+											전송
+										</button>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</div>
+				<div th:unless="${pharList != null and not #lists.isEmpty(pharList)}" id="noPers">
+					<p>승인 대기 목록이 없습니다.</p>
+				</div>
+
+				<!-- 뒤로 가기 -->
+				<div class="listGoBtn">
+					<a th:href="@{/hospital/clinicMain}" class="btn btn-dark">뒤로가기</a>
+				</div>
+
+				<script>
+					$(document).ready(function () {
+						// 선택된 데이터 전송
+						$('#sendSelectedData').on('click', function () {
+							var selectedValues = [];
+							$('.checkItem:checked').each(function () {
+								var row = $(this).closest('tr');
+								var value = parseInt(row.find('td:nth-child(2)').text());
+								selectedValues.push({ pharmacySelectno: value }); // 선택된 값 배열에 추가
+							});
+							console.log(selectedValues);
+							sendData(selectedValues);
+						});
+
+						// 전체 데이터 전송
+						$('#sendAllData').on('click', function () {
+							var allValues = [];
+							$('.checkItem').each(function () {
+								var row = $(this).closest('tr');
+								var value = parseInt(row.find('td:nth-child(2)').text());
+								allValues.push({ pharmacySelectno: value });
+							});
+							console.log(allValues);
+							sendData(allValues);
+						});
+
+						// 개별 데이터 전송
+						$('.sendDataButton').on('click', function () {
+							var row = $(this).closest('tr');
+							var value = parseInt(row.find('td:nth-child(2)').text());
+							console.log(value);
+							sendData([{ pharmacySelectno: value }]);
+						});
+
+						// 전체 선택/해제
+						$('#selectAll').on('change', function () {
+							$('.checkItem').prop('checked', $(this).prop('checked'));
+						});
+					});
+
+					function sendData(selectedValues) {
+						$.ajax({
+							type: 'POST', // POST 방식으로 변경
+							url: '/hospital/updatePharmacySelect',
+							contentType: 'application/json',
+							data: JSON.stringify(selectedValues),
+							success: function (response) {
+								console.log('업데이트 성공:', response);
+								alert('전송이 완료되었습니다.');
+								updateReservationStatus();
+								//location.reload(); // 페이지 새로고침
+								// 이전 페이지로 이동
+								history.back();
+							},
+							error: function (xhr, status, error) {
+								console.error('에러:', error);
+								// 에러 발생 시 처리
+							},
+						});
+					}
+
+					// 현재 reserveNo 가져오기
+					function getReservationNo() {
+						return parseInt($('#reserveNo').val());
+					}
+
+					function updateReservationStatus() {
+						var reserveNo = getReservationNo(); // 예약 번호 가져오기
+						$.ajax({
+							type: 'POST',
+							url: '/hospital/updateReservationStatus',
+							contentType: 'application/json',
+							data: JSON.stringify({ reserveNo: reserveNo }),
+							success: function (response) {
+								console.log('Reservation 업데이트 성공:', response);
+							},
+							error: function (xhr, status, error) {
+								console.error('Reservation 업데이트 에러:', error);
+							},
+						});
+					}
+				</script>
+			</div>
 		</div>
-	</div>
-</body>
+	</body>
 </html>

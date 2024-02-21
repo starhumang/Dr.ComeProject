@@ -124,8 +124,11 @@
 #perbtn {
 	margin: 10px 10px;
 }
-
-    </style>
+hr{
+	border: none;
+	border-top: 2px solid gray; 
+}
+</style>
   </head>
   <body>
     <div layout:fragment="content">
@@ -148,6 +151,7 @@
         </div>
 
         <p>처방전 승인 및 출력</p>
+        <hr>
         <div class="head_info" id="cal">
           <p>
             <i class="fas fa-fw fa-calendar"></i> 날짜 선택 :
@@ -226,14 +230,14 @@
             "
           >
             <h5 class="m-0 font-weight-bold text-secondary">
-              <i class="fas fa-fw fa-capsules"></i>
+              <i class="fas fa-fw fa-file-medical"></i>
             </h5>
           </div>
           <div
             class="card-body"
             style="display: flex; justify-content: center; align-items: center"
           >
-            <table class="table"></table>
+            <table class="table" style="min-height: 556px"></table>
           </div>
           <div class="pagination"></div>
         </div>

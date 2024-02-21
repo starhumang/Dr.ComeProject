@@ -653,7 +653,7 @@
 	        	    element.style.height = '380px';
 	        	    element.setAttribute('onclick', `location.href='hospitalDetail?hospitalId=${hospital.hospitalId}'`);
 	        	    
-	        	    const imageSrc = hospital.hospitalImg ? `/img/${hospital.hospitalImg}` : '/img/hospital.png';
+	        	    const imageSrc = hospital.hospitalImg ==null ? '/images/hospital.png' : `/img/${hospital.hospitalImg}`;
 	        	    element.innerHTML = `
 	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
 	        	            <div class="team-item bg-light">
@@ -684,7 +684,7 @@
 	        	    element.style.height = '380px';
 	        	    element.setAttribute('onclick', `location.href='pharmacyDetail?pharmacyId=${pharmacy.pharmacyId}'`);
 	        	    
-	        	    const imageSrc = pharmacy.pharmacyImg ? `/img/${pharmacy.pharmacyImg}` : '/img/pharmacy.png';
+	        	    const imageSrc = pharmacy.pharmacyImg == null ?  '/images/pharmacy.png' : `/img/${pharmacy.pharmacyImg}` ;
 	        	    element.innerHTML = `
 	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
 	        	            <div class="team-item bg-light">

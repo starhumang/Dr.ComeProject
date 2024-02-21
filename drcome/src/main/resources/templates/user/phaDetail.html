@@ -47,7 +47,7 @@
 							<div class="left">
 								<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  --> 
 								<img th:if="${pha.pharmacyImg}" th:src="@{/img/} + ${pha.pharmacyImg}" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
-								<img th:unless="${pha.pharmacyImg}" th:src="@{/img/} + pharmacy.png" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
+								<img th:unless="${pha.pharmacyImg}" th:src="@{/images/} + pharmacy.png" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
 							</div>
 							<div class="right" style="text-align:center;">
 								<h3 th:text="| [  ${pha.pharmacyName} ] |" class="font-weight-bold text-secondary" style="margin-bottom:30px; margin-top:20px;"></h3>

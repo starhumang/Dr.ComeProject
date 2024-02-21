@@ -1,5 +1,5 @@
 let socket = io("https://www.drcome.store:446", {
-  cors: { origin: "*" },
+  //cors: { origin: "*" },
 });
 
 console.log(socket.connected);

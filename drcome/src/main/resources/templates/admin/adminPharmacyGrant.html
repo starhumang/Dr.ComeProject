@@ -4,7 +4,15 @@
 	layout:decorate="~{admin/adminLayout}">
 <head>
 <meta charset="UTF-8">
-<title>UserList</title>
+<title>Pharmacy Approval</title>
+<style>
+thead {
+	background-color: #c7cbcc;
+}
+.table-responsive {
+    border-radius: 8px;
+}
+</style>
 </head>
 <body>
 	<div layout:fragment="content">
@@ -21,7 +29,7 @@
 					        <p>승인 대기 목록이 없습니다.</p>
 					    </th:block>
 					    <th:block th:if="${not grantlistp.empty}">
-							<table class="table table-bordered" id="dataTable" width="100%"
+							<table class="table table-hover" id="dataTable" width="100%"
 								cellspacing="0">
 								<thead>
 									<tr>
@@ -49,8 +57,9 @@
 											alt="image" width="50px" /></td>
 										<td th:text="${pharmarcy.ceoName}"></td>
 										<td th:text="${pharmarcy.ceoPhone}"></td>
-										<td th:if="${pharmarcy.pharmacyStatus == 'b1'}">승인대기</td>
-										<td th:if="${pharmarcy.pharmacyStatus == 'b2'}">영업중</td>
+										<td><th:block th:each="detailCode : ${application.detailCode_b}" >
+											<span th:if="${detailCode.detailCode} == ${pharmarcy.pharmacyStatus}" th:text="${detailCode.codeName}"></span>
+										</th:block></td>
 										<td
 											th:text="${#dates.format(pharmarcy.joindate, 'yyyy-MM-dd')}"></td>
 										<td><button class="btn btn-warning"

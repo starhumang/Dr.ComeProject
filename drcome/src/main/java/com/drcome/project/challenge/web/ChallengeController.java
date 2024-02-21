@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.challenge.ChallengeVO;
@@ -84,17 +85,16 @@ public class ChallengeController {
 	 * @return addTodoList
 	 */
 	/* 등록 process */
-	@PostMapping("/todoinsert/{date}")
+	@PostMapping("/todoinsert")
 	@ResponseBody
-	public Map<String, Object> addTodoList(@PathVariable String date, Principal principal, String challengeContent) {
+	public ChallengeVO addTodoList(@RequestBody ChallengeVO cvo, Principal principal) {
+		
 		String userId = principal.getName();
+		cvo.setUserId(userId);
 
-		Map<String, Object> addTodoList = new HashMap();
-		addTodoList.put("result", challengeContent);
+		cservice.addTodoList(cvo);
 
-		cservice.addTodoList(date, challengeContent, userId);
-
-		return addTodoList;
+		return cvo;
 	}
 
 	/**

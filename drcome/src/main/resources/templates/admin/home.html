@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{admin/adminLayout}">
 
 <head>
@@ -7,13 +8,27 @@
 <title>Insert title here</title>
 <style>
 #dashname {
-	margin: 10px 10px
+	margin: 20px 10px
 }
 
 #logout {
 	display: flex;
 	justify-content: right;
 	padding-right: 30px;
+}
+
+p {
+	margin-top: 20px;
+}
+
+.left, .right {
+	width: 45%;
+}
+#list {
+	margin-top: 30px;
+}
+.row {
+	margin-top: 15px;
 }
 </style>
 </head>
@@ -29,7 +44,8 @@
 						<div class="card-body">
 							<div class="row no-gutters align-items-center">
 								<div class="col mr-2">
-									<div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+									<div
+										class="text-xs font-weight-bold text-primary text-uppercase mb-1">
 										일반 사용자 수</div>
 									<div class="h5 mb-0 font-weight-bold text-gray-800">[[${totalCount}]]</div>
 								</div>
@@ -47,7 +63,8 @@
 						<div class="card-body">
 							<div class="row no-gutters align-items-center">
 								<div class="col mr-2">
-									<div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+									<div
+										class="text-xs font-weight-bold text-success text-uppercase mb-1">
 										병원 사용자 수</div>
 									<div class="h5 mb-0 font-weight-bold text-gray-800">[[${totalCounth}]]</div>
 								</div>
@@ -65,7 +82,8 @@
 						<div class="card-body">
 							<div class="row no-gutters align-items-center">
 								<div class="col mr-2">
-									<div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
+									<div
+										class="text-xs font-weight-bold text-warning text-uppercase mb-1">
 										약국 사용자 수</div>
 									<div class="h5 mb-0 font-weight-bold text-gray-800">[[${totalCountp}]]</div>
 								</div>
@@ -76,7 +94,7 @@
 						</div>
 					</div>
 				</div>
-				
+
 				<!-- Tasks Card Example -->
 				<div class="col-xl-3 col-md-6 mb-4">
 					<div class="card border-left-info shadow h-100 py-2">
@@ -84,8 +102,8 @@
 							<div class="row no-gutters align-items-center">
 								<div class="col mr-2">
 									<div
-										class="text-xs font-weight-bold text-info text-uppercase mb-1">승인 대기 건수
-									</div>
+										class="text-xs font-weight-bold text-info text-uppercase mb-1">승인
+										대기 건수</div>
 									<div class="row no-gutters align-items-center">
 										<div class="col-auto">
 											<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">[[${total}]]</div>
@@ -99,61 +117,89 @@
 						</div>
 					</div>
 				</div>
-				
+
 			</div>
-			<div class="card-body" style="display: flex; justify-content: space-around;">
-				<div class="card shadow mb-4">
-					<div class="left">
-						<div>
+			<div style="display: flex; justify-content: space-around;" id="list">
+				<div class="left">
+					<div class="card shadow mb-4"  onclick="location.href='/admin/hospital/grant'">
+						<div class="card-header py-3">
 							<h5 class="m-0 font-weight-bold text-secondary">병원 승인 대기 목록</h5>
 						</div>
-						<table class="table">
-							<thead>
-								<tr>
-									<th>병원아이디</th>
-									<th>병원명</th>
-									<th>전화번호</th>
-									<th>진료과목</th>
-									<th>영업상태</th>
-									<th>신청날짜</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="listh : ${grantlisth}">
-									<td th:text="${listh.hospitalId}"></td>
-									<td th:text="${listh.hospitalName}"></td>
-									<td th:text="${listh.phone}"></td>
-									<td th:text="${listh.mainSubject}"></td>
-									<td th:text="${listh.hospitalStatus}"></td>
-									<td th:text="${#dates.format(listh.joindate, 'yyyy-MM-dd')}"></td>
-								</tr>
-							</tbody>
-						</table>
+						<div class="card-body">
+							<th:block th:if="${grantlisth.empty}">
+								<p>승인 대기 목록이 없습니다.</p>
+
+							</th:block>
+							<th:block th:if="${not grantlisth.empty}">
+								<table class="table">
+									<thead>
+										<tr>
+											<th>병원아이디</th>
+											<th>병원명</th>
+											<th>전화번호</th>
+											<th>진료과목</th>
+											<th>영업상태</th>
+											<th>신청날짜</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="listh : ${grantlisth}">
+											<td th:text="${listh.hospitalId}"></td>
+											<td th:text="${listh.hospitalName}"></td>
+											<td th:text="${listh.phone}"></td>
+											<td><th:block
+													th:each="detailCode : ${application.detailCode_h}">
+													<span
+														th:if="${detailCode.detailCode} == ${listh.mainSubject}"
+														th:text="${detailCode.codeName}"></span>
+												</th:block></td>
+											<td><th:block
+													th:each="detailCode : ${application.detailCode_b}">
+													<span
+														th:if="${detailCode.detailCode} == ${listh.hospitalStatus}"
+														th:text="${detailCode.codeName}"></span>
+												</th:block></td>
+											<td th:text="${#dates.format(listh.joindate, 'yyyy-MM-dd')}"></td>
+										</tr>
+									</tbody>
+								</table>
+							</th:block>
+						</div>
 					</div>
 				</div>
-				<div class="card shadow mb-4">
-					<div class="right">
-						<h5 class="m-0 font-weight-bold text-secondary">약국 승인 대기 목록</h5>
-						<table class="table">
-							<thead>
-								<tr>
-									<th>아이디</th>
-									<th>약국명</th>
-									<th>전화번호</th>
-									<th>영업상태</th>
-									<th>신청날짜</th>
-								</tr>
-							</thead>
-							<tbody>
-								<tr th:each="listp : ${grantlistp}">
-									<td th:text="${listp.pharmacyId}"></td>
-									<td th:text="${listp.pharmacyName}"></td>
-									<td th:text="${listp.pharmacyPhone}"></td>
-									<td th:text="${listp.pharmacyStatus}"></td>
-									<td th:text="${#dates.format(listp.joindate, 'yyyy-MM-dd')}"></td>
-								</tr>
-							</tbody>
-						</table>
+
+				<div class="right">
+					<div class="card shadow mb-4"  onclick="location.href='/admin/pharmacy/grant'">
+						<div class="card-header py-3">
+							<h5 class="m-0 font-weight-bold text-secondary">약국 승인 대기 목록</h5>
+						</div>
+						<div class="card-body">
+							<th:block th:if="${grantlistp.empty}">
+								<p>승인 대기 목록이 없습니다.</p>
+							</th:block>
+							<th:block th:if="${not grantlistp.empty}">
+								<table class="table">
+									<thead>
+										<tr>
+											<th>아이디</th>
+											<th>약국명</th>
+											<th>전화번호</th>
+											<th>영업상태</th>
+											<th>신청날짜</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr th:each="listp : ${grantlistp}">
+											<td th:text="${listp.pharmacyId}"></td>
+											<td th:text="${listp.pharmacyName}"></td>
+											<td th:text="${listp.pharmacyPhone}"></td>
+											<td th:text="${listp.pharmacyStatus}"></td>
+											<td th:text="${#dates.format(listp.joindate, 'yyyy-MM-dd')}"></td>
+										</tr>
+									</tbody>
+								</table>
+							</th:block>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -164,7 +210,8 @@
 					<div class="modal-content">
 						<div class="modal-header">
 							<h5 class="modal-title">승인 업무</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+							<button type="button" class="btn-close" data-bs-dismiss="modal"
+								aria-label="Close"></button>
 						</div>
 						<div class="modal-body">
 							<p>병원 사용자 승인 건수 [[${grantlisth.totalElements}]]건</p>
@@ -172,14 +219,15 @@
 							<p>약국 사용자 승인 건수 [[${grantlistp.totalElements}]]건</p>
 						</div>
 						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
+							<button type="button" class="btn btn-secondary"
+								data-bs-dismiss="modal">닫기</button>
 						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 		<div class="user-logout-link" id="logout">
-				<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
+			<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
 		</div>
 	</div>
 
@@ -189,8 +237,9 @@
 <script th:inline="javascript">
 	var openmodal = sessionStorage.getItem('autosave');
 	if (openmodal != 'y') {
-		var myModal = new bootstrap.Modal(document.getElementById('toggleMyModal'), {
-			keyboard: false,
+		var myModal = new bootstrap.Modal(document
+				.getElementById('toggleMyModal'), {
+			keyboard : false,
 		});
 
 		var modalToggle = document.getElementById('toggleMyModal');

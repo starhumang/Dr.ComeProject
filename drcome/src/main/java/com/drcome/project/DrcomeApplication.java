@@ -18,7 +18,7 @@ import com.drcome.project.common.service.DetailCodeService;
 
 @SpringBootApplication
 @MapperScan(basePackages = "com.drcome.project.**.mapper")
-//@PropertySource("classpath:myconfig.properties")
+@PropertySource("classpath:myconfig.properties")
 public class DrcomeApplication {
 
 	public static void main(String[] args) {

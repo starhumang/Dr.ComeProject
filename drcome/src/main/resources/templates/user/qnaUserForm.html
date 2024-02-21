@@ -48,26 +48,44 @@
 				border-radius: 0.35rem;
 				transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 			}
-		</style>
-	</head>
+.inBtn {
+	display: flex;
+	justify-content: center;
+}
+#file-upload-button {
+	margin-bottom: 5px;
+}
+.form-control {
+  display: block;
+  width: 100%;
+  height: calc(1.5em + 0.75rem + 8px);
+  padding: 0.375rem 0.75rem;
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.5;
+  color: #6e707e;
+  background-color: #fff;
+  background-clip: padding-box;
+  border: 1px solid #d1d3e2;
+  border-radius: 0.35rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+</style>
+</head>
 
-	<body>
-		<div layout:fragment="content">
-			<div class="container-fluid">
-				<!-- Qna form -->
-				<div>
-					<div class="p-5 container">
-						<div class="text-center">
-							<h1 class="h4 text-gray-900 mb-4">QnA 등록</h1>
-						</div>
-						<form class="user" th:action="@{/qnaUserForm}" method="post" enctype="multipart/form-data">
-							<input type="number" name="qnaNo" id="qnaNo" th:value="${qnaNo}" style="display: none" />
-							<div
-								class="input-group"
-								id="categoryStatus"
-								style="width: 500px; align-items: center; margin-bottom: 1.5rem"
-							>
-								<label style="margin-bottom: 0; margin-right: 1rem">카테고리</label>
+<body>
+	<div layout:fragment="content">
+		<div class="container-fluid">
+			<!-- Qna form -->
+			<div>
+				<div class="p-5 container">
+					<div class="text-center">
+						<h1 class="h4 text-gray-900 mb-4">QnA 등록</h1>
+					</div>
+					<form class="user" th:action="@{/qnaUserForm}" method="post" enctype="multipart/form-data">
+					 	<input type="number" name="qnaNo" id="qnaNo" th:value="${qnaNo}" style="display:none;">
+						 	<div class="input-group" id="categoryStatus" style="width: 500px; align-items: center; margin-bottom: 1.5rem;">
+								<label style="margin-bottom: 0; margin-right: 1.0rem;">카테고리</label>
 								<select
 									id="que"
 									name="categoryStatus"

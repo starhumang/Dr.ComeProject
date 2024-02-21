@@ -27,8 +27,8 @@ public class ChallengeServiceImpl implements ChallengeService {
 	}
 
 	@Override
-	public int addTodoList(String date, String ChallengeContent, String userId) {
-		return cmapper.addTodoList(date, ChallengeContent, userId);
+	public int addTodoList(ChallengeVO cvo) {
+		return cmapper.addTodoList(cvo);
 	}
 
 	@Override

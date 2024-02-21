@@ -22,10 +22,11 @@
 <link href="/css/sb-admin-2.min2.css" rel="stylesheet" />
 
 <link rel="stylesheet" href="//code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css">
+
 <style>
 .content {
-	min-height: 500px;
-}
+	min-height: 842px;
+}}
 </style>
 </head>
 
@@ -40,7 +41,7 @@
 			<!-- Sidebar - Brand -->
 			<th:block>
 			    <div class="sidebar-card" style="margin-top: 20px">
-			        <a th:href="@{/home}">
+			        <a>
 			            <img th:src="@{/images/} + ${pharmacy.pharmacyImg}" alt="image" style="overflow: hidden; width: 100%; height: 160px" />
 			        </a>
 			    </div>
@@ -68,7 +69,7 @@
 
 			<!-- Nav Item - Pages Collapse Menu -->
 			<li class="nav-item"><a class="nav-link" href="/pharmacy/status">
-					<i class="fas fa-fw fa-capsules"></i> <span>처방 현황</span>
+					<i class="fas fa-fw fa-file-medical"></i> <span>처방 현황</span>
 
 			</a> <!-- Nav Item - Utilities Collapse Menu -->
 			<li class="nav-item"><a class="nav-link collapsed"

@@ -1,324 +1,344 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-    layout:decorate="~{hospital/hospitalLayout}">
+<html
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<title>patientList</title>
+		<style>
+			.head_info {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30px;
+			}
+			.clinic-pInfo,
+			.clinic-content,
+			.clinic-drug {
+				padding: 1rem 1.5rem;
+			}
+			.clinic-content > p {
+				padding-left: 1rem;
+			}
+			.pillTbl {
+				padding: 0 1rem;
+			}
+			.clinic-title {
+				background-color: rgb(230, 239, 240);
+				margin-bottom: 1rem;
+				padding: 0.5rem;
+				border-radius: 5px;
+			}
 
-<head>
-<meta charset="UTF-8">
-<title>patientList</title>
-<style>
-.head_info {
-    display: flex;
-    justify-content: space-between;
-    margin-top: 30px;
-}
-.clinic-pInfo, .clinic-content, .clinic-drug {
-    padding: 1.0rem 1.5rem;
-}
-.pillTbl {
-    padding: 0 1.0rem;
-}
-.clinic-title {
-    background-color: lightgray;
-    margin-bottom: 1rem;
-}
-p {
-    margin-bottom: 0;
-}
-table>thead {
-    border-bottom: 1px double #edeef1;
-    border-bottom-width: medium;
-}
-/* 모달 스타일 */
-.modal {
-    display: none; /* 모달 기본적으로 숨김 */
-    position: fixed; /* 위치 고정 */
-    z-index: 1; /* 화면 상위로 표시 */
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4); /* 배경색과 투명도 조절 */
-}
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto; /* 모달을 수직 및 수평 중앙으로 위치 */
-    padding: 20px;
-    border: 1px solid #888;
-    width: 65%; /* 모달의 너비 설정 */
-    height: 100%;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-}
-.close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    position: absolute; /* 절대 위치 설정 */
-    top: 10px; /* 모달 상단으로부터 10px 떨어진 위치 */
-    right: 10px; /* 모달 오른쪽으로부터 10px 떨어진 위치 */
-}
-.close:hover,
-.close:focus {
-    color: black;
-    text-decoration: none;
-}
-/* divPer 스타일 */
-#divPer > .table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
-#divPer > .table th,
-#divPer > .table td {
-    padding: 8px;
-    text-align: center;
-    border-bottom: 1px solid #ddd;
-}
-#divPer > .table th {
-    background-color: #f2f2f2;
-}
+			table > thead {
+				border-bottom: 1px double #edeef1;
+				border-bottom-width: medium;
+			}
+			/* 모달 스타일 */
+			.modal {
+				display: none; /* 모달 기본적으로 숨김 */
+				position: fixed; /* 위치 고정 */
+				z-index: 1; /* 화면 상위로 표시 */
+				left: 0;
+				top: 0;
+				width: 100%;
+				height: 100%;
+				overflow: auto;
+				background-color: rgba(0, 0, 0, 0.4); /* 배경색과 투명도 조절 */
+			}
+			.modal-content {
+				background-color: #fefefe;
+				margin: 5% auto; /* 모달을 수직 및 수평 중앙으로 위치 */
+				padding: 20px;
+				border: 1px solid #888;
+				width: 65%; /* 모달의 너비 설정 */
+				height: 100%;
+				border-radius: 5px;
+				box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+			}
+			.close {
+				color: #aaa;
+				float: right;
+				font-size: 28px;
+				font-weight: bold;
+				cursor: pointer;
+				position: absolute;
+				top: -2px;
+				right: 5px;
+			}
+			.close:hover,
+			.close:focus {
+				color: black;
+				text-decoration: none;
+			}
+			/* divPer 스타일 */
+			#divPer > .table {
+				width: 100%;
+				border-collapse: collapse;
+				margin-bottom: 20px;
+			}
+			#divPer > .table th,
+			#divPer > .table td {
+				padding: 8px;
+				text-align: center;
+				border-bottom: 1px solid #ddd;
+			}
+			#divPer > .table th {
+				background-color: #f2f2f2;
+			}
 
-/* Highlight 섹션 스타일 */
-.highlight, .highlight2 {
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-.highlight p {
-    margin: 5px 0;
-}
+			/* Highlight 섹션 스타일 */
+			.highlight,
+			.highlight2 {
+				background-color: #f9f9f9;
+				border-radius: 5px;
+				padding: 10px;
+				margin-bottom: 20px;
+			}
+			.highlight p {
+				margin: 5px 0;
+			}
 
-.highlight strong {
-    margin-right: 5px;
-    font-weight: bold;
-    color: #333;
-}
-#divPer {
-    margin-bottom: 20px;
-}
-</style>
-</head>
+			.highlight strong {
+				margin-right: 5px;
+				font-weight: bold;
+				color: #333;
+			}
+			#divPer {
+				margin-bottom: 20px;
+			}
+		</style>
+	</head>
 
-<body>
-    <div layout:fragment="content">
-        <div class="container-fluid">
-            <div class="head_info">
-                <h4 th:text="${hospitalSel.hospitalName}"></h4>
-                <p>
-                    <i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
-                        th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
-                </p>
-            </div>
-            <p style="margin-bottom: 3rem;">Patient Detail</p>
-            <div class="container container-sm">
-                <div class="card shadow mb-4">
-                    <div class="card-header py-3">
-                        <h6 class="m-0 font-weight-bold text-primary text-right">진료코드
-                            [[${patientInfo.clinicNo}]] / <th:block th:each="detailCode : ${application.detailCode_c}" >
-						                	<span th:if="${detailCode.detailCode} == ${patientInfo.reserveKindstatus}" th:text="${detailCode.codeName}"></span>
-						            	</th:block></h6>
-                    </div>
-                    <div class="card-body">
-                        <div class="text-center"></div>
-                        <div class="clinic-pInfo">
-                            <div class="clinic-title">
-                                <i class="fas fa-fw fa-child"></i> <span>환자정보</span>
-                            </div>
-                            <table class="table table-borderless table-light text-center"
-                                style="color: #000;">
-                                <tr>
-                                    <th>이름</th>
-                                    <td>[[${patientInfo.userName}]]</td>
-                                    <th>성별</th>
-                                    <td>[[${patientInfo.gender}]]</td>
-                                    <th>생년월일</th>
-                                    <td>[[${#dates.format(patientInfo.userBirthday,
-                                        'yyyy-MM-dd')}]]</td>
-                                    <th>진료구분</th>
-                                    <td>
-	                             		<th:block th:each="detailCode : ${application.detailCode_c}" >
-						                	<span th:if="${detailCode.detailCode} == ${patientInfo.reserveKindstatus}" th:text="${detailCode.codeName}"></span>
-						            	</th:block>
-					            	</td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="clinic-content">
-                            <div class="clinic-title">
-                                <i class="fas fa-fw fa-notes-medical"></i> <span>진단내용</span>
-                            </div>
-                            <p>[[${patientInfo.clinicSymptom}]]</p>
-                            <p style="color: blue;">*특이사항 : [[${patientInfo.specificity}]]</p>
-                        </div>
-                        <div class="clinic-drug">
-                            <div class="clinic-title">
-                                <i class="fas fa-fw fa-prescription-bottle"></i> <span>약처방</span>
-                            </div>
-                            <div class="perBtn" style="text-align:right;">
-                                <button class="btn btn-warning btn-circle btn-sm" style="margin-right:1.0rem;" onclick="openPdfModal()">
-                                        <i class="fas fa-fw fa-file-pdf"></i>
-                                </button>
-                            </div>
-                            <div th:if="${patientPill != null and not #lists.isEmpty(patientPill)}" class="pillTbl">
-                            
-                                <table class="table table-borderless table-hover text-center">
-                                    <thead>
-                                        <tr>
-                                            <th>약품명</th>
-                                            <th>투약량</th>
-                                            <th>횟수</th>
-                                            <th>일수</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr th:each=" cp : ${patientPill} ">
-                                            <td th:text="${cp.medicineName}"></td>
-                                            <td th:text="${cp.dosage}"></td>
-                                            <td th:text="|${cp.doseCnt} 번|"></td>
-                                            <td th:text="|${cp.doseDay} 일|"></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <div th:unless="${patientPill != null and not #lists.isEmpty(patientPill)}">
-								<p style="text-align:center; color:gray; padding: 3.0rem;">"처방전이 없습니다"</p>
+	<body>
+		<div layout:fragment="content">
+			<div class="container-fluid">
+				<div class="head_info">
+					<h6 th:text="${hospitalSel.hospitalName}"></h6>
+					<p>
+						<i class="fas fa-fw fa-calendar"></i> 오늘날짜 :
+						<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					</p>
+				</div>
+				<!-- title -->
+				<h4 class="m-0 font-weight-bold text-secondary">진료 상세</h4>
+				<br />
+
+				<div class="container container-sm">
+					<div class="card shadow mb-4">
+						<div class="card-header py-3">
+							<h6 class="m-0 font-weight-bold text-primary text-right">
+								진료코드 [[${patientInfo.clinicNo}]] /
+								<th:block th:each="detailCode : ${application.detailCode_c}">
+									<span
+										th:if="${detailCode.detailCode} == ${patientInfo.reserveKindstatus}"
+										th:text="${detailCode.codeName}"
+									></span>
+								</th:block>
+							</h6>
+						</div>
+						<div class="card-body">
+							<div class="text-center"></div>
+							<div class="clinic-pInfo">
+								<div class="clinic-title"><i class="fas fa-fw fa-child"></i> <span>환자정보</span></div>
+								<table class="table table-borderless table-light text-center" style="color: #000">
+									<tr>
+										<th>이름</th>
+										<td>[[${patientInfo.userName}]]</td>
+										<th>성별</th>
+										<td>[[${patientInfo.gender}]]</td>
+										<th>생년월일</th>
+										<td>[[${#dates.format(patientInfo.userBirthday, 'yyyy-MM-dd')}]]</td>
+										<th>진료구분</th>
+										<td>
+											<th:block th:each="detailCode : ${application.detailCode_c}">
+												<span
+													th:if="${detailCode.detailCode} == ${patientInfo.reserveKindstatus}"
+													th:text="${detailCode.codeName}"
+												></span>
+											</th:block>
+										</td>
+									</tr>
+								</table>
 							</div>
-							
-                        </div>
-                    </div>
-                </div>
+							<div class="clinic-content">
+								<div class="clinic-title">
+									<i class="fas fa-fw fa-notes-medical"></i> <span>진단내용</span>
+								</div>
+								<p>[[${patientInfo.clinicSymptom}]]</p>
+								<p style="color: blue">*특이사항 : [[${patientInfo.specificity}]]</p>
+							</div>
+							<div class="clinic-drug">
+								<div class="clinic-title">
+									<i class="fas fa-fw fa-prescription-bottle"></i> <span>약처방</span>
+								</div>
+								<div class="perBtn" style="text-align: right">
+									<button
+										class="btn btn-warning btn-circle btn-sm"
+										style="margin-right: 1rem"
+										onclick="openPdfModal()"
+									>
+										<i class="fas fa-fw fa-file-pdf"></i>
+									</button>
+								</div>
+								<div th:if="${patientPill != null and not #lists.isEmpty(patientPill)}" class="pillTbl">
+									<table class="table table-borderless table-hover text-center">
+										<thead>
+											<tr>
+												<th>약품명</th>
+												<th>투약량</th>
+												<th>횟수</th>
+												<th>일수</th>
+											</tr>
+										</thead>
+										<tbody>
+											<tr th:each=" cp : ${patientPill} ">
+												<td th:text="${cp.medicineName}"></td>
+												<td th:text="${cp.dosage}"></td>
+												<td th:text="|${cp.doseCnt} 번|"></td>
+												<td th:text="|${cp.doseDay} 일|"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 
-                <!-- 뒤로버튼 -->
-                <div style="text-align: right;">
-                    <a
-                        th:href="@{/hospital/patientList/patientDetail(patientNo=${patientInfo.patientNo})}"
-                        class="btn btn-dark">뒤로</a>
-                </div>
-            </div>
+								<div th:unless="${patientPill != null and not #lists.isEmpty(patientPill)}">
+									<p style="text-align: center; color: gray; padding: 3rem">"처방전이 없습니다"</p>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- 뒤로버튼 -->
+					<div style="text-align: right; margin-bottom: 1rem">
+						<a
+							th:href="@{/hospital/patientList/patientDetail(patientNo=${patientInfo.patientNo})}"
+							class="btn btn-dark"
+							>뒤로</a
+						>
+					</div>
+				</div>
+
+				<!-- 모달 -->
+				<div id="myModal" class="modal">
+					<div class="modal-content">
+						<span class="close" onclick="closePdfModal()">&times;</span>
+						<iframe id="pdfFrame" style="width: 100%; height: 100%; border: none"></iframe>
+					</div>
+				</div>
+
+				<!-- 모달 관련 스크립트 -->
+				<script
+					src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+					integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+					crossorigin="anonymous"
+					referrerpolicy="no-referrer"
+				></script>
+				<script th:inline="javascript">
+
+					// 모달 창 열기
+					   var modal = document.getElementById("myModal");
+					   var span = document.getElementsByClassName("close")[0];
+
+					   function openPdfModal() {
+					       // PDF 생성 및 표시
+					       printPdf();
+					       // 모달 열기
+					       modal.style.display = "block";
+					   }
+
+					   function closePdfModal() {
+					       modal.style.display = "none";
+					   }
+
+					   // pdf 생성 함수는 클릭 이벤트에서만 작동하도록 수정합니다.
+					   function printPdf() {
+					   	var patientPillData = /*[[${patientPill}]]*/;
+					   	var divPer = document.createElement('div');
+					   	divPer.id = 'divPer';
+
+					   	// 처방전 제목 추가
+					   	var prescriptionTitle = document.createElement('h3');
+					   	prescriptionTitle.className = 'm-4 font-weight-bold text-secondary text-center'; // text-center 클래스 추가
+					   	prescriptionTitle.innerHTML = '<i class="fas fa-fw fa-pills"></i>처방전';
+					   	divPer.appendChild(prescriptionTitle);
+
+					   	var highlightDiv = document.createElement('div');
+					   	highlightDiv.className = 'highlight';
+					   	highlightDiv.style.marginBottom = '10px'; // 약간의 여백 추가
+					   	highlightDiv.innerHTML = `
+					   	    <p><strong>병원 이름 : </strong>[[${patientInfo.hospitalName}]]</p>
+					   	    <p><strong>의사 이름 : </strong>[[${patientInfo.doctorName}]] (담당의)</p>
+					   	    <p><strong>병원 번호 : </strong>[[${patientInfo.hospitalPhone}]]</p>
+					   	    <p><strong>진료 번호 : </strong>[[${patientInfo.clinicNo}]]</p>
+					   	`;
+					   	divPer.appendChild(highlightDiv);
 
 
-             <!-- 모달 -->
-            <div id="myModal" class="modal">
-              <div class="modal-content">
-                <span class="close" onclick="closePdfModal()">&times;</span>
-                	<iframe id="pdfFrame" style="width: 100%; height: 100%; border: none;"></iframe>
-              </div>
-            </div>
+					   	var highlightDiv2 = document.createElement('div');
+					   	highlightDiv2.className = 'highlight2';
+					   	highlightDiv2.style.marginBottom = '20px'; // 약간의 여백 추가
+					   	highlightDiv2.innerHTML = `
+					   	    <p><strong>환자 이름 : </strong>[[${patientInfo.userName}]]</p>
+					   	    <p><strong>환자 생년월일 : </strong>[[${#dates.format(patientInfo.userBirthday, 'yyyy-MM-dd')}]]</p>
+					   	`;
+					   	divPer.appendChild(highlightDiv2);
 
-            <!-- 모달 관련 스크립트 -->
-            <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-            <script th:inline="javascript">
-        
-         // 모달 창 열기
-            var modal = document.getElementById("myModal");
-            var span = document.getElementsByClassName("close")[0];
 
-            function openPdfModal() {
-                // PDF 생성 및 표시
-                printPdf();
-                // 모달 열기
-                modal.style.display = "block";
-            }
 
-            function closePdfModal() {
-                modal.style.display = "none";
-            }
 
-            // pdf 생성 함수는 클릭 이벤트에서만 작동하도록 수정합니다.
-            function printPdf() {
-            	var patientPillData = /*[[${patientPill}]]*/;
-            	var divPer = document.createElement('div');
-            	divPer.id = 'divPer';
+					   	var newTable = document.createElement('table');
+					   	newTable.className = 'table table-borderless table-hover text-center';
 
-            	// 처방전 제목 추가
-            	var prescriptionTitle = document.createElement('h3');
-            	prescriptionTitle.className = 'm-4 font-weight-bold text-secondary text-center'; // text-center 클래스 추가
-            	prescriptionTitle.innerHTML = '<i class="fas fa-fw fa-pills"></i>처방전';
-            	divPer.appendChild(prescriptionTitle);
+					   	var tableHead = document.createElement('thead');
+					   	tableHead.innerHTML = `
+					   	    <tr>
+					   	        <th>약품명</th>
+					   	        <th>투약량</th>
+					   	        <th>횟수</th>
+					   	        <th>일수</th>
+					   	    </tr>
+					   	`;
+					   	newTable.appendChild(tableHead);
 
-            	var highlightDiv = document.createElement('div');
-            	highlightDiv.className = 'highlight';
-            	highlightDiv.style.marginBottom = '10px'; // 약간의 여백 추가
-            	highlightDiv.innerHTML = `
-            	    <p><strong>병원 이름 : </strong>[[${patientInfo.hospitalName}]]</p>
-            	    <p><strong>의사 이름 : </strong>[[${patientInfo.doctorName}]] (담당의)</p>
-            	    <p><strong>병원 번호 : </strong>[[${patientInfo.hospitalPhone}]]</p>
-            	    <p><strong>진료 번호 : </strong>[[${patientInfo.clinicNo}]]</p>
-            	`;
-            	divPer.appendChild(highlightDiv);
-            	
-            	
-            	var highlightDiv2 = document.createElement('div');
-            	highlightDiv2.className = 'highlight2';
-            	highlightDiv2.style.marginBottom = '20px'; // 약간의 여백 추가
-            	highlightDiv2.innerHTML = `
-            	    <p><strong>환자 이름 : </strong>[[${patientInfo.userName}]]</p>
-            	    <p><strong>환자 생년월일 : </strong>[[${#dates.format(patientInfo.userBirthday, 'yyyy-MM-dd')}]]</p>
-            	`;
-            	divPer.appendChild(highlightDiv2);
-            	
-            	
-            	
+					   	var tableBody = document.createElement('tbody');
+					   	patientPillData.forEach(function (cp) {
+					   	    var row = document.createElement('tr');
+					   	    row.innerHTML = `
+					   	        <td>${cp.medicineName}</td>
+					   	        <td>${cp.dosage}</td>
+					   	        <td>${cp.doseCnt} 번</td>
+					   	        <td>${cp.doseDay} 일</td>
+					   	    `;
+					   	    tableBody.appendChild(row);
+					   	});
+					   	newTable.appendChild(tableBody);
 
-            	var newTable = document.createElement('table');
-            	newTable.className = 'table table-borderless table-hover text-center';
+					   	divPer.appendChild(newTable);
+					   	var element = divPer;
 
-            	var tableHead = document.createElement('thead');
-            	tableHead.innerHTML = `
-            	    <tr>
-            	        <th>약품명</th>
-            	        <th>투약량</th>
-            	        <th>횟수</th>
-            	        <th>일수</th>
-            	    </tr>
-            	`;
-            	newTable.appendChild(tableHead);
+					       var opt = {
+					           margin: 1,
+					           filename: 'myfile.pdf',
+					           image: { type: 'jpeg', quality: 0.98 },
+					           html2canvas: { scale: 2 },
+					           jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+					       };
 
-            	var tableBody = document.createElement('tbody');
-            	patientPillData.forEach(function (cp) {
-            	    var row = document.createElement('tr');
-            	    row.innerHTML = `
-            	        <td>${cp.medicineName}</td>
-            	        <td>${cp.dosage}</td>
-            	        <td>${cp.doseCnt} 번</td>
-            	        <td>${cp.doseDay} 일</td>
-            	    `;
-            	    tableBody.appendChild(row);
-            	});
-            	newTable.appendChild(tableBody);
+					       // PDF 생성 후 iframe에 표시
+					       html2pdf().set(opt).from(element).toPdf().output('datauristring').then(function (pdfDataUri) {
+					       	// PDF 데이터를 새 창에 표시
+					       	//var newWindow = window.open();
+					           //newWindow.document.write('<iframe width="100%" height="100%" src="' + pdfDataUri + '"></iframe>');
 
-            	divPer.appendChild(newTable);
-            	var element = divPer;
-
-                var opt = {
-                    margin: 1,
-                    filename: 'myfile.pdf',
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2 },
-                    jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
-                };
-
-                // PDF 생성 후 iframe에 표시
-                html2pdf().set(opt).from(element).toPdf().output('datauristring').then(function (pdfDataUri) {
-                	// PDF 데이터를 새 창에 표시
-                	//var newWindow = window.open();
-                    //newWindow.document.write('<iframe width="100%" height="100%" src="' + pdfDataUri + '"></iframe>');
-                	
-                	// PDF 모달에 표시
-                    var pdfFrame = document.getElementById('pdfFrame');
-                    pdfFrame.src = pdfDataUri;
-                });
-            }
-            </script>
-            
-
-        </div>
-    </div>
-</body>
+					       	// PDF 모달에 표시
+					           var pdfFrame = document.getElementById('pdfFrame');
+					           pdfFrame.src = pdfDataUri;
+					       });
+					   }
+				</script>
+			</div>
+		</div>
+	</body>
 </html>

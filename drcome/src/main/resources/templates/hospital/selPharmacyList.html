@@ -17,9 +17,22 @@
 				margin: 1.5rem 0;
 				text-align: right;
 			}
-			#noPers {
-				background-color: #e0e0e0;
+			/* 			#noPers { */
+			/* 				background-color: rgb(230, 239, 240); */
+			/* 				height: 300px; */
+			/* 			} */
+			img {
+				width: 300px;
 				height: 300px;
+				text-align: center;
+			}
+			thead,
+			th {
+				background-color: rgb(230, 239, 240);
+				border: 0.5px solid rgb(230, 239, 240);
+			}
+			.table tbody tr:hover {
+				background-color: #f2f2f2;
 			}
 		</style>
 	</head>
@@ -28,22 +41,20 @@
 			<div class="container-fluid">
 				<!-- 날짜 및 병원 정보 헤더 -->
 				<div class="head_info">
-					<h4 th:text="${hospitalSel.hospitalName}"></h4>
+					<h6 th:text="${hospitalSel.hospitalName}"></h6>
 					<p>
-						<i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+						<i class="fas fa-fw fa-calendar"></i> 오늘날짜 :
 						<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 					</p>
 				</div>
-				<p>환자 약국 선택 리스트</p>
+				<!-- title -->
+				<h4 class="m-0 font-weight-bold text-secondary">환자 약국 선택 리스트</h4>
+				<br />
 
-				<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem">
-					<h5 style="margin: 0">
-						<i class="fas fa-fw fa-paper-plane"></i>
-						처방전 전송
-					</h5>
+				<div style="display: flex; justify-content: right; align-items: center; margin-bottom: 2rem">
 					<div>
-						<button class="btn btn-info" id="sendSelectedData">선택전송</button>
-						<button class="btn btn-primary" id="sendAllData">일괄전송</button>
+						<!-- 						<button class="btn btn-info" id="sendSelectedData">선택전송</button> -->
+						<button class="btn btn-info" id="sendAllData">일괄전송</button>
 					</div>
 				</div>
 
@@ -51,46 +62,57 @@
 				<div th:if="${pharList != null and not #lists.isEmpty(pharList)}">
 					<div class="table-div">
 						<input type="hidden" id="reserveNo" th:value="${pharList[0].reserveNo}" />
-						<table class="table">
+						<table class="table table-light">
 							<thead>
 								<tr>
-									<th class="check"><input type="checkbox" id="selectAll" /></th>
+									<!-- 									<th class="check"><input type="checkbox" id="selectAll" /></th> -->
 									<th>No.</th>
 									<th>약국명</th>
 									<th>전화번호</th>
 									<th>처방날짜</th>
-									<th>전송하기</th>
+									<!-- 									<th>전송하기</th> -->
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="phl, iterStat : ${pharList}">
-									<td class="check">
-										<input
-											type="checkbox"
-											class="checkItem"
-											value="${phl.pharmacySelectno}"
-											data-no="${phl.pharmacySelectno}"
-										/>
+									<td class="check" style="display: none;" ><input type="checkbox" class="checkItem"
+										value="${phl.pharmacySelectno}"
+										data-no="${phl.pharmacySelectno}"/>
 									</td>
-									<td th:text="${phl.pharmacySelectno}"></td>
+									<td th:text="${iterStat.index + 1}"></td>
+									<td th:text="${phl.pharmacySelectno}" style="display:none;"></td>
 									<td th:text="${phl.pharmacyName}"></td>
 									<td th:text="${phl.pharmacyPhone}"></td>
 									<td th:text="${#dates.format(phl.perscriptionDate, 'yyyy-MM-dd')}"></td>
-									<td>
-										<button
-											class="btn btn-warning sendDataButton"
-											data-value="${phl.pharmacySelectno}"
-										>
-											전송
-										</button>
-									</td>
+									<!-- 									<td> -->
+									<!-- 										<button -->
+									<!-- 											class="btn btn-warning sendDataButton" -->
+									<!-- 											data-value="${phl.pharmacySelectno}" -->
+									<!-- 										> -->
+									<!-- 											전송 -->
+									<!-- 										</button> -->
+									<!-- 									</td> -->
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
 				<div th:unless="${pharList != null and not #lists.isEmpty(pharList)}" id="noPers">
-					<p>승인 대기 목록이 없습니다.</p>
+					<table class="table table-light" style="margin-bottom: 0;">
+						<thead>
+							<tr>
+								<!-- 									<th class="check"><input type="checkbox" id="selectAll" /></th> -->
+								<th>No.</th>
+								<th>약국명</th>
+								<th>전화번호</th>
+								<th>처방날짜</th>
+								<!-- 									<th>전송하기</th> -->
+							</tr>
+						</thead>
+					</table>
+					<p style="text-align: center; background-color: #fff;">
+						<img src="/images/noPharmacy.png" alt="noPharmacy" />
+					</p>
 				</div>
 
 				<!-- 뒤로 가기 -->
@@ -105,29 +127,29 @@
 							var selectedValues = [];
 							$('.checkItem:checked').each(function () {
 								var row = $(this).closest('tr');
-								var value = parseInt(row.find('td:nth-child(2)').text());
+								var value = parseInt(row.find('td:nth-child(3)').text());
 								selectedValues.push({ pharmacySelectno: value }); // 선택된 값 배열에 추가
 							});
 							console.log(selectedValues);
 							sendData(selectedValues);
 						});
-
 						// 전체 데이터 전송
 						$('#sendAllData').on('click', function () {
 							var allValues = [];
 							$('.checkItem').each(function () {
 								var row = $(this).closest('tr');
-								var value = parseInt(row.find('td:nth-child(2)').text());
+								console.log("asdfasdafsd" + row);
+								var value = parseInt(row.find('td:nth-child(3)').text());
+								console.log("sdfasdfadfgadf" + value);
 								allValues.push({ pharmacySelectno: value });
 							});
 							console.log(allValues);
 							sendData(allValues);
 						});
-
 						// 개별 데이터 전송
 						$('.sendDataButton').on('click', function () {
 							var row = $(this).closest('tr');
-							var value = parseInt(row.find('td:nth-child(2)').text());
+							var value = parseInt(row.find('td:nth-child(3)').text());
 							console.log(value);
 							sendData([{ pharmacySelectno: value }]);
 						});

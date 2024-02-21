@@ -53,6 +53,14 @@ input[type="radio"]:checked+label {
 .tableMin {
   min-height: 540px;
 }
+thead,
+th {
+	background-color: rgb(230, 239, 240);
+	border: 0.5px solid rgb(230, 239, 240);
+}
+.table tbody tr:hover {
+	background-color: #f2f2f2;
+}
 </style>
 </head>
 
@@ -60,13 +68,18 @@ input[type="radio"]:checked+label {
 	<div layout:fragment="content">
 		<div class="container-fluid">
 			<div class="head_info">
-				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<h6 th:text="${hospitalSel.hospitalName}"></h6>
 				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+					<i class="fas fa-fw fa-calendar"></i> 오늘날짜 : <span
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>patient</p>
+			<!-- title -->
+			<h4 class="m-0 font-weight-bold text-secondary">
+				환자 관리
+			</h4>
+			<br>
+			
 			<div class="search">
 				<!-- drop -->
 			    <div class="input-group" style="width: 40%;">
@@ -83,10 +96,13 @@ input[type="radio"]:checked+label {
 			    </div>
 			</div>
 
+
+			<br>
+			
 			<!-- 환자리스트 -->
 			<!-- table -->
 			<div class="tableMin">
-				<table class="table table-hover">
+				<table class="table table-light">
 				</table>
 				
 			</div>

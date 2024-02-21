@@ -1,4 +1,4 @@
-let socket = io("http://localhost:3000/", {
+let socket = io("https://www.drcome.store:3000/", {
   cors: { origin: "*" },
 });
 

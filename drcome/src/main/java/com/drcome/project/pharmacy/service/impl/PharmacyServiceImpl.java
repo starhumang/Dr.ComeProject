@@ -42,7 +42,7 @@ public class PharmacyServiceImpl implements PharmacyService{
 		if(date.equals(perdate)) {
 			listmap = mapper.selectPrescriptionList(map);
 		} 
-		// 이전 날짜
+		// 이전 날짜 처방 내역
 		else {
 			listmap = mapper.selectLastPerList( map);
 		}

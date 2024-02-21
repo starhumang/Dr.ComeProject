@@ -131,7 +131,7 @@
     <div layout:fragment="content">
       <div class="container-fluid">
         <div class="head_info">
-          <h4>처방현황</h4>
+          <h4 id="alltop">처방현황</h4>
           <p>
             <!-- <i class="fas fa-fw fa-calendar" data-toggle="modal"
 						data-target="#calendarModal"></i> 현재날짜 : <span
@@ -202,7 +202,7 @@
           <div id="prescriptionButtonWrapper">
             <button
               id="prescriptionButton"
-              class="btn btn-primary"
+              class="btn btn-info"
               onclick="convert()"
             >
               처방내역보기
@@ -528,7 +528,52 @@
       .fail((err) => console.log(err));
     connectWebSocket(rj, pharmacySelectno);
   }
+  
+  /*--------------------
+   *  버튼 이벤트
+   ---------------------*/
+  function changebtn() {
+	    var dateValue = $("#datepicker").val();
+	    var currentDate = new Date();
+	    var perdate = currentDate.toISOString().split("T")[0];
+	    var isToday = dateValue === perdate;
+	  
+	    var prescriptionButton = document.getElementById("prescriptionButton");
+		var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
 
+		if (isToday) {
+			var status= prescriptionButton.style.display;  //처방내역
+			var show = perbtn.style.display;
+			if(show == 'none') {
+				perbtn.style.display = 'block';
+				
+				if(status == 'block') {
+					prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
+					prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
+					alltop.innerText = "처방현황";
+				} else {
+					prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
+					prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
+					alltop.innerText = "처방내역";
+				}
+			} else {
+				if(status == 'block') {
+					prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
+					prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
+					alltop.innerText = "처방현황";
+				} else {
+					prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
+					prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
+					alltop.innerText = "처방내역";
+				}
+			}
+			
+		} else {
+			perbtn.style.display = 'none';
+			alltop.innerText = "처방내역";
+		}
+  }
+  
   /*--------------------
    *  날짜별 처방 현황 / 내역
    ---------------------*/
@@ -536,17 +581,18 @@
     var dateValue = $("#datepicker").val();
     var currentDate = new Date();
     var perdate = currentDate.toISOString().split("T")[0];
+    var isToday = dateValue === perdate;
 
     var keyword = $("#keyword").val();
     //console.log("keyword", keyword);
     var type = $("#type").val();
     //console.log("type", type);
-    
-    var prescriptionButton = document.getElementById("prescriptionButton");
+    changebtn();
+/*     var prescriptionButton = document.getElementById("prescriptionButton");
 	var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
 
 	prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
-	prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
+	prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시 */
 
     $.ajax({
       type: "GET",
@@ -606,7 +652,7 @@
   
   
   function createTable(plist) {
-	showHideButton();
+	//showHideButton();
     // 동적으로 테이블 생성
     $(".table").empty();
     var table = document.querySelector(".table");
@@ -639,7 +685,7 @@
     // 테이블 내용 생성
     plist.forEach((item, index) => {
         var row = $("<tr>").appendTo(tbody);
-        row.append(`<td>${item.clinicNo}</td>`);
+        row.append(`<td>${index + 1}</td>`);
         row.append(`<td>${item.userName}</td>`);
         row.append(`<td>${formatDate(new Date(item.userBirthday))}</td>`);
         row.append(`<td>${item.userPhone}</td>`);
@@ -671,7 +717,7 @@
 
   
   function createTable2(plist) {
-	showHideButton() ;
+	//showHideButton();
     // 동적으로 테이블 생성
     $(".table").empty();
     var table = document.querySelector(".table");
@@ -703,7 +749,7 @@
     // 테이블 내용 생성
     plist.forEach((item, index) => {
         var row = $("<tr>").appendTo(tbody);
-        row.append(`<td>${item.clinicNo}</td>`); // plist 배열의 인덱스를 출력
+        row.append(`<td>${index + 1}</td>`); // plist 배열의 인덱스를 출력
         row.append(`<td>${item.userName}</td>`);
         row.append(`<td>${formatDate(new Date(item.userBirthday))}</td>`);
         row.append(`<td>${item.userPhone}</td>`);
@@ -995,12 +1041,7 @@
    * 현재 날짜 처방 내역 
   ------------------------*/
   function convert() {
-	
-	  var prescriptionButton = document.getElementById("prescriptionButton");
-	  var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
-	  prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
-	  prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
-	  
+	changebtn();
     dateValue = $("#datepicker").val();
     var keyword = $("#keyword").val();
     var type = $("#type").val();
@@ -1044,9 +1085,10 @@
         });
 
         // 테이블 내용 생성
+        var idx = 1
         for (let i of response.currplist) {
 		    var row = $("<tr>").appendTo(tbody);
-		    row.append(`<td>${i.clinicNo}</td>`);
+		    row.append(`<td>${idx++}</td>`);
 		    row.append(`<td>${i.userName}</td>`);
 		    row.append(`<td>${formatDate(new Date(i.userBirthday))}</td>`);
 		    row.append(`<td>${i.userPhone}</td>`);
@@ -1070,30 +1112,7 @@
       
     });
   }
- function getCurrentDate() {
-   var now = new Date();
-   var year = now.getFullYear();
-   var month = (now.getMonth() + 1).toString().padStart(2, '0');
-   var day = now.getDate().toString().padStart(2, '0');
-   return year + '-' + month + '-' + day;
-}  
 
-function showHideButton() {
-	var today = getCurrentDate();
-	var dateValue = $("#datepicker").val();
-	var perbtn = document.getElementById('perbtn')
-	if (today != dateValue) {
-		perbtn.style.display = 'none';
-	} else {
-		perbtn.style.display = 'block';
-	}
- }
-
- // 페이지가 로드될 때 버튼 상태 업데이트
-/*  window.onload = function() {
-   showHideButton();
- }; */
-  
   $(function () {
 	    //input을 datepicker로 선언	  
 		datepickerinit();

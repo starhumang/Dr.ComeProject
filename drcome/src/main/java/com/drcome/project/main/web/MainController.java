@@ -79,7 +79,6 @@ public class MainController {
 	 * @Model model =  병원정보, 의사장보, 초진기록, 당일예약기록
 	 * return "user/hosDetail"
 	 */
-	String hosId = "";
 	@GetMapping("/hospitalDetail")
 	public String hosInformation(HttpServletRequest request, String hospitalId, 
 								Model model, 
@@ -88,7 +87,6 @@ public class MainController {
 		//병원정보
 		HospitalVO hosInfo = mainService.getHos(hospitalId);
 		model.addAttribute("hosInfo", hosInfo);
-		hosId =hospitalId;
 		
 		//병원의 의사정보
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
@@ -97,6 +95,9 @@ public class MainController {
 		//받아온 세션값
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute("userId");
+		session.removeAttribute("hosId");
+		session.setAttribute("hosId", hospitalId);
+		
 		
 		//예약전 초진기록 확인
 		int clinicHistory = mainService.checkClinicHistory(userId, hospitalId);
@@ -112,28 +113,25 @@ public class MainController {
 	/*병원 공지사항 상세페이징*/
 	@GetMapping("/hospitalDetailP")
 	@ResponseBody
-	public Map<String, Object> hosInformation(@RequestParam(required = false, defaultValue = "1") String page,
+	public Map<String, Object> hosInformation(HttpServletRequest request ,@RequestParam(required = false, defaultValue = "1") String page,
 								 @RequestParam(required = false, defaultValue = "0") int type) {
 		//공지사항
-		System.out.println("hosId"+hosId);
 		String keyword = "";
 		Map<String, Object> notice = new HashMap();
+		
+		HttpSession session = request.getSession();
+		String hosId = (String) session.getAttribute("hosId");
+		
 		// 리스트 전체 개수
 		int total = hospitalService.noticeCount(type, keyword, hosId);
-		//System.out.println("hospitalId"+hospitalId); 나옴
-	    System.out.println("total = "+total);
 		
 		// 선택 페이지 변환
 		int cpage = Integer.parseInt(page);
-		System.out.println("선택된 페이지1 = " + cpage);
 
 		// 페이지네이션(currentpage, total)
 		PageDTO2 dto = new PageDTO2(cpage, total);
-		System.out.println("dtd 객체 = " + dto);
 
 		List<Map<String, Object>> plist = hospitalService.getNoticeList(cpage, type, keyword, hosId);
-		System.out.println("plist = " + plist);
-		System.out.println("plist길이 = " + plist.size());
 
 		// ajax는 return으로...
 
@@ -146,13 +144,17 @@ public class MainController {
 	
 	// 병원공지사항 단건상세 유저ver
 	@GetMapping("/userNoticeDetail")
-	   public String noticeDetail( NoticeVO noticeVO, Model model) {
-	      noticeVO.setHospitalId(hosId);
-	      int noticeNo = noticeVO.getNoticeNo();
-	      NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
-	      model.addAttribute("hosId", hosId);
-	      model.addAttribute("noticeNo", noticeNo);
-	      model.addAttribute("noticeList", noticeList);
+	   public String noticeDetail(HttpServletRequest request , NoticeVO noticeVO, Model model) {
+		
+		HttpSession session = request.getSession();
+		String hosId = (String) session.getAttribute("hosId");
+		
+        noticeVO.setHospitalId(hosId);
+        int noticeNo = noticeVO.getNoticeNo();
+        NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
+        model.addAttribute("hosId", hosId);
+        model.addAttribute("noticeNo", noticeNo);
+        model.addAttribute("noticeList", noticeList);
 
 		return "user/userNoticeDetail";
 	}
@@ -180,10 +182,8 @@ public class MainController {
 	public String searchList(String word, Model model) {
 		List<HospitalVO> searchHosList = mainService.searchHosList(word);
 		model.addAttribute("searchHos", searchHosList );
-		//System.out.println("searchHosList =" + searchHosList);
 		List<PharmacyVO> searchPhaList = mainService.searchPhaList(word);
 		model.addAttribute("searchPha", searchPhaList);
-		//System.out.println("searchPhaList = " + searchPhaList);
 		model.addAttribute("word", word);
 		return "user/search";
 	}
@@ -257,13 +257,11 @@ public class MainController {
 		//병원의 의사정보
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
 		model.addAttribute("docList", docList);
-		//System.out.println("docList="+docList);
 		
 		//세션으로 유저아이디 가져옴
 		HttpSession session = request.getSession();
 		String userId = (String) session.getAttribute("userId");
 		model.addAttribute("userId", userId);
-		//System.out.println("userId="+userId);
 		
 		String date = hosInfo.getHoliday();
 		
@@ -280,7 +278,6 @@ public class MainController {
 	@PostMapping("/contactReserve")
 	@ResponseBody
 	public boolean insertReservation(@RequestBody ReservationVO reservationVo) {
-		//System.out.println("reservationVo"+reservationVo);
 		int result = mainService.insertContactReservation(reservationVo);
 		if(result == 0) { //insert 안되면 false
 			return false;
@@ -301,8 +298,6 @@ public class MainController {
 				dayList.put("i6", 6);//토
 				dayList.put("i7", 0);//일
 		
-				//System.out.println("date="+date);
-				//System.out.println(dayList.get("i1"));
 
 				List<Integer> newDate = new ArrayList<>();
 
@@ -391,7 +386,6 @@ public class MainController {
 		//병원의 의사정보
 		List<DoctorVO> docList = hospitalService.getDoctorAll(hospitalId); 
 		model.addAttribute("docList", docList);
-		//System.out.println("docList="+docList);
 		
 		//세션으로 유저아이디 가져옴
 		HttpSession session = request.getSession();
@@ -421,7 +415,6 @@ public class MainController {
 	@PostMapping("/waitingList")
 	@ResponseBody
 	public Map<String,Object> findWaitingList(@RequestBody DoctorVO doctorVO) {
-		System.out.println("///////////////////////////////////////////");
 		List<ReservationVO> findWaitingList = mainService.findWaitingList(doctorVO);
 		List<String> times = new ArrayList<>();//옛날 시간 넣을 곳
 		List<String> newTimes = new ArrayList<>();//concat한 시간 넣을곳
@@ -444,9 +437,9 @@ public class MainController {
 				newTimes.add(hour.concat(minute));
 			}
 			firstReserve = newTimes.get(0); //가장빠른 예약시간
-			System.out.println("findWaitingList="+findWaitingList);
-			System.out.println("times ="+times);
-			System.out.println("newTimes ="+newTimes);
+//			System.out.println("findWaitingList="+findWaitingList);
+//			System.out.println("times ="+times);
+//			System.out.println("newTimes ="+newTimes);
 		 }
 		 
 		
@@ -463,8 +456,6 @@ public class MainController {
         //의사진료 종료시간
         int doctorMaxtime = 0;
 		
-        System.out.println("현재시간= "+ hour);
-        System.out.println("현재 분= "+ minute);
 		
         if(!findWaitingList.isEmpty()) {
         	// 가장 빠른 예약시간 구하기
@@ -475,7 +466,6 @@ public class MainController {
 	                
 	            }
 	        }
-	        System.out.println("가장빠른예약= "+ firstReserve);
 	        //가장 빨리 예약할 수 있는 시간
 	        firstReserveHour = Integer.parseInt(firstReserve.substring(0, 2));
         }
@@ -501,16 +491,12 @@ public class MainController {
         	if(newTimes.size() == 1){
 				System.out.println("현재 내 앞 대기인원 1명");
 				doctorMaxtime = Integer.parseInt(findWaitingList.get(0).getDoctorMaxtime());//의사 진료종료시간
-				System.out.println("doctorMaxtime="+doctorMaxtime);
 				int sliceHour = Integer.parseInt((newTimes.get(0)).substring(0, 2));
 				int sliceMinute = Integer.parseInt((newTimes.get(0)).substring(2, 4));
-				//System.out.println("쪼갠시간= "+sliceHour);
-				//System.out.println("쪼갠분= "+sliceMinute);
 				
 				//의사 진료시간안에 있고 끝이 30분으로 끝날때랑
 				if(sliceMinute >=30 && doctorMaxtime > hour) {
 					canClinicNow = String.valueOf(sliceHour + 1).concat(":00"); //현재 예약가능한 시간
-					System.out.println("canClinicNow= "+canClinicNow);
 				//00으로 끝날때
 				}else if(doctorMaxtime > hour) {
 					canClinicNow = String.valueOf(sliceHour).concat(":30"); //현재 예약가능한 시간
@@ -522,7 +508,6 @@ public class MainController {
 			// ▶ 예약많고 빈예약자리 찾아야함
 			}else if(newTimes.size() > 1) {
 				doctorMaxtime = Integer.parseInt(findWaitingList.get(0).getDoctorMaxtime());//의사 진료종료시간
-				System.out.println("doctorMaxtime="+doctorMaxtime);
 				
 				//1. 빈 예약찾는 연산
 				for(int i= 0; i < (newTimes.size()-1) ; i++) {
@@ -533,15 +518,12 @@ public class MainController {
 						//2.빈예약 앞전 시간을 가져와서 시간과 분으로 쪼갬
 						int sliceHour = Integer.parseInt((newTimes.get(i)).substring(0, 2));
 						int sliceMinute = Integer.parseInt((newTimes.get(i)).substring(2, 4));
-						//System.out.println("쪼갠시간= "+sliceHour);
-						//System.out.println("쪼갠분= "+sliceMinute);
 						
 						//3. 예약가능한 시간 바로 앞 예약된 시간을 토대로 예약가능한 시간으로 계산해줄거임
 						// ▶ 내 앞전에 예약이 있어서 내가 예약할 수 있는 가장 빠른시간을 찾을때
 						if(canClinicNow == null) {//가장빠른 예약시간으로
 							if(sliceMinute >=30 && doctorMaxtime > hour) {
 								canClinicNow = String.valueOf(sliceHour + 1).concat(":00"); //현재 예약가능한 시간
-								//System.out.println("canClinicNow= "+canClinicNow);
 							}else if(doctorMaxtime > hour) {
 								canClinicNow = String.valueOf(sliceHour).concat(":30"); //현재 예약가능한 시간
 							}else {
@@ -558,7 +540,6 @@ public class MainController {
 						
 						if(sliceMinute >=30 && doctorMaxtime > hour) {
 							canClinicNow = String.valueOf(sliceHour + 1).concat(":00"); //현재 예약가능한 시간
-							//System.out.println("canClinicNow= "+canClinicNow);
 						}else if(doctorMaxtime > hour) {
 							canClinicNow = String.valueOf(sliceHour).concat(":30"); //현재 예약가능한 시간
 						}else {
@@ -581,9 +562,9 @@ public class MainController {
         response.put("canClinicNow", canClinicNow);
         response.put("ClinicYN", ClinicYN);
         
-        System.out.println("대기 인원 ="+waitingPP);
-        System.out.println("지금당장 예약할 수 있는 시간 ="+canClinicNow);
-        System.out.println("의사진료시간이 지나지 않음 ="+ClinicYN);
+//        System.out.println("대기 인원 ="+waitingPP);
+//        System.out.println("지금당장 예약할 수 있는 시간 ="+canClinicNow);
+//        System.out.println("의사진료시간이 지나지 않음 ="+ClinicYN);
         
 		return response; 
 	}
@@ -591,7 +572,6 @@ public class MainController {
 	/*유저 QNA 작성폼*/
 	   @GetMapping("/qnaUserForm")
 	   public String insertQnaMemForm(String hospitalId) {
-	      hosId =hospitalId;
 	       return "user/qnaUserForm";
 	   }
 	   
@@ -605,6 +585,7 @@ public class MainController {
 	      resp.setContentType("text/html; charset=UTF-8");
 	      HttpSession session = request.getSession();
 	      String userId = (String) session.getAttribute("userId");
+	      String hosId = (String) session.getAttribute("hosId");
 	      
 	      vo.setHospitalId(hosId);
 	      vo.setUserId(userId);

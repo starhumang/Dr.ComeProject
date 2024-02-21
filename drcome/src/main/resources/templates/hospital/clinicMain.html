@@ -26,6 +26,14 @@
         background-color: #5a5c69;
         color: #fff;
       }
+	  thead,
+	  th {
+		background-color: rgb(230, 239, 240);
+		border: 0.5px solid rgb(230, 239, 240);
+	  }
+	  .table tbody tr:hover {
+		background-color: #f2f2f2;
+	  }
     </style>
   </head>
 
@@ -33,15 +41,15 @@
     <div layout:fragment="content">
       <div class="container-fluid">
         <div class="head_info">
-          <h4 th:text="${hospitalSel.hospitalName}"></h4>
-          <p>
-            <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
-            <span
-              th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
-            ></span>
-          </p>
-        </div>
-        <p>Reservation</p>
+			<h6 th:text="${hospitalSel.hospitalName}"></h6>
+			<p>
+				<i class="fas fa-fw fa-calendar"></i> 오늘날짜 :
+				<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+			</p>
+		</div>
+		<!-- title -->
+		<h4 class="m-0 font-weight-bold text-secondary">진료 관리 및 수납</h4>
+		<br />
 
         <!-- 카테고리 & 달력선택 -->
         <div class="catCal">
@@ -89,14 +97,15 @@
           </div>
 
           <div class="calSel">
+          	<span>날짜를 선택하세요 : </span>
             <label for="date"
-              >날짜를 선택하세요 : <input type="date" id="date" value="" />
+              ><input class="form-control" type="date" id="date" value="" />
             </label>
           </div>
         </div>
 
         <div>
-          <table id="reserveListTable" class="table table-hover">
+          <table id="reserveListTable" class="table table-light">
             <thead>
               <tr>
                 <th>예약코드</th>

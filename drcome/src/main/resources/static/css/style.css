@@ -1,8 +1,22 @@
 /********** Template CSS **********/
+
 :root {
     --primary: #06BBCC;
     --light: #F0FBFC;
     --dark: #181d38;
+}
+/* font적용하기-폴더경로 OK */
+@font-face {
+     src: url("/font/KoPubWorld Dotum Bold.ttf");
+     font-family: "KoPub-B";
+}
+@font-face {
+      src: url("/font/KoPubWorld Dotum Medium.ttf");
+      font-family: "KoPub-M";
+}
+@font-face {
+      src: url("/font/KoPubWorld Dotum Light.ttf");
+      font-family: "KoPub-L";
 }
 
 .fw-medium {
@@ -39,7 +53,7 @@
 
 /*** Button ***/
 .btn {
-    font-family: 'Nunito', sans-serif;
+    font-family: 'Kopub-M';
     font-weight: 600;
     transition: .5s;
 }

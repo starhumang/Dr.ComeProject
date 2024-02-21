@@ -5,7 +5,7 @@
 
 <head>
 <meta charset="UTF-8" />
-<title>Insert title here</title>
+<title>Admin DashBoard</title>
 <style>
 #dashname {
 	margin: 20px 10px
@@ -14,7 +14,8 @@
 #logout {
 	display: flex;
 	justify-content: right;
-	padding-right: 30px;
+	padding-right: 60px;
+	margin-top: 30px;
 }
 
 p {
@@ -30,6 +31,21 @@ p {
 .row {
 	margin-top: 15px;
 }
+button {
+	border: none;
+}
+#card {
+	border: 0.2px solid #f2f2f2;
+	
+}
+hr {
+    border: none;
+    border-top: 1px solid lightgray;
+    margin: 0px;
+}
+.py-3 {
+    padding-bottom: 0px;
+}
 </style>
 </head>
 
@@ -37,6 +53,7 @@ p {
 	<div layout:fragment="content">
 		<div class="container-fluid">
 			<p id="dashname">Admin Dashboard</p>
+			<hr style="margin-bottom: 40px;">
 			<div class="row">
 				<!-- Earnings (Monthly) Card Example -->
 				<div class="col-xl-3 col-md-6 mb-4">
@@ -117,15 +134,17 @@ p {
 						</div>
 					</div>
 				</div>
-
 			</div>
+			
 			<div style="display: flex; justify-content: space-around;" id="list">
 				<div class="left">
-					<div class="card shadow mb-4"  onclick="location.href='/admin/hospital/grant'">
+					<div class="card shadow mb-4 container"  onclick="location.href='/admin/hospital/grant'">
 						<div class="card-header py-3">
-							<h5 class="m-0 font-weight-bold text-secondary">병원 승인 대기 목록</h5>
+							<h5 class="m-0 font-weight-bold text-secondary"><i
+					class="fas fa-fw fa-hospital-user"></i> 병원 승인 대기 목록</h5>
 						</div>
-						<div class="card-body">
+						<hr>
+						<div class="card-body" id="card">
 							<th:block th:if="${grantlisth.empty}">
 								<p>승인 대기 목록이 없습니다.</p>
 
@@ -169,11 +188,12 @@ p {
 				</div>
 
 				<div class="right">
-					<div class="card shadow mb-4"  onclick="location.href='/admin/pharmacy/grant'">
+					<div class="card shadow mb-4 container"  onclick="location.href='/admin/pharmacy/grant'">
 						<div class="card-header py-3">
-							<h5 class="m-0 font-weight-bold text-secondary">약국 승인 대기 목록</h5>
+							<h5 class="m-0 font-weight-bold text-secondary"><i class="fas fa-fw fa-capsules"></i> 약국 승인 대기 목록</h5>
 						</div>
-						<div class="card-body">
+						<hr>
+						<div class="card-body" id="card">
 							<th:block th:if="${grantlistp.empty}">
 								<p>승인 대기 목록이 없습니다.</p>
 							</th:block>
@@ -193,7 +213,9 @@ p {
 											<td th:text="${listp.pharmacyId}"></td>
 											<td th:text="${listp.pharmacyName}"></td>
 											<td th:text="${listp.pharmacyPhone}"></td>
-											<td th:text="${listp.pharmacyStatus}"></td>
+											<td><th:block th:each="detailCode : ${application.detailCode_b}" >
+											<span th:if="${detailCode.detailCode} == ${listp.pharmacyStatus}" th:text="${detailCode.codeName}"></span>
+										</th:block></td>
 											<td th:text="${#dates.format(listp.joindate, 'yyyy-MM-dd')}"></td>
 										</tr>
 									</tbody>
@@ -209,9 +231,9 @@ p {
 				<div class="modal-dialog modal-dialog-centered">
 					<div class="modal-content">
 						<div class="modal-header">
-							<h5 class="modal-title">승인 업무</h5>
-							<button type="button" class="btn-close" data-bs-dismiss="modal"
-								aria-label="Close"></button>
+							<h5 class="modal-title"><i class="fas fa-user-check"></i>  &nbsp;승인 업무</h5>
+							<button type="button" data-bs-dismiss="modal"
+								aria-label="Close"><i class="fas fa-window-minimize"></i></button>
 						</div>
 						<div class="modal-body">
 							<p>병원 사용자 승인 건수 [[${grantlisth.totalElements}]]건</p>

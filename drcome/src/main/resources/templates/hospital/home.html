@@ -22,9 +22,7 @@
 </head>
 <body>
 	<div layout:fragment="content">
-<!-- 		<div class="user-logout-link">
-			<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
-		</div> -->
+
 		<div class="container-fluid">
 			<!-- 날짜 및 병원 정보 헤더 -->
 			<div class="head_info">
@@ -34,7 +32,6 @@
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>Dashboard</p>
 
 			<!-- 카드카드 -->
 			<div class="row">

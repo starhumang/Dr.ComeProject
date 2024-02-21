@@ -42,20 +42,19 @@
 	<div layout:fragment="content">
 		<div class="container-fluid">
 			<div class="head_info">
-				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<h6 th:text="${hospitalSel.hospitalName}"></h6>
 				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+					<i class="fas fa-fw fa-calendar"></i> 오늘날짜 : <span
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>Qna Answer Upload</p>
+			<!-- title -->
+			<h4 class="m-0 font-weight-bold text-secondary">답변 등록</h4>
+			<br />
 
 			<!-- Qna Anser form -->
-			<div>
+			<div class="card shadow mb-4">
 				<div class="p-5">
-					<div class="text-center">
-						<h1 class="h4 text-gray-900 mb-4">QnA 답변 등록</h1>
-					</div>
 					<form class="user" th:action="@{/hospital/qnaAnsForm}" method="post" enctype="multipart/form-data">
 					 	<input type="number" name="qnaNo" id="qnaNo" th:value="${qnaNo}" style="display:none;">
 						<div class="mb-3">
@@ -65,17 +64,15 @@
 						</div>
 						<div class="mb-3">
 							<label for="formFileMultiple" class="form-label">첨부파일
-								</label> <input class="form-control" type="file" name="uploadFiles"
+								</label> <input class="form-control btn btn-light" type="file" name="uploadFiles"
 								id="formFileMultiple">
 						</div>
-						<hr>
 						<div class="inBtn">
 							<button type="submit" class="btn btn-info"> 등록 </button>
 							<button type="reset" class="btn btn-success" style="margin: 0 5px;">초기화</button>
 							<a th:href="@{/hospital/qnaList}" class="btn btn-warning">취소</a>
 						</div>
 					</form>
-					<hr>
 				</div>
 			</div>
 

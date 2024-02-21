@@ -53,7 +53,7 @@
 
 							if (alarmCount > 0) {
 			                     var $bellIcon = $('.fa-bell');
-			                     $bellIcon.after('<span class="badge bg-danger">' + alarmCount + '</span>');
+			                     $bellIcon.after('<span class="badge bg-danger" id="bellNum">' + alarmCount + '</span>');
 			                 }
 
 							var $notificationList = $('#notificationList');
@@ -103,6 +103,14 @@
 		<style>
 			.content {
 				min-height: 500px;
+			}
+			#bellNum {
+				width:25px;
+				height:25px;
+				border-radius:50%;
+				display:flex;
+				align-items:center;
+				justify-content: center;
 			}
 		</style>
 	</head>

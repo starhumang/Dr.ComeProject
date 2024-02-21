@@ -1,5 +1,7 @@
 package com.drcome.project.admin.web;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
@@ -172,10 +174,9 @@ public class AdminController {
    /* 약국 사용자 승인 처리*/
    @PostMapping("/admin/pharmacy/grant/{pharmacyId}")
    @ResponseBody
-   public String updatePharmacyStatus(@PathVariable String pharmacyId) {
+   public Pharmacy updatePharmacyStatus(@PathVariable String pharmacyId) {
       Pharmacy count = aservice.updatePharmacyStatus(pharmacyId);
-      return "true";
+      return count;
    }
-   
-   
+
 }

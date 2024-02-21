@@ -14,7 +14,7 @@ public interface ChallengeService {
 	public List<ChallengeVO> clearToDo(String userId, String date);
 
 	/* TodoList 추가 */ 
-	public int addTodoList(String date, String ChallengeContent, String userId);
+	public int addTodoList(ChallengeVO cvo);
 	
 	/* Todo 수정 */ 
 	public int updateTodoList(String userId, int challengeNo);

@@ -26,8 +26,29 @@
 <link href="/css/sb-admin-2.css" rel="stylesheet" />
 
 <style>
+@font-face {
+      src: url("/font/KoPubWorld Dotum Bold.ttf");
+      font-family: "KoPub-B";
+}
+@font-face {
+      src: url("/font/KoPubWorld Dotum Medium.ttf");
+      font-family: "KoPub-M";
+}
+@font-face {
+      src: url("/font/KoPubWorld Dotum Light.ttf");
+      font-family: "KoPub-L";
+}
+body {
+	font-family: "Kopub-M";
+}
 .content {
 	min-height: 842px;
+}
+.table {
+	text-align: center;
+}
+.table td {
+	vertical-align: middle;
 }
 </style>
 </head>
@@ -68,7 +89,7 @@
 
 			<!-- Nav Item - Dashboard -->
 			<li class="nav-item active"><a class="nav-link"
-				href="/hospital/"> <i class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span></a>
+				href="/hospital/"> <i class="fas fa-fw fa-hospital"></i> <span>Dashboard</span></a>
 			</li>
 
 			<!-- Divider -->
@@ -131,6 +152,11 @@
 				href="/hospital/myProfile"> <i class="fas fa-fw fa-id-card"></i>
 					<span>Profile</span>
 			</a></li>
+			
+			
+			<div class="user-logout-link" style="text-align:center;">
+			<a th:href="@{/logout}">Logout</a>
+			</div>
 
 			<!-- Divider -->
 			<hr class="sidebar-divider d-none d-md-block collepse" />
@@ -139,6 +165,7 @@
 			<div class="text-center d-none d-md-inline">
 				<button class="rounded-circle border-0" id="sidebarToggle"></button>
 			</div>
+			
 		</ul>
 		<!-- End of Sidebar -->
 

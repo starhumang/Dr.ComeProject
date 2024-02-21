@@ -154,7 +154,7 @@
 			    AND to_char(c.clinic_date, 'yyyy-MM-dd') = #{date}
 			    AND s.rejection IS NULL
 			    AND s.produce_status = 'f1'
-			    AND s.pharmacy_id = #{pharmacyId}
+			    AND s.select_pharmacyid = #{pharmacyId}
 			    <include refid="searchP"></include>
 			    ORDER BY c.clinic_no
 			)  z WHERE  <![CDATA[ ROWNUM <= #{page} * 5     ]]> 	) x		WHERE rn > (#{page} - 1) * 5

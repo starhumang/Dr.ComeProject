@@ -160,8 +160,10 @@ public class PharmacyController {
 	@PostMapping("/pharmacy/rejection")
 	@ResponseBody
 	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, 
-											   PharmacySelectVO pharmacyselectVO) {
+											   @RequestBody PharmacySelectVO pharmacyselectVO) {
 		pharmacyselectVO.setPharmacyId(id);
+
+		System.out.println(pharmacyselectVO+"=============");
 
 		return pservice.updaterejection(pharmacyselectVO);
 	}
@@ -171,11 +173,11 @@ public class PharmacyController {
 	 * @return findVO
 	 */
 	@ModelAttribute("pharmacy") 
-	public PharmacyVO getServer() { 
-		PharmacyVO
-		pharmacyVO = new PharmacyVO(); String pharmacyId = "pharmacy1";
-		pharmacyVO.setPharmacyId(pharmacyId); PharmacyVO findVO =
-		pservice.selectPharmacyInfo(pharmacyVO); 
+	public PharmacyVO getServer(Principal principal) { 
+		String pharmacyId = principal.getName();
+		PharmacyVO vo = new PharmacyVO(); 
+		vo.setPharmacyId(pharmacyId); 
+		PharmacyVO findVO = pservice.selectPharmacyInfo(vo); 
 		return findVO;
 	}
 	

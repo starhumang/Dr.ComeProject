@@ -41,8 +41,11 @@
 	</select>
 	
 	<insert id="addTodoList">
+	<selectKey resultType="int" keyProperty="challengeNo" order="BEFORE"> 
+		select chall_seq.NEXTVAL from dual
+	</selectKey>
 		INSERT INTO challenge(challenge_no, challenge_date, challenge_content, user_id) 
-		VALUES (chall_seq.NEXTVAL, #{date}, #{challengeContent}, #{userId})
+		VALUES (#{challengeNo}, #{challengeDate}, #{challengeContent}, #{userId})
 	</insert>
 	
 	<delete id="deleteTodo">

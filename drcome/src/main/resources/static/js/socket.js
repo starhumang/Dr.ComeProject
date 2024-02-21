@@ -1,4 +1,4 @@
-let socket = io("https://www.drcome.store/nodesocket", {
+let socket = io("https://www.drcome.store:3000", {
   cors: { origin: "*" },
 });
 

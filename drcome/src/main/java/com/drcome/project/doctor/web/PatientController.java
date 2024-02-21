@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.admin.domain.Hospital;
@@ -46,7 +47,12 @@ public class PatientController {
 	@Autowired
 	PatientMapper mapper;
 
-	// 공통 병원 정보 따로 빼기
+	/**
+	 * 공통 정보 : 병원
+	 * 
+	 * @param principal 병원 아이디
+	 * @return hosSel
+	 */
 	@ModelAttribute("hospitalSel")
 	public Hospital getServerTime(Principal principal) {
 		String hospitalId = principal.getName();
@@ -58,7 +64,7 @@ public class PatientController {
 	 * 의사 알람 테이블 인서트 + 입장하기 상태로 업데이트 진행
 	 * 
 	 * @param dao (reserveNo , userId , contentCode , prefix)
-	 * @return alarmService
+	 * @return int 저장건수
 	 */
 	@PostMapping("saveAlarm")
 	@ResponseBody
@@ -111,7 +117,8 @@ public class PatientController {
 	 */
 	@GetMapping("clist")
 	@ResponseBody
-	public Map<String, Object> clinicList(Principal principal, String page, String uid) {
+	public Map<String, Object> clinicList(Principal principal,
+			@RequestParam(required = false, defaultValue = "1") int page, String uid) {
 
 		PatientVO vo = new PatientVO();
 
@@ -123,14 +130,11 @@ public class PatientController {
 		// 전체갯수 가져오기
 		int total = patientService.totalList(vo);
 
-		// 선택된 페이지 인트로 변환
-		int cpage = Integer.parseInt(page);
-
 		// 페이지네이션
-		PageDTO dto = new PageDTO(cpage, total);
+		PageDTO dto = new PageDTO(page, total);
 
 		// 진료기록리스트 (vo : userId hospitalId)
-		List<PatientVO> clinicList = patientService.getClinicList(cpage, vo);
+		List<PatientVO> clinicList = patientService.getClinicList(page, vo);
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("list", clinicList); // 리스트 넘기고
@@ -144,7 +148,7 @@ public class PatientController {
 	 * 처방전 조회
 	 * 
 	 * @param no clinicNo
-	 * @return patientService
+	 * @return List<PatientVO>
 	 */
 	@GetMapping("/perscription/{no}")
 	@ResponseBody
@@ -159,7 +163,7 @@ public class PatientController {
 	 * 약검색
 	 * 
 	 * @param vo medicineName
-	 * @return patientService
+	 * @return List<PatientVO>
 	 */
 	@GetMapping("medicine")
 	@ResponseBody
@@ -175,7 +179,7 @@ public class PatientController {
 	 * @param reserveNo, clinicSymptom specificity payYn perscriptionYn hospitalId
 	 *                   visit userId perary=[{dosage , doseCnt ,doseDay,
 	 *                   medicineNo},{}]
-	 * @return patientService
+	 * @return int 저장건수
 	 */
 
 	@PostMapping("saveClinic")
@@ -189,7 +193,7 @@ public class PatientController {
 	 * 진료종료시 진료완료로 상태업데이트
 	 * 
 	 * @param vo reserveNo
-	 * @return patientService
+	 * @return int 업데이트건수
 	 */
 	@PostMapping("/updateStatus")
 	@ResponseBody
@@ -202,7 +206,7 @@ public class PatientController {
 	 * 대면진료 결제완료처리버튼 누를시 결제완료로 상태업데이트
 	 * 
 	 * @param vo reserveNo
-	 * @return mapper
+	 * @return int 업데이트건수
 	 */
 	@PostMapping("/updatePayment")
 	@ResponseBody

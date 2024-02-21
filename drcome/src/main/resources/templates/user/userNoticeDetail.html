@@ -65,13 +65,13 @@
 										<th class="text-center table-light align-middle">제목</th>
 										<td th:text="${nif.title}" colspan="2" class="align-middle"></td>
 										
-										<th>첨부파일</th>
-			                            <td colspan="2">
-			                              <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == qnaInfo.qnaNo}">
-				                              <a href="#" th:attr="data-filename=${attach.fileName}" onclick="downloadFile(this.getAttribute('data-filename'))"
-				                              th:text="${attach.fileName.substring(attach.fileName.lastIndexOf('/') + 1)}"></a>
-			                          	  </span>
-			                            </td>
+										<th class="text-center table-light align-middle">첨부파일</th>
+										<td class="text-center" colspan="2">
+											<div th:each="files : ${nif.files}">
+												<!-- [[${files.fileName}]] -->
+												<a href="#" th:attr="data-filename=${files.fileName}" onclick="downloadFile(this.getAttribute('data-filename'))" th:text="${files.fileName.substring(files.fileName.lastIndexOf('/') + 1)}"></a>
+											</div>
+										</td>
 									</tr>
 								</thead>
 								<tbody>

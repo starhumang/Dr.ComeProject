@@ -6,22 +6,21 @@
 
 	<!-- 알람등록 -->
 	<insert id="insertAlarm" parameterType="AlarmDao">
-		insert into
-		alarm(
-		alarm_no
-		,user_id
-		,content_code
-		,prefix
-		,reserve_no
-		)
+		insert into alarm(
+					alarm_no
+				   ,user_id
+		           ,content_code
+		           ,prefix
+		           ,reserve_no
+		          )
 
-		values (
-		alarm_no_seq.NEXTVAL
-		,#{userId}
-		,#{contentCode}
-		,#{prefix}
-		,#{reserveNo}
-		)
+					values (
+					alarm_no_seq.NEXTVAL
+					,#{userId}
+					,#{contentCode}
+					,#{prefix}
+					,#{reserveNo}
+					)
 	</insert>
 	
 	<insert id="insertAlarmPharmacy" parameterType="AlarmDao">

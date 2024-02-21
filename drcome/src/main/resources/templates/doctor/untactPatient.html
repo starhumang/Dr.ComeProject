@@ -103,16 +103,29 @@
         display: none;
       }
 
+      #video video {
+       margin: 0 10px; 
+       border-radius: 10px;
+      }
+      #background {
+       background-image: url('/images/background30.jpg');
+       background-repeat: no-repeat;
+       background-size: 105%;
+       background-position: center -200px;;
       
+  }
+
     </style>
 
   
   </head>
 
   <body>
-    <div layout:fragment="content">
+  <div layout:fragment="content">
       <!--container-fluid-->
-      <div class="container-fluid">
+    <div class="container-fluid">
+        <!--배경-->
+      <div id ="background">
         <!--title-->
         <div class="title" style="background-color: #06bbcc; padding: 5px;  border-radius: 7px; margin-top: 1px;">
              <!--on off-->
@@ -188,6 +201,8 @@
           </div>
         </div>
         <!--비디오-->
+      </div>
+     <!--배경-->
 
       
 

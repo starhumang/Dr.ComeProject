@@ -17,76 +17,81 @@
 	display: flex;
 	justify-content: center;
 }
+
 #file-upload-button {
 	margin-bottom: 5px;
 }
+
 .form-control {
-  display: block;
-  width: 100%;
-  height: calc(1.5em + 0.75rem + 8px);
-  padding: 0.375rem 0.75rem;
-  font-size: 1rem;
-  font-weight: 400;
-  line-height: 1.5;
-  color: #6e707e;
-  background-color: #fff;
-  background-clip: padding-box;
-  border: 1px solid #d1d3e2;
-  border-radius: 0.35rem;
-  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+	display: block;
+	width: 100%;
+	height: calc(1.5em + 0.75rem + 8px);
+	padding: 0.375rem 0.75rem;
+	font-size: 1rem;
+	font-weight: 400;
+	line-height: 1.5;
+	color: #6e707e;
+	background-color: #fff;
+	background-clip: padding-box;
+	border: 1px solid #d1d3e2;
+	border-radius: 0.35rem;
+	transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 </style>
 
 <!-- SweetAlert2 CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
 </head>
 
 <body>
 	<div layout:fragment="content">
 		<div class="container-fluid">
 			<div class="head_info">
-				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<h6 th:text="${hospitalSel.hospitalName}"></h6>
 				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
+					<i class="fas fa-fw fa-calendar"></i> 오늘날짜 : <span
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>notice Upload</p>
+			<!-- title -->
+			<h4 class="m-0 font-weight-bold text-secondary">공지사항 등록</h4>
+			<br />
 
 			<!-- 공지사항 form -->
 			<div>
-				<div class="p-5">
-					<div class="text-center">
-						<h1 class="h4 text-gray-900 mb-4">공지사항 등록</h1>
+
+				<div class="card shadow mb-4">
+					<div class="p-5">
+						<form class="user" th:action="@{/hospital/noticeForm}"
+							method="post" enctype="multipart/form-data">
+							<div class="mb-3">
+								<label for="exampleFormControlInput1" class="form-label">제목</label>
+								<input type="text" name="title" class="form-control"
+									id="exampleFormControlInput1" placeholder="제목을 입력하세요.">
+							</div>
+							<div class="mb-3">
+								<label for="exampleFormControlTextarea1" class="form-label">내용</label>
+								<textarea class="form-control" name="content"
+									id="exampleFormControlTextarea1" rows="10"></textarea>
+							</div>
+							<div class="mb-3">
+								<label for="formFileMultiple" class="form-label">첨부파일 </label> <input
+									class="form-control btn btn-light" type="file"
+									name="uploadFiles" id="formFileMultiple" multiple>
+							</div>
+							<div class="inBtn">
+								<button type="submit" class="btn btn-info">등록</button>
+								<button type="reset" class="btn btn-success"
+									style="margin: 0 5px;">초기화</button>
+								<a th:href="@{/hospital/noticeList}" class="btn btn-warning">취소</a>
+							</div>
+						</form>
 					</div>
-					<form class="user" th:action="@{/hospital/noticeForm}" method="post" enctype="multipart/form-data">
-						<div class="mb-3">
-							<label for="exampleFormControlInput1" class="form-label">제목</label>
-							<input type="text" name="title" class="form-control"
-								id="exampleFormControlInput1" placeholder="제목을 입력하세요.">
-						</div>
-						<div class="mb-3">
-							<label for="exampleFormControlTextarea1" class="form-label">내용</label>
-							<textarea class="form-control" name="content" id="exampleFormControlTextarea1"
-								rows="10"></textarea>
-						</div>
-						<div class="mb-3">
-							<label for="formFileMultiple" class="form-label">첨부파일
-								</label> <input class="form-control" type="file" name="uploadFiles"
-								id="formFileMultiple" multiple>
-						</div>
-						<hr>
-						<div class="inBtn">
-							<button type="submit" class="btn btn-info"> 등록 </button>
-							<button type="reset" class="btn btn-success" style="margin: 0 5px;">초기화</button>
-							<a th:href="@{/hospital/noticeList}" class="btn btn-warning">취소</a>
-						</div>
-					</form>
-					<hr>
 				</div>
+				<!-- SweetAlert2 JS -->
+				<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 			</div>
-		<!-- SweetAlert2 JS -->
-		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 		</div>
 	</div>
 </body>

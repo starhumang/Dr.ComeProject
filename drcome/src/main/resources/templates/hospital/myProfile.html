@@ -19,6 +19,9 @@
 				flex-direction: column;
 				padding-right: 40px;
 			}
+			.right {
+				width: 75%;
+			}
 		</style>
 
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
@@ -171,12 +174,13 @@
 			                              ></td>
 		                           	  </th:block>
 									<th>휴무일</th>
-			                          <th:block th:each="detailCode : ${application.detailCode_i}">
-			                              <td
-			                                 th:if="${detailCode.detailCode} == ${hospitalSel.holiday}"
-			                                 th:text="${detailCode.codeName}"
-			                              ></td>
-		                           	  </th:block>									
+										<td>
+										    <th:block th:each="detailCode : ${application.detailCode_i}">
+										        <span th:each="holidayHos : ${#strings.arraySplit(hospitalSel.holiday, ',')}" 
+										            th:if="${detailCode.detailCode == holidayHos}" 
+										            th:text="${detailCode.codeName}"></span>
+											</th:block>
+									    </td>								
 								</tr>
 								<tr>
 									<th>오픈시간</th>
@@ -233,7 +237,7 @@
 										        <span th:each="holiday : ${#strings.arraySplit(doc.holiday, ',')}" 
 										            th:if="${detailCode.detailCode == holiday}" 
 										            th:text="${detailCode.codeName}"></span>
-										</th:block>
+											</th:block>
 									    </td>
 										<td>
 											<div th:each="drTime : ${doc.times}">

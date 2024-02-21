@@ -102,6 +102,20 @@
       #perscription {
         display: none;
       }
+
+      #video video {
+       margin: 0 10px; 
+       border-radius: 10px;
+    
+      }
+
+      #full {
+       background-image: url('/images/background50.jpg');
+       background-repeat: no-repeat;
+       background-position: center;
+       background-size: 150%;
+       
+      }
     </style>
   </head>
 
@@ -110,7 +124,7 @@
       <!--container-fluid-->
       <div class="container-fluid">
         <!--title-->
-        <div class="title" style="background-color: #06bbcc; padding: 5px">
+        <div class="title" style="background-color: #06bbcc; padding: 5px;  border-radius: 7px;">
           <!--on off-->
           <div
             class="d-flex justify-content-center align-items-center"
@@ -118,14 +132,14 @@
           >
             <!-- 마이크 버튼 -->
             <button
-              class="btn btn-secondary"
+              class="btn btn-sm btn-dark shadow-sm"
               onclick="toggleAudio()"
               style="margin-right: 5px"
             >
               <i id="micIcon" class="bi bi-mic"></i>
             </button>
             <!-- 비디오 버튼 -->
-            <button class="btn btn-secondary" onclick="toggleVideo()">
+            <button  class="btn btn-sm btn-dark shadow-sm" onclick="toggleVideo()">
               <i id="cameraIcon" class="bi bi-camera-video"></i>
             </button>
           </div>
@@ -138,23 +152,25 @@
               margin-bottom: 0;
               padding-left: 120px;
               color: white;
+              font-weight: 100;
             "
           >
-            비대면 진료중
+            비대면 진료
           </h3>
 
           <!--title-right-->
           <div class="title-right">
             <p style="margin-right: 15px">
-              <i class="fas fa-fw fa-calendar"></i> 현재날짜:
+              <i class="fas fa-fw fa-calendar"></i> 오늘날짜:
               <span
                 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
               ></span>
             </p>
             <button
               onclick="endClinic()"
-              class="btn btn-dark"
-              style="margin-right: 15px"
+              class="btn btn-sm btn-dark shadow-sm"
+              style="margin-right: 15px;
+               font-weight: 100;"
             >
               진료종료
             </button>
@@ -170,7 +186,7 @@
             <!--비디오-->
             <div
               id="video"
-              style="width: 100%; display: flex; justify-content: center"
+              style="width: 100%; display: flex; justify-content: center;"
             >
               <video id="localVideo" autoplay ></video>
               <video id="remoteVideo" autoplay ></video>
@@ -204,7 +220,7 @@
                 </div>
                 <!--제목-->
                 <!--table pagination-->
-                <div style="min-height: 250px">
+                <div style="min-height: 350px">
                   <table id="clist" class="table table-hover" style="text-align: center">
                     <thead>
                       <tr>
@@ -411,7 +427,7 @@
                       <button
                         onclick="searchMedicine()"
                         type="button"
-                        class="btn btn-primary py-2"
+                        class="btn btn-sm btn-info shadow-sm py-2"
                       >
                         검색
                       </button>
@@ -449,8 +465,8 @@
                 <br />
 
                 <div style="text-align: center">
-                  <button class="btn btn-info" id="saveBtn">
-                    진료기록저장
+                  <button class="btn btn-sm btn-info shadow-sm" id="saveBtn">
+                    진료기록 저장
                   </button>
                 </div>
               </form>
@@ -471,6 +487,7 @@
             margin-top: 15px;
             padding-left: 120px;
             background-color: #06bbcc;
+            border-radius: 7px;
           "
         ></div>
         <!--bottom-->
@@ -488,7 +505,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">
-                  처방전 상세보기
+                  처방전 상세
                 </h5>
               </div>
               <div class="modal-body">
@@ -559,7 +576,7 @@
           function connectWebSocket() {
             try {
               // WebSocket 연결
-              alarmSocket = new WebSocket("ws://192.168.0.16:80/echo");
+              alarmSocket = new WebSocket("ws://localhost:80/echo");
 
               // 연결이 열리면 호출되는 이벤트 핸들러
               alarmSocket.onopen = function (event) {
@@ -942,21 +959,40 @@
             };
           }
 
-              //on off 토글버튼
-              function toggleVideo() {
-              const tracks = myScreen.getVideoTracks();
-              tracks.forEach(track => {
-              track.enabled = !track.enabled;
-              });
+          
+            function toggleVideo() {
+            const videoTracks = myScreen.getVideoTracks();
+            videoTracks.forEach(track => {
+                track.enabled = !track.enabled;
+            });
 
-              }
+            // 비디오 아이콘 변경
+            const cameraIcon = document.getElementById('cameraIcon');
+            if (videoTracks.some(track => track.enabled)) {
+                cameraIcon.classList.remove('bi-camera-video-off');
+                cameraIcon.classList.add('bi-camera-video');
+            } else {
+                cameraIcon.classList.remove('bi-camera-video');
+                cameraIcon.classList.add('bi-camera-video-off');
+            }
+         }
 
-              function toggleAudio() {
-              const tracks = myScreen.getAudioTracks();
-              tracks.forEach(track => {
-              track.enabled = !track.enabled;
-              });
-              }
+            function toggleAudio() {
+            const audioTracks = myScreen.getAudioTracks();
+            audioTracks.forEach(track => {
+                track.enabled = !track.enabled;
+            });
+
+            // 오디오 아이콘 변경
+            const micIcon = document.getElementById('micIcon');
+            if (audioTracks.some(track => track.enabled)) {
+                micIcon.classList.remove('bi-mic-mute');
+                micIcon.classList.add('bi-mic');
+            } else {
+                micIcon.classList.remove('bi-mic');
+                micIcon.classList.add('bi-mic-mute');
+            }
+         }
         </script>
       </div>
       <!--container-fluid-->

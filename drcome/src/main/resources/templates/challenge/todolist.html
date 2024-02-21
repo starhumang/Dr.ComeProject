@@ -1,59 +1,77 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org"
- xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
- layout:decorate="~{layouts/layout}">
+ xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
 <head>
 <meta charset="UTF-8">
 <title>To Do List</title>
 <style>
 #todoplus {
 	border-radius: 50px;
+	margin-top: 15px
 }
 #todo-form, #todolist {
 	margin: 10px 10px;
 }
 #submitbtn {
 	border-radius: 50px;
+	margin-left: 15px;
 }
 #whattodo {
 	height: 37.6px;
-	width: 428px;
+	width: 595px;
+	border: 1px solid gray;
+	border-radius: 8px;
 }
-label {
-	width: 400px;
+#labeltodo {
+	width: 604px;
+	margin-left: 8px;
 }
 
-.container {
+.todocontainer {
     margin-top: 20px;
     display: flex;
     justify-content: center;
     align-items: center;
-}
+    width: 700px;
+} 
 
 .card-body {
     background-color: #fff;
     border-radius: 10px;
-    padding: 20px;
-    width: 400px; /* 카드 너비 설정 */
+    padding: 0px;
+    width: 400px;
     justify-content: center;
     align-items: center;
+    min-height: 500px;
 }
 
-/* 추가된 CSS 스타일: SweetAlert2 */
 .swal2-popup {
     font-size: 1rem !important;
 }
 .todosuccess {
 	text-decoration: line-through;
 }
+.alert-info {
+    color: black;
+    background-color: #cff4fc;
+    border-color: #b6effb;
+    border-radius: 15px;
+    opacity: 0.8;
+    margin-top: 5px;
+}
+
+
 </style>
 </head>
 <body>
-<div layout:fragment="content" class="container">
+<div layout:fragment="content" class="container todocontainer" >
 	<div class="card-body">
 	<!-- <h3 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}">To Do List</h3> -->
-	<h3>To Do List </h3>
-	<p th:text="${date}" id="dateValue" ></p>
+	<!-- <h2>To Do List </h2> -->
+	<i class="fas fa-fw fa-calendar"></i>&nbsp;<span th:text=" ${date}" id="dateValue" ></span>
+	<div class="alert-info p-3">
+		<span id="quoteText"></span>
+	</div>
 	<button class="btn btn-primary" id="todoplus">todo <i class="fas fa-plus-circle"></i></button>
 	<div class="appendbox" style="display: none;">
 		<form id="todo-form">
@@ -62,23 +80,25 @@ label {
 		</form>
 	</div>
 	<form id="todolist" class ="todo-box">
+			<div id="insert">
 		<th:block th:if="${todolist != null and todolist.size() > 0}">
 			<th:block th:each="todo : ${todolist}">
-				<div class="form-check">
+				<div class="form-check no">
 					<input class="form-check-input" type="checkbox"
 						name="flexRadioDefault" id="flexRadioDefault1" th:onchange="updatetodo(this, [[${todo.challengeNo}]])" /> 
-					<label class="form-check-label" for="flexRadioDefault1" th:text="${todo.challengeContent}"></label>
-					<button class="btn btn-success" th:onclick="deleteToDo([[${todo.challengeNo}]])">삭제</button>
+					<label class="form-check-label" id="labeltodo" for="flexRadioDefault1" th:text="${todo.challengeContent}"></label>
+					<button class="btn" type="button" th:onclick="deleteToDo([[${todo.challengeNo}]])">x</button>
 				</div>
 			</th:block>
 		</th:block>
+			</div>
 		<th:block th:if="${completetodo != null and completetodo.size() > 0}">
 			<th:block th:each="ctodo : ${completetodo}">
 				<div class="form-check">
 					<input class="form-check-input" type="checkbox"
 						name="flexRadioDefault" id="flexRadioDefault1" checked th:onchange="updatetodo(this, [[${ctodo.challengeNo}]])" /> 
-					<label class="form-check-label todosuccess" for="flexRadioDefault1" th:text="${ctodo.challengeContent}"></label>
-					<button class="btn btn-success" th:onclick="deleteToDo([[${ctodo.challengeNo}]])">삭제</button>
+					<label class="form-check-label todosuccess" id="labeltodo" for="flexRadioDefault1" th:text="${ctodo.challengeContent}"></label>
+					<button class="btn" type="button" th:onclick="deleteToDo([[${ctodo.challengeNo}]])">x</button>
 				</div>
 			</th:block>
 		</th:block>
@@ -124,15 +144,26 @@ function insertToDo() {
 		return false;
 	}
 	
-	$.ajax("/todoinsert/"+dateValue, {
+	$.ajax("/todoinsert", {
           type: "post",
-          data: {
+          data: JSON.stringify({
+        	  challengeDate: dateValue,
         	  challengeContent: result
-          },
+          }),
           dataType: 'json',
-        }).done((result) => {
-            console.log("ToDoInsert", result);
-            location.reload();
+          contentType: "application/json",
+        }).done((todo) => {
+            console.log("ToDoInsert", todo);
+            //location.reload();
+            var newToDoItem = `<div class="form-check">
+				<input class="form-check-input" type="checkbox"
+				name="flexRadioDefault" id="flexRadioDefault1" onchange="updatetodo(this, ${todo.challengeNo})" /> 
+			<label class="form-check-label" id="labeltodo"  for="flexRadioDefault1">${todo.challengeContent}</label>
+			<button class="btn" type="button" onclick="deleteToDo(${todo.challengeNo})">x</button>
+		</div>`
+			// 새로운 할 일 항목을 <th:block>에 추가
+			$('#insert').append(newToDoItem);
+            $('#whattodo').val('');
           })
           .fail((err) => console.log(err));
 
@@ -140,7 +171,8 @@ function insertToDo() {
 }
 
 function deleteToDo(no) {
-	var delbtn = $(event.targe)
+	var delbtn = $(event.target);
+	console.log("del", no);
 	$.ajax("/tododelete/" +no, {
 	         type: "get",
 	       }).done((result) => {
@@ -169,4 +201,65 @@ function updatetodo(checkbox, no) {
 		$(checkbox).next().toggleClass("todosuccess");
 	}).fail((err) => console.log(err));
 }
+
+//랜덤 격언
+var quotes = [
+	"삶이 있는 한 희망은 있다  -키케로",
+    "산다는것 그것은 치열한 전투이다.  -로망로랑",
+    "하루에 3시간을 걸으면 7년 후에 지구를 한바퀴 돌 수 있다.  -사무엘존슨",
+    "언제나 현재에 집중할수 있다면 행복할것이다.  -파울로 코엘료",
+    "진정으로 웃으려면 고통을 참아야하며 , 나아가 고통을 즐길 줄 알아야 해  -찰리 채플린",
+    "직업에서 행복을 찾아라. 아니면 행복이 무엇인지 절대 모를 것이다  -엘버트 허버드",
+    "신은 용기있는자를 결코 버리지 않는다  -켄러",
+    "오늘 걷지 않으면 내일은 뛰어야한다  -도스토예프스키",
+    "우리를 향해 열린 문을 보지 못하게 된다  –헬렌켈러",
+    "피할수 없으면 즐겨라  –로버트 엘리엇",
+    "단순하게 살아라. 현대인은 쓸데없는 절차와 일 때문에 얼마나 복잡한 삶을 살아가는가?  -이드리스 샤흐",
+    "먼저 자신을 비웃어라. 다른 사람이 당신을 비웃기 전에  –엘사 맥스웰",
+    "먼저핀꽃은 먼저진다 남보다 먼저 공을 세우려고 조급히 서둘것이 아니다  –채근담",
+    "행복한 삶을 살기위해 필요한 것은 거의 없다.  -마르쿠스 아우렐리우스 안토니우스",
+    "절대 어제를 후회하지 마라 . 인생은 오늘의 나 안에 있고 내일은 스스로 만드는 것이다  -L.론허바드",
+    "어리석은 자는 멀리서 행복을 찾고, 현명한 자는 자신의 발치에서 행복을 키워간다  -제임스 오펜하임",
+    "한번의 실패와 영원한 실패를 혼동하지 마라  -F.스콧 핏제랄드",
+    "내일은 내일의 태양이 뜬다",
+    "피할수 없으면 즐겨라  -로버트 엘리엇",
+    "절대 어제를 후회하지 마라. 인생은 오늘의 내 안에 있고 내일은 스스로 만드는것이다.  -L론허바드",
+    "계단을 밟아야 계단 위에 올라설수 있다.  -터키속담",
+    "오랫동안 꿈을 그리는 사람은 마침내 그 꿈을 닮아 간다.  -앙드레 말로",
+    "좋은 성과를 얻으려면 한 걸음 한 걸음이 힘차고 충실하지 않으면 안 된다.  -단테",
+    "행복은 습관이다,그것을 몸에 지니라  -허버드",
+    "성공의 비결은 단 한 가지, 잘할 수 있는 일에 광적으로 집중하는 것이다.  -톰 모나건",
+    "자신감 있는 표정을 지으면 자신감이 생긴다  -찰스다윈",
+    "평생 살 것처럼 꿈을 꾸어라.그리고 내일 죽을 것처럼 오늘을 살아라.  –제임스 딘",
+    "1퍼센트의 가능성, 그것이 나의 길이다.  -나폴레옹",
+    "고통이 남기고 간 뒤를 보라! 고난이 지나면 반드시 기쁨이 스며든다.  -괴테",
+    "꿈을 계속 간직하고 있으면 반드시 실현할 때가 온다.  -괴테",
+    "화려한 일을 추구하지 말라. 중요한 것은 스스로의 재능이며, 자신의 행동에 쏟아 붓는 사랑의 정도이다.  -머더 테레사",
+    "마음만을 가지고 있어서는 안된다. 반드시 실천하여야 한다.  -이소룡",
+    "만약 우리가 할 수 있는 일을 모두 한다면 우리들은 우리자신에 깜짝 놀랄 것이다.  -에디슨",
+    "물러나서 조용하게 구하면 배울 수 있는 스승은 많다. 사람은 가는 곳마다 보는 것마다 모두 스승으로서 배울 것이 많은 법이다.  -맹자",
+    "눈물과 더불어 빵을 먹어 보지 않은 자는 인생의 참다운 맛을 모른다.  -괴테",
+    "진짜 문제는 사람들의 마음이다. 그것은 절대로 물리학이나 윤리학의 문제가 아니다.  -아인슈타인",
+    "해야 할 것을 하라. 모든 것은 타인의 행복을 위해서, 동시에 특히 나의 행복을 위해서이다.  -톨스토이",
+    "사람이 여행을 하는 것은 도착하기 위해서가 아니라 여행하기 위해서이다.  -괴테",
+    "화가 날 때는 100까지 세라. 최악일 때는 욕설을 퍼부어라.  -마크 트웨인",
+    "재산을 잃은 사람은 많이 잃은 것이고, 친구를 잃은 사람은 더많이 잃은 것이며, 용기를 잃은 사람은 모든것을 잃은 것이다.  -세르반테스",
+    "돈이란 바닷물과도 같다. 그것은 마시면 마실수록 목이 말라진다.  -쇼펜하우어",
+    "이룰수 없는 꿈을 꾸고 이길수 없는 적과 싸우며, 이룰수 없는 사랑을 하고 견딜 수 없는 고통을 견디고, 잡을수 없는 저 하늘의 별도 잡자.  -세르반테스",
+    "고개 숙이지 마십시오. 세상을 똑바로 정면으로 바라보십시오.  -헬렌 켈러",
+    "고난의 시기에 동요하지 않는 것, 이것은 진정 칭찬받을 만한 힘이다.  -베르길리우스",
+    "성공의 비결은 단 한 가지, 잘할 수 있는 일에 광적으로 집중하는 것이다.  -톰 모나건",
+    "나는 나 자신의 교육에만 만족한다.  -클라우디아 레이나",
+    "성공을 갈망하면 공부하라. 실패를 갈망하면 더욱 열심히 공부하라.  -알버트 아인슈타인",
+    "사랑하는 사람이 내게 무슨 행복을 줄지는 알 수 없어도, 내가 그에게 줄 수 있는 행복은 최대한 주려고 노력하자.  -피레르 베아트"
+];
+
+// 랜덤 격언 선택
+var randomIndex = Math.floor(Math.random() * quotes.length);
+var randomQuote = quotes[randomIndex];
+
+// 격언을 화면에 출력
+var quoteTextElement = document.getElementById("quoteText");
+quoteTextElement.textContent = randomQuote;
+
 </script>

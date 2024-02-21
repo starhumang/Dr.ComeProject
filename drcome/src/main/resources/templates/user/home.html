@@ -11,6 +11,9 @@
 <!-- 주소검색 다음api -->
 <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+
 <style scoped>
 .ho:hover {
    border-radius: 5%;
@@ -33,7 +36,7 @@
    background-color: #22313f;
    margin-right: 10px;
    margin-left: 10px;
-   padding-top: 10px;
+   padding-top: 30px;
    left: 0px;
    top: -350px;
    width: 250px;
@@ -48,7 +51,7 @@
    background-color: #22313f;
    margin-right: 10px;
    margin-left: 10px;
-   padding-top: 10px;
+   padding-top: 30px;
    left: 0px;
    top: -350px;
    width: 250px;
@@ -88,313 +91,323 @@
 .subject>tr>td {
    margin-top: 20px;
 }
+.movebody{
+	position:relative;
+	background-color: white;
+}
+.move{
+	position:absolute;
+	z-index: 1; /* 이미지 위에 배치*/
+	transform: translate(-10%, -160%);
+	left:50%;
+	width:600px;
+	text-align:center;
+}
+.ment{
+	right:80%;
+}
 </style>
 
 </head>
 <body>
-   <div layout:fragment="content" style="caret-color:transparent;">
-      <!-- Header Start -->
-      <div class="container-fluid bg-primary py-5 mb-5 page-header"
-         style="height: 480px;">
-         <div class="container py-5">
-            <div class="row justify-content-center">
-               <div class="col-lg-10 text-center" style="padding-top: 40px;">
-                  <h1 class="display-3 text-white animated slideInDown"
-                     style="font-size: 40px;">어떤 병원을 찾고 계신가요?</h1>
+	<div layout:fragment="content" style="caret-color:transparent;">
+		<!-- Header Start -->
+		<div class="container-fluid movebody"style="height: 480px;">
+			 <img src="/images/banner5.png" alt="이미지 설명" style="width:100%; height:450px;">
+			<div class="container py-5" style="width">
+				<div class="row justify-content-center ">
+					<div class="move">
+						<h1 class="display-3 text-white animated slideInDown ment"
+							style="font-size: 40px;">어떤 병원을 찾고 계신가요?</h1>
 
-                  <div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3" role="search"
-                     style="padding-left: 170px; margin-top: 40px;">
+						<div class="col-12 col-lg-auto mb-3 mb-lg-0 me-lg-3 " role="search"
+							style=" margin-top: 40px;">
 
-                     <!-- 검색창 -->
-                     <input type="search" id="search"
-                        class="form-control form-control-dark text-bg-dark search"
-                        placeholder="찾으시는 병원이나 약국을 검색해보세요" aria-label="Search"
-                        style="width: 78%; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
+							<!-- 검색창 -->
+							<input type="search" id="search"
+								class="form-control form-control-dark text-bg-dark search"
+								placeholder="찾으시는 병원이나 약국을 검색해보세요" aria-label="Search"
+								style="width: 600px; height: 50px; border-radius: 20px; padding-left: 20px; position: relative;">
 
-                     <!-- 검색참고용 -->
-                     <!-- <form class="d-flex" action="searchList.do" method="POST">
-                        <input style="width: 800px;" class="form-control me-sm-2" type="search" placeholder="Search" name="word">
-                        <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-                     </form> -->
+					
+							<!-- 돋보기 아이콘 -->
+							<svg xmlns="http://www.w3.org/2000/svg" width="50px" height="50px"
+								onclick="searchResult()" fill="rgb(255,255,255)"
+								style="position: relative; top: -50px; left: 370px; cursor: pointer;"
+								class="bi bi-search" viewBox="0 0 16 16">
+                          		<path
+									d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                     		</svg>
 
-                     <!-- 돋보기 아이콘 -->
-                     <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50"
-                        onclick="searchResult()" fill="rgb(255,255,255)"
-                        style="position: relative; top: -50px; left: 300px; cursor: pointer;"
-                        class="bi bi-search" viewBox="0 0 16 16">
-                                <path
-                           d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
-                           </svg>
+						</div>
+						<button class="ss btn" data-bs-toggle="modal"
+							data-bs-target="#exampleModal">진료과목으로 찾기</button>
+					</div>
+				</div>
+			</div>
+		</div>
 
-                  </div>
-                  <button class="ss btn" data-bs-toggle="modal"
-                     data-bs-target="#exampleModal">진료과목으로 찾기</button>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <!-- Modal -->
-      <div class="modal" tabindex="-1" id="exampleModal">
-         <div class="modal-dialog">
-            <div class="modal-content" style="text-align: center;">
-               <!--  width:700px; height:700px; -->
-               <!-- <div class="modal-header" style="text-align:center;">
-                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                  </div> -->
-               <div class="modal-body" style="padding: 30px 30px 30px 30px;">
-                  <h2 style="margin-bottom: 20px;">진료과목을 선택해주세요</h2>
-                  <hr>
-                  <table>
-                     <tbody class="subject">
-                        <tr>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 002.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h1)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 003.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h2)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 004.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h3)}'|">
-                              </button>
-                           </th>
-                        <tr>
-                        <tr style="font-weight: bolder;">
-                           <td>가정의학과</td>
-                           <td>내과</td>
-                           <td>비뇨기과</td>
-                        <tr>
-                        <tr>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 005.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h4)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 006.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h5)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 007.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h6)}'|">
-                              </button>
-                           </th>
-                        <tr>
-                        <tr style="font-weight: bolder;">
-                           <td>산부인과</td>
-                           <td>성형외과</td>
-                           <td>소아과</td>
-                        <tr>
-                        <tr>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 008.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h7)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 009.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h8)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 010.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h9)}'|">
-                              </button>
-                           </th>
-                        <tr>
-                        <tr style="font-weight: bolder;">
-                           <td>신경외과</td>
-                           <td>안과</td>
-                           <td>외과</td>
-                        <tr>
-                        <tr>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 011.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h10)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 012.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h11)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 013.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h12)}'|">
-                              </button>
-                           </th>
-                        <tr>
-                        <tr style="font-weight: bolder;">
-                           <td>이비인후과</td>
-                           <td>응급의학과</td>
-                           <td>정신건강의학과</td>
-                        <tr>
-                        <tr>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 014.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h13)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 015.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h14)}'|">
-                              </button>
-                           </th>
-                           <th>
-                              <button id="ddd" type="button">
-                                 <img class="img-button" th:src="@{/images/} + 016.png"
-                                    th:onclick="|location.href='@{searchSubject(mainSubject=h15)}'|">
-                              </button>
-                           </th>
-                        <tr>
-                        <tr style="font-weight: bolder;">
-                           <td>정형외과</td>
-                           <td>치과</td>
-                           <td>피부과</td>
-                        <tr>
-                     </tbody>
-                  </table>
+		<!-- Modal -->
+		<div class="modal" tabindex="-1" id="exampleModal">
+			<div class="modal-dialog">
+				<div class="modal-content" style="text-align: center;">
+					<!--  width:700px; height:700px; -->
+					<!-- <div class="modal-header" style="text-align:center;">
+							<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+						</div> -->
+					<div class="modal-body" style="padding: 30px 30px 30px 30px;">
+						<h2 style="margin-bottom: 20px;">진료과목을 선택해주세요</h2>
+						<hr>
+						<table>
+							<tbody class="subject">
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 002.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h1)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 003.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h2)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 004.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h3)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight: bolder;">
+									<td>가정의학과</td>
+									<td>내과</td>
+									<td>비뇨기과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 005.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h4)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 006.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h5)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 007.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h6)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight: bolder;">
+									<td>산부인과</td>
+									<td>성형외과</td>
+									<td>소아과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 008.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h7)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 009.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h8)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 010.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h9)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight: bolder;">
+									<td>신경외과</td>
+									<td>안과</td>
+									<td>외과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 011.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h10)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 012.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h11)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 013.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h12)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight: bolder;">
+									<td>이비인후과</td>
+									<td>응급의학과</td>
+									<td>정신건강의학과</td>
+								<tr>
+								<tr>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 014.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h13)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 015.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h14)}'|">
+										</button>
+									</th>
+									<th>
+										<button id="ddd" type="button">
+											<img class="img-button" th:src="@{/images/} + 016.png"
+												th:onclick="|location.href='@{searchSubject(mainSubject=h15)}'|">
+										</button>
+									</th>
+								<tr>
+								<tr style="font-weight: bolder;">
+									<td>정형외과</td>
+									<td>치과</td>
+									<td>피부과</td>
+								<tr>
+							</tbody>
+						</table>
 
 
-               </div>
-            </div>
-         </div>
-      </div>
+					</div>
+				</div>
+			</div>
+		</div>
 
-      <!-- Team Start -->
-      <div class="container-xxl py-5"
-         style="padding-top: 10px; max-width: 1430px;">
-         <div class="container" style="text-align: center; max-width: 1430px;">
-            <div style="text-align: center; margin-bottom: 50px; display: flex;align-items: center;justify-content: center;">
-               <h5 class=""
-                  style="color: gray; display: inline; margin-right: 20px; margin-bottom: 0;"
-                  id="location"></h5>
-               <button class="btn btn-warning rounded-pill px-3" type="button"
-                  onclick="switchLocation()">현재위치변경</button>
-            </div>
+		<!-- Team Start -->
+		<div class="container-xxl py-5"
+			style="padding-top: 10px; max-width: 1430px;">
+			<div class="container" style="text-align: center; max-width: 1430px;">
+				<div style="text-align: center; margin-bottom: 50px;">
+					<h5 class="mb-5"
+						style="color: gray; display: inline; margin-right: 20px;"
+						id="location"></h5>
+					<button class="btn btn-warning rounded-pill px-3" type="button"
+						onclick="switchLocation()">현재위치변경</button>
+				</div>
 
-            <!-- 병원시작 -->
-            <div class="text-center wow fadeInUp" data-wow-delay="0.1s">
-               <h6 class="section-title bg-white text-center text-primary px-3">내
-                  주변</h6>
-               <h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
-            </div>
-            <div class="row g-4 here" style="">
-<!--                <div th:each="hos: ${hosList.subList(0, 5)}" -->
-<!--                   class="col-lg-3 col-md-6 " -->
-<!--                   style="width: 280px; height: 380px;" -->
-<!--                   th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|"> -->
-<!--                   바로 위는 타임리프로 링크 보내버리는법 -->
+				<!-- 병원시작 -->
+				<div class="text-center wow fadeInUp" data-wow-delay="0.1s">
+					<h6 class="section-title bg-white text-center text-primary px-3">내
+						주변</h6>
+					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
+				</div>
+				<div class="row g-4 here" style="">
+<!-- 					<div th:each="hos: ${hosList.subList(0, 5)}" -->
+<!-- 						class="col-lg-3 col-md-6 " -->
+<!-- 						style="width: 280px; height: 380px;" -->
+<!-- 						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|"> -->
+<!-- 						바로 위는 타임리프로 링크 보내버리는법 -->
 
-<!--                   <div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
-<!--                      <div class="team-item bg-light"> -->
-<!--                         <div class="overflow-hidden"> -->
-<!--                            <img th:if="${hos.hospitalImg}" -->
-<!--                               th:src="@{/images/} + ${hos.hospitalImg}" alt="image" -->
-<!--                               style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
-<!--                               th:unless="${hos.hospitalImg}" -->
-<!--                               th:src="@{/images/} + hospital.png" alt="image" -->
-<!--                               style="width: 100%; height: 200px;" class="img-fluid" /> -->
-<!--                         </div> -->
-<!--                      </div> -->
+<!-- 						<div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
+<!-- 							<div class="team-item bg-light"> -->
+<!-- 								<div class="overflow-hidden"> -->
+<!-- 									<img th:if="${hos.hospitalImg}" -->
+<!-- 										th:src="@{/images/} + ${hos.hospitalImg}" alt="image" -->
+<!-- 										style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
+<!-- 										th:unless="${hos.hospitalImg}" -->
+<!-- 										th:src="@{/images/} + hospital.png" alt="image" -->
+<!-- 										style="width: 100%; height: 200px;" class="img-fluid" /> -->
+<!-- 								</div> -->
+<!-- 							</div> -->
 
-<!--                      <div class="text-center p-4"> -->
-<!--                         <h5 class="mb-0" th:text="${hos.hospitalName}"></h5> -->
-<!--                         <small th:text="${hos.phone}"></small> <br /> <small -->
-<!--                            th:text="${hos.address}" style="color: red; font-weight: bold;" -->
-<!--                            class="address"></small> -->
-<!--                         <p th:text="${hos.closetime}" style="display: none;" -->
-<!--                            class="closeTime"> -->
-<!--                         <p th:text="${hos.holiday}" style="display: none;" -->
-<!--                            class="closeDay"> -->
-<!--                      </div> -->
-<!--                   </div> -->
-<!--                   <div class="closeBlock"> -->
-<!--                      <h2 style="color: white; padding-top: 80px;">Close</h2> -->
-<!--                   </div> -->
+<!-- 							<div class="text-center p-4"> -->
+<!-- 								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5> -->
+<!-- 								<small th:text="${hos.phone}"></small> <br /> <small -->
+<!-- 									th:text="${hos.address}" style="color: red; font-weight: bold;" -->
+<!-- 									class="address"></small> -->
+<!-- 								<p th:text="${hos.closetime}" style="display: none;" -->
+<!-- 									class="closeTime"> -->
+<!-- 								<p th:text="${hos.holiday}" style="display: none;" -->
+<!-- 									class="closeDay"> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
+<!-- 						<div class="closeBlock"> -->
+<!-- 							<h2 style="color: white; padding-top: 80px;">Close</h2> -->
+<!-- 						</div> -->
 
-<!--                </div> -->
-            </div>
-            <!-- 병원끝 -->
-         </div>
-      </div>
+<!-- 					</div> -->
+				</div>
+				<!-- 병원끝 -->
+			</div>
+		</div>
 
 
 
-      <!-- Testimonial Start -->
-      <div class="container-xxl py-5"
-         style="padding-top: 10px; max-width: 1430px;">
-         <div class="container" style="text-align: center; max-width: 1430px;">
-            <div style="text-align: center; margin-bottom: 50px;">
-               <!-- 약국시작 -->
-               <h6 class="section-title bg-white text-center text-primary px-3">내
-                  주변</h6>
-               <h1 class="mb-5" style="margin-top: 5px;">Pharmacy</h1>
-            </div>
+		<!-- Testimonial Start -->
+		<div class="container-xxl py-5"
+			style="padding-top: 10px; max-width: 1430px;">
+			<div class="container" style="text-align: center; max-width: 1430px;">
+				<div style="text-align: center; margin-bottom: 50px;">
+					<!-- 약국시작 -->
+					<h6 class="section-title bg-white text-center text-primary px-3">내
+						주변</h6>
+					<h1 class="mb-5" style="margin-top: 5px;">Pharmacy</h1>
+				</div>
 
-         </div>
-         <div class="row g-4 here2">
-<!--             <div th:each="pha: ${phaList}" -->
-<!--                class="col-lg-3 col-md-6 pharmacyItem" -->
-<!--                style="width: 280px; height: 380px;" -->
-<!--                th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"> -->
+			</div>
+			<div class="row g-4 here2">
+<!-- 				<div th:each="pha: ${phaList}" -->
+<!-- 					class="col-lg-3 col-md-6 pharmacyItem" -->
+<!-- 					style="width: 280px; height: 380px;" -->
+<!-- 					th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"> -->
 
-<!--                <div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
-<!--                   <div class="team-item bg-light"> -->
-<!--                      <div class="overflow-hidden"> -->
-<!--                         <img th:if="${pha.pharmacyImg}" -->
-<!--                            th:src="@{/images/} + ${pha.pharmacyImg}" alt="image" -->
-<!--                            style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
-<!--                            th:unless="${pha.pharmacyImg}" -->
-<!--                            th:src="@{/images/} + pharmacy.png" alt="image" -->
-<!--                            style="width: 100%; height: 200px;" class="img-fluid" /> -->
-<!--                      </div> -->
-<!--                   </div> -->
+<!-- 					<div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
+<!-- 						<div class="team-item bg-light"> -->
+<!-- 							<div class="overflow-hidden"> -->
+<!-- 								<img th:if="${pha.pharmacyImg}" -->
+<!-- 									th:src="@{/images/} + ${pha.pharmacyImg}" alt="image" -->
+<!-- 									style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
+<!-- 									th:unless="${pha.pharmacyImg}" -->
+<!-- 									th:src="@{/images/} + pharmacy.png" alt="image" -->
+<!-- 									style="width: 100%; height: 200px;" class="img-fluid" /> -->
+<!-- 							</div> -->
+<!-- 						</div> -->
 
-<!--                   <div class="text-center p-4"> -->
-<!--                      <h5 class="mb-0" th:text="${pha.pharmacyName}"></h5> -->
-<!--                      <small th:text="${pha.pharmacyPhone}"></small> <br /> <small -->
-<!--                         th:text="${pha.address}" style="color: red; font-weight: bold;" -->
-<!--                         class="phAddress"></small> -->
-<!--                      <p th:text="${pha.closetime}" style="display: none;" -->
-<!--                         class="closeTime2"> -->
-<!--                      <p th:text="${pha.holiday}" style="display: none;" -->
-<!--                         class="closeDay2"> -->
-<!--                   </div> -->
-<!--                </div> -->
-<!--                <div class="closeBlock2"> -->
-<!--                   <h2 style="color: white; padding-top: 80px;">Close</h2> -->
-<!--                </div> -->
+<!-- 						<div class="text-center p-4"> -->
+<!-- 							<h5 class="mb-0" th:text="${pha.pharmacyName}"></h5> -->
+<!-- 							<small th:text="${pha.pharmacyPhone}"></small> <br /> <small -->
+<!-- 								th:text="${pha.address}" style="color: red; font-weight: bold;" -->
+<!-- 								class="phAddress"></small> -->
+<!-- 							<p th:text="${pha.closetime}" style="display: none;" -->
+<!-- 								class="closeTime2"> -->
+<!-- 							<p th:text="${pha.holiday}" style="display: none;" -->
+<!-- 								class="closeDay2"> -->
+<!-- 						</div> -->
+<!-- 					</div> -->
+<!-- 					<div class="closeBlock2"> -->
+<!-- 						<h2 style="color: white; padding-top: 80px;">Close</h2> -->
+<!-- 					</div> -->
 
-<!--             </div> -->
-         </div>
-         <!-- 약국 끝 -->
-      </div>
-      <!-- Testimonial End -->
+<!-- 				</div> -->
+			</div>
+			<!-- 약국 끝 -->
+		</div>
+		<!-- Testimonial End -->
 
 
 
-      <script th:inline="javascript">
+		<script th:inline="javascript">
 //<<------변수모음집----------------------------------------------------------------------------------------------------------------->>
       //거리로 바꿔버릴 주소
 //       let address = document.querySelectorAll('.address');
@@ -633,67 +646,67 @@
 //<<------ makeHospitalListBox() end----------------------------------------------------------------------------------------------------------------->>
            
            //병원만드는 함수
-            function createHospitalElement(hospital) {
-                  const element = document.createElement('div');
-                  element.className = 'col-lg-3 col-md-6 hospitalItem';
-                  element.style.width = '280px';
-                  element.style.height = '380px';
-                  element.setAttribute('onclick', `location.href='hospitalDetail?hospitalId=${hospital.hospitalId}'`);
-                  
-                  const imageSrc = hospital.hospitalImg ? `/img/${hospital.hospitalImg}` : '/img/hospital.png';
-                  element.innerHTML = `
-                      <div class="ho wow fadeInUp" data-wow-delay="0.1s">
-                          <div class="team-item bg-light">
-                              <div class="overflow-hidden">
-                                  <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
-                              </div>
-                          </div>
-                          <div class="text-center p-4">
-                              <h5 class="mb-0">${hospital.hospitalName}</h5>
-                              <small>${hospital.phone}</small><br/>
-                              <small style="color: red; font-weight: bold;" class="address">${hospital.dist}Km</small>
-                              <p style="display: none;" class="closeTime">${hospital.closetime}</p>
-                              <p style="display: none;" class="closeDay">${hospital.holiday}</p>
-                          </div>
-                      </div>
-                      <div class="closeBlock">
-                          <h2 style="color: white; padding-top: 80px;">Close</h2>
-                      </div>
-                  `;
-                  
-                  return element;
-              }
+	         function createHospitalElement(hospital) {
+	        	    const element = document.createElement('div');
+	        	    element.className = 'col-lg-3 col-md-6 hospitalItem';
+	        	    element.style.width = '280px';
+	        	    element.style.height = '380px';
+	        	    element.setAttribute('onclick', `location.href='hospitalDetail?hospitalId=${hospital.hospitalId}'`);
+	        	    
+	        	    const imageSrc = hospital.hospitalImg ==null ? '/images/hospital.png' : `/img/${hospital.hospitalImg}`;
+	        	    element.innerHTML = `
+	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
+	        	            <div class="team-item bg-light">
+	        	                <div class="overflow-hidden">
+	        	                    <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
+	        	                </div>
+	        	            </div>
+	        	            <div class="text-center p-4">
+	        	                <h5 class="mb-0">${hospital.hospitalName}</h5>
+	        	                <small>${hospital.phone}</small><br/>
+	        	                <small style="color: red; font-weight: bold;" class="address">${hospital.dist}Km</small>
+	        	                <p style="display: none;" class="closeTime">${hospital.closetime}</p>
+	        	                <p style="display: none;" class="closeDay">${hospital.holiday}</p>
+	        	            </div>
+	        	        </div>
+	        	        <div class="closeBlock">
+	        	            <h2 style="color: white; padding-top: 80px;">Close</h2>
+	        	        </div>
+	        	    `;
+	        	    
+	        	    return element;
+	        	}
            
-            function createPharmacyElement(pharmacy) {
-                  const element = document.createElement('div');
-                  element.className = 'col-lg-3 col-md-6 pharmacyItem';
-                  element.style.width = '280px';
-                  element.style.height = '380px';
-                  element.setAttribute('onclick', `location.href='pharmacyDetail?pharmacyId=${pharmacy.pharmacyId}'`);
-                  
-                  const imageSrc = pharmacy.pharmacyImg ? `/img/${pharmacy.pharmacyImg}` : '/img/pharmacy.png';
-                  element.innerHTML = `
-                      <div class="ho wow fadeInUp" data-wow-delay="0.1s">
-                          <div class="team-item bg-light">
-                              <div class="overflow-hidden">
-                                  <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
-                              </div>
-                          </div>
-                          <div class="text-center p-4">
-                              <h5 class="mb-0">${pharmacy.pharmacyName}</h5>
-                              <small>${pharmacy.phone}</small><br/>
-                              <small style="color: red; font-weight: bold;" class="address2">${pharmacy.dist}Km</small>
-                              <p style="display: none;" class="closeTime2">${pharmacy.closetime}</p>
-                              <p style="display: none;" class="closeDay2">${pharmacy.holiday}</p>
-                          </div>
-                      </div>
-                      <div class="closeBlock2">
-                          <h2 style="color: white; padding-top: 80px;">Close</h2>
-                      </div>
-                  `;
-                  
-                  return element;
-              }
+	         function createPharmacyElement(pharmacy) {
+	        	    const element = document.createElement('div');
+	        	    element.className = 'col-lg-3 col-md-6 pharmacyItem';
+	        	    element.style.width = '280px';
+	        	    element.style.height = '380px';
+	        	    element.setAttribute('onclick', `location.href='pharmacyDetail?pharmacyId=${pharmacy.pharmacyId}'`);
+	        	    
+	        	    const imageSrc = pharmacy.pharmacyImg == null ?  '/images/pharmacy.png' : `/img/${pharmacy.pharmacyImg}` ;
+	        	    element.innerHTML = `
+	        	        <div class="ho wow fadeInUp" data-wow-delay="0.1s">
+	        	            <div class="team-item bg-light">
+	        	                <div class="overflow-hidden">
+	        	                    <img src="${imageSrc}" alt="image" style="width: 100%; height: 200px;" class="img-fluid" />
+	        	                </div>
+	        	            </div>
+	        	            <div class="text-center p-4">
+	        	                <h5 class="mb-0">${pharmacy.pharmacyName}</h5>
+	        	                <small>${pharmacy.phone}</small><br/>
+	        	                <small style="color: red; font-weight: bold;" class="address2">${pharmacy.dist}Km</small>
+	        	                <p style="display: none;" class="closeTime2">${pharmacy.closetime}</p>
+	        	                <p style="display: none;" class="closeDay2">${pharmacy.holiday}</p>
+	        	            </div>
+	        	        </div>
+	        	        <div class="closeBlock2">
+	        	            <h2 style="color: white; padding-top: 80px;">Close</h2>
+	        	        </div>
+	        	    `;
+	        	    
+	        	    return element;
+	        	}
 
 //<<------ createElement() end----------------------------------------------------------------------------------------------------------------->>
           
@@ -891,24 +904,29 @@
 //<<------ changeStyle () end----------------------------------------------------------------------------------------------------------------->>
 
          
-          //검색 함수
-           function searchResult(e){
-              let word = document.getElementById("search").value;
-              console.log("검색한 단어= ",word);
-              if(word == ''){
-                 alert("검색한 단어가 없습니다.");
-              }else{
-                 location.href="search?word="+word;
-              }
-           }
-            
-            //키보드 엔터 눌러도 제출되게끔
-            let enter = document.querySelector(".search")
-            enter.addEventListener('keyup', (event) => {
-                if (event.key === 'Enter') {
-                    searchResult();
-                }
-            });
+	       //검색 함수
+	  		function searchResult(e){
+	  			let word = document.getElementById("search").value;
+	  			console.log("검색한 단어= ",word);
+	  			if(word == ''){
+	  				Swal.fire({
+			   			  title: "단어를 입력해주세요",
+			   			  html: '검색한 단어가 없습니다.',
+			   			  icon: "error"
+			   			});
+	  			}else{
+	  				location.href="search?word="+word;
+	  			}
+	  		}
+	         
+	         //키보드 엔터 눌러도 제출되게끔
+	         let enter = document.querySelector(".search")
+	         enter.addEventListener('keyup', (event) => {
+	             if (event.key === 'Enter') {
+	                 searchResult();
+	             }
+	         });
+
          
          </script>
    </div>

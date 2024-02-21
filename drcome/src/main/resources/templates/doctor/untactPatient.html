@@ -102,44 +102,63 @@
       #perscription {
         display: none;
       }
+
+      #video video {
+       margin: 0 10px; 
+       border-radius: 10px;
+      }
+      #background {
+       background-image: url('/images/background30.jpg');
+       background-repeat: no-repeat;
+       background-size: 105%;
+       background-position: center -200px;;
+      
+  }
+
     </style>
 
   
   </head>
 
   <body>
-    <div layout:fragment="content">
+  <div layout:fragment="content">
       <!--container-fluid-->
-      <div class="container-fluid" style="padding: 10px;">
+    <div class="container-fluid">
+        <!--배경-->
+      <div id ="background">
         <!--title-->
-        <div class="title" style="background-color: #06bbcc; padding: 5px">
-          <!--on off-->
-          <div
-            class="d-flex justify-content-center align-items-center"
-            style="margin-left: 10px"
-          >
-            <!-- 마이크 버튼 -->
-            <button
-              class="btn btn-secondary"
-              onclick="toggleAudio()"
-              style="margin-right: 5px"
-            >
-              <i id="micIcon" class="bi bi-mic"></i>
-            </button>
-            <!-- 비디오 버튼 -->
-            <button class="btn btn-secondary" onclick="toggleVideo()">
-              <i id="cameraIcon" class="bi bi-camera-video"></i>
-            </button>
-          </div>
-          <!--on off-->
+        <div class="title" style="background-color: #06bbcc; padding: 5px;  border-radius: 7px; margin-top: 1px;">
+             <!--on off-->
+             <div
+             class="d-flex justify-content-center align-items-center"
+             style="margin-left: 10px"
+           >
+             <!-- 마이크 버튼 -->
+             <button
+              class="btn btn-sm btn-dark shadow-sm"
+               onclick="toggleAudio()"
+               style="margin-right: 5px;
+               border-radius: 0.35rem;
+               "
+             >
+               <i id="micIcon" class="bi bi-mic"></i>
+             </button>
+             <!-- 비디오 버튼 -->
+             <button class="btn btn-sm btn-dark shadow-sm" style="border-radius: 0.35rem;" onclick="toggleVideo()">
+               <i id="cameraIcon" class="bi bi-camera-video"></i>
+             </button>
+           </div>
+           <!--on off-->
 
           <h3
             style="
               width: 70%;
               text-align: center;
+              font-weight: 100;
               margin-bottom: 0;
               padding-left: 120px;
               color: white;
+              
             "
           >
             비대면 진료중
@@ -147,18 +166,19 @@
 
           <!--title-right-->
           <div class="title-right">
-            <p style="margin-right: 15px">
-              <i class="fas fa-fw fa-calendar"></i> 현재날짜:
+            <p style="margin-right: 15px; color: #020202;">
+              <i class="fas fa-fw fa-calendar"></i> 오늘날짜:
               <span
                 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
               ></span>
             </p>
             <button
               onclick="payment()"
-              class="btn btn-dark"
-              style="margin-right: 15px"
+              class="btn btn-sm btn-dark shadow-sm"
+              style="margin-right: 15px; font-weight: 100;
+              border-radius: 0.35rem;"
             >
-              나가기
+              종료하기
             </button>
           </div>
           <!--title-right--->
@@ -181,45 +201,55 @@
           </div>
         </div>
         <!--비디오-->
+      </div>
+     <!--배경-->
 
-        <!--bottom-->
-        <div
-          style="
-            width: 100%;
-            height: 43px;
-            margin-bottom: 0;
-            margin-top: 15px;
-            padding-left: 120px;
-            background-color: #06bbcc;
-          "
-        ></div>
-        <!--bottom-->
+      
 
         <script src="https://cdnjs.cloudflare.com/ajax/libs/peerjs/1.5.2/peerjs.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
         <script src="/js/socket.js"></script>  
         <script th:inline="javascript">
+          
           let rNo = [[${rNo}]];
           function payment() {
           	location.href = '/payment/' + rNo;
           }
 
-            //on off 토글버튼
-            function toggleVideo() {
-              const tracks = myScreen.getVideoTracks();
-              tracks.forEach(track => {
-              track.enabled = !track.enabled;
-              });
+          function toggleVideo() {
+            const videoTracks = myScreen.getVideoTracks();
+            videoTracks.forEach(track => {
+                track.enabled = !track.enabled;
+            });
 
-              }
+            // 비디오 아이콘 변경
+            const cameraIcon = document.getElementById('cameraIcon');
+            if (videoTracks.some(track => track.enabled)) {
+                cameraIcon.classList.remove('bi-camera-video-off');
+                cameraIcon.classList.add('bi-camera-video');
+            } else {
+                cameraIcon.classList.remove('bi-camera-video');
+                cameraIcon.classList.add('bi-camera-video-off');
+            }
+         }
 
-              function toggleAudio() {
-              const tracks = myScreen.getAudioTracks();
-              tracks.forEach(track => {
-              track.enabled = !track.enabled;
-              });
-              }
 
+          function toggleAudio() {
+            const audioTracks = myScreen.getAudioTracks();
+            audioTracks.forEach(track => {
+                track.enabled = !track.enabled;
+            });
+
+            // 오디오 아이콘 변경
+            const micIcon = document.getElementById('micIcon');
+            if (audioTracks.some(track => track.enabled)) {
+                micIcon.classList.remove('bi-mic-mute');
+                micIcon.classList.add('bi-mic');
+            } else {
+                micIcon.classList.remove('bi-mic');
+                micIcon.classList.add('bi-mic-mute');
+            }
+         }
 
             
         </script>

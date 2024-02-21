@@ -1,646 +1,609 @@
 <!DOCTYPE html>
-<html
-	xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{layouts/layout}"
->
-	<head>
-		<meta charset="UTF-8" />
-		<title>의료기관 회원가입</title>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layouts/layout}">
 
-		<style>
-			.registered-customers {
-				margin: 0 auto;
-				width: 800px;
-				background-color: #fff;
-				padding: 20px;
-				border-radius: 8px;
-				box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-			}
+<head>
+	<meta charset="UTF-8" />
+	<title>의료기관 회원가입</title>
 
-			.blog-section-title {
-				color: #333;
-				border-left: 2px solid #06bbcc;
-				padding-left: 10px;
-			}
+	<style>
+		.registered-customers {
+			margin: 0 auto;
+			width: 800px;
+			background-color: #fff;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+		}
 
-			label {
-				display: inline-block;
-				width: 200px;
-				margin-bottom: 5px;
-			}
+		.blog-section-title {
+			color: #333;
+			border-left: 2px solid #06bbcc;
+			padding-left: 10px;
+		}
 
-			.input-group {
-				align-items: center;
-				margin-bottom: 15px;
-			}
+		label {
+			display: inline-block;
+			width: 200px;
+			margin-bottom: 5px;
+		}
 
-			.input-group input,
-			.input-group button {
-				height: 30px;
-			}
+		.input-group {
+			align-items: center;
+			margin-bottom: 15px;
+		}
 
-			.input-group input {
-				width: 400px;
-				height: 32px;
-				border: 0;
-				outline: none;
-				box-sizing: border-box;
-			}
+		.input-group input,
+		.input-group button {
+			height: 30px;
+		}
 
-			.input-group button {
-				width: 150px;
-			}
+		.input-group input {
+			width: 400px;
+			height: 32px;
+			border: 0;
+			outline: none;
+			box-sizing: border-box;
+		}
 
-			.error-message {
-				color: red;
-				font-size: 0.8em;
-			}
+		.input-group button {
+			width: 150px;
+		}
 
-			.modal {
-				text-align: center;
-			}
+		.error-message {
+			color: red;
+			font-size: 0.8em;
+		}
 
-			.modal-dialog {
-				display: flex !important;
-				align-items: center;
-				justify-content: center;
-				max-width: 800px;
-				width: 80%;
-			}
+		.modal {
+			text-align: center;
+		}
 
-			.modal-content {
-				overflow-y: auto;
-			}
+		.modal-dialog {
+			display: flex !important;
+			align-items: center;
+			justify-content: center;
+			max-width: 800px;
+			width: 80%;
+		}
 
-			#filePreview {
-				max-width: 100%;
-				max-height: 150px;
-				margin-top: 10px;
-				margin-left: 270px;
-				display: none;
-			}
+		.modal-content {
+			overflow-y: auto;
+		}
 
-			#verification-section {
-				display: none;
-				align-items: center;
-				margin-bottom: 15px;
-			}
-		</style>
+		#filePreview {
+			max-width: 100%;
+			max-height: 150px;
+			margin-top: 10px;
+			margin-left: 270px;
+			display: none;
+		}
 
-		<script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
-		<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+		#verification-section {
+			display: none;
+			align-items: center;
+			margin-bottom: 15px;
+		}
 
-		<script type="text/javascript">
-			document.addEventListener('DOMContentLoaded', function () {
-				const medicalForm = document.getElementById('medicalForm');
+		.search span:hover {
+			color:#06bbcc;
+			background-color: #f0f0f0;
+			
+		}
+	</style>
 
-				medicalForm.addEventListener('keydown', function (e) {
-					if (e.key === 'Enter') {
-						e.preventDefault();
-					}
-				});
-				handleFilePreview();
+	<script src="https://blueimp.github.io/JavaScript-Load-Image/js/load-image.all.min.js"></script>
+	<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
 
-				let fileInput = document.getElementById('mimg');
+	<script type="text/javascript">
+		document.addEventListener('DOMContentLoaded', function () {
+			const medicalForm = document.getElementById('medicalForm');
 
-				fileInput.addEventListener('change', function () {
-					const file = this.files[0];
-
-					if (file) {
-						loadImage(
-							file,
-							function (img) {
-								const canvas = document.createElement('canvas');
-								const ctx = canvas.getContext('2d');
-
-								canvas.width = 200;
-								canvas.height = 200;
-
-								ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-								canvas.toBlob(
-									function (blob) {
-										console.log(blob);
-									},
-									'image/jpg',
-									0.7
-								);
-							},
-							{
-								maxWidth: 200,
-								maxHeight: 200,
-								contain: true,
-							}
-						);
-					}
-				});
+			medicalForm.addEventListener('keydown', function (e) {
+				if (e.key === 'Enter') {
+					e.preventDefault();
+				}
 			});
+			handleFilePreview();
 
-			function scsAlert(content) {
-				Swal.fire({
-					icon: 'success',
-					text: content,
-				});
+			let fileInput = document.getElementById('mimg');
+
+			fileInput.addEventListener('change', function () {
+				const file = this.files[0];
+
+				if (file) {
+					loadImage(
+						file,
+						function (img) {
+							const canvas = document.createElement('canvas');
+							const ctx = canvas.getContext('2d');
+
+							canvas.width = 200;
+							canvas.height = 200;
+
+							ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+							canvas.toBlob(
+								function (blob) {
+									console.log(blob);
+								},
+								'image/jpg',
+								0.7
+							);
+						}, {
+							maxWidth: 200,
+							maxHeight: 200,
+							contain: true,
+						}
+					);
+				}
+			});
+		});
+
+		function scsAlert(content) {
+			Swal.fire({
+				icon: 'success',
+				text: content,
+			});
+		}
+
+		function errAlert(content) {
+			Swal.fire({
+				icon: 'error',
+				text: content,
+			});
+		}
+
+		var formData = new FormData();
+		var ish = true;
+
+		function isHospital() {
+			ish = true;
+			document.getElementById('namelabel').textContent = '병원 이름';
+			document.getElementById('addlabel').textContent = '병원 주소';
+			document.getElementById('subject').style.display = 'block';
+			document.getElementById('faxnum').style.display = 'none';
+			document.getElementById('ceonamelabel').textContent = '병원장 이름';
+			document.getElementById('ceophonelabel').textContent = '병원장 전화번호';
+		}
+
+		function isPharmacy() {
+			ish = false;
+			document.getElementById('namelabel').textContent = '약국 이름';
+			document.getElementById('addlabel').textContent = '약국 주소';
+			document.getElementById('subject').style.display = 'none';
+			document.getElementById('faxnum').style.display = 'block';
+			document.getElementById('ceonamelabel').textContent = '대표자 이름';
+			document.getElementById('ceophonelabel').textContent = '대표자 전화번호';
+		}
+
+		function checkId() {
+			let userId = document.getElementById('mid').value;
+			let idErrorMessage = document.getElementById('idErrorMessage');
+			let checkDupliIdBtn = document.getElementById('midcheck');
+
+			if (userId === '') {
+				idErrorMessage.innerHTML = '아이디를 입력하세요.';
+				idErrorMessage.style.color = 'red';
+				checkDupliIdBtn.disabled = true;
+				return false;
 			}
 
-			function errAlert(content) {
+			let idRegex = /^[a-zA-Z0-9]{5,20}$/;
+			if (!idRegex.test(userId)) {
+				idErrorMessage.innerHTML = '아이디는 5자에서 20자의 영문 대소문자 또는 숫자로 입력하세요.';
+				idErrorMessage.style.color = 'red';
+				checkDupliIdBtn.disabled = true;
+				return false;
+			}
+
+			idErrorMessage.innerHTML = '';
+			checkDupliIdBtn.disabled = false;
+			return true;
+		}
+
+		function checkDupliId() {
+			let checkId = $('#mid').val();
+			console.log(checkId);
+			let url = '/auth/checkId?userId=' + checkId;
+			$.ajax({
+					url: url,
+					type: 'get',
+				})
+				.done((resp) => {
+					if (resp == 1) {
+						// alert('이미 사용중인 아이디입니다.');
+						errAlert('이미 사용중인 아이디입니다.');
+					} else {
+						// alert('사용가능한 아이디입니다.');
+						scsAlert('사용가능한 아이디입니다.');
+					}
+				})
+				.fail((err) => {
+					// alert('오류 발생');
+					errAlert('오류 발생');
+					console.log(err);
+				});
+		}
+
+		function checkPassword() {
+			let password = document.getElementById('mpw').value;
+			let passwordErrorMessage = document.getElementById('pwErrorMessage');
+
+			if (password === '') {
+				passwordErrorMessage.innerHTML = '비밀번호를 입력하세요.';
+				passwordErrorMessage.style.color = 'red';
+				return false;
+			}
+
+			let passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+			if (!passwordRegex.test(password)) {
+				passwordErrorMessage.innerHTML =
+					'비밀번호는 최소 8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다.';
+				passwordErrorMessage.style.color = 'red';
+				return false;
+			}
+
+			passwordErrorMessage.innerHTML = '';
+			return true;
+		}
+
+		function checkPasswordMatch() {
+			let password = document.getElementById('mpw').value;
+			let rePassword = document.getElementById('mpwcheck').value;
+			let rePasswordErrorMessage = document.getElementById('rePasswordErrorMessage');
+
+			if (password !== rePassword) {
+				rePasswordErrorMessage.innerHTML = '비밀번호가 일치하지 않습니다.';
+				rePasswordErrorMessage.style.color = 'red';
+				return false;
+			}
+
+			rePasswordErrorMessage.innerHTML = '';
+			return true;
+		}
+
+		function checkName() {
+			let name = document.getElementById('mname').value;
+			let nameErrorMessage = document.getElementById('nameErrorMessage');
+
+			if (name === '') {
+				nameErrorMessage.innerHTML = '이름을 입력하세요.';
+				nameErrorMessage.style.color = 'red';
+				return false;
+			}
+
+			nameErrorMessage.innerHTML = '';
+			return true;
+		}
+
+		function searchAdd() {
+			let address = document.getElementById('madd');
+			new daum.Postcode({
+				oncomplete: function (data) {
+					address.value = data.address;
+
+					console.log(data.address);
+				},
+			}).open();
+		}
+
+		const autoHyphen = (target) => {
+			target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
+		};
+
+		const autoHyphenNum = (target) => {
+			target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{3})(\d{2})(\d{5})$/, `$1-$2-$3`);
+		};
+
+		function checkPhone() {
+			let phone = $('#ceophone').val().replace(/-/g, '');
+
+			if (!phone) {
 				Swal.fire({
 					icon: 'error',
-					text: content,
+					text: '전화번호를 입력하세요.',
 				});
+				return;
 			}
 
-			var formData = new FormData();
-			var ish = true;
-
-			function isHospital() {
-				ish = true;
-				document.getElementById('namelabel').textContent = '병원 이름';
-				document.getElementById('addlabel').textContent = '병원 주소';
-				document.getElementById('subject').style.display = 'block';
-				document.getElementById('faxnum').style.display = 'none';
-				document.getElementById('ceonamelabel').textContent = '병원장 이름';
-				document.getElementById('ceophonelabel').textContent = '병원장 전화번호';
-			}
-
-			function isPharmacy() {
-				ish = false;
-				document.getElementById('namelabel').textContent = '약국 이름';
-				document.getElementById('addlabel').textContent = '약국 주소';
-				document.getElementById('subject').style.display = 'none';
-				document.getElementById('faxnum').style.display = 'block';
-				document.getElementById('ceonamelabel').textContent = '대표자 이름';
-				document.getElementById('ceophonelabel').textContent = '대표자 전화번호';
-			}
-
-			function checkId() {
-				let userId = document.getElementById('mid').value;
-				let idErrorMessage = document.getElementById('idErrorMessage');
-				let checkDupliIdBtn = document.getElementById('midcheck');
-
-				if (userId === '') {
-					idErrorMessage.innerHTML = '아이디를 입력하세요.';
-					idErrorMessage.style.color = 'red';
-					checkDupliIdBtn.disabled = true;
-					return false;
-				}
-
-				let idRegex = /^[a-zA-Z0-9]{5,20}$/;
-				if (!idRegex.test(userId)) {
-					idErrorMessage.innerHTML = '아이디는 5자에서 20자의 영문 대소문자 또는 숫자로 입력하세요.';
-					idErrorMessage.style.color = 'red';
-					checkDupliIdBtn.disabled = true;
-					return false;
-				}
-
-				idErrorMessage.innerHTML = '';
-				checkDupliIdBtn.disabled = false;
-				return true;
-			}
-
-			function checkDupliId() {
-				let checkId = $('#mid').val();
-				console.log(checkId);
-				let url = '/auth/checkId?userId=' + checkId;
-				$.ajax({
+			let url = '/auth/checkPhone?phoneNum=' + phone;
+			$.ajax({
 					url: url,
 					type: 'get',
 				})
-					.done((resp) => {
-						if (resp == 1) {
-							// alert('이미 사용중인 아이디입니다.');
-							errAlert('이미 사용중인 아이디입니다.');
-						} else {
-							// alert('사용가능한 아이디입니다.');
-							scsAlert('사용가능한 아이디입니다.');
-						}
-					})
-					.fail((err) => {
-						// alert('오류 발생');
-						errAlert('오류 발생');
-						console.log(err);
-					});
-			}
-
-			function checkPassword() {
-				let password = document.getElementById('mpw').value;
-				let passwordErrorMessage = document.getElementById('pwErrorMessage');
-
-				if (password === '') {
-					passwordErrorMessage.innerHTML = '비밀번호를 입력하세요.';
-					passwordErrorMessage.style.color = 'red';
-					return false;
-				}
-
-				let passwordRegex = /^(?=.*[a-zA-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-				if (!passwordRegex.test(password)) {
-					passwordErrorMessage.innerHTML =
-						'비밀번호는 최소 8자 이상, 영문, 숫자, 특수문자를 포함해야 합니다.';
-					passwordErrorMessage.style.color = 'red';
-					return false;
-				}
-
-				passwordErrorMessage.innerHTML = '';
-				return true;
-			}
-
-			function checkPasswordMatch() {
-				let password = document.getElementById('mpw').value;
-				let rePassword = document.getElementById('mpwcheck').value;
-				let rePasswordErrorMessage = document.getElementById('rePasswordErrorMessage');
-
-				if (password !== rePassword) {
-					rePasswordErrorMessage.innerHTML = '비밀번호가 일치하지 않습니다.';
-					rePasswordErrorMessage.style.color = 'red';
-					return false;
-				}
-
-				rePasswordErrorMessage.innerHTML = '';
-				return true;
-			}
-
-			function checkName() {
-				let name = document.getElementById('mname').value;
-				let nameErrorMessage = document.getElementById('nameErrorMessage');
-
-				if (name === '') {
-					nameErrorMessage.innerHTML = '이름을 입력하세요.';
-					nameErrorMessage.style.color = 'red';
-					return false;
-				}
-
-				nameErrorMessage.innerHTML = '';
-				return true;
-			}
-
-			function searchAdd() {
-				let address = document.getElementById('madd');
-				new daum.Postcode({
-					oncomplete: function (data) {
-						address.value = data.address;
-
-						console.log(data.address);
-					},
-				}).open();
-			}
-
-			const autoHyphen = (target) => {
-				target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{2,3})(\d{3,4})(\d{4})$/, `$1-$2-$3`);
-			};
-
-			const autoHyphenNum = (target) => {
-				target.value = target.value.replace(/[^0-9]/g, '').replace(/^(\d{3})(\d{2})(\d{5})$/, `$1-$2-$3`);
-			};
-
-			function checkPhone() {
-				let phone = $('#ceophone').val().replace(/-/g, '');
-
-				if (!phone) {
-					Swal.fire({
-						icon: 'error',
-						text: '전화번호를 입력하세요.',
-					});
-					return;
-				}
-
-				let url = '/auth/checkPhone?phoneNum=' + phone;
-				$.ajax({
-					url: url,
-					type: 'get',
-				})
-					.done((resp) => {
-						console.log(resp);
-						console.log(resp.checkNum);
-						if (resp.checkNum != '중복') {
-							scsAlert('인증번호 발송');
-							verificationCode = resp.checkNum;
-							document.getElementById('verification-section').style.display = 'flex';
-						} else {
-							errAlert('이미 등록된 전화번호입니다.');
-						}
-					})
-					.fail((err) => {
-						console.log(err);
-					});
-			}
-
-			function checkPhoneNumber() {
-				let enteredCode = document.getElementById('checkPhoneNum').value;
-
-				if (enteredCode == verificationCode) {
-					scsAlert('인증 완료');
-					return true;
-				} else {
-					errAlert('인증 번호가 일치하지 않습니다.');
-					return false;
-				}
-			}
-
-			function checkLicense() {
-				let registrationNumber = $('#ceolicense').val().replace(/-/g, '');
-				let url =
-					'https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=xzADYrvAUisAVDob8yaz4gaeTvaJVrxJG5M93Ihkj5IDQgqmpN%2FejAdm26cz1BsmATLApRLmj7HWYVfgqvwnKw%3D%3D';
-
-				$.ajax({
-					url: url,
-					type: 'POST',
-					contentType: 'application/json',
-					data: JSON.stringify({ b_no: [registrationNumber] }),
-					success: function (response) {
-						// console.log(response.data);
-						console.log(response.data[0]);
-						if (response.data[0].b_stt_cd === '01') {
-							Swal.fire({
-								title: '계속사업자',
-								icon: 'success',
-							});
-						} else if (response.data[0].b_stt_cd === '02') {
-							Swal.fire({
-								title: '휴업중인 사업자 번호입니다',
-								icon: 'warning',
-							});
-						} else if (response.data[0].b_stt_cd === '03') {
-							Swal.fire({
-								title: '폐업한 사업자 번호입니다',
-								icon: 'error',
-							});
-						} else {
-							Swal.fire({
-								title: '등록되지 않은 사업자 번호입니다',
-								icon: 'error',
-							});
-						}
-					},
-					error: function (err) {
-						console.log(err);
-					},
-				});
-			}
-
-			function checkAgreement() {
-				let agreement = document.getElementById('invalidCheck').checked;
-				let agreementErrorMessage = document.getElementById('agreementErrorMessage');
-
-				if (!agreement) {
-					agreementErrorMessage.innerHTML = '약관에 동의해야 합니다.';
-					agreementErrorMessage.style.color = 'red';
-					return false;
-				}
-
-				agreementErrorMessage.innerHTML = '';
-				return true;
-			}
-
-			function handleFilePreview() {
-				let fileInput = document.getElementById('mimg');
-				let filePreview = document.getElementById('filePreview');
-
-				fileInput.addEventListener('change', function () {
-					const file = this.files[0];
-
-					if (file) {
-						const reader = new FileReader();
-
-						reader.onload = function (e) {
-							filePreview.src = e.target.result;
-							filePreview.style.display = 'block';
-						};
-
-						reader.readAsDataURL(file);
+				.done((resp) => {
+					console.log(resp);
+					console.log(resp.checkNum);
+					if (resp.checkNum != '중복') {
+						scsAlert('인증번호 발송');
+						verificationCode = resp.checkNum;
+						document.getElementById('verification-section').style.display = 'flex';
 					} else {
-						filePreview.style.display = 'none';
+						errAlert('이미 등록된 전화번호입니다.');
 					}
+				})
+				.fail((err) => {
+					console.log(err);
 				});
+		}
+
+		function checkPhoneNumber() {
+			let enteredCode = document.getElementById('checkPhoneNum').value;
+
+			if (enteredCode == verificationCode) {
+				scsAlert('인증 완료');
+				return true;
+			} else {
+				errAlert('인증 번호가 일치하지 않습니다.');
+				return false;
+			}
+		}
+
+		function checkLicense() {
+			let registrationNumber = $('#ceolicense').val().replace(/-/g, '');
+			let url =
+				'https://api.odcloud.kr/api/nts-businessman/v1/status?serviceKey=xzADYrvAUisAVDob8yaz4gaeTvaJVrxJG5M93Ihkj5IDQgqmpN%2FejAdm26cz1BsmATLApRLmj7HWYVfgqvwnKw%3D%3D';
+
+			$.ajax({
+				url: url,
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify({
+					b_no: [registrationNumber]
+				}),
+				success: function (response) {
+					// console.log(response.data);
+					console.log(response.data[0]);
+					if (response.data[0].b_stt_cd === '01') {
+						Swal.fire({
+							title: '계속사업자',
+							icon: 'success',
+						});
+					} else if (response.data[0].b_stt_cd === '02') {
+						Swal.fire({
+							title: '휴업중인 사업자 번호입니다',
+							icon: 'warning',
+						});
+					} else if (response.data[0].b_stt_cd === '03') {
+						Swal.fire({
+							title: '폐업한 사업자 번호입니다',
+							icon: 'error',
+						});
+					} else {
+						Swal.fire({
+							title: '등록되지 않은 사업자 번호입니다',
+							icon: 'error',
+						});
+					}
+				},
+				error: function (err) {
+					console.log(err);
+				},
+			});
+		}
+
+		function checkAgreement() {
+			let agreement = document.getElementById('invalidCheck').checked;
+			let agreementErrorMessage = document.getElementById('agreementErrorMessage');
+
+			if (!agreement) {
+				agreementErrorMessage.innerHTML = '약관에 동의해야 합니다.';
+				agreementErrorMessage.style.color = 'red';
+				return false;
 			}
 
-			function openModal() {
-				let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
-				myModal.show();
-			}
+			agreementErrorMessage.innerHTML = '';
+			return true;
+		}
 
-			function submitForm() {
-				let userId = document.getElementById('mid').value;
-				let password = document.getElementById('mpw').value;
-				let name = document.getElementById('mname').value;
-				let address = document.getElementById('madd').value;
-				let phoneNumber = document.getElementById('mphone').value;
-				let faxNumber = document.getElementById('mfax').value;
-				let inputFile = document.getElementById('mimg').files[0];
-				let subject = document.getElementById('sub').value;
-				let holidays = document.querySelectorAll('input[type="checkbox"][id="holiday"]:checked');
-				let holidayValues = Array.from(holidays).map(function (checkbox) {
-					return checkbox.value;
-				});
-				let openTime = document.getElementById('otime').value;
-				let closeTime = document.getElementById('ctime').value;
-				let ceoName = document.getElementById('ceoname').value;
-				let ceoPhone = document.getElementById('ceophone').value;
-				let ceolicense = document.getElementById('ceolicense').value;
+		function handleFilePreview() {
+			let fileInput = document.getElementById('mimg');
+			let filePreview = document.getElementById('filePreview');
 
-				formData.append('hospital', ish);
+			fileInput.addEventListener('change', function () {
+				const file = this.files[0];
 
-				if (ish == true) {
-					console.log('병원');
-					formData.append('hospitalId', userId);
-					formData.append('hospitalPw', password);
-					formData.append('hospitalName', name);
-					formData.append('address', address);
-					formData.append('phone', phoneNumber);
-					formData.append('uploadFiles', inputFile);
-					formData.append('mainSubject', subject);
-					formData.append('holiday', holidayValues.join(','));
-					formData.append('opentime', openTime);
-					formData.append('closetime', closeTime);
-					formData.append('directorName', ceoName);
-					formData.append('directorPhone', ceoPhone);
-					formData.append('directorLicense', ceolicense);
+				if (file) {
+					const reader = new FileReader();
 
-					for (let pair of formData.entries()) {
-						console.log(pair[0] + ': ' + pair[1]);
-					}
+					reader.onload = function (e) {
+						filePreview.src = e.target.result;
+						filePreview.style.display = 'block';
+					};
+
+					reader.readAsDataURL(file);
 				} else {
-					console.log('약국');
-					formData.append('pharmacyId', userId);
-					formData.append('pharmacyPw', password);
-					formData.append('pharmacyName', name);
-					formData.append('address', address);
-					formData.append('pharmacyPhone', phoneNumber);
-					formData.append('pharmacyFax', faxNumber);
-					formData.append('uploadFiles', inputFile);
-					formData.append('holiday', holidayValues.join(','));
-					formData.append('opentime', openTime);
-					formData.append('closetime', closeTime);
-					formData.append('ceoName', ceoName);
-					formData.append('ceoPhone', ceoPhone);
-					formData.append('ceoLicense', ceolicense);
-
-					for (let pair of formData.entries()) {
-						console.log(pair[0] + ': ' + pair[1]);
-					}
+					filePreview.style.display = 'none';
 				}
+			});
+		}
 
-				$.ajax({
-					url: '/medicaljoin',
-					type: 'post',
-					processData: false,
-					contentType: false,
-					data: formData,
-					success: function (resp) {
-						console.log(resp);
-						if (resp.result) {
-							Swal.fire({
-								icon: 'success',
-								text: resp.msg,
-							}).then(function () {
-								location.href = '/userlogin';
-							});
-						} else {
-							Swal.fire({
-								icon: 'error',
-								text: resp.msg,
-							}).then(function () {
-								location.reload();
-							});
-						}
-					},
-				});
+		function openModal() {
+			let myModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+			myModal.show();
+		}
+
+		function submitForm() {
+			let userId = document.getElementById('mid').value;
+			let password = document.getElementById('mpw').value;
+			let name = document.getElementById('mname').value;
+			let address = document.getElementById('madd').value;
+			let phoneNumber = document.getElementById('mphone').value;
+			let faxNumber = document.getElementById('mfax').value;
+			let inputFile = document.getElementById('mimg').files[0];
+			let subject = document.getElementById('sub').value;
+			let holidays = document.querySelectorAll('input[type="checkbox"][id="holiday"]:checked');
+			let holidayValues = Array.from(holidays).map(function (checkbox) {
+				return checkbox.value;
+			});
+			let openTime = document.getElementById('otime').value;
+			let closeTime = document.getElementById('ctime').value;
+			let ceoName = document.getElementById('ceoname').value;
+			let ceoPhone = document.getElementById('ceophone').value;
+			let ceolicense = document.getElementById('ceolicense').value;
+
+			formData.append('hospital', ish);
+
+			if (ish == true) {
+				console.log('병원');
+				formData.append('hospitalId', userId);
+				formData.append('hospitalPw', password);
+				formData.append('hospitalName', name);
+				formData.append('address', address);
+				formData.append('phone', phoneNumber);
+				formData.append('uploadFiles', inputFile);
+				formData.append('mainSubject', subject);
+				formData.append('holiday', holidayValues.join(','));
+				formData.append('opentime', openTime);
+				formData.append('closetime', closeTime);
+				formData.append('directorName', ceoName);
+				formData.append('directorPhone', ceoPhone);
+				formData.append('directorLicense', ceolicense);
+
+				for (let pair of formData.entries()) {
+					console.log(pair[0] + ': ' + pair[1]);
+				}
+			} else {
+				console.log('약국');
+				formData.append('pharmacyId', userId);
+				formData.append('pharmacyPw', password);
+				formData.append('pharmacyName', name);
+				formData.append('address', address);
+				formData.append('pharmacyPhone', phoneNumber);
+				formData.append('pharmacyFax', faxNumber);
+				formData.append('uploadFiles', inputFile);
+				formData.append('holiday', holidayValues.join(','));
+				formData.append('opentime', openTime);
+				formData.append('closetime', closeTime);
+				formData.append('ceoName', ceoName);
+				formData.append('ceoPhone', ceoPhone);
+				formData.append('ceoLicense', ceolicense);
+
+				for (let pair of formData.entries()) {
+					console.log(pair[0] + ': ' + pair[1]);
+				}
 			}
 
-			function revertForm() {
-				location.href = '/userlogin';
-			}
-		</script>
-	</head>
+			$.ajax({
+				url: '/medicaljoin',
+				type: 'post',
+				processData: false,
+				contentType: false,
+				data: formData,
+				success: function (resp) {
+					console.log(resp);
+					if (resp.result) {
+						Swal.fire({
+							icon: 'success',
+							text: resp.msg,
+						}).then(function () {
+							location.href = '/userlogin';
+						});
+					} else {
+						Swal.fire({
+							icon: 'error',
+							text: resp.msg,
+						}).then(function () {
+							location.reload();
+						});
+					}
+				},
+			});
+		}
 
-	<body>
-		<div layout:fragment="content">
-			<div class="registered-customers" style="margin-top: 100px">
-				<h3 class="blog-section-title border-left mb-30">의료기관 회원가입</h3>
+		function revertForm() {
+			location.href = '/userlogin';
+		}
+	</script>
+</head>
+
+<body>
+	<div layout:fragment="content">
+		<div class="registered-customers" style="margin-top: 100px">
+			<h3 class="blog-section-title border-left mb-30">의료기관 회원가입</h3>
+			<br />
+			<div class="text-center search">
+				<span onclick="isHospital()" style="cursor: pointer;">병원 사용자</span>
+				<span>|</span>
+				<span onclick="isPharmacy()" style="cursor: pointer;">약국 사용자</span>
+			</div>
+			<form id="medicalForm" enctype="multipart/form-data" method="post">
 				<br />
-				<div class="text-center">
-					<span onclick="isHospital()">병원 사용자</span>
-					<span>|</span>
-					<span onclick="isPharmacy()">약국 사용자</span>
+				<br />
+				<div class="input-group">
+					<label>아이디</label>
+					<input type="text" id="mid" placeholder="아이디를 입력하세요" required oninput="checkId()"
+						style="width: 350px; margin-right: 10px" />
+					<button type="button" id="midcheck" onclick="checkDupliId()" disabled
+						class="btn btn-sm btn-secondary shadow-sm"
+						style="display: inline-block; height: 35px; padding: 5px; border-radius: 5px; font-weight: 100;">
+						중복 확인
+					</button>
+					<span id="idErrorMessage" class="error-message" style="display: block"></span>
 				</div>
-				<form id="medicalForm" enctype="multipart/form-data" method="post">
-					<br />
-					<br />
-					<div class="input-group">
-						<label>아이디</label>
-						<input
-							type="text"
-							id="mid"
-							placeholder="아이디를 입력하세요"
-							required
-							oninput="checkId()"
-							style="width: 350px; margin-right: 10px"
-						/>
-						<button
-							type="button"
-							id="midcheck"
-							onclick="checkDupliId()"
-							disabled
-							class="btn btn-sm btn-secondary shadow-sm"
-							style="display: inline-block; height: 30px"
-						>
-							중복 확인
-						</button>
-						<span id="idErrorMessage" class="error-message" style="display: block"></span>
-					</div>
 
-					<div class="input-group">
-						<label>비밀번호</label>
-						<input
-							type="password"
-							id="mpw"
-							placeholder="비밀번호를 입력하세요"
-							required
-							oninput="checkPassword()"
-						/>
-						<span id="pwErrorMessage" class="error-message" style="display: block"></span>
-					</div>
+				<div class="input-group">
+					<label>비밀번호</label>
+					<input type="password" id="mpw" placeholder="비밀번호를 입력하세요" required oninput="checkPassword()" />
+					<span id="pwErrorMessage" class="error-message" style="display: block"></span>
+				</div>
 
-					<div class="input-group">
-						<label>비밀번호 확인</label>
-						<input
-							type="password"
-							id="mpwcheck"
-							placeholder="비밀번호를 다시 입력하세요"
-							required
-							oninput="checkPasswordMatch()"
-						/>
-						<span id="rePasswordErrorMessage" class="error-message" style="display: block"></span>
-					</div>
+				<div class="input-group">
+					<label>비밀번호 확인</label>
+					<input type="password" id="mpwcheck" placeholder="비밀번호를 다시 입력하세요" required
+						oninput="checkPasswordMatch()" />
+					<span id="rePasswordErrorMessage" class="error-message" style="display: block"></span>
+				</div>
 
-					<div class="input-group">
-						<label id="namelabel">병원 이름</label>
-						<input type="text" id="mname" placeholder="이름을 입력하세요" required oninput="checkName()" />
-						<span id="nameErrorMessage" class="error-message" style="display: block"></span>
-					</div>
+				<div class="input-group">
+					<label id="namelabel">병원 이름</label>
+					<input type="text" id="mname" placeholder="이름을 입력하세요" required oninput="checkName()" />
+					<span id="nameErrorMessage" class="error-message" style="display: block"></span>
+				</div>
 
-					<div class="input-group">
-						<label id="addlabel">병원 주소</label>
-						<input type="text" id="madd" required style="width: 350px; margin-right: 10px" />
-						<button
-							type="button"
-							id="maddcheck"
-							class="btn btn-sm btn-secondary shadow-sm"
-							style="display: inline-block; height: 30px"
-							onclick="searchAdd()"
-						>
-							주소 검색
-						</button>
-					</div>
+				<div class="input-group">
+					<label id="addlabel">병원 주소</label>
+					<input type="text" id="madd" required style="width: 350px; margin-right: 10px" />
+					<button type="button" id="maddcheck" class="btn btn-sm btn-secondary shadow-sm"
+						style="display: inline-block; height: 35px; padding: 5px; border-radius: 5px; font-weight: 100; background-color: #d7d3ab; border-color: #d7d3ab; color: #fff; "
+						onclick="searchAdd()">
+						주소 검색
+					</button>
+				</div>
 
-					<div class="input-group">
-						<label>전화번호</label>
-						<input
-							type="tel"
-							id="mphone"
-							placeholder="전화번호를 입력하세요"
-							required
-							maxlength="12"
-							oninput="autoHyphen(this)"
-						/>
-					</div>
+				<div class="input-group">
+					<label>전화번호</label>
+					<input type="tel" id="mphone" placeholder="전화번호를 입력하세요" required maxlength="12"
+						oninput="autoHyphen(this)" />
+				</div>
 
-					<div class="input-group" id="faxnum" style="display: none">
-						<label>팩스번호</label>
-						<input
-							type="tel"
-							id="mfax"
-							placeholder="팩스번호를 입력하세요"
-							required
-							maxlength="12"
-							oninput="autoHyphen(this)"
-						/>
-					</div>
+				<div class="input-group" id="faxnum" style="display: none">
+					<label>팩스번호</label>
+					<input type="tel" id="mfax" placeholder="팩스번호를 입력하세요" required maxlength="12"
+						oninput="autoHyphen(this)" />
+				</div>
 
-					<div class="input-group">
-						<label>대표 사진</label>
-						<input type="file" id="mimg" />
-						<img id="filePreview" alt="File Preview" />
-					</div>
+				<div class="input-group">
+					<label>대표 사진</label>
+					<input type="file" id="mimg" />
+					<img id="filePreview" alt="File Preview" />
+				</div>
 
-					<div class="input-group" id="subject">
-						<label>대표 진료 과목</label>
-						<select id="sub">
-							<option selected>선택하세요</option>
-							<th:block th:each="detailCode : ${application.detailCode_h}">
-								<option th:value="${detailCode.detailCode}" th:text="${detailCode.codeName}"></option>
-							</th:block>
-						</select>
-					</div>
+				<div class="input-group" id="subject">
+					<label>대표 진료 과목</label>
+					<select id="sub" class="form-select form-select-sm">
+						<option selected>선택하세요</option>
+						<th:block th:each="detailCode : ${application.detailCode_h}">
+							<option th:value="${detailCode.detailCode}" th:text="${detailCode.codeName}"></option>
+						</th:block>
+					</select>
+				</div>
 
-					<div class="input-group">
-						<label>휴무일</label>
-						<th:block th:each="detailCode : ${application.detailCode_i}">
-							<input
-								type="checkbox"
-								id="holiday"
-								th:value="${detailCode.detailCode}"
-								style="
+				<div class="input-group">
+					<label>휴무일</label>
+					<th:block th:each="detailCode : ${application.detailCode_i}">
+						<input type="checkbox" id="holiday" th:value="${detailCode.detailCode}" style="
 									width: 20px;
 									height: 20px;
 									border: 2px solid #3498db;
@@ -651,135 +614,96 @@
 									align-items: center;
 									justify-content: center;
 									transition: background-color 0.3s;
-								"
-							/>
-							<label
-								th:for="${'hday' + detailCode.detailCode}"
-								th:text="${detailCode.codeName}"
-								style="width: 50px"
-							></label>
-							<br />
+								" />
+						<label th:for="${'hday' + detailCode.detailCode}" th:text="${detailCode.codeName}"
+							style="width: 50px"></label>
+						<br />
+					</th:block>
+				</div>
+
+				<div class="input-group">
+					<label>오픈 시간</label>
+					<select id="otime" class="form-select form-select-sm" aria-label=".form-select-sm example">
+						<option selected>선택하세요</option>
+						<th:block th:each="detailCode : ${application.detailCode_k}">
+							<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
 						</th:block>
-					</div>
+					</select>
+				</div>
 
-					<div class="input-group">
-						<label>오픈 시간</label>
-						<select id="otime" class="form-select form-select-sm" aria-label=".form-select-sm example">
-							<option selected>선택하세요</option>
-							<th:block th:each="detailCode : ${application.detailCode_k}">
-								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
-							</th:block>
-						</select>
-					</div>
+				<div class="input-group">
+					<label>마감 시간</label>
+					<select id="ctime" class="form-select form-select-sm" aria-label=".form-select-sm example">
+						<option selected>선택하세요</option>
+						<th:block th:each="detailCode : ${application.detailCode_k}">
+							<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
+						</th:block>
+					</select>
+				</div>
 
-					<div class="input-group">
-						<label>마감 시간</label>
-						<select id="ctime" class="form-select form-select-sm" aria-label=".form-select-sm example">
-							<option selected>선택하세요</option>
-							<th:block th:each="detailCode : ${application.detailCode_k}">
-								<option th:value="${detailCode.codeName}" th:text="${detailCode.codeName}"></option>
-							</th:block>
-						</select>
-					</div>
+				<hr />
 
-					<hr />
+				<div class="input-group">
+					<label id="ceonamelabel">병원장 이름</label>
+					<input type="text" id="ceoname" placeholder="이름을 입력하세요" required />
+				</div>
 
-					<div class="input-group">
-						<label id="ceonamelabel">병원장 이름</label>
-						<input type="text" id="ceoname" placeholder="이름을 입력하세요" required />
-					</div>
+				<div class="input-group">
+					<label id="ceophonelabel">병원장 전화번호</label>
+					<input type="tel" id="ceophone" placeholder="전화번호를 입력하세요" required maxlength="13"
+						oninput="autoHyphen(this)" style="width: 350px; margin-right: 10px" />
+					<button type="button" id="checkPhoneBtn" onclick="checkPhone()"
+						class="btn btn-sm btn-secondary shadow-sm"
+						style="display: inline-block; height: 35px; padding: 5px; border-radius: 5px; font-weight: 100;">
+						인증번호발송
+					</button>
+					<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
+				</div>
 
-					<div class="input-group">
-						<label id="ceophonelabel">병원장 전화번호</label>
-						<input
-							type="tel"
-							id="ceophone"
-							placeholder="전화번호를 입력하세요"
-							required
-							maxlength="13"
-							oninput="autoHyphen(this)"
-							style="width: 350px; margin-right: 10px"
-						/>
-						<button
-							type="button"
-							id="checkPhoneBtn"
-							onclick="checkPhone()"
-							class="btn btn-sm btn-secondary shadow-sm"
-							style="display: inline-block; height: 30px"
-						>
-							인증번호발송
-						</button>
-						<span id="phoneErrorMessage" class="error-message" style="display: block"></span>
-					</div>
+				<div class="input-group" id="verification-section">
+					<label>인증번호</label>
+					<input type="number" id="checkPhoneNum" placeholder="인증번호를 입력하세요" maxlength="4" required
+						style="width: 350px; margin-right: 10px" />
+					<button type="button" id="checkPhoneNumBtn" onclick="checkPhoneNumber()"
+						class="btn btn-sm btn-secondary shadow-sm"
+						style="display: inline-block; height: 35px; padding: 5px; border-radius: 5px; font-weight: 100; ">
+						인증하기
+					</button>
+				</div>
 
-					<div class="input-group" id="verification-section">
-						<label>인증번호</label>
-						<input
-							type="number"
-							id="checkPhoneNum"
-							placeholder="인증번호를 입력하세요"
-							maxlength="4"
-							required
-							style="width: 350px; margin-right: 10px"
-						/>
-						<button
-							type="button"
-							id="checkPhoneNumBtn"
-							onclick="checkPhoneNumber()"
-							class="btn btn-sm btn-secondary shadow-sm"
-							style="display: inline-block; height: 30px"
-						>
-							인증하기
-						</button>
-					</div>
+				<div class="input-group">
+					<label>사업자등록번호</label>
+					<input type="text" id="ceolicense" placeholder="사업자등록번호를 입력하세요" required maxlength="12"
+						oninput="autoHyphenNum(this)" style="width: 350px; margin-right: 10px" />
+					<button type="button" id="licensecheck" onclick="checkLicense()"
+						class="btn btn-sm btn-secondary shadow-sm"
+						style="display: inline-block; height: 35px; padding: 5px; border-radius: 5px; font-weight: 100; ">
+						인증하기
+					</button>
+				</div>
 
-					<div class="input-group">
-						<label>사업자등록번호</label>
-						<input
-							type="text"
-							id="ceolicense"
-							placeholder="사업자등록번호를 입력하세요"
-							required
-							maxlength="12"
-							oninput="autoHyphenNum(this)"
-							style="width: 350px; margin-right: 10px"
-						/>
-						<button
-							type="button"
-							id="licensecheck"
-							onclick="checkLicense()"
-							class="btn btn-sm btn-secondary shadow-sm"
-							style="display: inline-block; height: 30px"
-						>
-							인증하기
-						</button>
-					</div>
+				<div>
+					<input type="checkbox" required />
+					개인정보 사용 동의<label class="form-check-label" data-bs-toggle="modal" data-bs-target="#exampleModal">
+						&nbsp;[상세보기]</label>
+				</div>
 
-					<div>
-						<input type="checkbox" required />
-						개인정보 사용 동의<label
-							class="form-check-label"
-							data-bs-toggle="modal"
-							data-bs-target="#exampleModal"
-						>
-							&nbsp;[상세보기]</label
-						>
-					</div>
-
-					<br />
-					<div style="text-align: center">
-						<input type="button" value="회원가입" onclick="submitForm()" class="btn btn-danger" />
-						<input type="button" value="취소하기" onclick="revertForm()" class="btn btn-warning" />
-					</div>
-				</form>
-			</div>
-
-			<!-- Modal -->
-			<div class="modal" tabindex="-1" id="exampleModal">
-				<div class="modal-dialog">
-					<div class="modal-content">
-						<div class="modal-body">
-							<pre>
+				<br />
+				<div style="text-align: center">
+					<input type="button" value="회원가입" onclick="submitForm()" class="btn"
+						style="height: 37px; padding: 5px 20px 5px 20px; border-radius: 5px; font-weight: 100; background-color: #06bbcc; border-color: #06bbcc; color: #fff;" />
+					<input type="button" value="취소하기" onclick="revertForm()" class="btn"
+						style="height: 37px; padding: 5px 20px 5px 20px; border-radius: 5px; font-weight: 100; background-color: #9f9f9f; border-color: #9f9f9f; color: #fff;" />
+				</div>
+			</form>
+		</div>
+		
+		<!-- Modal -->
+		<div class="modal" tabindex="-1" id="exampleModal">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<div class="modal-body">
+						<pre>
 서비스 이용을 위한 개인정보 수집 및 이용에 대한 동의
 								
 제 1 조 (목적)
@@ -814,14 +738,14 @@
 
 위와 같이 회원가입 시 개인정보 수집 및 이용에 동의하신다면 
 "동의" 버튼을 클릭하여 회원가입을 진행해 주시기 바랍니다.
-							</pre
-							>
+							</pre>
 
-							<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
-						</div>
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">닫기</button>
 					</div>
 				</div>
 			</div>
 		</div>
-	</body>
+	</div>
+</body>
+
 </html>

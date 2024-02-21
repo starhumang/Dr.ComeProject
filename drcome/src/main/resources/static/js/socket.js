@@ -1,12 +1,13 @@
-let socket = io("http://localhost:3000/", {
+let socket = io("https://3.34.22.38:3000/", {
   cors: { origin: "*" },
 });
 
 console.log(socket.connected);
 
 const myPeer = new Peer({
-  host: "localhost",
-  port: "3001", //PeerJS 서버가 실행되고 있는 포트
+  host: "3.34.22.38",
+  port: 3001, // PeerJS 서버가 실행되고 있는 포트
+  secure: true, // HTTPS를 사용하도록 설정
 });
 
 const peers = {};

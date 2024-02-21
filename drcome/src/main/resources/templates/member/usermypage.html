@@ -57,6 +57,29 @@
 			.paginationR a:hover {
 				background-color: #bfc5d8;
 			}
+			.stbtn {
+				height: 37px; padding: 5px 20px 5px 20px; border-radius: 5px; font-weight: 100;
+			}
+			.table td {
+ 				  vertical-align: middle;
+			}
+			.table {
+				text-align: center;
+				width: 100%;
+			}
+			
+
+			.uptable thead,
+			.uptable th {
+			background-color: rgb(167, 200, 203);
+			
+	
+		    }
+			.table tbody tr:hover {
+			background-color: #ccc;
+			}
+			
+			
 		</style>
 
 		<script th:inline="javascript">
@@ -417,7 +440,7 @@
 					if (item.reserveStatus === 'e1') {
 						reserveStatusText = '진료대기';
 						btnDisabled = 'disabled';
-						btnclass = 'class = btn btn-secondary';
+						btnclass = 'class = btn btn-secondary stbtn';
 					} else if (
 						item.reserveStatus === 'e4' ||
 						item.reserveStatus === 'e5' ||
@@ -425,10 +448,10 @@
 					) {
 						reserveStatusText = '진료완료';
 						btnDisabled = 'disabled';
-						btnclass = 'class = btn btn-light';
+						btnclass = 'class = btn btn-light stbtn';
 					} else {
 						reserveStatusText = '입장하기';
-						btnclass = 'class = btn btn-primary';
+						btnclass = 'class = btn btn-primary stbtn';
 					}
 					row.append(
 						`<td><button onclick="enter(${item.reserveNo})" ${btnDisabled} class="btn ${btnclass}">${reserveStatusText}</button></td>`
@@ -509,21 +532,21 @@
 									class="font-weight-bold text-secondary"
 									style="margin-bottom: 30px; margin-top: 20px"
 								></h3>
-								<table class="table" style="text-align: center">
+								<table class="table">
 									<tr>
-										<th style="text-align: left; width: 200px; padding-left: 30px">- 아이디</th>
+										<th>아이디</th>
 										<td th:text="${profile.userId}"></td>
 									</tr>
 									<tr>
-										<th style="text-align: left; padding-left: 30px">- 전화번호</th>
+										<th>전화번호</th>
 										<td th:text="${profile.phone}"></td>
 									</tr>
 									<tr>
-										<th style="text-align: left; padding-left: 30px">- 생년월일</th>
+										<th>생년월일</th>
 										<td th:text="${#dates.format(profile.birthday, 'yyyy-MM-dd')}"></td>
 									</tr>
 									<tr>
-										<th style="text-align: left; padding-left: 30px">- 성별</th>
+										<th>성별</th>
 										<td>
 											<span th:if="${profile.gender == 'F'}">여자</span>
 											<span th:if="${profile.gender == 'M'}">남자</span>
@@ -531,8 +554,8 @@
 									</tr>
 								</table>
 								<div class="butt">
-									<button class="btn btn-secondary" id="btn" onclick="goToModify()">회원수정</button>
-									<button class="btn btn-danger" id="btn" onclick="withdraw()">회원탈퇴</button>
+									<button class="btn" id="btn" onclick="goToModify()" style="height: 37px; padding: 5px 20px 5px 20px; border-radius: 5px; font-weight: 100; background-color: #06bbcc; border-color: #06bbcc; color: #fff;">회원수정</button>
+									<button class="btn" id="btn" onclick="withdraw()" style="height: 37px; padding: 5px 20px 5px 20px; border-radius: 5px; font-weight: 100; background-color: #9f9f9f; border-color: #9f9f9f; color: #fff;">회원탈퇴</button>
 								</div>
 							</div>
 						</div>
@@ -551,7 +574,7 @@
 
 							<div class="card-body" style="display: block; justify-content: center; align-items: center">
 								<div style="min-height: 350px">
-									<table class="table table-hover" style="text-align: center" id="Rtable"></table>
+									<table class="table table-borderless uptable" style="text-align: center" id="Rtable"></table>
 								</div>
 								<div
 									class="paginationR"
@@ -576,7 +599,7 @@
 								<!-- QnA 리스트 -->
 								<!-- table -->
 								<div style="min-height: 500px">
-									<table class="table table-hover" id="qnaTable"></table>
+									<table class="table table-borderless uptable" id="qnaTable"></table>
 								</div>
 
 								<!-- 페이징 버튼 -->

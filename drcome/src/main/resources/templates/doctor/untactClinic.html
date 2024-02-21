@@ -106,6 +106,7 @@
       #video video {
        margin: 0 10px; 
        border-radius: 10px;
+    
       }
 
       #full {
@@ -160,7 +161,7 @@
           <!--title-right-->
           <div class="title-right">
             <p style="margin-right: 15px">
-              <i class="fas fa-fw fa-calendar"></i> 현재날짜:
+              <i class="fas fa-fw fa-calendar"></i> 오늘날짜:
               <span
                 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
               ></span>

@@ -139,7 +139,7 @@
 						id="datepicker" th:name="datepicker"></span> -->
             <!-- <i class="fas fa-fw fa-calendar"></i>  <input type="text"
 						id="datepicker" style="width: 120px;"/> -->
-            <i class="fas fa-fw fa-calendar"></i> 현재날짜 :
+            <i class="fas fa-fw fa-calendar"></i> 오늘 날짜 :
             <span
               th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
               id="curdate"
@@ -383,14 +383,14 @@
   
   /* --------------------
    * datepicker 초기화
-  ----------------------*/
+  ----------------------*/  
   function datepickerinit() {
 	  $("#datepicker").datepicker({
 	      dateFormat: "yy-mm-dd", //달력 날짜 형태
 	      showOtherMonths: true, //빈 공간에 현재월의 앞뒤월의 날짜를 표시
 	      showMonthAfterYear: true, // 월- 년 순서가아닌 년도 - 월 순서
-	      changeYear: true, //option값 년 선택 가능
-	      changeMonth: true, //option값  월 선택 가능
+	      changeYear: false, //option값 년 선택 가능
+	      changeMonth: false, //option값  월 선택 가능
 	      yearSuffix: "년", //달력의 년도 부분 뒤 텍스트
 	      monthNamesShort: [
 	        "1월",
@@ -431,7 +431,7 @@
 	        "토요일",
 	      ], //달력의 요일 Tooltip
 	      minDate: "-5Y", //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
-	      maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)
+	      maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후) 
 	    });
 	  
 	    //초기값을 오늘 날짜로 설정해줘야 합니다.
@@ -550,21 +550,21 @@
 				if(status == 'block') {
 					prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
 					prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
-					alltop.innerText = "처방현황";
+					alltop.innerText = "처방내역";
 				} else {
 					prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
 					prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
-					alltop.innerText = "처방내역";
+					alltop.innerText = "처방현황";
 				}
 			} else {
 				if(status == 'block') {
 					prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
 					prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
-					alltop.innerText = "처방현황";
+					alltop.innerText = "처방내역";
 				} else {
 					prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
 					prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
-					alltop.innerText = "처방내역";
+					alltop.innerText = "처방현황";
 				}
 			}
 			

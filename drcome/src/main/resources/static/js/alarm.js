@@ -7,7 +7,7 @@ function connectWebSocket(uid) {
 		
 		// 연결이 열리면 호출되는 이벤트 핸들러
 		alarmSocket.onopen = function (event) {
-			//console.log('WebSocket 연결이 열렸습니다.');
+			console.log('WebSocket 연결이 열렸습니다.');
 			//alarmSocket.send(uid);
 		};
 

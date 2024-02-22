@@ -3,8 +3,8 @@ var alarmSocket = null;
 function connectWebSocket(uid) {
 	try {
 		// WebSocket 연결
-		alarmSocket = new WebSocket('ws://localhost:80/echo');
-
+		alarmSocket = new WebSocket('wss://www.drcome.store:80/echo');
+		
 		// 연결이 열리면 호출되는 이벤트 핸들러
 		alarmSocket.onopen = function (event) {
 			console.log('WebSocket 연결이 열렸습니다.');

@@ -34,19 +34,11 @@ function connectWebSocket(uid) {
 		// 연결이 닫혔을 때 호출되는 이벤트 핸들러
 		alarmSocket.onclose = function (event) {
 			console.log('WebSocket 연결이 닫혔습니다.');
-			setTimeout(function () {
-				console.log('다시 연결을 시도합니다.');
-				connectWebSocket();
-			}, 5000);
 		};
 
 		// 에러가 발생했을 때 호출되는 이벤트 핸들러
 		alarmSocket.onerror = function (error) {
 			console.error('WebSocket 연결 에러:', error);
-			setTimeout(function () {
-				console.log('다시 연결을 시도합니다.');
-				connectWebSocket();
-			}, 5000);
 		};
 	} catch (error) {
 		console.error('WebSocket 연결 에러:', error);

@@ -3,8 +3,8 @@ var alarmSocket = null;
 function connectWebSocket(uid) {
 	try {
 		// WebSocket 연결
-		alarmSocket = new WebSocket('ws://localhost:80/echo');
-
+		alarmSocket = new WebSocket('wss://www.drcome.store/echo');
+		
 		// 연결이 열리면 호출되는 이벤트 핸들러
 		alarmSocket.onopen = function (event) {
 			console.log('WebSocket 연결이 열렸습니다.');
@@ -43,10 +43,6 @@ function connectWebSocket(uid) {
 		// 에러가 발생했을 때 호출되는 이벤트 핸들러
 		alarmSocket.onerror = function (error) {
 			console.error('WebSocket 연결 에러:', error);
-			setTimeout(function () {
-				console.log('다시 연결을 시도합니다.');
-				connectWebSocket();
-			}, 5000);
 		};
 	} catch (error) {
 		console.error('WebSocket 연결 에러:', error);

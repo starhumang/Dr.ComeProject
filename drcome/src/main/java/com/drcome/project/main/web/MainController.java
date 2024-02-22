@@ -66,8 +66,8 @@ public class MainController {
 		model.addAttribute("hosList", hosList);
 		List<PharmacyVO> phaList = mainService.getPhaList();
 		model.addAttribute("phaList", phaList);
-//		log.debug("phaList="+phaList);
-		log.info("phaList = ",phaList);
+		System.out.println("phaList="+phaList);
+		//log.info("phaList = ",phaList);
 		return "user/home";//폴더밑에 html 이름
 	}
 	

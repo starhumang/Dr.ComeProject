@@ -4,7 +4,7 @@
 	layout:decorate="~{admin/adminLayout}">
 <head>
 <meta charset="UTF-8">
-<title>UserList</title>
+<title>Pharmacy List</title>
 <style>
   .catCal {
     display: flex;
@@ -19,9 +19,15 @@
     background-color: #5a5c69;
     color: #fff;
   }
-img {
+td > img {
 	width: 60px;
 	height: 40px;
+}
+thead {
+	background-color: #c7cbcc;
+}
+.table-responsive {
+    border-radius: 8px;
 }
 </style>
 </head>
@@ -80,7 +86,7 @@ img {
 					        <p>해당 내역이 없습니다.</p>
 					    </th:block>
 					    <th:block th:if="${not list.empty}">
-						<table class="table table-bordered" id="dataTable" width="100%"
+						<table class="table table-hover" id="dataTable" width="100%"
 							cellspacing="0">
 							<thead>
 								<tr>

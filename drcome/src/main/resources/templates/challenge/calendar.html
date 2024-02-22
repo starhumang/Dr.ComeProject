@@ -24,7 +24,9 @@
 #calendercon {
 margin-top: 50px;
 }
-
+button {
+	border: none;
+}
 </style>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
 <script th:inline="javascript">
@@ -81,7 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
             //window.location.href = newURL;
             $('#todoModal').modal('show');
             $('#todo').load(newURL);
-            
+           
         }
     });
     calendar.render();
@@ -105,9 +107,10 @@ document.addEventListener('DOMContentLoaded', function() {
 		  <div class="modal-dialog modal-lg" role="document">
 		    <div class="modal-content">
 		      <div class="modal-header">
-		        <h5 class="modal-title" id="exampleModalLabel">To Do List</h5>
+		        <h5 class="modal-title" id="exampleModalLabel">To Do List &nbsp;<i class="fas fa-pencil-alt"></i></h5>
 		        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="todoclose">
-		          <span aria-hidden="true">&times;</span>
+		          <!-- <span aria-hidden="true">&times;</span> -->
+		          <i class="fas fa-window-minimize"></i>
 		        </button>
 		      </div>
 		      <div class="modal-body" id="todo">

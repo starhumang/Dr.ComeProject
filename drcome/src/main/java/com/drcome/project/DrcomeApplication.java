@@ -33,7 +33,7 @@ public class DrcomeApplication {
 
 	        // 전체 detailCode 저장
 	        sc.setAttribute("detailCode", allDetailCodes);
-	        System.out.println(allDetailCodes);
+//	        System.out.println(allDetailCodes);
 
 	        // 알파벳으로 그룹화된 detailCode 저장
 	        alphabetGroups.forEach((key, value) -> {

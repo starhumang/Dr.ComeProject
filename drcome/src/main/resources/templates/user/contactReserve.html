@@ -546,6 +546,10 @@ a{
 										//console.log("맞음");
 										innerDiv1.classList.add('disableDiv');
 									}
+									//고정 휴식시간은 선택못하게
+									if(parseInt(days["open"]) + i ==12){
+										innerDiv1.classList.add('disableDiv');
+									}
 									
 									//만약 만들어진 시간중에 이미 예약된 시간이 있으면 클릭못하게 처리(위의 ajax요청에 대한 응답)
 									for(let ele of doctorReserveTimeList){
@@ -571,6 +575,10 @@ a{
 									innerDiv2.textContent = (parseInt(days["open"]) + i) + ":30";
 									//이미 지니간 날짜 & 지나간 시간이면 클릭 못하게
 									if(date.getDate() == nowDate.getDate() && parseInt(days["open"]) + i <= hours){
+										innerDiv2.classList.add('disableDiv');
+									}
+									//고정 휴식시간은 선택못하게
+									if(parseInt(days["open"]) + i ==12){
 										innerDiv2.classList.add('disableDiv');
 									}
 									

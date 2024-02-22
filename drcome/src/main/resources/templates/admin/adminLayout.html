@@ -25,6 +25,17 @@
 .content {
 	min-height: 842px;
 }
+#logoutBtn {
+	padding: 0 6px;
+	background-color: rgba(196, 196, 196, 0.219);
+	height: 20px;
+	margin-right: 20px;
+	border: 0.5px solid rgba(196, 196, 196, 0.219);
+}
+#logoutBtn:hover {
+	background-color: rgba(196, 196, 196, 0.7);
+	border: 0.5px solid rgba(196, 196, 196, 0.7);
+}
 </style>
 </head>
 
@@ -54,9 +65,14 @@
 			<hr class="sidebar-divider my-0" />
 
 			<!-- Nav Item - Dashboard -->
-			<li class="nav-item active"><a class="nav-link"
-				href="/admin"> <i class="fas fa-fw fa-tachometer-alt"></i> <span>Dashboard</span></a>
-			</li>
+			<li class="nav-item active">
+				<div  style="display:flex; align-items: center;">
+			<a class="nav-link"
+				href="/admin">
+				<i class="fas fa-fw fa-tachometer-alt"></i>
+				<span>Dashboard</span></a>
+			<a class="btn btn-info btn-sm" th:href="@{/logout}" id="logoutBtn">Logout</a>
+			</div></li>
 
 			<!-- Divider -->
 			<hr class="sidebar-divider" />

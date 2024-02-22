@@ -37,7 +37,12 @@
 			function goToDinsert() {
 				location.href = '/hospital/doctorinsert';
 			}
-      
+
+			function goDModify(doctorNo) {
+				console.log(doctorNo);
+			    location.href = `/hospital/doctorupdate/${doctorNo}`;
+			}
+
 			function withdraw() {
 				Swal.fire({
 					title: '회원 탈퇴',
@@ -151,12 +156,12 @@
 								</tr>
 								<tr>
 									<th>대표진료과목</th>
-			                          <th:block th:each="detailCode : ${application.detailCode_h}">
-			                              <td
-			                                 th:if="${detailCode.detailCode} == ${hospitalSel.mainSubject}"
-			                                 th:text="${detailCode.codeName}"
-			                              ></td>
-		                           	  </th:block>
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<td
+											th:if="${detailCode.detailCode} == ${hospitalSel.mainSubject}"
+											th:text="${detailCode.codeName}"
+										></td>
+									</th:block>
 
 									<th>대표자이름</th>
 									<td th:text="${hospitalSel.directorName}"></td>
@@ -167,20 +172,22 @@
 									<th>사업자번호</th>
 									<td th:text="${hospitalSel.directorLicense}"></td>
 									<th>상태</th>
-			                          <th:block th:each="detailCode : ${application.detailCode_b}">
-			                              <td
-			                                 th:if="${detailCode.detailCode} == ${hospitalSel.hospitalStatus}"
-			                                 th:text="${detailCode.codeName}"
-			                              ></td>
-		                           	  </th:block>
+									<th:block th:each="detailCode : ${application.detailCode_b}">
+										<td
+											th:if="${detailCode.detailCode} == ${hospitalSel.hospitalStatus}"
+											th:text="${detailCode.codeName}"
+										></td>
+									</th:block>
 									<th>휴무일</th>
-										<td>
-										    <th:block th:each="detailCode : ${application.detailCode_i}">
-										        <span th:each="holidayHos : ${#strings.arraySplit(hospitalSel.holiday, ',')}" 
-										            th:if="${detailCode.detailCode == holidayHos}" 
-										            th:text="${detailCode.codeName}"></span>
-											</th:block>
-									    </td>								
+									<td>
+										<th:block th:each="detailCode : ${application.detailCode_i}">
+											<span
+												th:each="holidayHos : ${#strings.arraySplit(hospitalSel.holiday, ',')}"
+												th:if="${detailCode.detailCode == holidayHos}"
+												th:text="${detailCode.codeName}"
+											></span>
+										</th:block>
+									</td>
 								</tr>
 								<tr>
 									<th>오픈시간</th>
@@ -204,7 +211,9 @@
 							<i class="fas fa-fw fa-user-nurse"></i>의사정보
 						</h5>
 						<div class="btn1">
-							<button class="btn btn-sm btn-warning shadow-sm" onclick="goToDinsert()">의사 등록하기</button>
+							<button class="btn btn-sm btn-warning shadow-sm" onclick="goToDinsert()">
+								의사 등록하기
+							</button>
 						</div>
 					</div>
 					<div class="card-body">
@@ -225,20 +234,22 @@
 									<tr>
 										<td th:text="${doc.doctorNo}"></td>
 										<th:block th:each="detailCode : ${application.detailCode_h}">
-			                              <td
-			                                 th:if="${detailCode.detailCode} == ${doc.subject}"
-			                                 th:text="${detailCode.codeName}"
-			                              ></td>
-		                           	  	</th:block>	
+											<td
+												th:if="${detailCode.detailCode} == ${doc.subject}"
+												th:text="${detailCode.codeName}"
+											></td>
+										</th:block>
 										<td th:text="${doc.doctorName}"></td>
-							            <!-- 여러 값이 콤마로 구분된 holiday를 분할하여 출력 -->
-							            <td>
-										    <th:block th:each="detailCode : ${application.detailCode_i}">
-										        <span th:each="holiday : ${#strings.arraySplit(doc.holiday, ',')}" 
-										            th:if="${detailCode.detailCode == holiday}" 
-										            th:text="${detailCode.codeName}"></span>
+										<!-- 여러 값이 콤마로 구분된 holiday를 분할하여 출력 -->
+										<td>
+											<th:block th:each="detailCode : ${application.detailCode_i}">
+												<span
+													th:each="holiday : ${#strings.arraySplit(doc.holiday, ',')}"
+													th:if="${detailCode.detailCode == holiday}"
+													th:text="${detailCode.codeName}"
+												></span>
 											</th:block>
-									    </td>
+										</td>
 										<td>
 											<div th:each="drTime : ${doc.times}">
 												[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
@@ -246,7 +257,14 @@
 											</div>
 										</td>
 										<td th:text="${doc.doctorLicense}"></td>
-										<td><button class="btn btn-sm btn-info shadow-sm" th:onclick="goToModify([[${doc.doctorNo}]])">수정하기</button></td>
+										<td>
+											<button
+												class="btn btn-sm btn-info shadow-sm"
+												th:onclick="goDModify([[${doc.doctorNo}]])"
+											>
+												수정하기
+											</button>
+										</td>
 									</tr>
 								</th:block>
 							</tbody>

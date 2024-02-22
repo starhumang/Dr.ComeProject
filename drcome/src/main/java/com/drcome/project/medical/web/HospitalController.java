@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -92,7 +93,7 @@ public class HospitalController {
 		int qnaCnt = hospitalService.selectQnaCnt(hospitalId);
 		int payMonth = hospitalService.selectPayMonth(hospitalId);
 		int c2Rate = hospitalService.selectC2Rate(hospitalId);
-		
+
 		model.addAttribute("tolist", tolist);
 		model.addAttribute("QnAO", QnAO);
 		model.addAttribute("QnAX", QnAX);
@@ -928,6 +929,7 @@ public class HospitalController {
 	@GetMapping("/hospital/doctorupdate/{DoctorNo}")
 	public String doctorUpdateForm(@PathVariable("DoctorNo") String doctorNo, Model model) {
 		int doctorNum = Integer.parseInt(doctorNo);
+		System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD" + doctorNum);
 		DoctorVO drinfo = hospitalService.selectDoctor(doctorNum);
 		model.addAttribute("drInfo", drinfo);
 		return "hospital/doctormodify";

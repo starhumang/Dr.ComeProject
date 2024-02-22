@@ -48,7 +48,7 @@ public class FileUploadService {
 
 			String uploadFileName = folderPath + File.separator + uuid + "_" + fileName;
 
-			String saveName = uploadPath + File.separator + uploadFileName;
+			String saveName = uploadPath + "/" + File.separator + uploadFileName;
 
 			Path savePath = Paths.get(saveName);
 			// Paths.get() 메서드는 특정 경로의 파일 정보를 가져옵니다.(경로 정의하기)
@@ -71,7 +71,8 @@ public class FileUploadService {
 	private String makeFolder() {
 		String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 		// LocalDate를 문자열로 포멧
-		String folderPath = str.replace("/", File.separator);
+//		String folderPath = str.replace("/", File.separator);
+		String folderPath = str + "/";
 		
 		File uploadPathFolder = new File(uploadPath, folderPath);
 		

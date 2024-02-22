@@ -313,41 +313,7 @@
 					<h1 class="mb-5" style="margin-top: 5px;">Hospital</h1>
 				</div>
 				<div class="row g-4 here" style="">
-<!-- 					<div th:each="hos: ${hosList.subList(0, 5)}" -->
-<!-- 						class="col-lg-3 col-md-6 " -->
-<!-- 						style="width: 280px; height: 380px;" -->
-<!-- 						th:onclick="|location.href='@{hospitalDetail(hospitalId=${hos.hospitalId})}'|"> -->
-<!-- 						바로 위는 타임리프로 링크 보내버리는법 -->
-
-<!-- 						<div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
-<!-- 							<div class="team-item bg-light"> -->
-<!-- 								<div class="overflow-hidden"> -->
-<!-- 									<img th:if="${hos.hospitalImg}" -->
-<!-- 										th:src="@{/images/} + ${hos.hospitalImg}" alt="image" -->
-<!-- 										style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
-<!-- 										th:unless="${hos.hospitalImg}" -->
-<!-- 										th:src="@{/images/} + hospital.png" alt="image" -->
-<!-- 										style="width: 100%; height: 200px;" class="img-fluid" /> -->
-<!-- 								</div> -->
-<!-- 							</div> -->
-
-<!-- 							<div class="text-center p-4"> -->
-<!-- 								<h5 class="mb-0" th:text="${hos.hospitalName}"></h5> -->
-<!-- 								<small th:text="${hos.phone}"></small> <br /> <small -->
-<!-- 									th:text="${hos.address}" style="color: red; font-weight: bold;" -->
-<!-- 									class="address"></small> -->
-<!-- 								<p th:text="${hos.closetime}" style="display: none;" -->
-<!-- 									class="closeTime"> -->
-<!-- 								<p th:text="${hos.holiday}" style="display: none;" -->
-<!-- 									class="closeDay"> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						<div class="closeBlock"> -->
-<!-- 							<h2 style="color: white; padding-top: 80px;">Close</h2> -->
-<!-- 						</div> -->
-
-<!-- 					</div> -->
-				</div>
+				<!-- 여기 병원테이블 들어감 -->
 				<!-- 병원끝 -->
 			</div>
 		</div>
@@ -367,40 +333,7 @@
 
 			</div>
 			<div class="row g-4 here2">
-<!-- 				<div th:each="pha: ${phaList}" -->
-<!-- 					class="col-lg-3 col-md-6 pharmacyItem" -->
-<!-- 					style="width: 280px; height: 380px;" -->
-<!-- 					th:onclick="|location.href='@{pharmacyDetail(pharmacyId=${pha.pharmacyId})}'|"> -->
-
-<!-- 					<div class="ho wow fadeInUp" data-wow-delay="0.1s"> -->
-<!-- 						<div class="team-item bg-light"> -->
-<!-- 							<div class="overflow-hidden"> -->
-<!-- 								<img th:if="${pha.pharmacyImg}" -->
-<!-- 									th:src="@{/images/} + ${pha.pharmacyImg}" alt="image" -->
-<!-- 									style="width: 100%; height: 200px;" class="img-fluid" /> <img -->
-<!-- 									th:unless="${pha.pharmacyImg}" -->
-<!-- 									th:src="@{/images/} + pharmacy.png" alt="image" -->
-<!-- 									style="width: 100%; height: 200px;" class="img-fluid" /> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-
-<!-- 						<div class="text-center p-4"> -->
-<!-- 							<h5 class="mb-0" th:text="${pha.pharmacyName}"></h5> -->
-<!-- 							<small th:text="${pha.pharmacyPhone}"></small> <br /> <small -->
-<!-- 								th:text="${pha.address}" style="color: red; font-weight: bold;" -->
-<!-- 								class="phAddress"></small> -->
-<!-- 							<p th:text="${pha.closetime}" style="display: none;" -->
-<!-- 								class="closeTime2"> -->
-<!-- 							<p th:text="${pha.holiday}" style="display: none;" -->
-<!-- 								class="closeDay2"> -->
-<!-- 						</div> -->
-<!-- 					</div> -->
-<!-- 					<div class="closeBlock2"> -->
-<!-- 						<h2 style="color: white; padding-top: 80px;">Close</h2> -->
-<!-- 					</div> -->
-
-<!-- 				</div> -->
-			</div>
+			<!-- 여기 약국테이블 들어감 -->
 			<!-- 약국 끝 -->
 		</div>
 		<!-- Testimonial End -->
@@ -694,7 +627,7 @@
 	        	            </div>
 	        	            <div class="text-center p-4">
 	        	                <h5 class="mb-0">${pharmacy.pharmacyName}</h5>
-	        	                <small>${pharmacy.phone}</small><br/>
+	        	                <small>${pharmacy.pharmacyPhone}</small><br/>
 	        	                <small style="color: red; font-weight: bold;" class="address2">${pharmacy.dist}Km</small>
 	        	                <p style="display: none;" class="closeTime2">${pharmacy.closetime}</p>
 	        	                <p style="display: none;" class="closeDay2">${pharmacy.holiday}</p>

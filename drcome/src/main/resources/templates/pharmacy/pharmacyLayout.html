@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" xmlns:th="http://www.thymeleaf.org">
 	<head>
 		<meta charset="utf-8" />
@@ -46,7 +47,7 @@
 					<div class="sidebar-card" style="margin-top: 20px">
 						<a>
 							<img
-								th:src="@{/images/} + ${pharmacy.pharmacyImg}"
+								th:src="@{/img/} + ${pharmacy.pharmacyImg}"
 								alt="image"
 								style="overflow: hidden; width: 100%; height: 160px"
 							/>
@@ -64,6 +65,7 @@
 						></span>
 					</div>
 				</th:block>
+
 
 				<!-- Divider -->
 				<!-- <hr class="sidebar-divider my-0" /> -->

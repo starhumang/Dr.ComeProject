@@ -18,14 +18,14 @@
 			margin-top: 30px;
 		}
 
-		#logout {
-			display: flex;
-			justify-content: right;
-			padding-right: 30px;
-		}
 		hr {
 			border: none;
 			border-top: 2px solid gray;
+		}
+		.btn-info {
+			color: black;
+			background-color: lightgray;
+			border-color: lightgray;
 		}
 	</style>
 
@@ -123,7 +123,7 @@
 					<div class="card-body" style="display: flex; justify-content: center; align-items: center">
 						<div class="left">
 							<img
-								th:src="@{/img/} + ${pinfo.pharmacyImg}"
+								src="/images/pharmacy.png"
 								alt="image"
 								width="300px"
 								style="margin-right: 50px"

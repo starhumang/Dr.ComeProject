@@ -56,7 +56,7 @@ thead {
 										<td th:text="${hospital.address}"></td>
 										<td th:text="${hospital.phone}"></td>
 										<!-- <td th:text="${hospital.hospitalImg}"></td> -->
-										<td><img th:src="@{/images/}+${hospital.hospitalImg}"
+										<td><img src="/images/pharmacy.png"
 											alt="image" width="50px" /></td>
 										<td><th:block th:each="detailCode : ${application.detailCode_h}" >
 											<span th:if="${detailCode.detailCode} == ${hospital.mainSubject}" th:text="${detailCode.codeName}"></span>

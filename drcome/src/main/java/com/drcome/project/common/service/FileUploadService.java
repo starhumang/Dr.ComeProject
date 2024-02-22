@@ -71,8 +71,7 @@ public class FileUploadService {
 	private String makeFolder() {
 		String str = LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy/MM/dd"));
 		// LocalDate를 문자열로 포멧
-//		String folderPath = str.replace("/", File.separator);
-		String folderPath = str + "/";
+		String folderPath = str.replace("/", File.separator);
 		
 		File uploadPathFolder = new File(uploadPath, folderPath);
 		

@@ -108,8 +108,10 @@ thead {
 									<td th:text="${hospital.address}"></td>
 									<td th:text="${hospital.phone}"></td>
 									<!-- <td th:text="${hospital.hospitalImg}"></td> -->
-									<td><img th:src="@{/images/}+${hospital.hospitalImg}"
+									<td th:if="${hospital.hospitalImg} != null"><img th:src="@{/img/}+${hospital.hospitalImg}"
 										alt="image" width="50px" /></td>
+									<td th:unless="${hospital.hospitalImg} != null"><img th:src="@{/images/}+ hospital.png"
+									alt="image" width="50px" /></td>
 									<!--/* <td th:text="${hospital.mainSubject}"></td> */-->
 									<td>
 									<th:block th:each="detailCode : ${application.detailCode_h}" >

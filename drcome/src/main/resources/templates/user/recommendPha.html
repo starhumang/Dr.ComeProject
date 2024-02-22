@@ -274,7 +274,7 @@
 		      function insertPhaSelect(e){
 		    	let checkboxes =  document.querySelectorAll(".checkbox");
 		    	let clinicNo = document.querySelector(".clinic").innerText;
-		    	console.log("checkboxes=",checkboxes);
+		    	//console.log("checkboxes=",checkboxes);
 		    	let pharmacyId = [];
 		    	checkboxes.forEach((ele)=>{
 		    		if(ele.checked == true){
@@ -282,8 +282,8 @@
 		    			pharmacyId.push(tr.getAttribute('data'));
 		    		}
 		    	});
-		    	console.log("pharmacyId=",pharmacyId);
-	    		console.log("clinicNo=", clinicNo);
+		    	//console.log("pharmacyId=",pharmacyId);
+	    		//console.log("clinicNo=", clinicNo);
 	    		
 	    		
 	    		$.ajax("/recommendPharmacy",{
@@ -296,7 +296,7 @@
 	    			
 	   				 // 요청이 성공한 경우 실행되는 함수
 	   			    success: function(response) {
-	   			        console.log("서버 응답:", response);
+	   			        //console.log("서버 응답:", response);
 		   			    checkboxes.forEach((ele)=>{
 		 		    		if(ele.checked == true){
 		 		    			let tr = ele.closest('tr');

@@ -100,7 +100,7 @@ button:hover {
          <script th:inline="javascript">
             function nowLocation(){
                const loc = window.localStorage.getItem("location");
-               console.log(loc);
+               //console.log(loc);
                document.querySelector(".loc").innerText='현재 내 위치는 ' + loc + ' 입니다.';
             }
             nowLocation();
@@ -241,7 +241,7 @@ button:hover {
             
             const hosAddress = document.querySelectorAll('.address'); //병원
             const phaAddress = document.querySelectorAll('.phAddress')//약국
-         console.log("hosAddress=",hosAddress);
+         //console.log("hosAddress=",hosAddress);
             
             if(hosAddress){
                await methods.addressToDistance(hosAddress, "hos"); // 거리값 계산
@@ -327,7 +327,7 @@ button:hover {
                         
                         //거리계산된 값
                         let dist = (methods.distance(curLat, curLon, Lat, Lon)).toFixed(2);
-                        console.log("총 거리 =", dist);
+                        //console.log("총 거리 =", dist);
                         
                         if(kind === "hos"){
                            const hospitalName = item.closest('.hospitalItem').querySelector('.hospitalName').innerText// 가나다순으로 정렬을 위해 
@@ -358,7 +358,7 @@ button:hover {
                         resolve(); //여기까지 도달하면 성공했다는 뜻
                         
                         }else{
-                           console.log("restart함수실행안됨");
+                           //console.log("restart함수실행안됨");
                            reject();
                         }                     
                      });

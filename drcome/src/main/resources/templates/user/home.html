@@ -294,7 +294,6 @@
 			</div>
 		</div>
 
-		<!-- Team Start -->
 		<div class="container-xxl py-5"
 			style="padding-top: 10px; max-width: 1430px;">
 			<div class="container" style="text-align: center; max-width: 1430px;">
@@ -315,12 +314,11 @@
 				<div class="row g-4 here" style="">
 				<!-- 여기 병원테이블 들어감 -->
 				<!-- 병원끝 -->
+				</div>
 			</div>
 		</div>
 
 
-
-		<!-- Testimonial Start -->
 		<div class="container-xxl py-5"
 			style="padding-top: 10px; max-width: 1430px;">
 			<div class="container" style="text-align: center; max-width: 1430px;">
@@ -330,13 +328,13 @@
 						주변</h6>
 					<h1 class="mb-5" style="margin-top: 5px;">Pharmacy</h1>
 				</div>
-
+				<div class="row g-4 here2">
+				<!-- 여기 약국테이블 들어감 -->
+				<!-- 약국 끝 -->
+				</div>
 			</div>
-			<div class="row g-4 here2">
-			<!-- 여기 약국테이블 들어감 -->
-			<!-- 약국 끝 -->
 		</div>
-		<!-- Testimonial End -->
+
 
 
 
@@ -377,10 +375,10 @@
 //                   geolocationOptions);
             
 //             const successCallback = (geolocation)=>{
-//                console.log("geolocation = ",geolocation);
+//                //console.log("geolocation = ",geolocation);
 //             };
 //             const errorCallback = (error)=>{
-//                console.log("error = ",error);
+//                //console.log("error = ",error);
 //             };
             
             
@@ -415,7 +413,7 @@
                      };
                      geocoder.coord2Address(coord.getLng(), coord.getLat(), callback);
                   }, function(error) {
-                     console.log(error.message);
+                     //console.log(error.message);
                   });
             } else {
                ALERT('GPS 허용을 눌러주세요');
@@ -470,7 +468,7 @@
             //병원
             //console.log("address=",address);
             if(!hosList){
-               console.log("강제종료");
+               //console.log("강제종료");
                return;
             }else{
                hosList.forEach((ele, index) =>{
@@ -481,7 +479,7 @@
              //약국
             //console.log("phAddress=",phAddress);
             if(!phaList){
-               console.log("강제종료");
+               //console.log("강제종료");
                return;
             }else{
                phaList.forEach((ele, index) =>{
@@ -530,7 +528,7 @@
                          
                          resolve(); // 비동기 작업 성공
                      } else {
-                         console.log("restart 함수 실행되지 않음");
+                         //console.log("restart 함수 실행되지 않음");
                          reject(); // 비동기 작업 실패
                      }
                  });
@@ -840,7 +838,7 @@
 	       //검색 함수
 	  		function searchResult(e){
 	  			let word = document.getElementById("search").value;
-	  			console.log("검색한 단어= ",word);
+	  			//console.log("검색한 단어= ",word);
 	  			if(word == ''){
 	  				Swal.fire({
 			   			  title: "단어를 입력해주세요",
@@ -862,7 +860,7 @@
 
          
          </script>
-   </div>
+</div>
    
 </body>
 </html>

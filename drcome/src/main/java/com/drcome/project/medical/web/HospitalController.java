@@ -721,7 +721,6 @@ public class HospitalController {
 		NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
 		model.addAttribute("noticeNo", noticeNo);
 		model.addAttribute("noticeList", noticeList);
-		System.out.println(noticeList);
 		return "hospital/noticeModify";
 	}
 	
@@ -896,7 +895,6 @@ public class HospitalController {
 			int cnt = hospitalService.insertDoctor(vo);
 			if (cnt > 0) {
 				int doctorNo = hospitalService.getCurrentDoctorNo();
-			    System.out.println(doctorNo);
 				response.put("result", true);
 				response.put("msg", "성공적으로 등록되었습니다.");
 			    
@@ -929,7 +927,6 @@ public class HospitalController {
 	@GetMapping("/hospital/doctorupdate/{DoctorNo}")
 	public String doctorUpdateForm(@PathVariable("DoctorNo") String doctorNo, Model model) {
 		int doctorNum = Integer.parseInt(doctorNo);
-		System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD" + doctorNum);
 		DoctorVO drinfo = hospitalService.selectDoctor(doctorNum);
 		model.addAttribute("drInfo", drinfo);
 		return "hospital/doctormodify";
@@ -965,8 +962,6 @@ public class HospitalController {
 		times.add(createDoctorTimeVO("i7", i7Times));
 
 		vo.setTimes(times);
-		
-		System.out.println(vo);
 		
 		try {
 			int cnt = hospitalService.updateDoctor(vo);

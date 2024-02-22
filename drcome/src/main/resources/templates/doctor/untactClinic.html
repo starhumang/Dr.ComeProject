@@ -576,7 +576,7 @@
           function connectWebSocket() {
             try {
               // WebSocket 연결
-              alarmSocket = new WebSocket("ws://localhost:80/echo");
+              alarmSocket = new WebSocket("wss://www.drcome.store/echo");
 
               // 연결이 열리면 호출되는 이벤트 핸들러
               alarmSocket.onopen = function (event) {

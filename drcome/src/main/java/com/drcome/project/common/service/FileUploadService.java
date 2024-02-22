@@ -73,10 +73,9 @@ public class FileUploadService {
 	}
 
 	private String setImagePath(String uploadFileName) {
-	    String modifiedPath = uploadFileName.replace(File.separator, "/");
-	    modifiedPath = modifiedPath.replace("c:/", "");
+	    String modifiedPath = uploadFileName.replace("c:\\upload\\", "/home/ec2-user/upload/").replace("c:/upload/", "/home/ec2-user/upload/");
+	    modifiedPath = modifiedPath.replace("\\", "/");
 	    return modifiedPath;
 	}
-
 
 }

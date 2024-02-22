@@ -75,9 +75,8 @@ public class FileUploadService {
 	private String setImagePath(String uploadFileName) {
 	    // 파일 경로에서 역슬래시를 슬래시로 변경
 	    String modifiedPath = uploadFileName.replace("\\", "/");
-	    // 파일 업로드 경로가 아닌 로딩 경로를 사용하려면 다음과 같이 수정
-	    modifiedPath = modifiedPath.replace(uploadPath, "${file.loading.path}");
+	    // 파일 로딩 경로를 사용하도록 변경
+	    modifiedPath = modifiedPath.replace(uploadPath, "/img");
 	    return modifiedPath;
 	}
-
 }

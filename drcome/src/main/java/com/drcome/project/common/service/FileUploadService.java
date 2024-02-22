@@ -53,6 +53,8 @@ public class FileUploadService {
 	            e.printStackTrace();
 	         }
 	         imageList.add(setImagePath(uploadFileName));
+	         
+	         System.out.println(savePath);
 	      }
 		
 	      return imageList;

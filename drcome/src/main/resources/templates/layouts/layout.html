@@ -41,7 +41,7 @@
 				// 로그인한 경우에만 웹 소켓 연결을 시도합니다.
 				var logId = [[${session.userId}]];
 				if (logId != null && logId != '' && logId != undefined) {
-					// connectWebSocket(logId);
+					connectWebSocket(logId);
 					$.ajax({
 						type: 'GET',
 						url: '/useralarm',

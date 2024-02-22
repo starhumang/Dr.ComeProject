@@ -49,10 +49,10 @@ public class FileUploadService {
 			String uploadFileName = folderPath + File.separator + uuid + "_" + fileName;
 
 			// window
-			//String saveName = uploadPath + File.separator + uploadFileName;
+			String saveName = uploadPath + File.separator + uploadFileName;
 			
 			// linux
-			String saveName = "file:///upload" + File.separator + uploadFileName;
+			//String saveName = "file:///upload" + File.separator + uploadFileName;
 
 			Path savePath = Paths.get(saveName);
 			// Paths.get() 메서드는 특정 경로의 파일 정보를 가져옵니다.(경로 정의하기)

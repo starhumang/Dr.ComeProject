@@ -353,7 +353,7 @@ thead tr:nth-child(3) th {
 	window.onload = function doctorrestday(){
 		let doctorrestday = document.querySelector('.restday');
 		let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
-		////console.log("restday", restday);
+		//console.log("restday", restday);
 		
 		//요일이 여러개일때의 작업
 		if(doctorrestday.querySelector('.many')){
@@ -377,7 +377,7 @@ thead tr:nth-child(3) th {
 						realdays += dayList[ele] + ' ';
 						
 					}) 
-					////console.log("realdays= ",realdays);
+					//console.log("realdays= ",realdays);
 					}
 				
 				//et td = days.querySelectorAll('[style="display:none;"]');
@@ -414,7 +414,7 @@ thead tr:nth-child(3) th {
 					//console.log("curDay",curDay);
 					if(curDay == array){
 						let tr = ele.closest('tr');
-						////console.log(tr);
+						//console.log(tr);
 						tr.style.backgroundColor="lightgray";
 						tr.disabled=true;
 						tr.querySelector('input').disabled=true;

@@ -66,7 +66,6 @@ public class MainController {
 		model.addAttribute("hosList", hosList);
 		List<PharmacyVO> phaList = mainService.getPhaList();
 		model.addAttribute("phaList", phaList);
-		System.out.println("phaList="+phaList);
 		//log.info("phaList = ",phaList);
 		return "user/home";//폴더밑에 html 이름
 	}
@@ -489,7 +488,7 @@ public class MainController {
         	
         	// ▶ 예약된게 1개밖에 없고 그게 바로 내 앞임(내가 예약할 수 있는 시간 앞)
         	if(newTimes.size() == 1){
-				System.out.println("현재 내 앞 대기인원 1명");
+				//System.out.println("현재 내 앞 대기인원 1명");
 				doctorMaxtime = Integer.parseInt(findWaitingList.get(0).getDoctorMaxtime());//의사 진료종료시간
 				int sliceHour = Integer.parseInt((newTimes.get(0)).substring(0, 2));
 				int sliceMinute = Integer.parseInt((newTimes.get(0)).substring(2, 4));
@@ -514,7 +513,7 @@ public class MainController {
 					int extraNum = Integer.parseInt(newTimes.get(i + 1)) - Integer.parseInt(newTimes.get(i));
 					
 					if(extraNum >= 100 ) { //1.연산값이 100이상일때 = 중간에 빈예약이 있다는 뜻
-						System.out.println("현재 대기인원 여러명임");
+						//System.out.println("현재 대기인원 여러명임");
 						//2.빈예약 앞전 시간을 가져와서 시간과 분으로 쪼갬
 						int sliceHour = Integer.parseInt((newTimes.get(i)).substring(0, 2));
 						int sliceMinute = Integer.parseInt((newTimes.get(i)).substring(2, 4));
@@ -534,7 +533,7 @@ public class MainController {
 						
 					}else {//▶ 중간에 빈 예약이 없고 지금 내가 마지막 예약임
 						//바로 앞전 예약시간 자르기
-						System.out.println("현재 대기인원 여러명이고 내가 마지막차례임");
+						//System.out.println("현재 대기인원 여러명이고 내가 마지막차례임");
 						int sliceHour = Integer.parseInt((newTimes.get(newTimes.size()-1)).substring(0, 2));
 						int sliceMinute = Integer.parseInt((newTimes.get(newTimes.size()-1)).substring(2, 4));
 						

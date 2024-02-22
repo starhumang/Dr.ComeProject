@@ -119,7 +119,7 @@
    
    <!-- 전화번호 중복 체크 -->
    <select id="checkPhone" resultType="int" parameterType="String">
-      SELECT COUNT(콜)
+      SELECT COUNT(*)
       FROM user_login_view
       WHERE phone = #{phone}
    </select>

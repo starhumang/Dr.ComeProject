@@ -78,10 +78,10 @@ public class FileUploadService {
 		String folderPath = str.replace("/", File.separator);
 		
 		// window
-		//File uploadPathFolder = new File(uploadPath, folderPath);
+		File uploadPathFolder = new File(uploadPath, folderPath);
 		
 		//linux
-		File uploadPathFolder = new File("file:///upload", folderPath);
+		//File uploadPathFolder = new File("file:///upload", folderPath);
 		
 		// File newFile= new File(dir,"파일명");
 		if (uploadPathFolder.exists() == false) {

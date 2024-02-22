@@ -121,12 +121,20 @@
 				</div> -->
 					<div class="card-body" style="display: flex; justify-content: center; align-items: center">
 						<div class="left">
-							<img
-								src="/images/pharmacy.png"
+							<th:block th:if="${pinfo.pharmacyImg} != null">
+								<img
+								th:src="@{/img/}+${pinfo.pharmacyImg}"
 								alt="image"
-								width="300px"
-								style="margin-right: 50px"
+								style="margin-right: 50px; width: 300px;"
 							/>
+							</th:block>
+							<th:block th:unless="${pinfo.pharmacyImg} != null">
+								<img
+								th:src="@{/images/}+ pharmacy.png"
+								alt="image"
+								style="margin-right: 50px; width: 300px;"
+							/>
+							</th:block>
 						</div>
 						<div class="right">
 							<table class="table">

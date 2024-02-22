@@ -7,7 +7,7 @@ function connectWebSocket(uid) {
 		
 		// 연결이 열리면 호출되는 이벤트 핸들러
 		alarmSocket.onopen = function (event) {
-			console.log('WebSocket 연결이 열렸습니다.');
+			//console.log('WebSocket 연결이 열렸습니다.');
 			//alarmSocket.send(uid);
 		};
 
@@ -34,6 +34,10 @@ function connectWebSocket(uid) {
 		// 연결이 닫혔을 때 호출되는 이벤트 핸들러
 		alarmSocket.onclose = function (event) {
 			console.log('WebSocket 연결이 닫혔습니다.');
+			setTimeout(function () {
+				console.log('다시 연결을 시도합니다.');
+				connectWebSocket();
+			}, 5000);
 		};
 
 		// 에러가 발생했을 때 호출되는 이벤트 핸들러

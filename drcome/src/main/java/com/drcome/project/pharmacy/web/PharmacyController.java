@@ -136,8 +136,6 @@ public class PharmacyController {
 		
 		// 리스트 전체갯수 가져오기
 		int total = pservice.currpercount(parammap, date);
-		System.out.println("토탈" + total);
-
 
 		// 페이지네이션(currentpage, total)
 		PageDTO dto = new PageDTO(page, total);
@@ -162,8 +160,6 @@ public class PharmacyController {
 	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, 
 											   @RequestBody PharmacySelectVO pharmacyselectVO) {
 		pharmacyselectVO.setPharmacyId(id);
-
-		System.out.println(pharmacyselectVO+"=============");
 
 		return pservice.updaterejection(pharmacyselectVO);
 	}
@@ -205,8 +201,6 @@ public class PharmacyController {
 			pVO.setPharmacyImg(uploadedFileName);
 		}
 
-		System.out.println(pVO);
-		
 		try {
 			int cnt = userMemService.updatePamInfo(pVO);
 			if (cnt > 0) {

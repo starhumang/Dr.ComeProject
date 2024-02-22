@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -92,7 +93,7 @@ public class HospitalController {
 		int qnaCnt = hospitalService.selectQnaCnt(hospitalId);
 		int payMonth = hospitalService.selectPayMonth(hospitalId);
 		int c2Rate = hospitalService.selectC2Rate(hospitalId);
-		
+
 		model.addAttribute("tolist", tolist);
 		model.addAttribute("QnAO", QnAO);
 		model.addAttribute("QnAX", QnAX);
@@ -720,7 +721,6 @@ public class HospitalController {
 		NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
 		model.addAttribute("noticeNo", noticeNo);
 		model.addAttribute("noticeList", noticeList);
-		System.out.println(noticeList);
 		return "hospital/noticeModify";
 	}
 	
@@ -895,7 +895,6 @@ public class HospitalController {
 			int cnt = hospitalService.insertDoctor(vo);
 			if (cnt > 0) {
 				int doctorNo = hospitalService.getCurrentDoctorNo();
-			    System.out.println(doctorNo);
 				response.put("result", true);
 				response.put("msg", "성공적으로 등록되었습니다.");
 			    
@@ -963,8 +962,6 @@ public class HospitalController {
 		times.add(createDoctorTimeVO("i7", i7Times));
 
 		vo.setTimes(times);
-		
-		System.out.println(vo);
 		
 		try {
 			int cnt = hospitalService.updateDoctor(vo);

@@ -421,8 +421,6 @@ public class UserMemberController {
 		// 리스트 전체 개수
 		int total = memMapper.UserReserveCount(param);
 		
-		System.out.println("asdga"+ total);
-		
 		PageDTO dto = new PageDTO(page, total);
 		
 		List<Map<String, Object>> reserveUserList = memMapper.selectUserReserveInfo1(param);
@@ -459,7 +457,6 @@ public class UserMemberController {
 		map.put("plist", plist);
 		map.put("pagedto", dto);
 
-	    System.out.println("agsdasgdlgsad" + plist);
 		return map;
 	}
 	

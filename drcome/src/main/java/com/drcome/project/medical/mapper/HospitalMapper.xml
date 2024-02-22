@@ -27,11 +27,18 @@
 	</select>
 	
 	<select id="selectC2Rate" resultType="int" >
-		SELECT 
-		       ROUND(COUNT(*) / (SELECT COUNT(*) FROM reservation WHERE hospital_id = #{hospitalId}), 2) * 100 AS reserveRatio
-		FROM reservation
-		WHERE hospital_id = #{hospitalId} AND reserve_kindstatus = 'c2'
-		GROUP BY reserve_kindstatus
+SELECT 
+    COALESCE(
+        ROUND(reserve_count / NULLIF(total_count, 0), 2) * 100, 
+        0
+    ) AS reserveRatio
+FROM (
+    SELECT 
+        COUNT(CASE WHEN reserve_kindstatus = 'c2' THEN 1 END) AS reserve_count,
+        COUNT(*) AS total_count
+    FROM reservation
+    WHERE hospital_id = #{hospitalId}
+) subquery
 	</select>
 	
 	<!-- 오늘 진료 및 예약 리스트 -->

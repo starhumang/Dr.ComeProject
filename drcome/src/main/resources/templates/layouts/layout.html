@@ -5,6 +5,8 @@
 		<title>main</title>
 		<meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
+		<link rel="shortcut icon" type="image/x-icon" href="/Favicon2.ico" />
+
 		<!-- Google Web Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com" />
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -41,7 +43,7 @@
 				// 로그인한 경우에만 웹 소켓 연결을 시도합니다.
 				var logId = [[${session.userId}]];
 				if (logId != null && logId != '' && logId != undefined) {
-					// connectWebSocket(logId);
+					connectWebSocket(logId);
 					$.ajax({
 						type: 'GET',
 						url: '/useralarm',
@@ -103,29 +105,29 @@
 
 		<style>
 			@font-face {
-		      src: url("/font/KoPubWorld Dotum Bold.ttf");
-		      font-family: "KoPub-B";
+				src: url('/font/KoPubWorld Dotum Bold.ttf');
+				font-family: 'KoPub-B';
 			}
 			@font-face {
-			      src: url("/font/KoPubWorld Dotum Medium.ttf");
-			      font-family: "KoPub-M";
+				src: url('/font/KoPubWorld Dotum Medium.ttf');
+				font-family: 'KoPub-M';
 			}
 			@font-face {
-			      src: url("/font/KoPubWorld Dotum Light.ttf");
-			      font-family: "KoPub-L";
+				src: url('/font/KoPubWorld Dotum Light.ttf');
+				font-family: 'KoPub-L';
 			}
 			body {
-				font-family: "Kopub-M";
+				font-family: 'Kopub-M';
 			}
 			.content {
 				min-height: 500px;
 			}
 			#bellNum {
-				width:25px;
-				height:25px;
-				border-radius:50%;
-				display:flex;
-				align-items:center;
+				width: 25px;
+				height: 25px;
+				border-radius: 50%;
+				display: flex;
+				align-items: center;
 				justify-content: center;
 			}
 			#notificationList {
@@ -138,7 +140,7 @@
 		<!-- Header Start -->
 		<nav class="navbar navbar-expand-lg bg-white navbar-light shadow sticky-top p-0">
 			<a href="/" class="navbar-brand d-flex align-items-center px-4 px-lg-5">
-				<h2 class="m-0 text-primary"><img src="/images/logo_color.png" alt="logo" width="195"></h2>
+				<h2 class="m-0 text-primary"><img src="/images/logo_color.png" alt="logo" width="195" /></h2>
 			</a>
 			<button
 				type="button"
@@ -166,7 +168,7 @@
 						<i class="bi bi-person-circle fs-3 text-dark"></i
 					></a>
 					<!-- <a href="/" class="nav-item nav-link"><i class="fas fa-fw fa-bell fs-3 text-dark"></i></a> -->
-					
+
 					<div class="nav-item dropdown">
 						<a href="#" class="nav-item nav-link dropdown" data-bs-toggle="dropdown">
 							<div class="btn-group">
@@ -174,8 +176,7 @@
 								<span class="badge bg-danger"></span>
 							</div>
 						</a>
-						<div id="notificationList" class="dropdown-menu fade-down m-0" style="width: 220px;">
-						</div>
+						<div id="notificationList" class="dropdown-menu fade-down m-0" style="width: 220px"></div>
 					</div>
 
 					<a th:href="@{/logout}" class="btn btn-primary py-4 px-lg-5 d-none d-lg-block">Logout</a>

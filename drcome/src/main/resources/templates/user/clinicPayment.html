@@ -214,27 +214,32 @@
 						<div class="card-body" style="display: flex; justify-content: center; align-items: center">
 							<table class="table" style="text-align: center">
 								<tr>
-									<th style="text-align: left; width: 200px; padding-left: 30px">- 진료번호</th>
+									<th style="text-align: left; width: 200px; padding-left: 30px">진료번호</th>
 									<td th:text="${cInfo.clinicNo}"></td>
 								</tr>
 								<tr>
-									<th style="text-align: left; padding-left: 30px">- 병원이름</th>
+									<th style="text-align: left; padding-left: 30px">병원이름</th>
 									<td th:text="${cInfo.hospitalName}"></td>
 								</tr>
 								<tr>
-									<th style="text-align: left; padding-left: 30px">- 담당의사</th>
+									<th style="text-align: left; padding-left: 30px">담당의사</th>
 									<td th:text="${cInfo.DoctorName}"></td>
 								</tr>
 								<tr>
-									<th style="text-align: left; padding-left: 30px">- 진료과목</th>
-									<td th:text="${cInfo.subject}"></td>
+									<th style="text-align: left; padding-left: 30px">진료과목</th>
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<td
+											th:if="${detailCode.detailCode} == ${cInfo.subject}"
+											th:text="${detailCode.codeName}"
+										></td>
+									</th:block>
 								</tr>
 								<tr>
-									<th style="text-align: left; padding-left: 30px">- 환자이름</th>
+									<th style="text-align: left; padding-left: 30px">환자이름</th>
 									<td th:text="${cInfo.userName}"></td>
 								</tr>
 								<tr>
-									<th style="text-align: left; padding-left: 30px">- 진료일자</th>
+									<th style="text-align: left; padding-left: 30px">진료일자</th>
 									<td th:text="${#dates.format(cInfo.clinicDate, 'yyyy-MM-dd')}"></td>
 								</tr>
 							</table>

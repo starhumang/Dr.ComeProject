@@ -8,11 +8,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 	
-	private String loadingPath = "/upload/";
+	@Value("${file.loading.path}")
+	private String loadingPath;
 	
 	@Override
 	public void addResourceHandlers(ResourceHandlerRegistry registry) {
-		registry.addResourceHandler("/img/**").addResourceLocations(loadingPath);
+		registry.addResourceHandler("/img/**").addResourceLocations("file:///" + loadingPath);
 	}
 
 }

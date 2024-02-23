@@ -128,6 +128,16 @@ hr{
 	border: none;
 	border-top: 2px solid gray; 
 }
+/* #modalTable {
+  background-image: url('/images/perback.jpg');
+  background-size: cover;
+  background-position: center;
+} */
+body {
+  background-image: url('/images/perback.jpg');
+  background-size: cover;
+  background-position: center;
+}
 </style>
   </head>
   <body>
@@ -346,7 +356,7 @@ hr{
               </h5>
             </div>
             <div class="modal-body container">
-              <table id="modalTable"></table>
+              <table id="modalTable" class="table table-borderless table-hover text-center"></table>
             </div>
 
             <div class="modal-footer">
@@ -383,6 +393,8 @@ hr{
   var hospitalname = null;
   var doctorname = null;
   var pharmacyname = null;
+  var perscriptionDate = null;
+  var userBirthday = null
 
   
   /* --------------------
@@ -448,7 +460,7 @@ hr{
   /*--------------------
   *  처방전 조회 
   ---------------------*/
-  function viewPer(no, uname, hname, dname, pname, pselect, pstatus) {
+  function viewPer(no, uname, hname, dname, pname, pselect, pstatus, pdate, bir) {
     clinicNo = no;
     username = uname;
     hospitalname = hname;
@@ -456,6 +468,8 @@ hr{
     pharmacyname = pname;
     pharmacySelectno = pselect;
     var printStatus = pstatus;
+    perscriptionDate = pdate;
+    userBirthday = bir
     
      listtr = $(event.target.closest('tr'));
     console.log(listtr);
@@ -699,7 +713,7 @@ hr{
         row.append(`<td>${formatDate(new Date(item.perscriptionDate))}</td>`);
         row.append(`<td><button
                            id="viewper"
-                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}')"
+                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}', '${item.perscriptionDate}', '${item.userBirthday}')"
                            type="button"
                            class="btn btn-info"
                            data-bs-toggle="modal"
@@ -763,7 +777,7 @@ hr{
         row.append(`<td>${formatDate(new Date(item.perscriptionDate))}</td>`);
         row.append(`<td><button
                            id="viewper"
-                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}')"
+                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}', '${item.perscriptionDate}', '${item.userBirthday}')"
                            type="button"
                            class="btn btn-info"
                            data-bs-toggle="modal"
@@ -919,8 +933,8 @@ hr{
 
   //----------------------------------
   // pdf 생성 함수는 클릭 이벤트에서만 작동하도록 수정합니다.
-  function printPdf(no, uname, hname, dname) {
-    console.log("나와라 얍", no, uname, hname, dname);
+  function printPdf(no, uname, hname, dname, pname, pdate, bir) {
+    console.log("나와라 얍", no, uname, hname, dname, pdate, bir);
     $.ajax(`/pharmacy/perscription/${no}`) //fetch
       .done((result) => {
         var divPer = document.createElement("div");
@@ -936,18 +950,25 @@ hr{
 
         var highlightDiv = document.createElement("div");
         highlightDiv.className = "highlight";
+        highlightDiv.style.backgroundImage = "url('/images/perback.jpg')";
+        highlightDiv.style.backgroundSize = "cover";
+        highlightDiv.style.backgroundPosition = "center";
         highlightDiv.style.marginBottom = "20px"; // 약간의 여백 추가
         highlightDiv.innerHTML = `
                      <p><strong>병원 이름 : </strong>${dname}</p>
                      <p><strong>의사 이름 :</strong> ${hname}</p>
                      <p><strong>약국 이름 : </strong>${pname}</p>
-                     <p><strong>환자 이름 : </strong>${uname}</p>
                      <p><strong>진료 번호 : </strong>${no}</p>
+                     <p><strong>처방 날짜 : </strong>${formatDate(new Date(pdate))}</p>
+                     <br>
+                     <p><strong>환자 이름 : </strong>${uname}</p>
+                     <p><strong>환자 생년월일 : </strong>${formatDate(new Date(bir))}</p>
+                     <hr>
                  `;
         divPer.appendChild(highlightDiv);
 
         var newTable = document.createElement("table");
-        newTable.className = "table table-borderless table-hover text-center";
+        newTable.className = "table table-hover text-center";
 
         var tableHead = document.createElement("thead");
         tableHead.innerHTML = `
@@ -975,17 +996,30 @@ hr{
         }
 
         newTable.appendChild(tableBody);
-
         divPer.appendChild(newTable);
 
         var element = divPer;
-        var opt = {
+/*         var opt = {
           margin: 1,
           filename: "myfile.pdf",
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: { scale: 2 },
           jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-        };
+        }; */
+        var opt = {
+        		  margin: 1,
+        		  filename: "myfile.pdf",
+        		  image: { type: "jpeg", quality: 0.98 },
+        		  html2canvas: { 
+        		    scale: 2,
+        		    // 추가한 스타일을 포함하기 위해 logging 옵션을 true로 설정합니다.
+        		    logging: true,
+        		    // 배경 이미지가 포함된 body를 선택합니다.
+        		    useCORS: true, // CORS 사용 여부
+        		    backgroundColor: null // 배경색을 null로 설정하여 투명 배경으로 만듭니다.
+        		  },
+        		  jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
+        		};
 
         // PDF 생성 후 iframe에 표시
         html2pdf()
@@ -1017,8 +1051,10 @@ hr{
       hname = hospitalname;
       dname = doctorname;
       pname = pharmacyname;
+      pdate = perscriptionDate;
+      bir = userBirthday;
 
-      printPdf(no, uname, hname, dname, pname);
+      printPdf(no, uname, hname, dname, pname, pdate, bir);
 
       let vo = {
         clinicNo: no,
@@ -1102,7 +1138,7 @@ hr{
 		    row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
 		    row.append(`<td><button
 		                      id="viewper"
-		                      onclick="viewPer(${i.clinicNo}, '${i.userName}', '${i.hospitalName}', '${i.doctorName}', '${i.pharmacyName}', '${i.pharmacySelectno}', '${i.printStatus}')"
+		                      onclick="viewPer(${i.clinicNo}, '${i.userName}', '${i.hospitalName}', '${i.doctorName}', '${i.pharmacyName}', '${i.pharmacySelectno}', '${i.printStatus}', '${i.perscriptionDate}', '${i.userBirthday}')"
 		                      type="button"
 		                      class="btn btn-info"
 		                      data-bs-toggle="modal"

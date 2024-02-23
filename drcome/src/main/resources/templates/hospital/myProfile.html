@@ -6,7 +6,6 @@
 >
 	<head>
 		<meta charset="UTF-8" />
-		<title>myProfile</title>
 		<style>
 			.head_info {
 				display: flex;
@@ -18,6 +17,9 @@
 				display: flex;
 				flex-direction: column;
 				padding-right: 40px;
+			}
+			.right {
+				width: 75%;
 			}
 		</style>
 
@@ -34,7 +36,12 @@
 			function goToDinsert() {
 				location.href = '/hospital/doctorinsert';
 			}
-      
+
+			function goDModify(doctorNo) {
+				console.log(doctorNo);
+			    location.href = `/hospital/doctorupdate/${doctorNo}`;
+			}
+
 			function withdraw() {
 				Swal.fire({
 					title: '회원 탈퇴',
@@ -122,7 +129,7 @@
 						<div class="left">
 							<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  -->
 							<img
-								th:src="@{/images/} + ${hospitalSel.hospitalImg}"
+								th:src="@{/img/} + ${hospitalSel.hospitalImg}"
 								alt="image"
 								width="200px"
 								height="200px"
@@ -148,7 +155,13 @@
 								</tr>
 								<tr>
 									<th>대표진료과목</th>
-									<td th:text="${hospitalSel.mainSubject}"></td>
+									<th:block th:each="detailCode : ${application.detailCode_h}">
+										<td
+											th:if="${detailCode.detailCode} == ${hospitalSel.mainSubject}"
+											th:text="${detailCode.codeName}"
+										></td>
+									</th:block>
+
 									<th>대표자이름</th>
 									<td th:text="${hospitalSel.directorName}"></td>
 									<th>대표자번호</th>
@@ -158,10 +171,22 @@
 									<th>사업자번호</th>
 									<td th:text="${hospitalSel.directorLicense}"></td>
 									<th>상태</th>
-									<td th:if="${ hospitalSel.hospitalStatus == 'b1' }">승인대기</td>
-									<td th:if="${ hospitalSel.hospitalStatus == 'b2' }">영업중</td>
+									<th:block th:each="detailCode : ${application.detailCode_b}">
+										<td
+											th:if="${detailCode.detailCode} == ${hospitalSel.hospitalStatus}"
+											th:text="${detailCode.codeName}"
+										></td>
+									</th:block>
 									<th>휴무일</th>
-									<td th:text="${hospitalSel.holiday}"></td>
+									<td>
+										<th:block th:each="detailCode : ${application.detailCode_i}">
+											<span
+												th:each="holidayHos : ${#strings.arraySplit(hospitalSel.holiday, ',')}"
+												th:if="${detailCode.detailCode == holidayHos}"
+												th:text="${detailCode.codeName}"
+											></span>
+										</th:block>
+									</td>
 								</tr>
 								<tr>
 									<th>오픈시간</th>
@@ -185,7 +210,9 @@
 							<i class="fas fa-fw fa-user-nurse"></i>의사정보
 						</h5>
 						<div class="btn1">
-							<button class="btn btn-sm btn-warning shadow-sm" onclick="goToDinsert()">의사 등록하기</button>
+							<button class="btn btn-sm btn-warning shadow-sm" onclick="goToDinsert()">
+								의사 등록하기
+							</button>
 						</div>
 					</div>
 					<div class="card-body">
@@ -205,9 +232,23 @@
 								<th:block th:each="doc : ${docList}">
 									<tr>
 										<td th:text="${doc.doctorNo}"></td>
-										<td th:text="${doc.subject}"></td>
+										<th:block th:each="detailCode : ${application.detailCode_h}">
+											<td
+												th:if="${detailCode.detailCode} == ${doc.subject}"
+												th:text="${detailCode.codeName}"
+											></td>
+										</th:block>
 										<td th:text="${doc.doctorName}"></td>
-										<td th:text="${doc.holiday}"></td>
+										<!-- 여러 값이 콤마로 구분된 holiday를 분할하여 출력 -->
+										<td>
+											<th:block th:each="detailCode : ${application.detailCode_i}">
+												<span
+													th:each="holiday : ${#strings.arraySplit(doc.holiday, ',')}"
+													th:if="${detailCode.detailCode == holiday}"
+													th:text="${detailCode.codeName}"
+												></span>
+											</th:block>
+										</td>
 										<td>
 											<div th:each="drTime : ${doc.times}">
 												[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
@@ -215,7 +256,14 @@
 											</div>
 										</td>
 										<td th:text="${doc.doctorLicense}"></td>
-										<td><button class="btn btn-sm btn-info shadow-sm" th:onclick="goToModify([[${doc.doctorNo}]])">수정하기</button></td>
+										<td>
+											<button
+												class="btn btn-sm btn-info shadow-sm"
+												th:onclick="goDModify([[${doc.doctorNo}]])"
+											>
+												수정하기
+											</button>
+										</td>
 									</tr>
 								</th:block>
 							</tbody>
@@ -241,7 +289,7 @@
 							</div>
 							<div class="modal-body">
 								<img
-									th:src="@{/images/} + ${hospitalSel.hospitalImg}"
+									th:src="@{/img/} + ${hospitalSel.hospitalImg}"
 									alt="image"
 									width="100%; overflow:hidden;"
 								/>

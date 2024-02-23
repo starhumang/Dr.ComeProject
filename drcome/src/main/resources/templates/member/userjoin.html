@@ -6,8 +6,7 @@
 >
 	<head>
 		<meta charset="UTF-8" />
-		<title>사용자 회원가입</title>
-
+		
 		<style>
 			.registered-customers {
 				margin: 0 auto;
@@ -426,7 +425,8 @@
 							onclick="checkDupliId()"
 							disabled
 							class="btn btn-sm btn-secondary shadow-sm"
-							style="display: inline-block; height: 30px"
+							style="display: inline-block; height: 35px; padding: 5px; border-radius: 5px; font-weight: 100;"
+
 						>
 							중복 확인
 						</button>
@@ -488,6 +488,7 @@
 							id="checkPhoneBtn"
 							onclick="checkPhone()"
 							class="btn btn-sm btn-secondary shadow-sm"
+							style="height: 35px; padding: 5px; border-radius: 5px; font-weight: 100;"
 						>
 							인증번호 발송
 						</button>
@@ -567,8 +568,8 @@
 
 					<br />
 					<div style="text-align: center">
-						<input type="submit" value="회원가입" class="btn btn-danger" id="submitButton" />
-						<input type="button" value="취소하기" onclick="revertForm()" class="btn btn-warning" />
+						<input type="submit" value="회원가입" class="btn" id="submitButton" style="height: 37px; padding: 5px 20px 5px 20px; border-radius: 5px; font-weight: 100; background-color: #06bbcc; border-color: #06bbcc; color: #fff;" />
+						<input type="button" value="취소하기" class="btn" onclick="revertForm()" style="height: 37px; padding: 5px 20px 5px 20px; border-radius: 5px; font-weight: 100; background-color: #9f9f9f; border-color: #9f9f9f; color: #fff;" />
 					</div>
 				</form>
 			</div>

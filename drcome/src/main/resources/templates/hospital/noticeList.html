@@ -4,7 +4,6 @@
 	layout:decorate="~{hospital/hospitalLayout}">
 <head>
 <meta charset="UTF-8" />
-<title>noticeList</title>
 <style>
 .head_info {
 	display: flex;
@@ -45,20 +44,34 @@ input[type="radio"]:checked+label {
 .pagination a:hover {
   background-color: #bfc5d8;
 }
+.tableMin {
+  min-height: 540px;
+}
+thead, th {
+	background-color: rgb(230, 239, 240);
+	border: 0.5px solid rgb(230, 239, 240);
+}
 </style>
+
+<!-- SweetAlert2 CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10">
+
 </head>
 
 <body>
 	<div layout:fragment="content" style="min-height: 926px;">
 		<div class="container-fluid">
 			<div class="head_info">
-				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<h6 th:text="${hospitalSel.hospitalName}"></h6>
 				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
-						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					<i class="fas fa-fw fa-calendar"></i> 오늘날짜 :
+					<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>notice</p>
+			<!-- title -->
+			<h4 class="m-0 font-weight-bold text-secondary">공지사항</h4>
+			<br />
+
 			<div class="search">
 				<!-- drop -->
 			    <div class="input-group" style="width: 40%;">
@@ -81,8 +94,8 @@ input[type="radio"]:checked+label {
 			
 			<!-- 공지사항 리스트 -->
 			<!-- table -->
-			<div>
-				<table class="table table-hover">
+			<div class="tableMin">
+				<table class="table table-light">
 				</table>
 				
 			</div>
@@ -93,7 +106,11 @@ input[type="radio"]:checked+label {
 				</div>	
 			</div>
 		</div>
+		
+		<!-- SweetAlert2 JS -->
+		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 		<script>
+		
 		    //ajax로 페이지 열린 후에 페이징 한 거 받아오기...
 		    let page = 1;
 		
@@ -234,6 +251,19 @@ input[type="radio"]:checked+label {
 		
 		        // tr 요소에 마우스 오버 시에 손가락 모양으로 마우스 커서를 변경
 		        $(".table tbody tr").css("cursor", "pointer");
+		        
+		     	// 마우스 오버 시에도 색상 변경
+		        $(".table tbody tr").hover(
+		          function() {
+		            $(this).css("background-color", "#F2F2F2");
+		          },
+		          function() {
+		            $(this).css("background-color", "#fff");
+		          }
+		        );
+		        
+		        
+		        
 		    }
 		    
 		    //검색버튼 이벤트 만들기

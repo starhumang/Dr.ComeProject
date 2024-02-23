@@ -23,7 +23,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	String payload = "";
 
 	// 모든 세션의 userId 찐 아이디.. 를 담을 배열 생성
-	//List<String> userIdList = new ArrayList<>();
+	List<String> userIdList = new ArrayList<>();
 
 	// WebSocket 연결이 성립되면 호출되는 메서드
 	@Override
@@ -31,47 +31,49 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 		// 연결된 세션을 세션 목록에 추가
 		sessions.add(session);
 
-		String userId = (String) session.getAttributes().get("userId");  //http세션아이디
-		System.out.println("세션 연결 찐 아이디 User ID: " + userId);
-		System.out.println("세션 연결 긴 ID: " + session.getId());
+		String userId = (String) session.getAttributes().get("userId"); // http세션아이디
 
-//		// 모든 세션에 대해 userId를 추출하여 리스트에 저장
-//		for (WebSocketSession sess : sessions) {
-//			userIdList.add((String) sess.getAttributes().get("userId"));
-//		}
-//
-//		// userIdList 출력
-//		for (String id : userIdList) {
-//			System.out.println("User ID in sessions: " + id);
-//		}
-//		System.out.println("배열: " + userIdList);
+		// 모든 세션에 대해 userId를 추출하여 리스트에 저장
+		for (WebSocketSession sess : sessions) {
+			userIdList.add((String) sess.getAttributes().get("userId"));
+		}
+
 	}// afterConnectionEstablished
 
-	
 	// WebSocket으로 메시지가 도착하면 호출되는 메서드
 	@Override
 	protected void handleTextMessage(WebSocketSession session, TextMessage message) throws IOException {
 
-		// 의사or환자가 담아보낸 아이디 출력
+		// 의사or약국이 보낸 payload  //vo로 받아서....
 		payload = message.getPayload();
-		System.out.println("의사 or 환자가 보낸 환자아이디 " + payload);
+//		System.out.println("받은 메세지 ======================" + payload);
 
-		int cnt = alarm.checkAlarm(payload);
+		// , 기준으로 짤라서 첫번째 = 유저아이디 두번쨰 = 취소사유 세번쨰 셀렉트넘버 서브스트링이나 스플릿
+		String[] parts = payload.split("\\,");
 
-		System.out.println("알람조회결과는여?" + cnt);
+		String acontent = null;
+		String auserId = null;
+		String aselectno = null;
 
-		if (cnt > 0) {
-			for (WebSocketSession sess : sessions) {
-				if (sess.getAttributes().get("userId").equals(payload)) {
+		if (parts.length >= 3) {
+			auserId = parts[0];
+			acontent = parts[1];
+			aselectno = parts[2];
+		} else {
+			auserId = payload;
+		}
+
+		for (WebSocketSession sess : sessions) {
+			if (sess.getAttributes().get("userId").equals(auserId)) {
+				if (!acontent.equals("enterRoom")) {
+					TextMessage sendMsg = new TextMessage("취소 사유:" + acontent + "번호: " + aselectno);
+					sess.sendMessage(sendMsg);
+				} else if (acontent.equals("enterRoom")) {
 					TextMessage sendMsg = new TextMessage(sess.getAttributes().get("userId") + "님..진료실..입장하세요..");
-					System.out.println(sess.getAttributes().get("userId") + "님..진료실..입장하세요..");
 					sess.sendMessage(sendMsg);
 				}
-
 			}
-
-		} // if
-
+		}
 	}/// handleTextMessage
 
 	// WebSocket 연결이 닫혔을 때 호출되는 메서드
@@ -79,9 +81,6 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 	public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
 		// 세션 목록에서 연결이 종료된 세션을 제거
 		sessions.remove(session);
-		// userIdList에서 해당 세션의 userId를 제거
-		//userIdList.remove(session.getAttributes().get("userId"));
-		System.out.println("연결이 종료된 세션 ID: " + session.getAttributes().get("userId"));
 	}
 
 }

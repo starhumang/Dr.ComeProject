@@ -1,12 +1,11 @@
 <!DOCTYPE html>
 <html
-  xmlns:th="http://www.thymeleaf.org"
-  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-  layout:decorate="~{hospital/hospitalLayout}"
+	xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{hospital/hospitalLayout}"
 >
   <head>
     <meta charset="UTF-8" />
-    <title>비대면 진료페이지</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
       rel="stylesheet"
@@ -102,6 +101,20 @@
       #perscription {
         display: none;
       }
+
+      #video video {
+       margin: 0 10px; 
+       border-radius: 10px;
+    
+      }
+
+      #full {
+       background-image: url('/images/background50.jpg');
+       background-repeat: no-repeat;
+       background-position: center;
+       background-size: 150%;
+       
+      }
     </style>
   </head>
 
@@ -110,43 +123,53 @@
       <!--container-fluid-->
       <div class="container-fluid">
         <!--title-->
-        <div class="title" style="background-color: #06bbcc; padding: 5px">
-
+        <div class="title" style="background-color: #06bbcc; padding: 5px;  border-radius: 7px;">
           <!--on off-->
-          <div class="d-flex justify-content-center align-items-center" style="margin-left: 10px;">
+          <div
+            class="d-flex justify-content-center align-items-center"
+            style="margin-left: 10px"
+          >
             <!-- 마이크 버튼 -->
-            <button class="btn btn-secondary" onclick="toggleAudio()" style="margin-right: 5px;">
+            <button
+              class="btn btn-sm btn-dark shadow-sm"
+              onclick="toggleAudio()"
+              style="margin-right: 5px"
+            >
               <i id="micIcon" class="bi bi-mic"></i>
             </button>
             <!-- 비디오 버튼 -->
-            <button class="btn btn-secondary" onclick="toggleVideo()">
+            <button  class="btn btn-sm btn-dark shadow-sm" onclick="toggleVideo()">
               <i id="cameraIcon" class="bi bi-camera-video"></i>
             </button>
           </div>
           <!--on off-->
 
-          <h3 style="
+          <h3
+            style="
               width: 70%;
               text-align: center;
               margin-bottom: 0;
               padding-left: 120px;
               color: white;
-            ">
-            비대면 진료중
+              font-weight: 100;
+            "
+          >
+            비대면 진료
           </h3>
 
           <!--title-right-->
           <div class="title-right">
             <p style="margin-right: 15px">
-              <i class="fas fa-fw fa-calendar"></i> 현재날짜:
+              <i class="fas fa-fw fa-calendar"></i> 오늘날짜:
               <span
                 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
               ></span>
             </p>
             <button
               onclick="endClinic()"
-              class="btn btn-dark"
-              style="margin-right: 15px"
+              class="btn btn-sm btn-dark shadow-sm"
+              style="margin-right: 15px;
+               font-weight: 100;"
             >
               진료종료
             </button>
@@ -156,23 +179,23 @@
         <!--title-->
 
         <!--오왼-->
-        <div id="full" style="margin: 3%">
+        <div id="full" style="margin: 1%">
           <!--왼쪽-->
-          <div id="left" style="width: 49%; margin-right: 7%">
+          <div id="left" style="width: 49%; border: solid 1px #ccc; border-radius: 10px; padding: 20px;">
             <!--비디오-->
             <div
               id="video"
-              style="width: 100%; display: flex; justify-content: center"
+              style="width: 100%; display: flex; justify-content: center;"
             >
-              <video id="localVideo" autoplay width="48%" height="52%"></video>
-              <video id="remoteVideo" autoplay width="48%" height="52%"></video>
+              <video id="localVideo" autoplay ></video>
+              <video id="remoteVideo" autoplay ></video>
             </div>
             <!--비디오-->
 
             <!--진료기록-->
             <div
               id="clinic"
-              style="width: 100%; justify-content: center; margin-top: 20%"
+              style="width: 100%; justify-content: center; margin-top: 10%; "
             >
               <!--재진-->
               <div id="secondV">
@@ -197,7 +220,7 @@
                 <!--제목-->
                 <!--table pagination-->
                 <div style="min-height: 350px">
-                  <table id="clist" class="table" style="text-align: center">
+                  <table id="clist" class="table table-hover" style="text-align: center">
                     <thead>
                       <tr>
                         <th>NO</th>
@@ -222,10 +245,8 @@
           </div>
           <!--왼쪽-->
 
-  
-
           <!--오른쪽-->
-          <div id="right" style="width: 49%">
+          <div id="right" style="width: 49%; border: solid 1px #ccc; border-radius: 10px; padding: 20px;">
             <!--기본정보-->
             <div style="margin-bottom: 15%">
               <div style="margin-bottom: 15px">
@@ -405,7 +426,7 @@
                       <button
                         onclick="searchMedicine()"
                         type="button"
-                        class="btn btn-primary py-2"
+                        class="btn btn-sm btn-info shadow-sm py-2"
                       >
                         검색
                       </button>
@@ -443,8 +464,8 @@
                 <br />
 
                 <div style="text-align: center">
-                  <button class="btn btn-info" id="saveBtn">
-                    진료기록저장
+                  <button class="btn btn-sm btn-info shadow-sm" id="saveBtn">
+                    진료기록 저장
                   </button>
                 </div>
               </form>
@@ -465,6 +486,7 @@
             margin-top: 15px;
             padding-left: 120px;
             background-color: #06bbcc;
+            border-radius: 7px;
           "
         ></div>
         <!--bottom-->
@@ -482,7 +504,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <h5 class="modal-title" id="exampleModalLongTitle">
-                  처방전 상세보기
+                  처방전 상세
                 </h5>
               </div>
               <div class="modal-body">
@@ -517,7 +539,11 @@
         />
 
         <script th:inline="javascript">
-          //아이디  //예약번호
+
+
+      
+
+          //아이디 //예약번호
           let uid = [[ ${pInfo.userId} ]];
           let rno = [[ ${pInfo.reserveNo} ]];
           // console.log("나와라~!rno)
@@ -529,7 +555,7 @@
               method: "POST",
             })
               .done((result) => {
-               
+
                 if (result > 0) {
                   location.href = `/hospital/clinicDr`;
                 }
@@ -549,7 +575,7 @@
           function connectWebSocket() {
             try {
               // WebSocket 연결
-              alarmSocket = new WebSocket("ws://localhost:80/echo");
+              alarmSocket = new WebSocket("wss://www.drcome.store/echo");
 
               // 연결이 열리면 호출되는 이벤트 핸들러
               alarmSocket.onopen = function (event) {
@@ -558,7 +584,7 @@
                 if (alarmSocket && alarmSocket.readyState === WebSocket.OPEN) {
                   // 서버로 메시지 전송
                   console.log("의사가 메세지 전송 ㅎㅎ");
-                  const message = uid;
+                  const message = uid+","+"enterRoom"+","+rno;
                   alarmSocket.send(message);
                 }
               }; ///
@@ -566,7 +592,7 @@
               // 연결이 닫혔을 때 호출되는 이벤트 핸들러
               alarmSocket.onclose = function (event) {
                 console.log("의사 퇴장 WebSocket 연결이 닫혔습니다.");
-              }; 
+              };
 
               // 에러가 발생했을 때 호출되는 이벤트 핸들러
               alarmSocket.onerror = function (error) {
@@ -932,21 +958,40 @@
             };
           }
 
-              //on off 토글버튼
-              function toggleVideo() {
-              const tracks = myScreen.getVideoTracks();
-              tracks.forEach(track => {
-              track.enabled = !track.enabled;
-              });
-              
-              }
+          
+            function toggleVideo() {
+            const videoTracks = myScreen.getVideoTracks();
+            videoTracks.forEach(track => {
+                track.enabled = !track.enabled;
+            });
 
-              function toggleAudio() {
-              const tracks = myScreen.getAudioTracks();
-              tracks.forEach(track => {
-              track.enabled = !track.enabled;
-              });
-              }
+            // 비디오 아이콘 변경
+            const cameraIcon = document.getElementById('cameraIcon');
+            if (videoTracks.some(track => track.enabled)) {
+                cameraIcon.classList.remove('bi-camera-video-off');
+                cameraIcon.classList.add('bi-camera-video');
+            } else {
+                cameraIcon.classList.remove('bi-camera-video');
+                cameraIcon.classList.add('bi-camera-video-off');
+            }
+         }
+
+            function toggleAudio() {
+            const audioTracks = myScreen.getAudioTracks();
+            audioTracks.forEach(track => {
+                track.enabled = !track.enabled;
+            });
+
+            // 오디오 아이콘 변경
+            const micIcon = document.getElementById('micIcon');
+            if (audioTracks.some(track => track.enabled)) {
+                micIcon.classList.remove('bi-mic-mute');
+                micIcon.classList.add('bi-mic');
+            } else {
+                micIcon.classList.remove('bi-mic');
+                micIcon.classList.add('bi-mic-mute');
+            }
+         }
         </script>
       </div>
       <!--container-fluid-->

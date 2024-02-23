@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.drcome.project.admin.domain.Hospital;
@@ -42,11 +43,16 @@ public class PatientController {
 
 	@Autowired
 	AlarmService alarmService;
-	
+
 	@Autowired
 	PatientMapper mapper;
 
-	// 공통 병원 정보 따로 빼기
+	/**
+	 * 공통 정보 : 병원
+	 * 
+	 * @param principal 병원 아이디
+	 * @return hosSel
+	 */
 	@ModelAttribute("hospitalSel")
 	public Hospital getServerTime(Principal principal) {
 		String hospitalId = principal.getName();
@@ -58,7 +64,7 @@ public class PatientController {
 	 * 의사 알람 테이블 인서트 + 입장하기 상태로 업데이트 진행
 	 * 
 	 * @param dao (reserveNo , userId , contentCode , prefix)
-	 * @return alarmService
+	 * @return int 저장건수
 	 */
 	@PostMapping("saveAlarm")
 	@ResponseBody
@@ -71,8 +77,8 @@ public class PatientController {
 	/**
 	 * 비대면 진료페이지 의사화면
 	 * 
-	 * @param vo  reserveNo
-	 * @return 비대면 진료 페이지로 이동
+	 * @param vo reserveNo
+	 * @return doctor/untactClinic 비대면 진료 페이지
 	 */
 	@GetMapping("untactClinic")
 	public String getUntactInfo(PatientVO vo, Model model) {
@@ -84,19 +90,12 @@ public class PatientController {
 		return "doctor/untactClinic";
 	}
 
-	// 비대면 진료 - 환자
-	@GetMapping("untactPatient/{reserveNo}")
-	public String untactPatient(@PathVariable("reserveNo") String reserveNo, PatientVO vo, Model model) {
-		model.addAttribute("rNo", reserveNo);
-		return "doctor/untactPatient";
-	}
-
 	/**
 	 * 대면 진료 페이지
 	 * 
-	 * @param vo   reserveNo
+	 * @param vo    reserveNo
 	 * @param model
-	 * @return 대면 진료 페이지로 이동
+	 * @return doctor/clinic 대면 진료 페이지
 	 */
 	@GetMapping("clinic")
 	public String getInfo(PatientVO vo, Model model) {
@@ -109,49 +108,33 @@ public class PatientController {
 	}
 
 	/**
-	 * 아직 미완성..
+	 * 진료기록 불러오기 + 페이징
 	 * 
-	 * @param vo
-	 * @param model
-	 * @return
-	 */
-	@GetMapping("untactPatient")
-	public String untactPatient(PatientVO vo, Model model) {
-
-		return "doctor/untactPatient";
-
-	}
-
-	/**
-	 * 진료기록 불러오기 + 페이징 
-	 * @param principal  병원아이디 
-	 * @param page		  선택한 페이지
-	 * @param uid		  유저아이디
+	 * @param principal 병원아이디
+	 * @param page      선택한 페이지
+	 * @param uid       환자아이디
 	 * @return map (list,dto)
 	 */
 	@GetMapping("clist")
 	@ResponseBody
-	public Map<String, Object> clinicList(Principal principal, String page, String uid) {
+	public Map<String, Object> clinicList(Principal principal,
+			@RequestParam(required = false, defaultValue = "1") int page, String uid) {
 
 		PatientVO vo = new PatientVO();
 
+		// 환자아이디
 		vo.setUserId(uid);
+		// 병원아이디
 		vo.setHospitalId(principal.getName());
 
 		// 전체갯수 가져오기
 		int total = patientService.totalList(vo);
-		System.out.println("토탈" + total);
 
-		// 선택된 페이지 인트로 변환
-		int cpage = Integer.parseInt(page);
-		System.out.println("선택된페이지" + cpage);
-
-		// 페이지네이션(currentpage, total)
-		PageDTO dto = new PageDTO(cpage, total);
-		System.out.println("dtd 객체 " + dto);
+		// 페이지네이션
+		PageDTO dto = new PageDTO(page, total);
 
 		// 진료기록리스트 (vo : userId hospitalId)
-		List<PatientVO> clinicList = patientService.getClinicList(cpage, vo);
+		List<PatientVO> clinicList = patientService.getClinicList(page, vo);
 
 		Map<String, Object> map = new HashMap<>();
 		map.put("list", clinicList); // 리스트 넘기고
@@ -160,27 +143,27 @@ public class PatientController {
 		return map;
 
 	}
-	
+
 	/**
-	 * 처방전 조회 
-	 * @param no clinicNo 
-	 * @return service
+	 * 처방전 조회
+	 * 
+	 * @param no clinicNo
+	 * @return List<PatientVO>
 	 */
-	@GetMapping("perscription/{no}")
+	@GetMapping("/perscription/{no}")
 	@ResponseBody
 	public List<PatientVO> perscriptionInfo(@PathVariable Integer no) {
-
 		PatientVO vo = new PatientVO();
 		vo.setClinicNo(no);
 
 		return patientService.getPerscription(vo);
 	}
 
-	
 	/**
 	 * 약검색
+	 * 
 	 * @param vo medicineName
-	 * @return service
+	 * @return List<PatientVO>
 	 */
 	@GetMapping("medicine")
 	@ResponseBody
@@ -189,27 +172,28 @@ public class PatientController {
 		return patientService.getmnameList(vo);
 
 	}
-	
+
 	/**
+	 * 진료기록저장
 	 * 
-	 * @param reserveNo, clinicSymptom specificity payYn perscriptionYn hospitalId visit userId
-	 *			perary=[{dosage , doseCnt ,doseDay, medicineNo},{}]
-	 * @return service
+	 * @param reserveNo, clinicSymptom specificity payYn perscriptionYn hospitalId
+	 *                   visit userId perary=[{dosage , doseCnt ,doseDay,
+	 *                   medicineNo},{}]
+	 * @return int 저장건수
 	 */
 
-	// 진료기록 저장
 	@PostMapping("saveClinic")
 	@ResponseBody
 	public int saveInfo(@RequestBody PatientVO vo) {
-		//System.out.println("dddddddddddddd" + vo);
+
 		return patientService.insertClinic(vo);
 	}
 
-	
 	/**
-	 * 진료종료시 상태 업데이트
+	 * 진료종료시 진료완료로 상태업데이트
+	 * 
 	 * @param vo reserveNo
-	 * @return service
+	 * @return int 업데이트건수
 	 */
 	@PostMapping("/updateStatus")
 	@ResponseBody
@@ -218,19 +202,17 @@ public class PatientController {
 		return patientService.modifyReserve(vo);
 	}
 
-	
-	
 	/**
-	 * 대면 결제대기버튼 누를시 상태업데이트 
+	 * 대면진료 결제완료처리버튼 누를시 결제완료로 상태업데이트
+	 * 
 	 * @param vo reserveNo
-	 * @return service
+	 * @return int 업데이트건수
 	 */
 	@PostMapping("/updatePayment")
 	@ResponseBody
 	public int updatePayment(PatientVO vo) {
-		System.out.println("Ddddddddddddd" + vo);
+
 		return mapper.updatePayment(vo);
 	}
-	
-	
+
 }// end class

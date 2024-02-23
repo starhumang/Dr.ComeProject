@@ -4,7 +4,6 @@
 	layout:decorate="~{admin/adminLayout}">
 <head>
 <meta charset="UTF-8">
-<title>UserList</title>
 <style>
  .catCal {
    display: flex;
@@ -19,6 +18,16 @@
    background-color: #5a5c69;
    color: #fff;
  }
+td > img {
+	width: 60px;
+	height: 40px;
+}
+thead {
+	background-color: #c7cbcc;
+}
+.table-responsive {
+    border-radius: 8px;
+}
 </style>
 </head>
 <body>
@@ -30,7 +39,6 @@
 					class="fas fa-fw fa-hospital-user"></i> 병원 사용자
 					</h4>
 				</div>
-				
 				<div class="catCal">
 		            <div
 		              class="btn-group"
@@ -42,10 +50,10 @@
 		                type="radio"
 		                class="btn-check"
 		                name="btnradio"
-		                id="btnradio1"
 		                autocomplete="off"
-		                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/hospital')}"
-		                onclick="window.location.href='/admin/hospital'"
+		                id="btnradio1"
+		                onclick="location.href='/admin/hospital?hospitalStatus=b2'"
+                		th:checked="${#strings.equals(param.hospitalStatus, 'b2') or '/admin/hospital' == #httpServletRequest.getRequestURI()}"
 		              />
 		              <label
 		                class="btn btn-outline-dark"
@@ -62,8 +70,8 @@
 		                name="btnradio"
 		                id="btnradio2"
 		                autocomplete="off"
-		                th:checked="${#strings.equals(#httpServletRequest.getRequestURI(), '/admin/hospitalw')}"
-		                onclick="window.location.href='/admin/hospitalw'"
+		                onclick="location.href='/admin/hospital?hospitalStatus=b3'"
+                		th:checked="${#strings.equals(param.hospitalStatus, 'b3')}"
 		              />
 		              <label class="btn btn-outline-dark" for="btnradio2" 
 		                >영업종료</label>
@@ -71,8 +79,12 @@
 		          </div>
 				
 				<div class="card-body">
-					<div class="table-responsive">
-						<table class="table table-bordered" id="dataTable" width="100%"
+					<div class="table-responsive" style="min-height: 556px">
+						<th:block th:if="${clist.empty}">
+					        <p>해당 내역이 없습니다.</p>
+					    </th:block>
+					    <th:block th:if="${not clist.empty}">
+						<table class="table table-hover" id="dataTable" width="100%"
 							cellspacing="0">
 							<thead>
 								<tr>
@@ -95,9 +107,15 @@
 									<td th:text="${hospital.address}"></td>
 									<td th:text="${hospital.phone}"></td>
 									<!-- <td th:text="${hospital.hospitalImg}"></td> -->
-									<td><img th:src="@{/images/}+${hospital.hospitalImg}"
+									<td th:if="${hospital.hospitalImg} != null"><img th:src="@{/img/}+${hospital.hospitalImg}"
 										alt="image" width="50px" /></td>
-									<td th:text="${hospital.mainSubject}"></td>
+									<td th:unless="${hospital.hospitalImg} != null"><img th:src="@{/images/}+ hospital.png"
+									alt="image" width="50px" /></td>
+									<!--/* <td th:text="${hospital.mainSubject}"></td> */-->
+									<td>
+									<th:block th:each="detailCode : ${application.detailCode_h}" >
+									    <span th:if="${detailCode.detailCode} == ${hospital.mainSubject}" th:text="${detailCode.codeName}"></span>
+									</th:block></td>
 									<td th:text="${hospital.directorName}"></td>
 									<td th:text="${hospital.directorPhone}"></td>
 									<td th:if="${hospital.hospitalStatus == 'b1'}">승인대기</td>
@@ -106,6 +124,7 @@
 								</tr>
 							</tbody>
 						</table>
+						</th:block>
 					</div>
 				</div>
 			</div>
@@ -115,16 +134,16 @@
 	</script>
 		
 		<!-- 페이징 컴포넌트 -->
-        <nav aria-label="Page navigation">
+        <nav aria-label="Page navigation" th:if="${clist.totalPages} > 0">
             <ul class="pagination justify-content-center">
                 <li th:class="${clist.first ? 'page-item disabled' : 'page-item'}">
-				    <a class="page-link" th:href="@{${#strings.contains(#httpServletRequest.requestURI, '/admin/hospital') ? '/admin/hospital' : '/admin/hospitalw'}(pageNo=0)}" tabindex="-1" aria-disabled="true">Previous</a>
+				    <a class="page-link" th:href="@{/admin/hospital(pageNo=0, hospitalStatus=${param.hospitalStatus})}" tabindex="-1" aria-disabled="true">Previous</a>
 				</li>
                 <li th:each="i : ${#numbers.sequence(0, clist.totalPages - 1)}" th:class="${i == clist.number ? 'page-item active' : 'page-item'}">
-				    <a class="page-link" th:href="@{${#strings.contains(#httpServletRequest.requestURI, '/admin/hospital') ? '/admin/hospital' : '/admin/hospitalw'}(pageNo=${i})}" th:text="${i + 1}"></a>
+				    <a class="page-link" th:href="@{/admin/hospital(pageNo=${i}, hospitalStatus=${param.hospitalStatus})}" th:text="${i + 1}"></a>
 				</li>
 				<li th:class="${clist.last ? 'page-item disabled' : 'page-item'}">
-				    <a class="page-link" th:href="@{${#strings.contains(#httpServletRequest.requestURI, '/admin/hospital') ? '/admin/hospital' : '/admin/hospitalw'}(pageNo=${clist.totalPages - 1})}">Next</a>
+				    <a class="page-link" th:href="@{/admin/hospital(pageNo=${clist.totalPages - 1}, hospitalStatus=${param.hospitalStatus})}">Next</a>
 				</li>
             </ul>
         </nav>

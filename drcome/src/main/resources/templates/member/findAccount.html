@@ -6,7 +6,7 @@
 >
 	<head>
 		<meta charset="UTF-8" />
-		<title>내 정보 찾기</title>
+		
 		<style>
 			.registered-customers {
 				margin: 0 auto;
@@ -64,6 +64,13 @@
 				align-items: center;
 				margin-bottom: 15px;
 			}
+
+			.search span:hover {
+			color:#06bbcc;
+			/* 마우스 호버 시에 텍스트 색상을 연한 회색으로 변경 */
+			background-color: #f0f0f0;
+			/* 마우스 호버 시에 배경색을 연한 회색으로 변경 */
+		}
 		</style>
 
 		<script type="text/javascript">
@@ -232,10 +239,10 @@
 				<div class="registered-customers" style="margin-top: 100px">
 					<h3 class="blog-section-title border-left mb-30">내 정보 찾기</h3>
 					<br />
-					<div class="text-center">
-						<span onclick="showFindIdForm()">아이디 찾기</span>
+					<div class="text-center search">
+						<span onclick="showFindIdForm()" style="cursor: pointer;">아이디 찾기</span>
 						<span>|</span>
-						<span onclick="showFindPwForm()">비밀번호 찾기</span>
+						<span onclick="showFindPwForm()" style="cursor: pointer;">비밀번호 찾기</span>
 					</div>
 					<br />
 
@@ -281,6 +288,7 @@
 								id="checkPhoneBtnPw"
 								onclick="checkPhonePw()"
 								class="btn btn-sm btn-secondary shadow-sm"
+								style="font-weight: 100; background-color: #9f9f9f; border-color: #9f9f9f; color: #fff; border-radius: 5px;"
 							>
 								인증번호발송
 							</button>

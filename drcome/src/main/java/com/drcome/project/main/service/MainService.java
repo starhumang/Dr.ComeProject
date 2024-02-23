@@ -1,7 +1,6 @@
 package com.drcome.project.main.service;
 
 import java.util.List;
-import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ public interface MainService {
 	public List<HospitalVO> getHosList();
 	
 	//약국목록
-	public List<PharmacyVO> getPhaList(int num);
+	public List<PharmacyVO> getPhaList();
 	
 	//병원상세정보
 	public HospitalVO getHos(String hospitalId);
@@ -33,6 +32,9 @@ public interface MainService {
 
 	//병원진료과목 검색
 	public List<HospitalVO> searchSubjectHos(String mainSubject);
+	
+	//추천받은 약국리스트
+	public List<PharmacyVO> recommendPhaList(String clinicNo, @Param("num") int num);;
 	
 	//처방받을 약국 선택(insert)
 	public int insertPhaSelect(String pharmacyId, int clinicNo);

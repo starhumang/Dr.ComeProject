@@ -5,15 +5,6 @@
 
 <head>
 <meta charset="UTF-8" />
-<title>방문예약</title>
-<script type="text/javascript"
-	src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
-<script
-	src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
-<link
-	href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css"
-	rel="stylesheet" />
-
 <!-- 달력 -->
 <script src="https://code.jquery.com/jquery-3.2.1.js"></script>
 <link rel="stylesheet"
@@ -190,6 +181,20 @@ thead tr:nth-child(3) th {
 .nonecursor{
 	caret-color:transparent;
 }
+.btn-primary{
+	background-color: #06BBCC;
+    border-color: #06BBCC;
+}
+.btn-lg {
+    font-size: 1.25rem;
+    border : none;
+}
+.btn {
+    font-family: 'Nunito', sans-serif;
+}
+a{
+	background-color:white;
+}
 </style>
 </head>
 
@@ -233,26 +238,31 @@ thead tr:nth-child(3) th {
 								<th></th>
 								<th>의사이름</th>
 								<th>담당진료과목</th>
-								<th>휴진일</th>
 								<th>진료일 / 진료시간</th>
+								<th>휴진일</th>
 								<th style="display:none;">의사번호</th>
 							</tr>
 						</thead>
 						<tbody style="vertical-align:middle;">
 							<th:block th:each="doc : ${docList}">
-								<tr th:if="${#lists.size(docList) > 0}">
+								<tr th:if="${#lists.size(docList) > 0}" class="restday">
 									<td style="vertical-align:middle;"><input type="radio" name="doctor"
 										onclick="chooseDoctor()" /></td>
 									<td class="docName" th:text="${doc.doctorName}" style="vertical-align:middle;"></td>
 									<th:block th:each="detailCode : ${application.detailCode_h}">
 										<td th:if="${doc.subject} == ${detailCode.detailCode}" th:text="${detailCode.codeName}" style="vertical-align:middle;"></td>
 									</th:block>
-									<td class="docHol" th:text="${doc.holiday}" style="vertical-align:middle;"></td>
 									<td>
-										<div th:each="drTime : ${doc.times}" class="doctorTime">
-											[[${drTime.day}]]&nbsp&nbsp [[${drTime.minTime}]] : 00 ~
-											[[${drTime.maxTime}]] : 00</div>
+										<div th:each="drTime : ${doc.times}"  class="doctorTime">
+											[[${drTime.day}]]&nbsp&nbsp
+											[[${drTime.minTime}]] : 00 ~ [[${drTime.maxTime}]] : 00
+										</div>
 									</td>
+									
+									<th:block th:each="detailCode : ${application.detailCode_i}">
+									<td th:if="${detailCode.detailCode ==doc.holiday and #strings.length(doc.holiday) < 3}"  th:text="${detailCode.codeName}" style="vertical-align:middle;" class="docHol"></td>
+									<td th:unless="${detailCode.detailCode == doc.holiday and #strings.length(doc.holiday) < 3}" th:text="${doc.holiday}" class="many" style="display:none; vertical-align:middle;"></td>
+									</th:block>
 									<td style="display:none;" th:text="${doc.doctorNo}" class="doctorNo"></td>
 								</tr>
 							</th:block>
@@ -316,11 +326,11 @@ thead tr:nth-child(3) th {
 					</div>
 
 					<script type="text/javascript"> 
-						
+							
 							//병원 및 의사 휴무일 지정중
 							let docName = null; //이거는 의사선택 전 날짜 못 고르게 하는 장치
 							let hosHoliday = [[${newDate}]]; //병원 쉬는날
-							console.log("hosHoliday : ", hosHoliday)
+							//console.log("hosHoliday : ", hosHoliday)
 							let docHoliday = null; //의사 쉬는날
 							let restday = []; //병원 + 의사 쉬는날
 							//console.log(docHoliday);
@@ -331,39 +341,93 @@ thead tr:nth-child(3) th {
 								if(docName==null){
 									document.querySelector('.one').disabled=true;
 								}
+								doctorrestday();
 							}
+							
+							//의사 휴무일 여러개일떄
+							function doctorrestday(){
+								let doctorrestday = document.querySelector('.restday');
+								let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
+								//console.log("restday", restday);
+								
+								//요일이 여러개일때의 작업
+								if(doctorrestday.querySelector('.many')){
+									let days = document.querySelectorAll('.many');
+									let changedays = Array.from(days);//노드리스트에서 배열로 변환
+									//중복되는 것들 splice로 잘라버리고 딱 원하는 자료만 뽑기
+									for(let i =1; i <changedays.length; i++){
+										if(changedays[i-1].innerText === changedays[i].innerText){
+											changedays.splice(i-1, i);
+					 							i--; 
+										}
+									}
+									//이제 이 배열을 가지고 작업하면 됨
+									for(let i=0; i < changedays.length; i++){
+										let realdays = [];
+										let element = changedays[i].innerText;
+										if(element.length > 3){
+											let splitDays = element.split(',');
+											//console.log("splitDays=",splitDays)
+											splitDays.forEach(ele=>{
+												realdays += dayList[ele] + ' ';
+												
+											}) 
+											//console.log("realdays= ",realdays);
+				 						}
+										
+										//et td = days.querySelectorAll('[style="display:none;"]');
+										//console.log("changedays[i]",changedays[i].innerText);
+										//console.log("realdays=",realdays);
+										
+										var tdElement = document.createElement("td");
+					 					tdElement.textContent = realdays;
+					 					tdElement.style.verticalAlign='middle';
+										tdElement.classList.add('docHol');
+					 					
+					 					if(changedays[i].innerText.length > 3){
+					 						changedays[i].parentNode.replaceChild(tdElement, changedays[i]);
+					 					}
+										
+									}						
+								}
+							}
+							
 							
 							//의사 선택
 							function chooseDoctor(){
 								let basicHosHoliDay = hosHoliday
 								let tr= document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
+								//console.log("tr=",tr)
 								let docName = tr.querySelector('.docName').innerText;
 								let holiday = tr.querySelector('.docHol').innerText;
+								//console.log("docName=",docName)
 								document.querySelector('.name').innerText=docName; //이름뽑아오기
 								document.querySelector('.one').disabled=false; //날짜선택 disabled걸린거 풀기
 								document.querySelector('.one').value = null;
 								
-								let dayList = {"i1": 1 ,"i2": 2,"i3": 3,"i4": 4,"i5": 5 ,"i6": 6,"i7" : 0}
+								
+								let dayList = {"월": 1 ,"화": 2,"수": 3,"목": 4,"금": 5 ,"토": 6,"일" : 0}
 								
 								let restday = [];
 								//자르기
 								if(holiday.length > 2){
 									//hosHoliday=''
-									let splitHoliday = holiday.split(',');
+									let splitHoliday = holiday.split(' ');
 									splitHoliday.forEach((ele)=>{
 									let array = [dayList[ele]];
 									basicHosHoliDay = basicHosHoliDay.concat(array);
 									})
+									
 									//hosHoliday.push(hosHoliday);//병원 쉬는날도 같이
 								}else{
 									let array = [dayList[holiday]];
 									basicHosHoliDay = basicHosHoliDay.concat(array);
 									//hosHoliday.push(hosHoliday);//병원 쉬는날도 같이
 								}
-								
+								//console.log("basicHosHoliDay=",basicHosHoliDay)
 								document.querySelector('.time').innerText= null;
 								document.querySelector('.date').innerText= null;
-								console.log("hosHoliday00",basicHosHoliDay);
+								//console.log("hosHoliday00",basicHosHoliDay);
 
 								createDatePicker(basicHosHoliDay)//달력설정이 새로 만들어짐
 								
@@ -407,6 +471,7 @@ thead tr:nth-child(3) th {
 							async function changeTime(){
 								let tr = document.querySelector('input[name="doctor"]:checked').closest('tr');//선택한 의사의 tr
 								let doctorTime = tr.querySelectorAll('.doctorTime');
+								//console.log("doctorTime=",doctorTime);
 								let reserveday = document.querySelector('input[name="date"]').value; //선택한 날짜
 								let doctorReserveTimeList = [];//이미 예약된 시간 담을 배열
 								//선택한 날짜
@@ -417,7 +482,7 @@ thead tr:nth-child(3) th {
 								let week = ["일", "월", "화", "수", "목", "금", "토"][date.getDay()];//선택한 날짜의 요일
 								//console.log(week);//ex.월
 								let days = {};//진료 오픈시간 종료시간 들어있음
-								console.log(date,",",nowDate);
+								//console.log(date,",",nowDate);
 								
 								//의사 요일별 진료시간 계산
 								for(let i=0; i < doctorTime.length; i++){
@@ -448,7 +513,7 @@ thead tr:nth-child(3) th {
 									success:function(response){
 										//console.log("response", response);
 										response.forEach(ele=> doctorReserveTimeList.push(ele['reserveTime']));
-										console.log("이미 예약된 시간 =",doctorReserveTimeList);
+										//console.log("이미 예약된 시간 =",doctorReserveTimeList);
 
 									}
 								})
@@ -476,7 +541,11 @@ thead tr:nth-child(3) th {
 									innerDiv1.textContent = (parseInt(days["open"]) + i) + ":00";
 									//이미 지니간 날짜 & 지나간 시간이면 클릭 못하게
 									if(date.getDate() == nowDate.getDate() && parseInt(days["open"]) + i <= hours){
-										console.log("맞음");
+										//console.log("맞음");
+										innerDiv1.classList.add('disableDiv');
+									}
+									//고정 휴식시간은 선택못하게
+									if(parseInt(days["open"]) + i ==12){
 										innerDiv1.classList.add('disableDiv');
 									}
 									
@@ -504,6 +573,10 @@ thead tr:nth-child(3) th {
 									innerDiv2.textContent = (parseInt(days["open"]) + i) + ":30";
 									//이미 지니간 날짜 & 지나간 시간이면 클릭 못하게
 									if(date.getDate() == nowDate.getDate() && parseInt(days["open"]) + i <= hours){
+										innerDiv2.classList.add('disableDiv');
+									}
+									//고정 휴식시간은 선택못하게
+									if(parseInt(days["open"]) + i ==12){
 										innerDiv2.classList.add('disableDiv');
 									}
 									
@@ -605,11 +678,11 @@ thead tr:nth-child(3) th {
 			let date = document.querySelector('.date').innerText;//날짜가 정해졌는가?
 			let time = document.querySelector('.time').innerText;//시간이 정해졌는가?
 			let textarea = document.querySelector('#textarea').value;//증상을 적었는가?
-			console.log("선택항목들 = ",hospital," , ",doctor," , ",date," , ",time," , ",textarea);
+			//console.log("선택항목들 = ",hospital," , ",doctor," , ",date," , ",time," , ",textarea);
 			
 			//의사검사
 			if(doctor !=''){
-				console.log("완료");
+				//console.log("완료");
 			}else{
 				Swal.fire({
 		   			  title: "의료진을 선택해주세요",
@@ -620,7 +693,7 @@ thead tr:nth-child(3) th {
 			}
 			//날짜검사
 			if(date !=''){
-				console.log("완료");
+				//console.log("완료");
 			}else{
 				Swal.fire({
 		   			  title: "날짜를 선택해주세요",
@@ -631,7 +704,7 @@ thead tr:nth-child(3) th {
 			}
 			//시간검사
 			if(time !=''){
-				console.log("완료");
+				//console.log("완료");
 			}else{
 				Swal.fire({
 		   			  title: "시간을 선택해주세요",
@@ -642,7 +715,7 @@ thead tr:nth-child(3) th {
 			}
 			//증상검사
 			if(textarea !=''){
-				console.log("완료");
+				//console.log("완료");
 			}else{
 				Swal.fire({
 		   			  title: "증상을 입력해주세요",
@@ -663,7 +736,7 @@ thead tr:nth-child(3) th {
 			let reserveDay = date.substr(8,2);//예약일
 			let symptom = textarea//증상
 			let reserveTime = time;//예약시간
-			console.log("제출항목들 = ",hospitalId," , ",userId," , ",doctorNo," , ",reserveYear," , ",reserveMonth," , ",reserveDay," , ",symptom);
+			//console.log("제출항목들 = ",hospitalId," , ",userId," , ",doctorNo," , ",reserveYear," , ",reserveMonth," , ",reserveDay," , ",symptom);
 			
 			$.ajax("/contactReserve",{
 				type:"post",

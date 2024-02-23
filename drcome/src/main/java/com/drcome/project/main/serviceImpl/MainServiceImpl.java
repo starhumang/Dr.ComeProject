@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.drcome.project.main.mapper.MainMapper;
-import com.drcome.project.main.service.ClinicVO;
 import com.drcome.project.main.service.MainService;
 import com.drcome.project.main.service.ReservationVO;
 import com.drcome.project.medical.service.DoctorVO;
@@ -25,8 +24,8 @@ public class MainServiceImpl implements MainService {
    }
 
    @Override
-   public List<PharmacyVO> getPhaList(int num) {
-      return mainMapper.selectPhaList(num);
+   public List<PharmacyVO> getPhaList() {
+      return mainMapper.selectPhaList();
    }
 
    @Override
@@ -49,9 +48,15 @@ public class MainServiceImpl implements MainService {
       return mainMapper.searchPhaList(word);
    }
    @Override
+//   @Transactional 컨트롤러에서 해야하는거 여기서 할때 문제 생기면 롤백
    public List<HospitalVO> searchSubjectHos(String mainSubject) {
       return mainMapper.searchSubjectHos(mainSubject);
    }
+   
+	@Override
+	public List<PharmacyVO> recommendPhaList(String clinicNo,int num) {
+		return mainMapper.recommendPhaList(clinicNo,num);
+	}
 
 	@Override
 	public int insertPhaSelect(String pharmacyId, int clinicNo) {
@@ -62,7 +67,6 @@ public class MainServiceImpl implements MainService {
 	@Override
 	public int checkClinicHistory(String userId, String hospitalId) {
 		int clinicHistory = mainMapper.checkClinicHistory(userId, hospitalId);
-		//System.out.println("clinicHistory="+ clinicHistory);
 		return clinicHistory;
 	}
 
@@ -93,6 +97,8 @@ public class MainServiceImpl implements MainService {
 	public List<ReservationVO> findWaitingList(DoctorVO doctorVO) {
 		return mainMapper.findWaitingList(doctorVO);
 	}
+
+
 
 	
 

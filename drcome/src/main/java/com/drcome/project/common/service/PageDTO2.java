@@ -7,8 +7,6 @@ import lombok.Data;
 @Data
 public class PageDTO2  implements Serializable{
 	
-	
-	
 	int currentPage; 
 	private int startPage;
 	private int endPage;

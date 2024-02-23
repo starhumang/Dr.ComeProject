@@ -6,7 +6,6 @@
 >
   <head>
     <meta charset="UTF-8" />
-    <title>대면 진료페이지</title>
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.1/font/bootstrap-icons.css"
       rel="stylesheet"
@@ -102,6 +101,14 @@
       #perscription {
         display: none;
       }
+
+      #full {
+       background-image: url('/images/background40.jpg');
+       background-repeat: no-repeat;
+       background-size: 105%;
+       background-position: -120px 95px;
+      
+      }
     </style>
   </head>
 
@@ -111,7 +118,7 @@
       <!--container-fluid-->
       <div class="container-fluid">
         <!--title-->
-        <div class="title" style="background-color: #06bbcc; padding: 5px">
+        <div class="title" style="background-color: #06bbcc; padding: 5px; border-radius: 7px;">
           <h3
             style="
               width: 80%;
@@ -119,6 +126,7 @@
               margin-bottom: 0;
               padding-left: 120px;
               color: white;
+              font-weight: 100;
             "
           >
             대면 진료
@@ -127,15 +135,16 @@
           <!--title-right-->
           <div class="title-right">
             <p style="margin-right: 15px">
-              <i class="fas fa-fw fa-calendar"></i> 현재날짜:
+              <i class="fas fa-fw fa-calendar"></i> 오늘날짜:
               <span
                 th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
               ></span>
             </p>
             <button
               onclick="endClinic()"
-              class="btn btn-dark"
-              style="margin-right: 15px"
+              class="btn btn-sm btn-dark shadow-sm"
+              style="margin-right: 15px;
+               font-weight: 100;"
             >
               진료종료
             </button>
@@ -145,9 +154,9 @@
         <!--title-->
 
         <!--오왼-->
-        <div id="full" style="margin: 3%">
+        <div id="full" style="margin: 1%">
           <!--왼쪽-->
-          <div id="left" style="width: 49%; margin-right: 7%">
+          <div id="left" style="width: 49%; border: solid 1px #ccc; border-radius: 10px; padding: 20px;">
             <!--진료기록-->
             <div
               id="clinic"
@@ -202,7 +211,7 @@
           <!--왼쪽-->
 
           <!--오른쪽-->
-          <div id="right" style="width: 49%">
+          <div id="right" style="width: 49%; border: solid 1px #ccc; border-radius: 10px; padding: 20px;">
             <!--기본정보-->
             <div style="margin-bottom: 15%">
               <div style="margin-bottom: 15px">
@@ -382,7 +391,7 @@
                       <button
                         onclick="searchMedicine()"
                         type="button"
-                        class="btn btn-primary py-2"
+                        class="btn btn-sm btn-info shadow-sm py-2"
                       >
                         검색
                       </button>
@@ -420,8 +429,8 @@
                 <br />
 
                 <div style="text-align: center">
-                  <button class="btn btn-info" id="saveBtn">
-                    진료기록저장
+                   <button class="btn btn-sm btn-info shadow-sm" id="saveBtn">
+                    진료기록 저장
                   </button>
                 </div>
               </form>
@@ -442,6 +451,7 @@
             margin-top: 15px;
             padding-left: 120px;
             background-color: #06bbcc;
+            border-radius: 7px;
           "
         ></div>
         <!--bottom-->

@@ -5,25 +5,28 @@
 	layout:decorate="~{pharmacy/pharmacyLayout}"
 >
 	<head>
-		<meta charset="UTF-8" />
-		<title>Pharmacy Info</title>
-		<style>
-			#btn {
-				margin-bottom: 20px;
-			}
+	<meta charset="UTF-8" />
+	<style>
+		#btn {
+			margin-bottom: 20px;
+		}
 
-			.head_info {
-				display: flex;
-				justify-content: space-between;
-				margin-top: 30px;
-			}
+		.head_info {
+			display: flex;
+			justify-content: space-between;
+			margin-top: 30px;
+		}
 
-			#logout {
-				display: flex;
-				justify-content: right;
-				padding-right: 30px;
-			}
-		</style>
+		hr {
+			border: none;
+			border-top: 2px solid gray;
+		}
+		.btn-info {
+			color: black;
+			background-color: lightgray;
+			border-color: lightgray;
+		}
+	</style>
 
 		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
 		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
@@ -100,6 +103,7 @@
 				</div>
 
 				<p>pharmacy Profile</p>
+				<hr>
 				<div class="card shadow mb-4">
 					<div
 						class="card-header py-3"
@@ -117,12 +121,20 @@
 				</div> -->
 					<div class="card-body" style="display: flex; justify-content: center; align-items: center">
 						<div class="left">
-							<img
-								th:src="@{/images/} + ${pinfo.pharmacyImg}"
+							<th:block th:if="${pinfo.pharmacyImg} != null">
+								<img
+								th:src="@{/img/}+${pinfo.pharmacyImg}"
 								alt="image"
-								width="300px"
-								style="margin-right: 50px"
+								style="margin-right: 50px; width: 300px;"
 							/>
+							</th:block>
+							<th:block th:unless="${pinfo.pharmacyImg} != null">
+								<img
+								th:src="@{/images/}+ pharmacy.png"
+								alt="image"
+								style="margin-right: 50px; width: 300px;"
+							/>
+							</th:block>
 						</div>
 						<div class="right">
 							<table class="table">
@@ -162,10 +174,6 @@
 						<button class="btn btn-danger" id="btn" onclick="withdraw()">탈퇴하기</button>
 					</div>
 				</div>
-			</div>
-
-			<div class="user-logout-link" id="logout">
-				<a th:href="@{/logout}" class="btn btn-primary">Logout</a>
 			</div>
 		</div>
 	</body>

@@ -5,7 +5,6 @@
 
 <head>
 <meta charset="UTF-8" />
-<title>약국 상세페이지</title>
 <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=7be6b1f8b5b642b5d341f732b8dc384e&libraries=services"></script>
 <style scoped>
 .head_info {
@@ -46,7 +45,7 @@
 							style="display: flex; justify-content: center; align-items: center;">
 							<div class="left">
 								<!--<span th:text="'아이디 : ' + ${hos.hospitalId}"></span>  --> 
-								<img th:if="${pha.pharmacyImg}" th:src="@{/images/} + ${pha.pharmacyImg}" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
+								<img th:if="${pha.pharmacyImg}" th:src="@{/img/} + ${pha.pharmacyImg}" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
 								<img th:unless="${pha.pharmacyImg}" th:src="@{/images/} + pharmacy.png" alt="image" width="350px" height="350px" style="border-radius:15%;"/>
 							</div>
 							<div class="right" style="text-align:center;">
@@ -82,20 +81,20 @@
 						<script th:inline="javascript">
 						function dayday(){
 							let holiday = document.querySelector('.holiday');
-							console.log("holiday", holiday);
+							//console.log("holiday", holiday);
 							
 							//요일이 여러개일때의 작업
 							//클래스가 oneday인 td가 없으면 코드를 잘라서 요일로 변환 후 td를 새로 생성해서 append 해주는 작업
 							if(!holiday.querySelector('.oneday')){
 							let day = document.querySelector('.moreday').innerText;
-							console.log(day);//i1,i2,i3
+							//console.log(day);//i1,i2,i3
 							let days = day.split(',');
 							let realdays = ''; //월화수
-							console.log(days.length);
+							//console.log(days.length);
 							let dayList = {"i1":"월","i2":"화","i3":"수","i4":"목","i5":"금","i6":"토","i7":"일"}
-							console.log("dayList=",dayList["i2"])
+							//console.log("dayList=",dayList["i2"])
 							days.forEach((ele, index)=>{
-								console.log(dayList[ele]);
+								//console.log(dayList[ele]);
 								realdays += dayList[ele] + ' ';
 							})
 							//console.log("realdays=",realdays);
@@ -141,7 +140,7 @@
 								
 								//주소로 좌표를 검색합니다
 								let hospitalAdd = document.querySelector(".me").innerText;
-								console.log(hospitalAdd);
+								//console.log(hospitalAdd);
 								geocoder.addressSearch(hospitalAdd, function(result, status) {
 								
 								// 정상적으로 검색이 완료됐으면 

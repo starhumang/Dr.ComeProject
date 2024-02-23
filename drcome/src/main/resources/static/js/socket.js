@@ -1,12 +1,13 @@
-let socket = io("http://localhost:3000/", {
-  cors: { origin: "*" },
+let socket = io("https://www.drcome.store:446", {
+  //cors: { origin: "*" },
 });
 
 console.log(socket.connected);
 
 const myPeer = new Peer({
-	host: 'localhost',
-	port: '3001', //PeerJS 서버가 실행되고 있는 포트
+  host: "www.drcome.store",
+  port: "444", //PeerJS 서버가 실행되고 있는 포트
+  secure: true // HTTPS를 사용하는 경우 true로 설정
 });
 
 const peers = {};
@@ -15,7 +16,10 @@ let myScreen;
 
 navigator.mediaDevices
   .getUserMedia({
-    video: true,
+    video: {
+      width: { ideal: 300 },
+      height: { ideal: 450 },
+    },
     audio: true,
   })
   .then((stream) => {

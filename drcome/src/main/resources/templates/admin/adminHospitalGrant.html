@@ -5,9 +5,16 @@
 
 <head>
 <meta charset="UTF-8">
-<title>UserList</title>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.all.min.js"></script>
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.10.4/dist/sweetalert2.min.css" rel="stylesheet" />
+<style>
+thead {
+	background-color: #c7cbcc;
+}
+.table-responsive {
+    border-radius: 8px;
+}
+</style>
 </head>
 <body>
 	<div layout:fragment="content">
@@ -20,10 +27,11 @@
 				</div>
 				<div class="card-body">
 					<div class="table-responsive">
-						<!--/* <th:block th:if="${grantlisth} == null">
-							<p>승인 목록이 없습니다.</p>
-						</th:block> */-->
-							<table class="table table-bordered" id="dataTable" width="100%"
+							<th:block th:if="${grantlisth.empty}">
+						        <p>승인 대기 목록이 없습니다.</p>
+						    </th:block>
+						    <th:block th:if="${not grantlisth.empty}">
+							<table class="table table-hover" id="dataTable" width="100%"
 								cellspacing="0">
 								<thead>
 									<tr>
@@ -47,9 +55,13 @@
 										<td th:text="${hospital.address}"></td>
 										<td th:text="${hospital.phone}"></td>
 										<!-- <td th:text="${hospital.hospitalImg}"></td> -->
-										<td><img th:src="@{/images/}+${hospital.hospitalImg}"
+										<td th:if="${hospital.hospitalImg} != null"><img th:src="@{/img/}+${hospital.hospitalImg}"
 											alt="image" width="50px" /></td>
-										<td th:text="${hospital.mainSubject}"></td>
+										<td th:unless="${hospital.hospitalImg} != null"><img th:src="@{/images/}+ hospital.png"
+											alt="image" width="50px" /></td>
+										<td><th:block th:each="detailCode : ${application.detailCode_h}" >
+											<span th:if="${detailCode.detailCode} == ${hospital.mainSubject}" th:text="${detailCode.codeName}"></span>
+										</th:block></td>
 										<td th:text="${hospital.directorName}"></td>
 										<td th:text="${hospital.directorPhone}"></td>
 										<td th:if="${hospital.hospitalStatus == 'b1'}">승인대기</td>
@@ -61,12 +73,13 @@
 									</tr>
 								</tbody>
 							</table>
+							</th:block>
 					</div>
 				</div>
 			</div>
 		</div>
 		<!-- 페이징 컴포넌트 -->
-		<nav aria-label="Page navigation">
+		<nav aria-label="Page navigation" th:if="${grantlisth.totalPages} > 0">
 			<ul class="pagination justify-content-center">
 				<li
 					th:class="${grantlisth.first ? 'page-item disabled' : 'page-item'}">
@@ -88,17 +101,24 @@
 </html>
 <script>
 	function hospitalupdate(hid) {
+		var upbtn = $(event.target);
 		$.ajax("/admin/hospital/grant/"+hid, {
 	          type: "post"
 	        }).done((result) => {
 	            console.log("Insert", result);
-	            swal.fire({
-				  icon: "success",
-				  text: "병원 승인 처리 완료"
-				});
-	            setTimeout(function() {
-	                location.reload();
-	            }, 1500);
+	            if(result != null) {
+	            	upbtn.closest('tr').remove();
+	            	swal.fire({
+				  	icon: "success",
+				  	text: "병원 승인 처리 완료"
+					});
+	            } else {
+	            	swal.fire({
+					  	icon: "error",
+					  	text: "병원 승인 처리 실패"
+					});
+	            }
+	            
 	          })
 	          .fail((err) => console.log(err));
 		

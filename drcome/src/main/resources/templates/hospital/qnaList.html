@@ -5,7 +5,6 @@
 
 <head>
 <meta charset="UTF-8">
-<title>patientList</title>
 <style>
 .head_info {
 	display: flex;
@@ -50,6 +49,13 @@ input[type="radio"]:checked+label {
 .pagination a:hover {
   background-color: #bfc5d8;
 }
+.tableMin {
+  min-height: 540px;
+}
+thead, th {
+	background-color: rgb(230, 239, 240);
+	border: 0.5px solid rgb(230, 239, 240);
+}
 </style>
 </head>
 
@@ -57,13 +63,15 @@ input[type="radio"]:checked+label {
 	<div layout:fragment="content" style="min-height: 926px;">
 		<div class="container-fluid">
 			<div class="head_info">
-				<h4 th:text="${hospitalSel.hospitalName}"></h4>
+				<h6 th:text="${hospitalSel.hospitalName}"></h6>
 				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
-						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					<i class="fas fa-fw fa-calendar"></i> 오늘날짜 :
+					<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
 				</p>
 			</div>
-			<p>Q&A</p>
+			<!-- title -->
+			<h4 class="m-0 font-weight-bold text-secondary">QnA</h4>
+			<br />
 			<div class="search">
 				<!-- drop -->
 			    <div class="input-group" style="width: 40%;">
@@ -118,11 +126,10 @@ input[type="radio"]:checked+label {
 				</div>
 			</div>
 			
-
 			<!-- QnA 리스트 -->
 			<!-- table -->
-			<div>
-				<table class="table table-hover">
+			<div class="tableMin">
+				<table class="table table-light">
 				</table>
 				
 			</div>
@@ -265,7 +272,7 @@ input[type="radio"]:checked+label {
 			        var tbody = $("<tbody>").appendTo(table);
 			
 			        var headerRow = $("<tr>").appendTo(thead);
-			        var headers = ["No.", "작성자", "제목", "카테고리", "작성일자", "수정일자", "답변상태"];
+			        var headers = ["No.", "작성자", "제목", "카테고리", "작성일자", "답변상태"];
 			
 			        $.each(headers, function(index, text) {
 			            $("<th>").text(text).appendTo(headerRow);
@@ -276,10 +283,37 @@ input[type="radio"]:checked+label {
 			            row.append(`<td>${item.qnaNo}</td>`);
 			            row.append(`<td>${item.userId}</td>`);
 			            row.append(`<td>${item.title}</td>`);
-			            row.append(`<td>${item.categoryStatus}</td>`);
+			            
+			            var categoryStatusText = '';
+			            switch (item.categoryStatus) {
+			                case 'g1':
+			                	categoryStatusText = '진료문의';
+			                    break;
+			                case 'g2':
+			                	categoryStatusText = '예약문의';
+			                    break;
+			                case 'g3':
+			                	categoryStatusText = '기타문의';
+			                    break;
+			                default:
+			                	categoryStatusText = item.categoryStatus;
+			                    break;
+			            }
+			            row.append(`<td>${categoryStatusText}</td>`);
+			            
 			            row.append(`<td>${formatDate(new Date(item.wdate))}</td>`);
-			            row.append(`<td>${item.udate ? formatDate(item.udate) : '-'}</td>`);
-			            row.append(`<td>${item.ansStatus}</td>`);
+/* 			            row.append(`<td>${item.udate ? formatDate(item.udate) : '-'}</td>`); */
+			            
+			            var ansStatusText = '';
+			            if (item.ansStatus === 'j1') {
+			            	ansStatusText = '답변대기';
+			            } else if (item.ansStatus === 'j2') {
+			            	ansStatusText = '답변완료';
+			            } else {
+			            	ansStatusText = item.ansStatusText;
+			            }
+			            row.append(`<td>${ansStatusText}</td>`);
+			            
 			            row.append(`<td style="display: none;">${item.ansCode}</td>`);
 			        });
 			
@@ -321,6 +355,20 @@ input[type="radio"]:checked+label {
 			
 			        // tr 요소에 마우스 오버 시에 손가락 모양으로 마우스 커서를 변경
 			        $(".table tbody tr").css("cursor", "pointer");
+			        
+			        
+			     	// 마우스 오버 시에도 색상 변경
+			        $(".table tbody tr").hover(
+			          function() {
+			            $(this).css("background-color", "#F2F2F2");
+			          },
+			          function() {
+			            $(this).css("background-color", "#fff");
+			          }
+			        );
+			        
+			        
+			        
 			    }
 			    
 			    //검색버튼 이벤트 만들기

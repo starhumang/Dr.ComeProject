@@ -1,138 +1,253 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
+<html
+	xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{hospital/hospitalLayout}">
+	layout:decorate="~{hospital/hospitalLayout}"
+>
+	<head>
+		<meta charset="UTF-8" />
+		<style>
+			.head_info {
+				display: flex;
+				justify-content: space-between;
+				margin-top: 30px;
+			}
 
-<head>
-<meta charset="UTF-8">
-<title>patientList</title>
-<style>
-.head_info {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 30px;
-}
+			.info-box {
+				display: flex;
+				justify-content: center;
+			}
 
-.info-box {
-	display: flex;
-	justify-content: center;
-}
+			#p-info {
+				text-align: center;
+				margin-bottom: 30px;
+				background-color: #dee0e3;
+			}
 
-#p-info {
-	text-align: center;
-	margin-bottom: 30px;
-	background-color: #DEE0E3;
-}
+			.noticeBtn {
+				display: flex;
+				justify-content: space-between;
+			}
 
-.noticeBtn {
-	display: flex;
-	justify-content: space-between;
-}
-.ansTitle {
-	margin: 2.0rem 0;
-}
-</style>
-</head>
+			.ansTitle {
+				margin: 2rem 0;
+			}
 
-<body>
-	<div layout:fragment="content">
-		<div class="container-fluid">
-			<div class="head_info">
-				<h4 th:text="${hospitalSel.hospitalName}"></h4>
-				<p>
-					<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
-						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
-				</p>
-			</div>
-			<p>QnA Detail</p>
+			.listGoBtn {
+				margin-bottom: 1.5rem;
+			}
+			#tbl {
+				margin-bottom: 0;
+			}
+			.card-header {
+				background-color: #e2e2e2;
+			}
+		</style>
+	</head>
 
-			<!-- qna 단건 -->
-				<div th:if="${qnaInfo}">
-				    <table class="table table-bordered">
-				        <thead>
-				            <tr>
-				                <th class="text-center table-light">번호</th>
-				                <td th:text="${qnaInfo.qnaNo}" class="text-center"></td>
-				                <th class="text-center table-light">작성일</th>
-				                <td th:text="${#dates.format(qnaInfo.wdate, 'yyyy-MM-dd')}"
-				                    class="text-center"></td>
-				                <th class="text-center table-light">수정일</th>
+	<body>
+		<div layout:fragment="content">
+			<div class="container-fluid">
+				<div class="head_info">
+					<h6 th:text="${hospitalSel.hospitalName}"></h6>
+					<p>
+						<i class="fas fa-fw fa-calendar"></i> 오늘날짜 :
+						<span th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
+					</p>
+				</div>
+				<!-- title -->
+				<h4 class="m-0 font-weight-bold text-secondary">QnA 조회</h4>
+				<br />
+
+				<!-- qna 단건 -->
+				<div class="card shadow mb-4">
+					<div
+						class="card-header py-3"
+						style="display: flex; justify-content: space-between; align-items: center"
+					>
+						<h5 class="m-0 font-weight-bold text-secondary"><i class="fas fa-fw fa-question"></i>질문</h5>
+					</div>
+					<div
+						class="card-body"
+						style="display: flex; justify-content: center; align-items: center; padding: 0"
+					>
+						<div th:if="${qnaInfo}" style="width: 100%">
+							<table class="table table-bordered" id="tbl">
+								<thead>
+									<tr>
+										<th class="text-center table-light">번호</th>
+										<td th:text="${qnaInfo.qnaNo}" class="text-center"></td>
+										<th class="text-center table-light">작성일</th>
+										<td
+											th:text="${#dates.format(qnaInfo.wdate, 'yyyy-MM-dd')}"
+											class="text-center"
+										></td>
+										<!-- 				                <th class="text-center table-light">수정일</th>
 				                <td th:if="${qnaInfo['udate'] != null}"
 				                    th:text="${#dates.format(qnaInfo['udate'], 'yyyy-MM-dd')}"></td>
-				                <td th:if="${qnaInfo['udate'] == null}">-</td>
-				                <th class="text-center table-light">답변상태</th>
-				                <td th:text="${qnaInfo.ansStatus}"></td>
-				            </tr>
-				            <tr>
-				                <th class="text-center table-light">제목</th>
-				                <td th:text="${qnaInfo.title}" colspan="8"></td>
-				            </tr>
-				        </thead>
-				        <tbody>
-				            <tr>
-				                <td th:text="${qnaInfo.content}" colspan="8" class="text-left"
-				                    valign="top" height="200"><pre
-				                        style="white-space: pre-wrap; border: none;">
-				                </pre></td>
-				            </tr>
-				            <!-- qnaAtt 리스트를 순회하며 각 첨부 파일 정보를 표시 -->
-				            <tr>
-				                <th>첨부파일</th>
-				                <td  colspan="7">
-				                    <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == qnaInfo.qnaNo}" th:text="${attach.fileName}"></span>
-				                </td>
-				            </tr>
-				        </tbody>
-				    </table>
-				</div>
-				
-				<!-- ans 단건 -->
-				<div th:if="${ansInfo}">
-					<div class="ansTitle">
-						<h5 class="m-0 font-weight-bold text-secondary">
-							<i class="fas fa-fw fa-comment"></i>답변
-						</h5>
+				                <td th:if="${qnaInfo['udate'] == null}">-</td> -->
+										<th class="text-center table-light">답변상태</th>
+										<td>
+											<th:block th:each="detailCode : ${application.detailCode_j}">
+												<span
+													th:if="${detailCode.detailCode} == ${qnaInfo.ansStatus}"
+													th:text="${detailCode.codeName}"
+												></span>
+											</th:block>
+										</td>
+									</tr>
+									<tr>
+										<th class="text-center table-light">제목</th>
+										<td th:text="${qnaInfo.title}" colspan="6"></td>
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td
+											th:text="${qnaInfo.content}"
+											colspan="6"
+											class="text-left"
+											valign="top"
+											height="200"
+										>
+											<pre style="white-space: pre-wrap; border: none"></pre>
+										</td>
+									</tr>
+									<!-- qnaAtt 리스트를 순회하며 각 첨부 파일 정보를 표시 -->
+									<tr>
+										<th>첨부파일</th>
+										<td colspan="7">
+											<span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == qnaInfo.qnaNo}">
+												<a
+													href="#"
+													th:attr="data-filename=${attach.fileName}"
+													onclick="downloadFile(this.getAttribute('data-filename'))"
+													th:text="${attach.fileName.substring(attach.fileName.lastIndexOf('/') + 1)}"
+												></a>
+											</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
+						</div>
 					</div>
-				    <table class="table table-bordered">
-				        <thead>
-				            <tr>
-				                <th class="text-center table-light">작성일</th>
-				                <td th:text="${#dates.format(ansInfo.wdate, 'yyyy-MM-dd')}"
-				                    class="text-center"></td>
-				                <th class="text-center table-light">수정일</th>
+				</div>
+
+				<div class="card shadow mb-4">
+					<!-- ans 단건 -->
+					<div th:if="${ansInfo}">
+						<div
+							class="card-header py-3"
+							style="display: flex; justify-content: space-between; align-items: center"
+						>
+							<h5 class="m-0 font-weight-bold text-secondary">
+								<i class="fas fa-fw fa-comment"></i>답변
+							</h5>
+						</div>
+						<div
+							class="card-body"
+							style="display: flex; justify-content: center; align-items: center; padding: 0"
+						>
+							<table class="table table-bordered" id="tbl">
+								<thead>
+									<tr>
+										<th class="text-center table-light">작성일</th>
+										<td
+											th:text="${#dates.format(ansInfo.wdate, 'yyyy-MM-dd')}"
+											class="text-center"
+										></td>
+										<!-- 				                <th class="text-center table-light">수정일</th>
 				                <td th:if="${ansInfo['udate'] != null}"
 				                    th:text="${#dates.format(ansInfo['udate'], 'yyyy-MM-dd')}"></td>
-				                <td th:if="${ansInfo['udate'] == null}">-</td>
-				            </tr>
-				        </thead>
-				        <tbody>
-				            <tr>
-				                <td th:text="${ansInfo.content}" colspan="8" class="text-left"
-				                    valign="top" height="200"><pre
-				                        style="white-space: pre-wrap; border: none;">
-				                </pre></td>
-				            </tr>
-				            <tr>
-				                <th>첨부파일</th>
-				                <td  colspan="3">
-				                    <span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == ansInfo.qnaNo}" th:text="${attach.fileName}"></span>
-				                </td>
-				            </tr>
-				        </tbody>
-				    </table>
-				</div>
-					<div class="noticeBtn">
-						<!-- 목록버튼 -->
-						<div style="text-align: center;">
-							<a th:href="@{/hospital/qnaList}" class="btn btn-dark">목록으로</a>
-						</div>
-						<div style="text-align: center;">
-							<a th:href="@{/hospital/qnaAnsForm(qnaNo=${qnaInfo.qnaNo})}" class="btn btn-warning">답변달기</a>
+				                <td th:if="${ansInfo['udate'] == null}">-</td> -->
+									</tr>
+								</thead>
+								<tbody>
+									<tr>
+										<td
+											th:text="${ansInfo.content}"
+											colspan="6"
+											class="text-left"
+											valign="top"
+											height="200"
+										>
+											<pre style="white-space: pre-wrap; border: none"></pre>
+										</td>
+									</tr>
+									<tr>
+										<th>첨부파일</th>
+										<td colspan="2">
+											<span th:each="attach : ${qnaAtt}" th:if="${attach.qnaNo == ansInfo.qnaNo}">
+												<a
+													href="#"
+													th:attr="data-filename=${attach.fileName}"
+													onclick="downloadFile(this.getAttribute('data-filename'))"
+													th:text="${attach.fileName.substring(attach.fileName.lastIndexOf('/') + 1)}"
+												></a>
+											</span>
+										</td>
+									</tr>
+								</tbody>
+							</table>
 						</div>
 					</div>
-			</div>
+				</div>
+				<div class="noticeBtn">
+					<!-- 목록버튼 -->
+					<div class="listGoBtn">
+						<a th:href="@{/hospital/qnaList}" class="btn btn-dark">목록으로</a>
+					</div>
+					<div style="text-align: center">
+						<a
+							th:href="@{/hospital/qnaAnsForm(qnaNo=${qnaInfo.qnaNo})}"
+							th:if="${ansInfo}"
+							style="display: none"
+						>
+							<span></span>
+						</a>
+						<a
+							th:href="@{/hospital/qnaAnsForm(qnaNo=${qnaInfo.qnaNo})}"
+							class="btn btn-warning"
+							th:unless="${ansInfo}"
+						>
+							<span>답변달기</span>
+						</a>
+					</div>
+				</div>
 
+				<!-- 파일 다운로드를 위한 스크립트 -->
+				<script>
+					// 파일 다운로드 함수
+					function downloadFile(filename) {
+						// 서버에서 파일을 다운로드하는 URL 생성
+						var downloadUrl = '/img/' + filename;
+
+						// AJAX를 사용하여 파일을 다운로드
+						var xhr = new XMLHttpRequest();
+						xhr.open('GET', downloadUrl, true);
+						xhr.responseType = 'blob'; // 응답 타입을 Blob으로 설정
+						xhr.onload = function () {
+							// 응답이 성공적으로 받아졌을 때 파일 다운로드
+							if (xhr.status === 200) {
+								// Blob 데이터를 File로 변환
+								var blob = new Blob([xhr.response], { type: 'application/octet-stream' });
+								var url = window.URL.createObjectURL(blob);
+
+								// 다운로드 링크 생성
+								var a = document.createElement('a');
+								a.href = url;
+								a.download = filename;
+								document.body.appendChild(a);
+								a.click();
+
+								// 객체 URL 해제
+								window.URL.revokeObjectURL(url);
+							}
+						};
+						xhr.send();
+					}
+				</script>
+			</div>
 		</div>
-	</div>
-</body>
+	</body>
 </html>

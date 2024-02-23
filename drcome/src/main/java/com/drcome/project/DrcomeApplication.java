@@ -10,7 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.PropertySource;
 
 import com.drcome.project.common.domain.Detailcode;
 import com.drcome.project.common.repository.DetailCodeRepository;
@@ -18,7 +17,7 @@ import com.drcome.project.common.service.DetailCodeService;
 
 @SpringBootApplication
 @MapperScan(basePackages = "com.drcome.project.**.mapper")
-@PropertySource("classpath:myconfig.properties")
+//@PropertySource("classpath:myconfig.properties")
 public class DrcomeApplication {
 
 	public static void main(String[] args) {
@@ -33,7 +32,7 @@ public class DrcomeApplication {
 
 	        // 전체 detailCode 저장
 	        sc.setAttribute("detailCode", allDetailCodes);
-	        System.out.println(allDetailCodes);
+//	        System.out.println(allDetailCodes);
 
 	        // 알파벳으로 그룹화된 detailCode 저장
 	        alphabetGroups.forEach((key, value) -> {

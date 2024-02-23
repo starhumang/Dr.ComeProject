@@ -1,10 +1,11 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{pharmacy/pharmacyLayout}">
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{pharmacy/pharmacyLayout}"
+>
 <head>
 <meta charset="UTF-8" />
-<title>Pharmacy Status</title>
 <style>
 #btn {
 	margin-bottom: 20px;
@@ -16,31 +17,30 @@
 	margin-top: 30px;
 }
 .pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 20px;
+	margin-bottom: 20px;
 }
 
 .pagination a {
-  display: inline-block;
-  padding: 5px 10px;
-  margin: 0 2px;
-  border: 1px solid #ccc;
-  background-color: #fff;
-  color: #333;
-  text-decoration: none;
+	display: inline-block;
+	padding: 5px 10px;
+	margin: 0 2px;
+	border: 1px solid #ccc;
+	background-color: #fff;
+	color: #333;
+	text-decoration: none;
 }
 
 .pagination a.active {
-  background-color: #4e73df;
-  color: #fff;
-  /* border: 1px solid #4e73df; */
+	background-color: #4e73df;
+	color: #fff;
 }
 
 .pagination a:hover {
-  background-color: #bfc5d8;
+	background-color: #bfc5d8;
 }
 
 .search {
@@ -50,9 +50,9 @@
 	justify-content: flex-end;
 }
 .btn-info {
-    color: black;
-    background-color: lightgray;
-    border-color: lightgray;
+	color: black;
+	background-color: lightgray;
+	border-color: lightgray;
 }
 
 #cal {
@@ -62,512 +62,731 @@
 
 /* 모달 배경 */
 .modal-content {
-    border-radius: 10px;
+	border-radius: 10px;
 }
 
 /* 모달 헤더 */
 .modal-header {
-    background-color: #06bbcc; /* 헤더 배경 색상 */
-    color: #fff; /* 헤더 글자 색상 */
-    border-bottom: none; /* 헤더 아래 테두리 없애기 */
-    border-radius: 10px 10px 0 0; /* 헤더 모서리를 둥글게 만들기 */
+	background-color: #06bbcc; /* 헤더 배경 색상 */
+	color: #fff; /* 헤더 글자 색상 */
+	border-bottom: none; /* 헤더 아래 테두리 없애기 */
+	border-radius: 10px 10px 0 0; /* 헤더 모서리를 둥글게 만들기 */
 }
 
 /* 모달 제목 */
 .modal-title {
-    font-weight: bold;
+	font-weight: bold;
 }
 
 /* 모달 바디 */
 .modal-body {
-    padding: 20px;
+	padding: 20px;
 }
 
 /* 모달 테이블 */
 #modalTable {
-    width: 100%;
+	width: 100%;
 }
 
 #modalTable th,
 #modalTable td {
-    padding: 10px;
-    border-bottom: 1px solid #dee2e6; /* 테이블 셀 테두리 */
+	padding: 10px;
+	border-bottom: 1px solid #dee2e6; /* 테이블 셀 테두리 */
 }
 
 /* 모달 푸터 */
 .modal-footer {
-    border-top: none; /* 푸터 위 테두리 없애기 */
-    border-radius: 0 0 10px 10px; /* 푸터 모서리를 둥글게 만들기 */
+	border-top: none; /* 푸터 위 테두리 없애기 */
+	border-radius: 0 0 10px 10px; /* 푸터 모서리를 둥글게 만들기 */
 }
 
 /* 버튼 */
 .btn-primary {
-    background-color: #007bff; /* 버튼 배경 색상 */
-    border-color: #007bff; /* 버튼 테두리 색상 */
+	background-color: #007bff; /* 버튼 배경 색상 */
+	border-color: #007bff; /* 버튼 테두리 색상 */
 }
 
 .btn-primary:hover {
-    background-color: #0056b3; /* 마우스 호버시 버튼 배경 색상 */
-    border-color: #0056b3; /* 마우스 호버시 버튼 테두리 색상 */
+	background-color: #0056b3; /* 마우스 호버시 버튼 배경 색상 */
+	border-color: #0056b3; /* 마우스 호버시 버튼 테두리 색상 */
 }
 
 /* 폼 */
 .form-check-label {
-    font-weight: normal; /* 폼 라벨 텍스트 정상 굵기 */
+	font-weight: normal; /* 폼 라벨 텍스트 정상 굵기 */
 }
 
 /* 폼 라디오 버튼 */
 .form-check-input[type="radio"] {
-    margin-top: 5px; /* 폼 라디오 버튼 위 여백 */
+	margin-top: 5px; /* 폼 라디오 버튼 위 여백 */
+}
+#perbtn {
+	margin: 10px 10px;
+}
+hr{
+	border: none;
+	border-top: 2px solid gray; 
 }
 </style>
-</head>
-<body>
-	<div layout:fragment="content">
-		<div class="container-fluid">
-			<div class="head_info">
-				<h4>처방현황</h4>
-				<p>
-					<!-- <i class="fas fa-fw fa-calendar" data-toggle="modal"
+  </head>
+  <body>
+    <div layout:fragment="content">
+      <div class="container-fluid">
+        <div class="head_info">
+          <h4 id="alltop">처방현황</h4>
+          <p>
+            <!-- <i class="fas fa-fw fa-calendar" data-toggle="modal"
 						data-target="#calendarModal"></i> 현재날짜 : <span
 						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
 						id="datepicker" th:name="datepicker"></span> -->
-					<!-- <i class="fas fa-fw fa-calendar"></i>  <input type="text"
+            <!-- <i class="fas fa-fw fa-calendar"></i>  <input type="text"
 						id="datepicker" style="width: 120px;"/> -->
-						<i class="fas fa-fw fa-calendar"></i> 현재날짜 : <span
-						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"></span>
-				</p>
-			</div>
+            <i class="fas fa-fw fa-calendar"></i> 오늘 날짜 :
+            <span
+              th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+              id="curdate"
+            ></span>
+          </p>
+        </div>
 
-			<p>처방전 승인 및 출력</p>
-			<div class="head_info" id="cal">
-				<p>
-					<i class="fas fa-fw fa-calendar"></i> 날짜 선택 : <input type="text"
-						id="datepicker" style="width: 167px;"/>
-				</p>
-			</div>
-			<div class="search">
-				<!-- drop -->
-			    <div class="input-group" style="width: 40%;">
-			        <select id="type" class="custom-select" aria-label="Default select example" style="border-radius: 0.35rem;">
-			        	<option value="">검색유형</option>
-			            <option value="1">환자이름</option>
-			            <option value="2">병원명</option>
-			        </select>
-			        <p class="btn btn-info" style="border-top-right-radius: 0; border-bottom-right-radius: 0; margin-left: 0.3rem; margin-bottom: 0;">
-			            <i class="fas fa-search fa-sm"></i>
-			        </p>
-			        <input type="text" id="keyword" class="form-control bg-light border-1 small" placeholder="검색어를 입력하세요." aria-label="Search" aria-describedby="basic-addon2" style="width: 30%;"/>
-			        <button id="searchBtn" class="btn btn-info" type="button" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">검색하기</button>
-			    </div>
-			</div>
-			<div class="card shadow mb-4">
-				<div class="card-header py-3"
-					style="display: flex; justify-content: space-between; align-items: center;">
-					<h5 class="m-0 font-weight-bold text-secondary">
-						<i class="fas fa-fw fa-capsules"></i>
-					</h5>
-				</div>
-				<div class="card-body"
-					style="display: flex; justify-content: center; align-items: center">
-					<table class="table">
-              <!-- <tr>
-                <th>No</th>
-                <th>환자성명</th>
-                <th>생년월일</th>
-                <th>환자Tel</th>
-                <th>병원명</th>
-                <th>병원Tel</th>
-                <th>담당의</th>
-                <th>처방일자</th>
-                <th>처방전</th>
-                <th>출력</th>
-                <th>반환</th>
-              </tr> -->
-					<!--/*
-              <tr th:each="plist, pstart : ${plist}">
-                <td th:text="${pstart.count}"></td>
-                <td th:text="${plist.userName}"></td>
-                <td
-                  th:text="${#dates.format(plist.userBirthday, 'yyyy-MM-dd')}"
-                ></td>
-                <td th:text="${plist.userPhone}"></td>
-                <td th:text="${plist.hospitalName}"></td>
-                <td th:text="${plist.hospitalPhone}"></td>
-                <td th:text="${plist.doctorName}"></td>
-                <td
-                  th:text="${#dates.format(plist.perscriptionDate, 'yyyy-MM-dd')}"
-                ></td>
-                <td>
-                  <button
-                    id="viewper"
-                    th:onclick="viewPer([[${plist.clinicNo}]])"
-                    type="button"
-                    class="btn btn-info"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModalCenter"
-                  >
-                    미리보기
-                  </button>
-                </td>
-                <td><button>출력하기</button></td>
-                <td>
-                  <button
-                    id="returnbtn"
-                    data-bs-toggle="modal"
-                    data-bs-target="#returnModal"
-                  >
-                    반환
-                  </button>
-                </td>
-              </tr>
-              */-->
-					</table>
-				</div>
-				<div class="pagination"></div>
-			</div>
-		</div>
-		<!-- 반환 modal -->
-		<div class="modal fade" id="returnModal" tabindex="-1"
-			aria-labelledby="exampleModalLabel" aria-hidden="true">
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">반환 사유</h5>
-						<button type="button" class="btn-close" data-bs-dismiss="modal"
-							aria-label="Close"><i class="fa-solid fa-xmark"></i></button>
-					</div>
-					<div class="modal-body container">
-						<form id="returnform">
-							<div class="form-check">
-								<input class="form-check-input" type="radio"
-									name="flexRadioDefault" id="flexRadioDefault1" checked/> <label
-									class="form-check-label" for="flexRadioDefault1">약 재고가 부족하여 조제가 취소되었습니다. </label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio"
-									name="flexRadioDefault" id="flexRadioDefault2"  /> <label
-									class="form-check-label" for="flexRadioDefault2">약국 사정상 조제가 어려워 취소되었습니다. </label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio"
-									name="flexRadioDefault" id="flexRadioDefault3"  /> <label
-									class="form-check-label" for="flexRadioDefault3">약국 영업 시간이 아닙니다. </label>
-							</div>
-							<div class="form-check">
-								<input class="form-check-input" type="radio"
-									name="flexRadioDefault" id="flexRadioDefault4"  /> <label
-									for="message-text" class="col-form-label">기타</label>
-								<div id="message-text" style="display: none;">
-									<textarea class="form-control" ></textarea>
-								</div>
-							</div>
-						</form>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal">닫기</button>
-							<button type="button" class="btn btn-primary" id="reperscript">반환</button>
-						</div>
-					</div>
-				</div>
-			</div>
-		</div>
-    <!-- 반환 modal 끝 -->
-		<!-- 처방전 미리보기 모달 -->
-		<div class="modal fade" id="exampleModalCenter" tabindex="-1"
-			role="dialog" aria-labelledby="exampleModalCenterTitle"
-			aria-hidden="false">
-			<div class="modal-dialog modal-dialog-centered" role="document">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLongTitle">처방전 상세보기</h5>
-					</div>
-					<div class="modal-body container">
-						<table id="modalTable">
-							<tr>
-								<th>약품명</th>
-								<th>투약량</th>
-								<th>횟수</th>
-								<th>일수</th>
-							</tr>
-						</table>
-					</div>
+        <p>처방전 승인 및 출력</p>
+        <hr>
+        <div class="head_info" id="cal">
+          <p>
+            <i class="fas fa-fw fa-calendar"></i> 날짜 선택 :
+            <input type="text" id="datepicker" style="width: 167px" />
+          </p>
+        </div>
+        <div class="search">
+          <!-- drop -->
+          <div class="input-group" style="width: 40%">
+            <select
+              id="type"
+              class="custom-select"
+              aria-label="Default select example"
+              style="border-radius: 0.35rem"
+            >
+              <option value="">검색유형</option>
+              <option value="1">환자이름</option>
+              <option value="2">병원명</option>
+            </select>
+            <p
+              class="btn btn-info"
+              style="
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
+                margin-left: 0.3rem;
+                margin-bottom: 0;
+              "
+            >
+              <i class="fas fa-search fa-sm"></i>
+            </p>
+            <input
+              type="text"
+              id="keyword"
+              class="form-control bg-light border-1 small"
+              placeholder="검색어를 입력하세요."
+              aria-label="Search"
+              aria-describedby="basic-addon2"
+              style="width: 30%"
+            />
+            <button
+              id="searchBtn"
+              class="btn btn-info"
+              type="button"
+              style="border-top-left-radius: 0; border-bottom-left-radius: 0"
+            >
+              검색하기
+            </button>
+          </div>
+        </div>
+        <div class="card shadow mb-4">
+        <div id="perbtn" th:if="${#dates.format(#dates.createNow(), 'yyyy-MM-dd')}">
+          <div id="prescriptionButtonWrapper">
+            <button
+              id="prescriptionButton"
+              class="btn btn-info"
+              onclick="convert()"
+            >
+              처방내역보기
+            </button>
+          </div>
+          <div id="prescriptionButtonccc" style="display: none">
+            <button
+              id="prescriptionButtonccc1"
+              class="btn btn-warning"
+            >
+              처방현황보기
+            </button>
+          </div>
+          </div>
+          <div
+            class="card-header py-3"
+            style="
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
+            "
+          >
+            <h5 class="m-0 font-weight-bold text-secondary">
+              <i class="fas fa-fw fa-file-medical"></i>
+            </h5>
+          </div>
+          <div
+            class="card-body"
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <table class="table" style="min-height: 556px"></table>
+          </div>
+          <div class="pagination"></div>
+        </div>
+      </div>
+      <!-- 반환 modal -->
+      <div
+        class="modal fade"
+        id="returnModal"
+        tabindex="-1"
+        aria-labelledby="exampleModalLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">반환 사유</h5>
+              <button
+                type="button"
+                class="btn-close"
+                data-bs-dismiss="modal"
+                aria-label="Close"
+              >
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+            </div>
+            <div class="modal-body container">
+              <form id="returnform">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault1"
+                    checked
+                  />
+                  <label class="form-check-label" for="flexRadioDefault1"
+                    >약 재고가 부족하여 조제가 취소되었습니다.
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault2"
+                  />
+                  <label class="form-check-label" for="flexRadioDefault2"
+                    >약국 사정상 조제가 어려워 취소되었습니다.
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault3"
+                  />
+                  <label class="form-check-label" for="flexRadioDefault3"
+                    >약국 영업 시간이 아닙니다.
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="radio"
+                    name="flexRadioDefault"
+                    id="flexRadioDefault4"
+                  />
+                  <label for="message-text" class="col-form-label">기타</label>
+                  <div id="message-text" style="display: none">
+                    <textarea class="form-control"></textarea>
+                  </div>
+                </div>
+              </form>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-secondary"
+                  data-bs-dismiss="modal"
+                >
+                  닫기
+                </button>
+                <button type="button" class="btn btn-primary" id="reperscript">
+                  반환
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 반환 modal 끝 -->
+      <!-- 처방전 미리보기 모달 -->
+      <div
+        class="modal fade"
+        id="exampleModalCenter"
+        tabindex="-1"
+        role="dialog"
+        aria-labelledby="exampleModalCenterTitle"
+        aria-hidden="false"
+      >
+        <div class="modal-dialog modal-dialog-centered" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLongTitle">
+                처방전 상세보기
+              </h5>
+            </div>
+            <div class="modal-body container">
+              <table id="modalTable"></table>
+            </div>
 
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary"
-							data-bs-dismiss="modal">Close</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-</body>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-bs-dismiss="modal"
+              >
+                Close
+              </button>
+              <button type="button" class="btn btn-warning" id="printper">
+                출력하기
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/sockjs-client@1/dist/sockjs.min.js"></script>
+<script
+  src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"
+  integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg=="
+  crossorigin="anonymous"
+  referrerpolicy="no-referrer"
+></script>
 <script>
-var clinicNo = 0;
-var dateValue = 0;
-  $(function () {
-    //input을 datepicker로 선언
-    $("#datepicker").datepicker({
-      dateFormat: "yy-mm-dd", //달력 날짜 형태
-      showOtherMonths: true, //빈 공간에 현재월의 앞뒤월의 날짜를 표시
-      showMonthAfterYear: true, // 월- 년 순서가아닌 년도 - 월 순서
-      changeYear: true, //option값 년 선택 가능
-      changeMonth: true, //option값  월 선택 가능
-      yearSuffix: "년", //달력의 년도 부분 뒤 텍스트
-      monthNamesShort: [
-        "1월",
-        "2월",
-        "3월",
-        "4월",
-        "5월",
-        "6월",
-        "7월",
-        "8월",
-        "9월",
-        "10월",
-        "11월",
-        "12월",
-      ], //달력의 월 부분 텍스트
-      monthNames: [
-        "1월",
-        "2월",
-        "3월",
-        "4월",
-        "5월",
-        "6월",
-        "7월",
-        "8월",
-        "9월",
-        "10월",
-        "11월",
-        "12월",
-      ], //달력의 월 부분 Tooltip
-      dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"], //달력의 요일 텍스트
-      dayNames: [
-        "일요일",
-        "월요일",
-        "화요일",
-        "수요일",
-        "목요일",
-        "금요일",
-        "토요일",
-      ], //달력의 요일 Tooltip
-      minDate: "-5Y", //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
-      maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후)
-    });
+  
+  var clinicNo = null;
+  var pharmacySelectno = null;
+  var userId = null;
+  var username = null;
+  var hospitalname = null;
+  var doctorname = null;
+  var pharmacyname = null;
 
-    //초기값을 오늘 날짜로 설정해줘야 합니다.
-    $("#datepicker").datepicker("setDate", "today", {
-      dateFormat: "yyyy-MM-dd",
-    }); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
+  
+  /* --------------------
+   * datepicker 초기화
+  ----------------------*/  
+  function datepickerinit() {
+	  $("#datepicker").datepicker({
+	      dateFormat: "yy-mm-dd", //달력 날짜 형태
+	      showOtherMonths: true, //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+	      showMonthAfterYear: true, // 월- 년 순서가아닌 년도 - 월 순서
+	      changeYear: false, //option값 년 선택 가능
+	      changeMonth: false, //option값  월 선택 가능
+	      yearSuffix: "년", //달력의 년도 부분 뒤 텍스트
+	      monthNamesShort: [
+	        "1월",
+	        "2월",
+	        "3월",
+	        "4월",
+	        "5월",
+	        "6월",
+	        "7월",
+	        "8월",
+	        "9월",
+	        "10월",
+	        "11월",
+	        "12월",
+	      ], //달력의 월 부분 텍스트
+	      monthNames: [
+	        "1월",
+	        "2월",
+	        "3월",
+	        "4월",
+	        "5월",
+	        "6월",
+	        "7월",
+	        "8월",
+	        "9월",
+	        "10월",
+	        "11월",
+	        "12월",
+	      ], //달력의 월 부분 Tooltip
+	      dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"], //달력의 요일 텍스트
+	      dayNames: [
+	        "일요일",
+	        "월요일",
+	        "화요일",
+	        "수요일",
+	        "목요일",
+	        "금요일",
+	        "토요일",
+	      ], //달력의 요일 Tooltip
+	      minDate: "-5Y", //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+	      maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후) 
+	    });
+	  
+	    //초기값을 오늘 날짜로 설정해줘야 합니다.
+	    $("#datepicker").datepicker("setDate", "today", {
+	      dateFormat: "yyyy-MM-dd",
+	    }); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
+  }
+  
+  var listtr ="";
+  /*--------------------
+  *  처방전 조회 
+  ---------------------*/
+  function viewPer(no, uname, hname, dname, pname, pselect, pstatus) {
+    clinicNo = no;
+    username = uname;
+    hospitalname = hname;
+    doctorname = dname;
+    pharmacyname = pname;
+    pharmacySelectno = pselect;
+    var printStatus = pstatus;
     
-/*     $("#datepicker").on("change", function () {
-        // 선택된 날짜를 콘솔에 출력
-        console.log("선택된 날짜:", $(this).val());
-      }); */
-
-      // 페이지 로드 시 현재 날짜를 콘솔에 출력
-      console.log("현재 날짜:", $("#datepicker").val());
-  });
-
-function viewPer(no) {
-    console.log(no);
+     listtr = $(event.target.closest('tr'));
+    console.log(listtr);
+    
     const modalTable = $("#modalTable");
-    $.ajax(`/perscription/${no}`) //fetch
+    $.ajax(`/pharmacy/perscription/${no}`) //fetch
       .done((result) => {
         modalTable.empty();
         modalTable.append(
           `<tr>
-                <th>약품명</th>
-                <th>투약량</th>
-                <th>횟수</th>
-                <th>일수</th>
-            </tr>`
+                     <th>약품명</th>
+                     <th>투약량</th>
+                     <th>횟수</th>
+                     <th>일수</th>
+                 </tr>`
         );
 
         for (let i of result) {
           modalTable.append(
             `<tr>
-                <td>${i.medicineName}</td>
-                <td>${i.dosage}</td>
-                <td>${i.doseCnt}</td>
-                <td>${i.doseDay}</td>
-            </tr>`
+                     <td>${i.medicineName}</td>
+                     <td>${i.dosage}</td>
+                     <td>${i.doseCnt}</td>
+                     <td>${i.doseDay}</td>
+                 </tr>`
           );
         }
+        
+        if(printStatus == 'd2') {
+        	document.getElementById("printper").style.display = "none";
+        }
+        
       })
       .fail((err) => console.log(err)); //catch
-}
+  }
+  
+  /*--------------------
+   *  처방전 반환 
+   ---------------------*/
+  function viewreturn(no, phno, uid, uname, hname, dname) {
+    clinicNo = no;
+    pharmacySelectno = phno;
+    userId = uid;
+  }
 
-function viewreturn(no) {
-	clinicNo = no;
-}
+  /*--------------------
+   *  처방전 반환 시, 소켓
+   ---------------------*/
+  function cancle(rj) {
+    //console.log("alarm 들어갑니당~ ", clinicNo, pharmacySelectno, userId, rj);
+    //console.log(rj);
+    // 비대면 진료면 알람테이블 인서트하고 입장하기상태 업뎃침
 
-function sendDate(page) {
-    dateValue = $("#datepicker").val();
-    var currentDate = new Date();
-    var perdate = currentDate.toISOString().split('T')[0];
-    
-    var keyword = $("#keyword").val();
-    console.log('keyword', keyword);
-    var type = $("#type").val();
-    console.log('type', type);
-	
-    $.ajax({
-        type: "GET", 
-        url: `/pharmacy/status/${dateValue}`, // 백엔드 엔드포인트로 교체
-        data: {
-          page: page,
-          keyword: keyword,
-          type: type
-        },
-        dataType: 'json',
-        success: function (response) {
-            console.log("Ajax 요청 성공", response);
-            /* console.log("Ajax 요청 성공", response);
-            console.log("일", response.plist);
-            console.log("이", response.pagedto); */
-            if(dateValue === perdate) {
-            	createTable(response.plist);
-            } else {
-            	createTable2(response.plist);
-            }
-            // 페이지 번호 생성
-            makePaging(response.pagedto);
-        },
-        error: function (error) {
-            console.error("Ajax 요청 실패:", error);
+    // 알람테이블에 들어갈 객체
+    let obj = {
+      pharmacySelectno: pharmacySelectno,
+      userId: userId,
+      contentCode: "canclePharmacy",
+      prefix: rj,
+    };
+
+    $.ajax("/saveAlarmP", {
+      type: "post",
+      data: JSON.stringify(obj),
+      dataType: "json",
+      contentType: "application/json",
+    })
+      .done((result) => {
+        // result == 1  성공했으면 페이지 이동
+        if (result > 0) {
+           console.log("반환 알림 성공");
         }
-    });
-}
+      }) //.done
+      .fail((err) => console.log(err));
+    connectWebSocket(rj, pharmacySelectno);
+  }
+  
+  /*--------------------
+   *  버튼 이벤트
+   ---------------------*/
+  function changebtn() {
+	    var dateValue = $("#datepicker").val();
+	    var currentDate = new Date();
+	    var perdate = currentDate.toISOString().split("T")[0];
+	    var isToday = dateValue === perdate;
+	  
+	    var prescriptionButton = document.getElementById("prescriptionButton");
+		var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
 
-$("#datepicker").on("change", function () {
+		if (isToday) {
+			var status= prescriptionButton.style.display;  //처방내역
+			var show = perbtn.style.display;
+			if(show == 'none') {
+				perbtn.style.display = 'block';
+				
+				if(status == 'block') {
+					prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
+					prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
+					alltop.innerText = "처방내역";
+				} else {
+					prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
+					prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
+					alltop.innerText = "처방현황";
+				}
+			} else {
+				if(status == 'block') {
+					prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
+					prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
+					alltop.innerText = "처방내역";
+				} else {
+					prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
+					prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
+					alltop.innerText = "처방현황";
+				}
+			}
+			
+		} else {
+			perbtn.style.display = 'none';
+			alltop.innerText = "처방내역";
+		}
+  }
+  
+  /*--------------------
+   *  날짜별 처방 현황 / 내역
+   ---------------------*/
+  function sendDate(page) {
+    var dateValue = $("#datepicker").val();
+    var currentDate = new Date();
+    var perdate = currentDate.toISOString().split("T")[0];
+    var isToday = dateValue === perdate;
+
+    var keyword = $("#keyword").val();
+    //console.log("keyword", keyword);
+    var type = $("#type").val();
+    //console.log("type", type);
+    changebtn();
+/*     var prescriptionButton = document.getElementById("prescriptionButton");
+	var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
+
+	prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
+	prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시 */
+
+    $.ajax({
+      type: "GET",
+      url: `/pharmacy/status/${dateValue}`, // 백엔드 엔드포인트로 교체
+      data: {
+        page: page,
+        keyword: keyword,
+        type: type,
+      },
+      dataType: "json",
+      success: function (response) {
+        console.log("Ajax 요청 성공");
+        /* console.log("Ajax 요청 성공", response);
+                 console.log("일", response.plist);
+                 console.log("이", response.pagedto); */
+        var plist = response.plist;
+        if (dateValue === perdate) {
+          createTable(plist);
+        } else {
+          createTable2(plist);
+        }
+        // 페이지 번호 생성
+        makePaging(response.pagedto);
+      },
+      error: function (error) {
+        console.error("Ajax 요청 실패:", error);
+      },
+    });
+  }
+
+  
+  $("#datepicker").on("change", function () {
     console.log("선택된 날짜:", $(this).val());
     dateValue = $(this).val();
     console.log("ajax로 보낼 날짜", dateValue);
-    sendDate();
+    sendDate(page);
   });
 
-$(document).ready(function() {
-    sendDate(page); 
-    
-    if ($('#flexRadioDefault4').is(':checked')) {
-        $('#message-text').show();
+  $(document).ready(function () {
+
+    if ($("#flexRadioDefault4").is(":checked")) {
+      $("#message-text").show();
     } else {
-        $('#message-text').hide();
+      $("#message-text").hide();
     }
-    
+
     // 라디오 버튼 변경 시 이벤트 처리
-    $('input[name="flexRadioDefault"]').on('change', function(){
-        if ($(this).attr('id') === 'flexRadioDefault4') {
-            $('#message-text').show().find('textarea').focus();
-        } else {
-            $('#message-text').hide().find('textarea').val('');
-        }
+    $('input[name="flexRadioDefault"]').on("change", function () {
+      if ($(this).attr("id") === "flexRadioDefault4") {
+        $("#message-text").show().find("textarea").focus();
+      } else {
+        $("#message-text").hide().find("textarea").val("");
+      }
     });
-});
+  });
 
-function createTable(plist) {
+  
+  
+  function createTable(plist) {
+	//showHideButton();
     // 동적으로 테이블 생성
     $(".table").empty();
-    var table = document.querySelector('.table');
+    var table = document.querySelector(".table");
     var thead = $("<thead>").appendTo(table);
     var tbody = $("<tbody>").appendTo(table);
-    
+
+    if (plist.length === 0) { // 처방 내역이 없는 경우
+        var messageRow = $("<tr>").appendTo(tbody);
+        messageRow.append('<td colspan="9" class="text-center">처방 현황이 없습니다.</td>');
+    } else {
     // 테이블 헤더 생성
     var headerRow = $("<tr>").appendTo(thead);
-    var headers = ["No", "환자성명", "생년월일", "환자Tel", "병원명", "병원Tel", "담당의", "처방일자", "처방전", "출력", "반환"];
+    var headers = [
+      "No",
+      "환자성명",
+      "생년월일",
+      "환자Tel",
+      "병원명",
+      "병원Tel",
+      "담당의",
+      "처방일자",
+      "처방전",
+      "반환",
+    ];
 
-	 $.each(headers, function(index, text) {
-	     $("<th>").text(text).appendTo(headerRow);
-	 });
-
-    // 테이블 내용 생성
-	 for (let i of plist) {
-	        var row = $("<tr>").appendTo(tbody);
-	        row.append(`<td>${i.clinicNo}</td>`);
-	        row.append(`<td>${i.userName}</td>`);
-	        row.append(`<td>${formatDate(new Date(i.userBirthday))}</td>`);
-	        row.append(`<td>${i.userPhone}</td>`);
-	        row.append(`<td>${i.hospitalName}</td>`);
-	        row.append(`<td>${i.hospitalPhone}</td>`);
-	        row.append(`<td>${i.doctorName}</td>`);
-	        row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
-	        row.append(`<td><button
-                    id="viewper"
-                    onclick="viewPer(${i.clinicNo})"
-                    type="button"
-                    class="btn btn-info"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModalCenter"
-                  ><i class="fas fa-solid fa-file-medical"></i>
-                  </button></td>`);
-	        row.append(`<td><button class="btn btn-warning"><i class="fas fa-solid fa-print"></i></button></td>`);
-	        row.append(`<td><button
-                    id="returnbtn"
-                    class="btn btn-danger"
-                    data-bs-toggle="modal"
-                    data-bs-target="#returnModal"
-                    onclick="viewreturn(${i.clinicNo})"
-                  >
-                    반환
-                  </button></td>`);
-	    }
-};
-
-function createTable2(plist) {
-    // 동적으로 테이블 생성
-    $(".table").empty();
-    var table = document.querySelector('.table');
-    var thead = $("<thead>").appendTo(table);
-    var tbody = $("<tbody>").appendTo(table);
-    
-    // 테이블 헤더 생성
-    var headerRow = $("<tr>").appendTo(thead);
-    var headers = ["No", "환자성명", "생년월일", "환자Tel", "병원명", "병원Tel", "담당의", "처방일자", "처방전"];
-
-	 $.each(headers, function(index, text) {
-	     $("<th>").text(text).appendTo(headerRow);
-	 });
+    $.each(headers, function (index, text) {
+      $("<th>").text(text).appendTo(headerRow);
+    });
 
     // 테이블 내용 생성
-	 for (let i of plist) {
-	        var row = $("<tr>").appendTo(tbody);
-	        row.append(`<td>${i.clinicNo}</td>`);
-	        row.append(`<td>${i.userName}</td>`);
-	        row.append(`<td>${formatDate(new Date(i.userBirthday))}</td>`);
-	        row.append(`<td>${i.userPhone}</td>`);
-	        row.append(`<td>${i.hospitalName}</td>`);
-	        row.append(`<td>${i.hospitalPhone}</td>`);
-	        row.append(`<td>${i.doctorName}</td>`);
-	        row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
-	        row.append(`<td><button
-                    id="viewper"
-                    onclick="viewPer(${i.clinicNo})"
-                    type="button"
-                    class="btn btn-info"
-                    data-bs-toggle="modal"
-                    data-bs-target="#exampleModalCenter"
-                  ><i class="fas fa-solid fa-file-medical"></i>
-                  </button></td>`);
-	    }
-};
-
-/* 날짜 변환 */
-function formatDate(date) {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    
-    return `${year}-${month}-${day}`;
+    plist.forEach((item, index) => {
+        var row = $("<tr>").appendTo(tbody);
+        row.append(`<td>${index + 1}</td>`);
+        row.append(`<td>${item.userName}</td>`);
+        row.append(`<td>${formatDate(new Date(item.userBirthday))}</td>`);
+        row.append(`<td>${item.userPhone}</td>`);
+        row.append(`<td>${item.hospitalName}</td>`);
+        row.append(`<td>${item.hospitalPhone}</td>`);
+        row.append(`<td>${item.doctorName}</td>`);
+        row.append(`<td>${formatDate(new Date(item.perscriptionDate))}</td>`);
+        row.append(`<td><button
+                           id="viewper"
+                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}')"
+                           type="button"
+                           class="btn btn-info"
+                           data-bs-toggle="modal"
+                           data-bs-target="#exampleModalCenter"
+                         ><i class="fas fa-solid fa-file-medical"></i>
+                         </button></td>`);
+        row.append(`<td><button
+                           id="returnbtn"
+                           class="btn btn-danger"
+                           data-bs-toggle="modal"
+                           data-bs-target="#returnModal"
+                           onclick="viewreturn('${item.clinicNo}', '${item.pharmacySelectno}', '${item.patientUserId}', '${item.userName}', '${item.hospitalName}', '${item.doctorName}')"
+                         >
+                           반환
+                         </button></td>`);
+    });
+  }
 }
 
-var page = 1;
+  
+  function createTable2(plist) {
+	//showHideButton();
+    // 동적으로 테이블 생성
+    $(".table").empty();
+    var table = document.querySelector(".table");
+    var thead = $("<thead>").appendTo(table);
+    var tbody = $("<tbody>").appendTo(table);
+	
+    if (plist.length === 0) { // 처방 내역이 없는 경우
+        var messageRow = $("<tr>").appendTo(tbody);
+        messageRow.append('<td colspan="9" class="text-center">처방 내역이 없습니다.</td>');
+    } else {
+    // 테이블 헤더 생성
+    var headerRow = $("<tr>").appendTo(thead);
+    var headers = [
+      "No",
+      "환자성명",
+      "생년월일",
+      "환자Tel",
+      "병원명",
+      "병원Tel",
+      "담당의",
+      "처방일자",
+      "처방전",
+    ];
 
-function makePaging(dto = {}) {
+    $.each(headers, function (index, text) {
+      $("<th>").text(text).appendTo(headerRow);
+    });
+
+    // 테이블 내용 생성
+    plist.forEach((item, index) => {
+        var row = $("<tr>").appendTo(tbody);
+        row.append(`<td>${index + 1}</td>`); // plist 배열의 인덱스를 출력
+        row.append(`<td>${item.userName}</td>`);
+        row.append(`<td>${formatDate(new Date(item.userBirthday))}</td>`);
+        row.append(`<td>${item.userPhone}</td>`);
+        row.append(`<td>${item.hospitalName}</td>`);
+        row.append(`<td>${item.hospitalPhone}</td>`);
+        row.append(`<td>${item.doctorName}</td>`);
+        row.append(`<td>${formatDate(new Date(item.perscriptionDate))}</td>`);
+        row.append(`<td><button
+                           id="viewper"
+                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}')"
+                           type="button"
+                           class="btn btn-info"
+                           data-bs-toggle="modal"
+                           data-bs-target="#exampleModalCenter"
+                         ><i class="fas fa-solid fa-file-medical"></i>
+                         </button></td>`);
+    });
+  }
+}
+
+  /* 날짜 변환 */
+  function formatDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+
+    return `${year}-${month}-${day}`;
+  }
+
+  var page = 1;
+
+  function makePaging(dto = {}) {
     document.querySelector(".pagination").innerHTML = ""; //초기화
-    console.log(dto);
+    //console.log(dto);
     //이전페이지가 있으면
     if (dto.prev) {
       let aTag = document.createElement("a");
@@ -604,90 +823,313 @@ function makePaging(dto = {}) {
         sendDate(page); // 페이지번호에 해당하는 데이터를 불러오는 함수 호출
       }); //클릭이벤트
     }); //포이치
-  } 
+  }
 
-/* 처방전 반환 사유 선택값 확인 */
-$("input[name='flexRadioDefault']").on("change", function () {
+  /* 처방전 반환 사유 선택값 확인 */
+  $("input[name='flexRadioDefault']").on("change", function () {
     // 선택된 input 박스의 id 값을 가져와 label의 값을 출력
     var checkedValue = $("input[name='flexRadioDefault']:checked");
-    var checkedId = checkedValue.attr('id');
+    var checkedId = checkedValue.attr("id");
     var checkedLabel = $("label[for='" + checkedId + "']").text();
     console.log("반환 사유:", checkedLabel);
-    console.log('진료번호', clinicNo);
-
-});
-/* 처방전 반환 시 동작 */
-$("#reperscript").on("click", function () {
+    console.log("진료번호", clinicNo);
+  });
+  
+  
+  /* 처방전 반환 시 동작 */
+  $("#reperscript").on("click", function () {
     var checkedValue = $("input[name='flexRadioDefault']:checked");
-    var checkedId = checkedValue.attr('id');
+    var checkedId = checkedValue.attr("id");
     var checkedLabel = $("label[for='" + checkedId + "']").text();
     var rejectionReason;
 
-    if (checkedId === 'flexRadioDefault4') {
-        rejectionReason = $("#message-text textarea").val(); // 기타 선택 시 입력된 내용 가져오기
+    if (checkedId === "flexRadioDefault4") {
+      rejectionReason = $("#message-text textarea").val(); // 기타 선택 시 입력된 내용 가져오기
     } else {
-        rejectionReason = checkedLabel; // 다른 선택지일 경우 라벨 텍스트 가져오기
+      rejectionReason = checkedLabel; // 다른 선택지일 경우 라벨 텍스트 가져오기
     }
 
-    console.log('반환사유: ', rejectionReason);
-    console.log('진료번호ddd', clinicNo);
+    console.log("반환사유: ", rejectionReason);
+    console.log("진료번호ddd", clinicNo);
 
     // AJAX 요청을 통해 서버 엔드포인트로 데이터 전송
+    var deltr = $(event.target);
+    console.log(deltr);
     $.ajax({
-        type: "POST",
-        url: "/pharmacy/rejection",
-        data: {
-            rejection: rejectionReason,
-            clinicNo: clinicNo
-        },
-        dataType: 'json',
-        success: function (response) {
-            console.log("반환 성공", response);
-            $("#returnModal").modal("hide");
-            location.reload();
-            //connectWebSocket();
-        },
-        error: function (error) {
-            console.error("반환 실패", error);
-        }
+      type: "POST",
+      url: "/pharmacy/rejection",
+      data: JSON.stringify({
+        rejection: rejectionReason,
+        clinicNo: clinicNo,
+        pharmacySelectno: pharmacySelectno
+      }),
+      dataType: "json",
+      contentType: "application/json",
+      success: function (response) {
+        console.log("반환 성공");
+        $("#returnModal").modal("hide");
+        cancle(rejectionReason);
+        //connectWebSocket();
+        window.location.reload();
+      },
+      error: function (error) {
+        console.error("반환 실패", error);
+      },
     });
-});
+  });
 
-//검색버튼 이벤트 만들기
-$('#searchBtn').on("click", function() {
-	sendDate(1);
-})
 
-// ------------------------ socket
-let alarmSocket = null;
-function connectWebSocket() {
-	try {
-        // WebSocket 연결
-        alarmSocket = new WebSocket("ws://localhost:80/echo");
 
-        // 연결이 열리면 호출되는 이벤트 핸들러
-        alarmSocket.onopen = function (event) {
-          console.log("약국 취소 알림 : WebSocket 연결이 열렸습니다.");
+  // ------------------------ socket
+  let alarmSocket = null;
+  function connectWebSocket(rejection, pharmacySelectNo) {
+    try {
+      // WebSocket 연결
+      alarmSocket = new WebSocket("ws://localhost:80/echo");
 
-          if (alarmSocket && alarmSocket.readyState === WebSocket.OPEN) {
-            // 서버로 메시지 전송
-            console.log("약국 - 조제 취소할 거임");
-            const message = uid;
-            alarmSocket.send(message);
-          }
-        };
-        
-        // 연결이 닫혔을 때 호출되는 이벤트 핸들러
-        alarmSocket.onclose = function (event) {
-          console.log("약국 퇴장 WebSocket 연결이 닫혔습니다.");
-        }; 
+      // 연결이 열리면 호출되는 이벤트 핸들러
+      alarmSocket.onopen = function (event) {
+        console.log("약국 취소 알림 : WebSocket 연결이 열렸습니다.");
 
-        // 에러가 발생했을 때 호출되는 이벤트 핸들러
-        alarmSocket.onerror = function (error) {
-          console.error(" 약국... WebSocket 연결 에러:", error);
-        }; ///
+        if (alarmSocket && alarmSocket.readyState === WebSocket.OPEN) {
+          // 서버로 메시지 전송
+          console.log("약국 - 조제 취소");
+
+          // 보낼때 아이디 + ',' + 반환사유 + ',' + 약국선택아이디
+          const message = userId + "," + rejection + "," + pharmacySelectNo;
+          console.log("약국", message);
+          alarmSocket.send(message);
+        }
+      };
+
+      // 연결이 닫혔을 때 호출되는 이벤트 핸들러
+      alarmSocket.onclose = function (event) {
+        console.log("약국 퇴장 WebSocket 연결이 닫혔습니다.");
+      };
+
+      // 에러가 발생했을 때 호출되는 이벤트 핸들러
+      alarmSocket.onerror = function (error) {
+        console.error(" 약국... WebSocket 연결 에러:", error);
+      }; ///
     } catch (error) {
-        console.error("약국... WebSocket 연결 에러:", error);
+      console.error("약국... WebSocket 연결 에러:", error);
+    }
+  }
+
+  //----------------------------------
+  // pdf 생성 함수는 클릭 이벤트에서만 작동하도록 수정합니다.
+  function printPdf(no, uname, hname, dname) {
+    console.log("나와라 얍", no, uname, hname, dname);
+    $.ajax(`/pharmacy/perscription/${no}`) //fetch
+      .done((result) => {
+        var divPer = document.createElement("div");
+        divPer.id = "divPer";
+
+        // 처방전 제목 추가
+        var prescriptionTitle = document.createElement("h3");
+        prescriptionTitle.className =
+          "m-4 font-weight-bold text-secondary text-center"; // text-center 클래스 추가
+        prescriptionTitle.innerHTML =
+          '<i class="fas fa-fw fa-pills"></i>처방전';
+        divPer.appendChild(prescriptionTitle);
+
+        var highlightDiv = document.createElement("div");
+        highlightDiv.className = "highlight";
+        highlightDiv.style.marginBottom = "20px"; // 약간의 여백 추가
+        highlightDiv.innerHTML = `
+                     <p><strong>병원 이름 : </strong>${dname}</p>
+                     <p><strong>의사 이름 :</strong> ${hname}</p>
+                     <p><strong>약국 이름 : </strong>${pname}</p>
+                     <p><strong>환자 이름 : </strong>${uname}</p>
+                     <p><strong>진료 번호 : </strong>${no}</p>
+                 `;
+        divPer.appendChild(highlightDiv);
+
+        var newTable = document.createElement("table");
+        newTable.className = "table table-borderless table-hover text-center";
+
+        var tableHead = document.createElement("thead");
+        tableHead.innerHTML = `
+                     <tr>
+                         <th>약품명</th>
+                         <th>투약량</th>
+                         <th>횟수</th>
+                         <th>일수</th>
+                     </tr>
+                 `;
+        newTable.appendChild(tableHead);
+
+        var tableBody = document.createElement("tbody");
+        for (let i of result) {
+          var row = document.createElement("tr"); // 각 반복마다 새로운 <tr> 요소 생성
+
+          row.innerHTML = `
+                         <td>${i.medicineName}</td>
+                         <td>${i.dosage}</td>
+                         <td>${i.doseCnt} 번</td>
+                         <td>${i.doseDay} 일</td>
+                     `;
+
+          tableBody.appendChild(row); // 새로운 <tr>을 테이블 본문에 추가
+        }
+
+        newTable.appendChild(tableBody);
+
+        divPer.appendChild(newTable);
+
+        var element = divPer;
+        var opt = {
+          margin: 1,
+          filename: "myfile.pdf",
+          image: { type: "jpeg", quality: 0.98 },
+          html2canvas: { scale: 2 },
+          jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+        };
+
+        // PDF 생성 후 iframe에 표시
+        html2pdf()
+          .set(opt)
+          .from(element)
+          .toPdf()
+          .output("datauristring")
+          .then(function (pdfDataUri) {
+            var newWindow = window.open();
+            // PDF 데이터를 새 창에 표시
+            newWindow.document.write(
+              '<iframe width="100%" height="100%" src="' +
+                pdfDataUri +
+                '"></iframe>'
+            );
+          });
+      });
+  }
+  
+  /* ----------------------
+   * 현재 날짜 처방 내역 
+  ------------------------*/
+  function pringhandler() {
+	  $('#exampleModalCenter').modal('hide');
+	  listtr.remove();
+	  
+      no = clinicNo;
+      uname = username;
+      hname = hospitalname;
+      dname = doctorname;
+      pname = pharmacyname;
+
+      printPdf(no, uname, hname, dname, pname);
+
+      let vo = {
+        clinicNo: no,
+        pharmacySelectno: pharmacySelectno,
+      };
+      $.ajax({
+        url: `/printStatusupdate`,
+        type: "POST",
+        data: JSON.stringify(vo),
+        contentType: "application/json",
+      })
+        .done(function (result) {
+          if (result > 0) {
+        	  print.parent().remove();
+          }
+        })
+        .fail(function (xhr, status, error) {
+          console.error(xhr.responseText);
+          alert("Update 실패");
+        });
+    }
+  
+  /* ----------------------
+   * 현재 날짜 처방 내역 
+  ------------------------*/
+  function convert() {
+	changebtn();
+    dateValue = $("#datepicker").val();
+    var keyword = $("#keyword").val();
+    var type = $("#type").val();
+    
+    $.ajax({
+      type: "GET",
+      url: `/pharmacy/cstatus/${dateValue}`, // 백엔드 엔드포인트로 교체
+      data: {
+        page: page,
+        keyword: keyword,
+        type: type,
+      },
+      dataType: "json",
+      success: function (response) {
+        //console.log(response);
+        $(".table").empty();
+        var table = document.querySelector(".table");
+        var thead = $("<thead>").appendTo(table);
+        var tbody = $("<tbody>").appendTo(table);
+		
+        if (response.currplist.length === 0) { 
+            var messageRow = $("<tr>").appendTo(tbody);
+            messageRow.append('<td colspan="9" class="text-center">처방 내역이 없습니다.</td>');
+        } else {
+        // 테이블 헤더 생성
+        var headerRow = $("<tr>").appendTo(thead);
+        var headers = [
+          "No",
+          "환자성명",
+          "생년월일",
+          "환자Tel",
+          "병원명",
+          "병원Tel",
+          "담당의",
+          "처방일자",
+          "처방전",
+        ];
+
+        $.each(headers, function (index, text) {
+          $("<th>").text(text).appendTo(headerRow);
+        });
+
+        // 테이블 내용 생성
+        var idx = 1
+        for (let i of response.currplist) {
+		    var row = $("<tr>").appendTo(tbody);
+		    row.append(`<td>${idx++}</td>`);
+		    row.append(`<td>${i.userName}</td>`);
+		    row.append(`<td>${formatDate(new Date(i.userBirthday))}</td>`);
+		    row.append(`<td>${i.userPhone}</td>`);
+		    row.append(`<td>${i.hospitalName}</td>`);
+		    row.append(`<td>${i.hospitalPhone}</td>`);
+		    row.append(`<td>${i.doctorName}</td>`);
+		    row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
+		    row.append(`<td><button
+		                      id="viewper"
+		                      onclick="viewPer(${i.clinicNo}, '${i.userName}', '${i.hospitalName}', '${i.doctorName}', '${i.pharmacyName}', '${i.pharmacySelectno}', '${i.printStatus}')"
+		                      type="button"
+		                      class="btn btn-info"
+		                      data-bs-toggle="modal"
+		                      data-bs-target="#exampleModalCenter"
+		                    ><i class="fas fa-solid fa-file-medical"></i>
+		                    </button></td>`);
+		}
+      makePaging(response.pagedto);
       }
-}
+      },
+      
+    });
+  }
+
+  $(function () {
+	    //input을 datepicker로 선언	  
+		datepickerinit();
+
+	    sendDate(1);
+	    
+	    // 출력 btn 이벤트 핸들러
+	    $("#printper").click(pringhandler);
+	    
+	    // 처방내역 btn 이벤트 핸들러
+	    document.getElementById("prescriptionButtonccc").addEventListener("click", function() {    sendDate(1);	});
+	  
+	  //검색버튼 이벤트 만들기
+	  $("#searchBtn").on("click", function () {    sendDate(1);  });
+	});
+
 </script>

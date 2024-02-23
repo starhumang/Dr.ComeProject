@@ -4,7 +4,6 @@
  layout:decorate="~{layouts/layout}">
 <head>
 <meta charset="UTF-8">
-<title>Challenge</title>
 <style>
 /* 일요일 날짜 빨간색 */
 .fc-day-sun a {
@@ -20,6 +19,12 @@
 /* 이벤트 아이콘 스타일 */
 .event-icon {
   margin-right: 5px; /* 아이콘과 텍스트 사이의 간격 조정 */
+}
+#calendercon {
+margin-top: 50px;
+}
+button {
+	border: none;
 }
 </style>
 <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
@@ -74,18 +79,46 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log('선택날짜: ' + clickedDate);
 
             var newURL = "todolist/" + clickedDate;
-            window.location.href = newURL;
+            //window.location.href = newURL;
+            $('#todoModal').modal('show');
+            $('#todo').load(newURL);
+           
         }
     });
     calendar.render();
+   
+    $('#todoclose').click(function() {
+    	$('#todoModal').modal('hide');
+    	 location.reload();
+    })
 });
+
 </script>
 </head>
 <body>
 	<div layout:fragment="content">
-		<div class="container">
+		<div class="container" id="calendercon">
 			<div id='calendar'></div>
 		</div>
+		
+		<!-- Modal -->
+		<div class="modal fade bd-example-modal-lg" id="todoModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+		  <div class="modal-dialog modal-lg" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <h5 class="modal-title" id="exampleModalLabel">To Do List &nbsp;<i class="fas fa-pencil-alt"></i></h5>
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id="todoclose">
+		          <!-- <span aria-hidden="true">&times;</span> -->
+		          <i class="fas fa-window-minimize"></i>
+		        </button>
+		      </div>
+		      <div class="modal-body" id="todo">
+		      </div>
+		    </div>
+		  </div>
+		</div>
 	</div>
+	
 </body>
 </html>
+

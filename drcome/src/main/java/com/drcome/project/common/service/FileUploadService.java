@@ -20,8 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class FileUploadService {
 
-	@Value("${file.upload.path}")
-	private String uploadPath;
+	private String uploadPath = "/upload";
 
 	@PostMapping("/uploadsAjax")
 	@ResponseBody

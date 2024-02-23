@@ -10,8 +10,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import com.drcome.project.admin.domain.Pharmacy;
 import com.drcome.project.admin.domain.QPharmacy;
-import com.drcome.project.admin.domain.QUsertable;
-import com.drcome.project.admin.domain.Usertable;
 import com.drcome.project.admin.repository.PharmacyRepoCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;

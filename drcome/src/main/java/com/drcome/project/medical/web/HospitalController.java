@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -198,7 +197,7 @@ public class HospitalController {
 		param.put("hospitalId", hospitalId);
 		param.put("page", page);
 		
-		Map<String, Object> map = new HashMap();
+		Map<String, Object> map = new HashMap<>();
 		// 리스트 전체 개수
 		int total = hospitalService.patientInfoCount(param);
 
@@ -404,7 +403,7 @@ public class HospitalController {
 		param.put("hospitalId", hospitalId);
 		param.put("page", page);
 		
-		Map<String, Object> map = new HashMap();
+		Map<String, Object> map = new HashMap<>();
 		// 리스트 전체 개수
 		int total = hospitalService.qnaCount(param);
 
@@ -613,7 +612,7 @@ public class HospitalController {
             @RequestParam("keyword") String keyword) {
 		hospitalId = principal.getName();
 
-		Map<String, Object> map = new HashMap();
+		Map<String, Object> map = new HashMap<>();
 		// 리스트 전체 개수
 		int total = hospitalService.noticeCount(type, keyword, hospitalId);
 
@@ -721,7 +720,7 @@ public class HospitalController {
 		NoticeVO noticeList = hospitalService.getNoticeDetail(noticeVO);
 		model.addAttribute("noticeNo", noticeNo);
 		model.addAttribute("noticeList", noticeList);
-		System.out.println(noticeList);
+//		System.out.println(noticeList);
 		return "hospital/noticeModify";
 	}
 	
@@ -929,7 +928,7 @@ public class HospitalController {
 	@GetMapping("/hospital/doctorupdate/{DoctorNo}")
 	public String doctorUpdateForm(@PathVariable("DoctorNo") String doctorNo, Model model) {
 		int doctorNum = Integer.parseInt(doctorNo);
-		System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD" + doctorNum);
+//		System.out.println("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDD" + doctorNum);
 		DoctorVO drinfo = hospitalService.selectDoctor(doctorNum);
 		model.addAttribute("drInfo", drinfo);
 		return "hospital/doctormodify";
@@ -966,7 +965,7 @@ public class HospitalController {
 
 		vo.setTimes(times);
 		
-		System.out.println(vo);
+//		System.out.println(vo);
 		
 		try {
 			int cnt = hospitalService.updateDoctor(vo);

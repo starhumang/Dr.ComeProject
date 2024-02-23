@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,8 +35,6 @@ import com.drcome.project.medical.service.QnaVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
 import lombok.extern.log4j.Log4j2;
-
-
 
 /**
  * 메인페이지, 검색기능, 약국&병원 상세페이지, 약국 선택페이지, 방문예약, 비대면예약, 실시간 비대면 상담접수처리 컨트롤러
@@ -115,7 +112,7 @@ public class MainController {
 								 @RequestParam(required = false, defaultValue = "0") int type) {
 		//공지사항
 		String keyword = "";
-		Map<String, Object> notice = new HashMap();
+		Map<String, Object> notice = new HashMap<>();
 		
 		HttpSession session = request.getSession();
 		String hosId = (String) session.getAttribute("hosId");

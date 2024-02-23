@@ -5,8 +5,6 @@ import lombok.Data;
 @Data
 public class PageDTO {
 	
-	
-	
 	int currentPage; 
 	private int startPage;
 	private int endPage;

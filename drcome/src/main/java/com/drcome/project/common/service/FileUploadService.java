@@ -38,7 +38,7 @@ public class FileUploadService {
 			String originalName = uploadFile.getOriginalFilename();
 			String fileName = originalName.substring(originalName.lastIndexOf("//") + 1);
 
-			System.out.println("fileName : " + fileName);
+//			System.out.println("fileName : " + fileName);
 
 			 String folderPath = makeFolder();
 	         String uuid = UUID.randomUUID().toString();
@@ -54,7 +54,7 @@ public class FileUploadService {
 	         }
 	         imageList.add(setImagePath(uploadFileName));
 	         
-	         System.out.println(savePath);
+//	         System.out.println(savePath);
 	      }
 		
 	      return imageList;

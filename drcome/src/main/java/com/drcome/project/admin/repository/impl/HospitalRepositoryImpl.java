@@ -10,8 +10,6 @@ import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport
 
 import com.drcome.project.admin.domain.Hospital;
 import com.drcome.project.admin.domain.QHospital;
-import com.drcome.project.admin.domain.QUsertable;
-import com.drcome.project.admin.domain.Usertable;
 import com.drcome.project.admin.repository.HospitalListRepoCustom;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPQLQuery;
@@ -40,7 +38,7 @@ public class HospitalRepositoryImpl extends QuerydslRepositorySupport implements
             return null;
         } 
         
-        System.out.println("hstatus=============="+hstatus);
+//        System.out.println("hstatus=============="+hstatus);
         return QHospital.hospital.hospitalStatus.eq(hstatus);
     }
 

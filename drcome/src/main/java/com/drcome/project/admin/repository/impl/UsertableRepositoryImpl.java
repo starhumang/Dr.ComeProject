@@ -26,7 +26,7 @@ public class UsertableRepositoryImpl extends QuerydslRepositorySupport implement
 
     @Override
     public Page<Usertable> findByuserStatus(String ustatus, Pageable pageable) {
-    	System.out.println("ustatus1=============="+ustatus);
+//    	System.out.println("ustatus1=============="+ustatus);
         JPQLQuery<Usertable> query = queryFactory.selectFrom(QUsertable.usertable)
                 .where(eqStatus(ustatus));
 
@@ -39,7 +39,7 @@ public class UsertableRepositoryImpl extends QuerydslRepositorySupport implement
             return null;
         } 
         
-        System.out.println("ustatus2=============="+ustatus);
+//        System.out.println("ustatus2=============="+ustatus);
         return QUsertable.usertable.userStatus.eq(ustatus);
     }
 	

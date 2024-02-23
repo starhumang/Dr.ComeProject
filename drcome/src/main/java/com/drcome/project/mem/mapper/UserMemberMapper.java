@@ -82,7 +82,9 @@ public interface UserMemberMapper {
 //	QnA 리스트 페이징
 	public int qnaUserCount(Map<String, Object> map);
 	
+//	알람 목록
 	public List<AlarmVO> myAlarmList(String userId);
 	
+//	알람 체크
 	int chekedAlarm(int alarmNo);
 }

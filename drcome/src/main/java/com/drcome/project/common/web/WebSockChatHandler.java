@@ -46,7 +46,7 @@ public class WebSockChatHandler extends TextWebSocketHandler {
 
 		// 의사or약국이 보낸 payload  //vo로 받아서....
 		payload = message.getPayload();
-		System.out.println("받은 메세지 ======================" + payload);
+//		System.out.println("받은 메세지 ======================" + payload);
 
 		// , 기준으로 짤라서 첫번째 = 유저아이디 두번쨰 = 취소사유 세번쨰 셀렉트넘버 서브스트링이나 스플릿
 		String[] parts = payload.split("\\,");

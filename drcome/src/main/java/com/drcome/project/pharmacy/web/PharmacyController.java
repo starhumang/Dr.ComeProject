@@ -103,7 +103,7 @@ public class PharmacyController {
 		parammap.put("page", page);
 		
 		// result map
-		Map<String, Object> map = new HashMap();
+		Map<String, Object> map = new HashMap<>();
 		
 		// 리스트 전체갯수 가져오기
 		int total = pservice.percount(parammap, date);
@@ -132,18 +132,15 @@ public class PharmacyController {
 		parammap.put("page", page);
 		
 		// result map
-		Map<String, Object> map = new HashMap();
+		Map<String, Object> map = new HashMap<>();
 		
 		// 리스트 전체갯수 가져오기
 		int total = pservice.currpercount(parammap, date);
-		System.out.println("토탈" + total);
-
 
 		// 페이지네이션(currentpage, total)
 		PageDTO dto = new PageDTO(page, total);
 		
 		List<Map<String, Object>> currplist = pservice.perCurrList(parammap, date);
-		
 		
 		map.put("currplist", currplist); 
 		map.put("pagedto", dto); 
@@ -162,8 +159,6 @@ public class PharmacyController {
 	public Map<String, Object> updaterejection(@SessionAttribute(name = "userId", required = false) String id, 
 											   @RequestBody PharmacySelectVO pharmacyselectVO) {
 		pharmacyselectVO.setPharmacyId(id);
-
-		System.out.println(pharmacyselectVO+"=============");
 
 		return pservice.updaterejection(pharmacyselectVO);
 	}

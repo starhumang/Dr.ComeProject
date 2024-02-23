@@ -42,7 +42,7 @@ public class UserSecurityConfig {
 				.antMatchers("/admin/**").hasAnyRole("ADMIN") // 얘도
 				.antMatchers("/hospital/**").hasAnyRole("HOSPITAL") // 얘도
 				.antMatchers("/pharmacy/**").hasAnyRole("PHARMACY") // 얘도
-				//.anyRequest().authenticated()
+				.anyRequest().authenticated()
 				)
 
 				.formLogin((form) -> form.loginPage("/userlogin").usernameParameter("username")

@@ -6,127 +6,138 @@
 >
 <head>
 <meta charset="UTF-8" />
+<title>Pharmacy Status</title>
 <style>
 #btn {
-	margin-bottom: 20px;
+   margin-bottom: 20px;
 }
 
 .head_info {
-	display: flex;
-	justify-content: space-between;
-	margin-top: 30px;
+   display: flex;
+   justify-content: space-between;
+   margin-top: 30px;
 }
 .pagination {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	margin-top: 20px;
-	margin-bottom: 20px;
+   display: flex;
+   justify-content: center;
+   align-items: center;
+   margin-top: 20px;
+   margin-bottom: 20px;
 }
 
 .pagination a {
-	display: inline-block;
-	padding: 5px 10px;
-	margin: 0 2px;
-	border: 1px solid #ccc;
-	background-color: #fff;
-	color: #333;
-	text-decoration: none;
+   display: inline-block;
+   padding: 5px 10px;
+   margin: 0 2px;
+   border: 1px solid #ccc;
+   background-color: #fff;
+   color: #333;
+   text-decoration: none;
 }
 
 .pagination a.active {
-	background-color: #4e73df;
-	color: #fff;
+   background-color: #4e73df;
+   color: #fff;
 }
 
 .pagination a:hover {
-	background-color: #bfc5d8;
+   background-color: #bfc5d8;
 }
 
 .search {
-	display: flex;
-	margin-bottom: 10px;
-	text-align: right;
-	justify-content: flex-end;
+   display: flex;
+   margin-bottom: 10px;
+   text-align: right;
+   justify-content: flex-end;
 }
 .btn-info {
-	color: black;
-	background-color: lightgray;
-	border-color: lightgray;
+   color: black;
+   background-color: lightgray;
+   border-color: lightgray;
 }
 
 #cal {
-	display: flex;
-	justify-content: right;
+   display: flex;
+   justify-content: right;
 }
 
 /* 모달 배경 */
 .modal-content {
-	border-radius: 10px;
+   border-radius: 10px;
 }
 
 /* 모달 헤더 */
 .modal-header {
-	background-color: #06bbcc; /* 헤더 배경 색상 */
-	color: #fff; /* 헤더 글자 색상 */
-	border-bottom: none; /* 헤더 아래 테두리 없애기 */
-	border-radius: 10px 10px 0 0; /* 헤더 모서리를 둥글게 만들기 */
+   background-color: #06bbcc; /* 헤더 배경 색상 */
+   color: #fff; /* 헤더 글자 색상 */
+   border-bottom: none; /* 헤더 아래 테두리 없애기 */
+   border-radius: 10px 10px 0 0; /* 헤더 모서리를 둥글게 만들기 */
 }
 
 /* 모달 제목 */
 .modal-title {
-	font-weight: bold;
+   font-weight: bold;
 }
 
 /* 모달 바디 */
 .modal-body {
-	padding: 20px;
+   padding: 20px;
 }
 
 /* 모달 테이블 */
 #modalTable {
-	width: 100%;
+   width: 100%;
 }
 
 #modalTable th,
 #modalTable td {
-	padding: 10px;
-	border-bottom: 1px solid #dee2e6; /* 테이블 셀 테두리 */
+   padding: 10px;
+   border-bottom: 1px solid #dee2e6; /* 테이블 셀 테두리 */
 }
 
 /* 모달 푸터 */
 .modal-footer {
-	border-top: none; /* 푸터 위 테두리 없애기 */
-	border-radius: 0 0 10px 10px; /* 푸터 모서리를 둥글게 만들기 */
+   border-top: none; /* 푸터 위 테두리 없애기 */
+   border-radius: 0 0 10px 10px; /* 푸터 모서리를 둥글게 만들기 */
 }
 
 /* 버튼 */
 .btn-primary {
-	background-color: #007bff; /* 버튼 배경 색상 */
-	border-color: #007bff; /* 버튼 테두리 색상 */
+   background-color: #007bff; /* 버튼 배경 색상 */
+   border-color: #007bff; /* 버튼 테두리 색상 */
 }
 
 .btn-primary:hover {
-	background-color: #0056b3; /* 마우스 호버시 버튼 배경 색상 */
-	border-color: #0056b3; /* 마우스 호버시 버튼 테두리 색상 */
+   background-color: #0056b3; /* 마우스 호버시 버튼 배경 색상 */
+   border-color: #0056b3; /* 마우스 호버시 버튼 테두리 색상 */
 }
 
 /* 폼 */
 .form-check-label {
-	font-weight: normal; /* 폼 라벨 텍스트 정상 굵기 */
+   font-weight: normal; /* 폼 라벨 텍스트 정상 굵기 */
 }
 
 /* 폼 라디오 버튼 */
 .form-check-input[type="radio"] {
-	margin-top: 5px; /* 폼 라디오 버튼 위 여백 */
+   margin-top: 5px; /* 폼 라디오 버튼 위 여백 */
 }
 #perbtn {
-	margin: 10px 10px;
+   margin: 10px 10px;
 }
 hr{
-	border: none;
-	border-top: 2px solid gray; 
+   border: none;
+   border-top: 2px solid gray; 
 }
+/* #modalTable {
+  background-image: url('/images/perback.jpg');
+  background-size: cover;
+  background-position: center;
+} */
+/* body {
+  background-image: url('/images/perback.jpg');
+  background-size: cover;
+  background-position: center;
+} */
 </style>
   </head>
   <body>
@@ -136,11 +147,11 @@ hr{
           <h4 id="alltop">처방현황</h4>
           <p>
             <!-- <i class="fas fa-fw fa-calendar" data-toggle="modal"
-						data-target="#calendarModal"></i> 현재날짜 : <span
-						th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
-						id="datepicker" th:name="datepicker"></span> -->
+                  data-target="#calendarModal"></i> 현재날짜 : <span
+                  th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
+                  id="datepicker" th:name="datepicker"></span> -->
             <!-- <i class="fas fa-fw fa-calendar"></i>  <input type="text"
-						id="datepicker" style="width: 120px;"/> -->
+                  id="datepicker" style="width: 120px;"/> -->
             <i class="fas fa-fw fa-calendar"></i> 오늘 날짜 :
             <span
               th:text="${#calendars.format(#calendars.createNow(), 'yyyy-MM-dd')}"
@@ -345,7 +356,7 @@ hr{
               </h5>
             </div>
             <div class="modal-body container">
-              <table id="modalTable"></table>
+              <table id="modalTable" class="table table-borderless table-hover text-center"></table>
             </div>
 
             <div class="modal-footer">
@@ -382,72 +393,74 @@ hr{
   var hospitalname = null;
   var doctorname = null;
   var pharmacyname = null;
+  var perscriptionDate = null;
+  var userBirthday = null
 
   
   /* --------------------
    * datepicker 초기화
   ----------------------*/  
   function datepickerinit() {
-	  $("#datepicker").datepicker({
-	      dateFormat: "yy-mm-dd", //달력 날짜 형태
-	      showOtherMonths: true, //빈 공간에 현재월의 앞뒤월의 날짜를 표시
-	      showMonthAfterYear: true, // 월- 년 순서가아닌 년도 - 월 순서
-	      changeYear: false, //option값 년 선택 가능
-	      changeMonth: false, //option값  월 선택 가능
-	      yearSuffix: "년", //달력의 년도 부분 뒤 텍스트
-	      monthNamesShort: [
-	        "1월",
-	        "2월",
-	        "3월",
-	        "4월",
-	        "5월",
-	        "6월",
-	        "7월",
-	        "8월",
-	        "9월",
-	        "10월",
-	        "11월",
-	        "12월",
-	      ], //달력의 월 부분 텍스트
-	      monthNames: [
-	        "1월",
-	        "2월",
-	        "3월",
-	        "4월",
-	        "5월",
-	        "6월",
-	        "7월",
-	        "8월",
-	        "9월",
-	        "10월",
-	        "11월",
-	        "12월",
-	      ], //달력의 월 부분 Tooltip
-	      dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"], //달력의 요일 텍스트
-	      dayNames: [
-	        "일요일",
-	        "월요일",
-	        "화요일",
-	        "수요일",
-	        "목요일",
-	        "금요일",
-	        "토요일",
-	      ], //달력의 요일 Tooltip
-	      minDate: "-5Y", //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
-	      maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후) 
-	    });
-	  
-	    //초기값을 오늘 날짜로 설정해줘야 합니다.
-	    $("#datepicker").datepicker("setDate", "today", {
-	      dateFormat: "yyyy-MM-dd",
-	    }); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
+     $("#datepicker").datepicker({
+         dateFormat: "yy-mm-dd", //달력 날짜 형태
+         showOtherMonths: true, //빈 공간에 현재월의 앞뒤월의 날짜를 표시
+         showMonthAfterYear: true, // 월- 년 순서가아닌 년도 - 월 순서
+         changeYear: false, //option값 년 선택 가능
+         changeMonth: false, //option값  월 선택 가능
+         yearSuffix: "년", //달력의 년도 부분 뒤 텍스트
+         monthNamesShort: [
+           "1월",
+           "2월",
+           "3월",
+           "4월",
+           "5월",
+           "6월",
+           "7월",
+           "8월",
+           "9월",
+           "10월",
+           "11월",
+           "12월",
+         ], //달력의 월 부분 텍스트
+         monthNames: [
+           "1월",
+           "2월",
+           "3월",
+           "4월",
+           "5월",
+           "6월",
+           "7월",
+           "8월",
+           "9월",
+           "10월",
+           "11월",
+           "12월",
+         ], //달력의 월 부분 Tooltip
+         dayNamesMin: ["일", "월", "화", "수", "목", "금", "토"], //달력의 요일 텍스트
+         dayNames: [
+           "일요일",
+           "월요일",
+           "화요일",
+           "수요일",
+           "목요일",
+           "금요일",
+           "토요일",
+         ], //달력의 요일 Tooltip
+         minDate: "-5Y", //최소 선택일자(-1D:하루전, -1M:한달전, -1Y:일년전)
+         maxDate: "D", //최대 선택일자(+1D:하루후, -1M:한달후, -1Y:일년후) 
+       });
+     
+       //초기값을 오늘 날짜로 설정해줘야 합니다.
+       $("#datepicker").datepicker("setDate", "today", {
+         dateFormat: "yyyy-MM-dd",
+       }); //(-1D:하루전, -1M:한달전, -1Y:일년전), (+1D:하루후, -1M:한달후, -1Y:일년후)
   }
   
   var listtr ="";
   /*--------------------
   *  처방전 조회 
   ---------------------*/
-  function viewPer(no, uname, hname, dname, pname, pselect, pstatus) {
+  function viewPer(no, uname, hname, dname, pname, pselect, pstatus, pdate, bir) {
     clinicNo = no;
     username = uname;
     hospitalname = hname;
@@ -455,6 +468,8 @@ hr{
     pharmacyname = pname;
     pharmacySelectno = pselect;
     var printStatus = pstatus;
+    perscriptionDate = pdate;
+    userBirthday = bir
     
      listtr = $(event.target.closest('tr'));
     console.log(listtr);
@@ -484,7 +499,7 @@ hr{
         }
         
         if(printStatus == 'd2') {
-        	document.getElementById("printper").style.display = "none";
+           document.getElementById("printper").style.display = "none";
         }
         
       })
@@ -536,45 +551,45 @@ hr{
    *  버튼 이벤트
    ---------------------*/
   function changebtn() {
-	    var dateValue = $("#datepicker").val();
-	    var currentDate = new Date();
-	    var perdate = currentDate.toISOString().split("T")[0];
-	    var isToday = dateValue === perdate;
-	  
-	    var prescriptionButton = document.getElementById("prescriptionButton");
-		var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
+       var dateValue = $("#datepicker").val();
+       var currentDate = new Date();
+       var perdate = currentDate.toISOString().split("T")[0];
+       var isToday = dateValue === perdate;
+     
+       var prescriptionButton = document.getElementById("prescriptionButton");
+      var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
 
-		if (isToday) {
-			var status= prescriptionButton.style.display;  //처방내역
-			var show = perbtn.style.display;
-			if(show == 'none') {
-				perbtn.style.display = 'block';
-				
-				if(status == 'block') {
-					prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
-					prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
-					alltop.innerText = "처방내역";
-				} else {
-					prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
-					prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
-					alltop.innerText = "처방현황";
-				}
-			} else {
-				if(status == 'block') {
-					prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
-					prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
-					alltop.innerText = "처방내역";
-				} else {
-					prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
-					prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
-					alltop.innerText = "처방현황";
-				}
-			}
-			
-		} else {
-			perbtn.style.display = 'none';
-			alltop.innerText = "처방내역";
-		}
+      if (isToday) {
+         var status= prescriptionButton.style.display;  //처방내역
+         var show = perbtn.style.display;
+         if(show == 'none') {
+            perbtn.style.display = 'block';
+            
+            if(status == 'block') {
+               prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
+               prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
+               alltop.innerText = "처방내역";
+            } else {
+               prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
+               prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
+               alltop.innerText = "처방현황";
+            }
+         } else {
+            if(status == 'block') {
+               prescriptionButton.style.display = "none"; // 처방내역 버튼 숨김
+               prescriptionButtonccc.style.display = "block"; // 처방현황 버튼 표시
+               alltop.innerText = "처방내역";
+            } else {
+               prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
+               prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시
+               alltop.innerText = "처방현황";
+            }
+         }
+         
+      } else {
+         perbtn.style.display = 'none';
+         alltop.innerText = "처방내역";
+      }
   }
   
   /*--------------------
@@ -592,10 +607,10 @@ hr{
     //console.log("type", type);
     changebtn();
 /*     var prescriptionButton = document.getElementById("prescriptionButton");
-	var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
+   var prescriptionButtonccc = document.getElementById("prescriptionButtonccc");
 
-	prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
-	prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시 */
+   prescriptionButton.style.display = "block"; // 처방내역 버튼 숨김
+   prescriptionButtonccc.style.display = "none"; // 처방현황 버튼 표시 */
 
     $.ajax({
       type: "GET",
@@ -655,7 +670,7 @@ hr{
   
   
   function createTable(plist) {
-	//showHideButton();
+   //showHideButton();
     // 동적으로 테이블 생성
     $(".table").empty();
     var table = document.querySelector(".table");
@@ -698,7 +713,7 @@ hr{
         row.append(`<td>${formatDate(new Date(item.perscriptionDate))}</td>`);
         row.append(`<td><button
                            id="viewper"
-                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}')"
+                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}', '${item.perscriptionDate}', '${item.userBirthday}')"
                            type="button"
                            class="btn btn-info"
                            data-bs-toggle="modal"
@@ -720,13 +735,13 @@ hr{
 
   
   function createTable2(plist) {
-	//showHideButton();
+   //showHideButton();
     // 동적으로 테이블 생성
     $(".table").empty();
     var table = document.querySelector(".table");
     var thead = $("<thead>").appendTo(table);
     var tbody = $("<tbody>").appendTo(table);
-	
+   
     if (plist.length === 0) { // 처방 내역이 없는 경우
         var messageRow = $("<tr>").appendTo(tbody);
         messageRow.append('<td colspan="9" class="text-center">처방 내역이 없습니다.</td>');
@@ -762,7 +777,7 @@ hr{
         row.append(`<td>${formatDate(new Date(item.perscriptionDate))}</td>`);
         row.append(`<td><button
                            id="viewper"
-                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}')"
+                           onclick="viewPer(${item.clinicNo}, '${item.userName}', '${item.hospitalName}', '${item.doctorName}', '${item.pharmacyName}', '${item.pharmacySelectno}', '${item.printStatus}', '${item.perscriptionDate}', '${item.userBirthday}')"
                            type="button"
                            class="btn btn-info"
                            data-bs-toggle="modal"
@@ -918,8 +933,8 @@ hr{
 
   //----------------------------------
   // pdf 생성 함수는 클릭 이벤트에서만 작동하도록 수정합니다.
-  function printPdf(no, uname, hname, dname) {
-    console.log("나와라 얍", no, uname, hname, dname);
+  function printPdf(no, uname, hname, dname, pname, pdate, bir) {
+    console.log("나와라 얍", no, uname, hname, dname, pdate, bir);
     $.ajax(`/pharmacy/perscription/${no}`) //fetch
       .done((result) => {
         var divPer = document.createElement("div");
@@ -935,18 +950,25 @@ hr{
 
         var highlightDiv = document.createElement("div");
         highlightDiv.className = "highlight";
+        highlightDiv.style.backgroundImage = "url('/images/perback.jpg')";
+        highlightDiv.style.backgroundSize = "cover";
+        highlightDiv.style.backgroundPosition = "center";
         highlightDiv.style.marginBottom = "20px"; // 약간의 여백 추가
         highlightDiv.innerHTML = `
                      <p><strong>병원 이름 : </strong>${dname}</p>
                      <p><strong>의사 이름 :</strong> ${hname}</p>
                      <p><strong>약국 이름 : </strong>${pname}</p>
-                     <p><strong>환자 이름 : </strong>${uname}</p>
                      <p><strong>진료 번호 : </strong>${no}</p>
+                     <p><strong>처방 날짜 : </strong>${formatDate(new Date(pdate))}</p>
+                     <br>
+                     <p><strong>환자 이름 : </strong>${uname}</p>
+                     <p><strong>환자 생년월일 : </strong>${formatDate(new Date(bir))}</p>
+                     <hr>
                  `;
         divPer.appendChild(highlightDiv);
 
         var newTable = document.createElement("table");
-        newTable.className = "table table-borderless table-hover text-center";
+        newTable.className = "table table-hover text-center";
 
         var tableHead = document.createElement("thead");
         tableHead.innerHTML = `
@@ -974,17 +996,30 @@ hr{
         }
 
         newTable.appendChild(tableBody);
-
         divPer.appendChild(newTable);
 
         var element = divPer;
-        var opt = {
+/*         var opt = {
           margin: 1,
           filename: "myfile.pdf",
           image: { type: "jpeg", quality: 0.98 },
           html2canvas: { scale: 2 },
           jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-        };
+        }; */
+        var opt = {
+                margin: 1,
+                filename: "myfile.pdf",
+                image: { type: "jpeg", quality: 0.98 },
+                html2canvas: { 
+                  scale: 2,
+                  // 추가한 스타일을 포함하기 위해 logging 옵션을 true로 설정합니다.
+                  logging: true,
+                  // 배경 이미지가 포함된 body를 선택합니다.
+                  useCORS: true, // CORS 사용 여부
+                  backgroundColor: null // 배경색을 null로 설정하여 투명 배경으로 만듭니다.
+                },
+                jsPDF: { unit: "in", format: "letter", orientation: "portrait" }
+              };
 
         // PDF 생성 후 iframe에 표시
         html2pdf()
@@ -1008,16 +1043,18 @@ hr{
    * 현재 날짜 처방 내역 
   ------------------------*/
   function pringhandler() {
-	  $('#exampleModalCenter').modal('hide');
-	  listtr.remove();
-	  
+     $('#exampleModalCenter').modal('hide');
+     listtr.remove();
+     
       no = clinicNo;
       uname = username;
       hname = hospitalname;
       dname = doctorname;
       pname = pharmacyname;
+      pdate = perscriptionDate;
+      bir = userBirthday;
 
-      printPdf(no, uname, hname, dname, pname);
+      printPdf(no, uname, hname, dname, pname, pdate, bir);
 
       let vo = {
         clinicNo: no,
@@ -1031,7 +1068,7 @@ hr{
       })
         .done(function (result) {
           if (result > 0) {
-        	  print.parent().remove();
+             print.parent().remove();
           }
         })
         .fail(function (xhr, status, error) {
@@ -1044,7 +1081,7 @@ hr{
    * 현재 날짜 처방 내역 
   ------------------------*/
   function convert() {
-	changebtn();
+   changebtn();
     dateValue = $("#datepicker").val();
     var keyword = $("#keyword").val();
     var type = $("#type").val();
@@ -1064,7 +1101,7 @@ hr{
         var table = document.querySelector(".table");
         var thead = $("<thead>").appendTo(table);
         var tbody = $("<tbody>").appendTo(table);
-		
+      
         if (response.currplist.length === 0) { 
             var messageRow = $("<tr>").appendTo(tbody);
             messageRow.append('<td colspan="9" class="text-center">처방 내역이 없습니다.</td>');
@@ -1090,25 +1127,25 @@ hr{
         // 테이블 내용 생성
         var idx = 1
         for (let i of response.currplist) {
-		    var row = $("<tr>").appendTo(tbody);
-		    row.append(`<td>${idx++}</td>`);
-		    row.append(`<td>${i.userName}</td>`);
-		    row.append(`<td>${formatDate(new Date(i.userBirthday))}</td>`);
-		    row.append(`<td>${i.userPhone}</td>`);
-		    row.append(`<td>${i.hospitalName}</td>`);
-		    row.append(`<td>${i.hospitalPhone}</td>`);
-		    row.append(`<td>${i.doctorName}</td>`);
-		    row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
-		    row.append(`<td><button
-		                      id="viewper"
-		                      onclick="viewPer(${i.clinicNo}, '${i.userName}', '${i.hospitalName}', '${i.doctorName}', '${i.pharmacyName}', '${i.pharmacySelectno}', '${i.printStatus}')"
-		                      type="button"
-		                      class="btn btn-info"
-		                      data-bs-toggle="modal"
-		                      data-bs-target="#exampleModalCenter"
-		                    ><i class="fas fa-solid fa-file-medical"></i>
-		                    </button></td>`);
-		}
+          var row = $("<tr>").appendTo(tbody);
+          row.append(`<td>${idx++}</td>`);
+          row.append(`<td>${i.userName}</td>`);
+          row.append(`<td>${formatDate(new Date(i.userBirthday))}</td>`);
+          row.append(`<td>${i.userPhone}</td>`);
+          row.append(`<td>${i.hospitalName}</td>`);
+          row.append(`<td>${i.hospitalPhone}</td>`);
+          row.append(`<td>${i.doctorName}</td>`);
+          row.append(`<td>${formatDate(new Date(i.perscriptionDate))}</td>`);
+          row.append(`<td><button
+                            id="viewper"
+                            onclick="viewPer(${i.clinicNo}, '${i.userName}', '${i.hospitalName}', '${i.doctorName}', '${i.pharmacyName}', '${i.pharmacySelectno}', '${i.printStatus}', '${i.perscriptionDate}', '${i.userBirthday}')"
+                            type="button"
+                            class="btn btn-info"
+                            data-bs-toggle="modal"
+                            data-bs-target="#exampleModalCenter"
+                          ><i class="fas fa-solid fa-file-medical"></i>
+                          </button></td>`);
+      }
       makePaging(response.pagedto);
       }
       },
@@ -1117,19 +1154,19 @@ hr{
   }
 
   $(function () {
-	    //input을 datepicker로 선언	  
-		datepickerinit();
+       //input을 datepicker로 선언     
+      datepickerinit();
 
-	    sendDate(1);
-	    
-	    // 출력 btn 이벤트 핸들러
-	    $("#printper").click(pringhandler);
-	    
-	    // 처방내역 btn 이벤트 핸들러
-	    document.getElementById("prescriptionButtonccc").addEventListener("click", function() {    sendDate(1);	});
-	  
-	  //검색버튼 이벤트 만들기
-	  $("#searchBtn").on("click", function () {    sendDate(1);  });
-	});
+       sendDate(1);
+       
+       // 출력 btn 이벤트 핸들러
+       $("#printper").click(pringhandler);
+       
+       // 처방내역 btn 이벤트 핸들러
+       document.getElementById("prescriptionButtonccc").addEventListener("click", function() {    sendDate(1);   });
+     
+     //검색버튼 이벤트 만들기
+     $("#searchBtn").on("click", function () {    sendDate(1);  });
+   });
 
 </script>

@@ -26,6 +26,9 @@ import com.drcome.project.mem.service.UserMemberVO;
 import com.drcome.project.pharmacy.PharmacyVO;
 
 import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.request.SingleMessageSendingRequest;
+import net.nurigo.sdk.message.response.SingleMessageSentResponse;
 import net.nurigo.sdk.message.service.DefaultMessageService;
 
 @Service
@@ -103,16 +106,16 @@ public class UserMemberServiceImpl implements UserMemberService, UserDetailsServ
 		Map<String,Object> result = new HashMap<String,Object>();
 		int checkNum = (int) (Math.random() * 9000) + 1000;
 		
-		result.put("checkNum", checkNum);
+//		result.put("checkNum", checkNum);
 		
-//		Message message = new Message();
-//		message.setFrom(coolSmsFromNumber);
-//    	message.setTo(phoneNum);
-//    	message.setText("[DrCome] 인증번호: "+checkNum);
-//    
-//    	SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));        
-//    	result.put("result", response);
-//    	result.put("checkNum", checkNum);
+		Message message = new Message();
+		message.setFrom(coolSmsFromNumber);
+    	message.setTo(phoneNum);
+    	message.setText("[DrCome] 인증번호: "+checkNum);
+    
+    	SingleMessageSentResponse response = this.messageService.sendOne(new SingleMessageSendingRequest(message));        
+    	result.put("result", response);
+    	result.put("checkNum", checkNum);
 
 		return result;
 	}

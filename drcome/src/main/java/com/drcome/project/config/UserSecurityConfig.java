@@ -48,8 +48,7 @@ public class UserSecurityConfig {
 				.formLogin((form) -> form.loginPage("/userlogin").usernameParameter("username")
 						.successHandler(loginSuccessHandler).failureHandler(failureHandler).permitAll())
 
-				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/") // 로그아웃 성공시
-																											// 이동할 url
+				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/") // 로그아웃 성공시 이동할 url
 				.invalidateHttpSession(true) // 로그아웃시 생성된 세션 삭제 활성화
 				.deleteCookies("JSESSIONID").permitAll();
 
